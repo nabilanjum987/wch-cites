@@ -1,5 +1,7 @@
 import { City } from '@/types/city';
+import { supabase } from './supabase';
 
+// Fallback mock data for development
 const MOCK_CITIES: Record<string, City> = {
   'pakistan/punjab/lahore': {
     name: 'Lahore',
@@ -32,8 +34,48 @@ export async function getCityData(
   province: string,
   city: string
 ): Promise<City | null> {
+  try {
+    try {
+      const { data, error } = await supabase
+        .from('cities')
+        .select('*')
+        .eq('country_slug', country)
+        .eq('province_slug', province)
+        .eq('city_slug', city)
+        .eq('is_active', true)
+        .single();
+
+      if (error) {
+        console.warn(`Database query error for ${country}/${province}/${city}:`, error.message);
+        return getMockCityData(country, province, city);
+      }
+
+      if (!data) {
+        console.info(`City not found in database, using mock data`);
+        return getMockCityData(country, province, city);
+      }
+
+      return data as City;
+    } catch (dbError: any) {
+      console.error('Database connection error:', dbError?.message);
+      return getMockCityData(country, province, city);
+    }
+  } catch (error: any) {
+    console.error('Error in getCityData:', error?.message);
+    return getMockCityData(country, province, city);
+  }
+}
+
+function getMockCityData(country: string, province: string, city: string): City | null {
   const key = `${country}/${province}/${city}`;
-  return MOCK_CITIES[key] ?? {
+  
+  // Check if we have hardcoded mock data
+  if (MOCK_CITIES[key]) {
+    return MOCK_CITIES[key];
+  }
+
+  // Generate default city object
+  return {
     name: city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
     city_slug: city,
     country: country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
@@ -49,7 +91,7 @@ export async function getCityData(
     religion_percent: 0,
     primary_color: '#1a1a2e',
     secondary_color: '#FFFFFF',
-    famous_for: '',
+    famous_for: 'A city waiting to be discovered',
     famous_products: '',
     emergency_police: '911',
     emergency_ambulance: '911',
@@ -57,4 +99,27 @@ export async function getCityData(
     region: 'Unknown',
     is_active: true,
   };
+}
+
+// Export async function to fetch multiple cities
+export async function getCitiesData(
+  citySlugs: string[]
+): Promise<City[]> {
+  try {
+    const { data, error } = await supabase
+      .from('cities')
+      .select('*')
+      .in('city_slug', citySlugs)
+      .eq('is_active', true);
+
+    if (error) {
+      console.error('Error fetching cities:', error.message);
+      return [];
+    }
+
+    return (data || []) as City[];
+  } catch (error: any) {
+    console.error('Error in getCitiesData:', error?.message);
+    return [];
+  }
 }
