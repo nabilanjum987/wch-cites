@@ -1,18 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  html {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  body {
-    @apply text-gray-900 bg-gray-50;
+  * {
+    font-family: 'Inter', sans-serif;
   }
 }
 
@@ -29,19 +21,5 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-  }
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .font-urdu {
-    font-family: 'Noto Nastaliq Urdu', serif;
-    line-height: 2.2;
-  }
-  .rtl {
-    direction: rtl;
-    text-align: right;
   }
 }

@@ -1,62 +1,63 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navbar from './components/shared/Navbar';
-import NewsPage from './components/city/NewsPage';
+import { useState } from 'react';
+import EventsPage from './app/events/EventsPage';
+import HoroscopePage from './app/horoscope/HoroscopePage';
+import type { City } from './types/city';
 
-function HomePage() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight mb-4">
-            World<span className="text-emerald-700">CityHub</span>
-          </h1>
-          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-            Live daily data for every city on earth. News, weather, prayer times, and more.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-3xl mx-auto">
-          <a
-            href="/pakistan/punjab/lahore/news"
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow no-underline group"
-          >
-            <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors mb-1">
-              Lahore News
-            </h3>
-            <p className="text-sm text-gray-500">Latest stories from Lahore, Punjab, Pakistan</p>
-          </a>
-          <a
-            href="/pakistan/sindh/karachi/news"
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow no-underline group"
-          >
-            <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors mb-1">
-              Karachi News
-            </h3>
-            <p className="text-sm text-gray-500">Latest stories from Karachi, Sindh, Pakistan</p>
-          </a>
-          <a
-            href="/pakistan/islamabad-capital/islamabad/news"
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow no-underline group"
-          >
-            <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors mb-1">
-              Islamabad News
-            </h3>
-            <p className="text-sm text-gray-500">Latest stories from Islamabad, Pakistan</p>
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
+const demoCity: City = {
+  name: 'Karachi',
+  city_slug: 'karachi',
+  country: 'Pakistan',
+  country_code: 'PK',
+  country_slug: 'pakistan',
+  province: 'Sindh',
+  province_slug: 'sindh',
+  lat: 24.8607,
+  lng: 67.0011,
+  population: 14910352,
+  timezone: 'Asia/Karachi',
+  major_religion: 'Islam',
+  religion_percent: 96,
+  primary_color: '#01411C',
+  secondary_color: '#FFFFFF',
+  famous_for: 'Port city, financial hub',
+  famous_products: 'Textiles, seafood',
+  emergency_police: '15',
+  emergency_ambulance: '1122',
+  emergency_fire: '16',
+  region: 'South Asia',
+  is_active: true,
+};
+
+type Page = 'events' | 'horoscope';
 
 function App() {
+  const [page, setPage] = useState<Page>('horoscope');
+
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/:country/:province/:city/news" element={<NewsPage />} />
-      </Routes>
-    </BrowserRouter>
+    <div className="min-h-screen bg-gray-50">
+      {/* Simple nav bar to switch between pages */}
+      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white rounded-2xl shadow-lg border border-gray-200 px-2 py-1.5 flex gap-1">
+        <button
+          onClick={() => setPage('events')}
+          className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+            page === 'events' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Events
+        </button>
+        <button
+          onClick={() => setPage('horoscope')}
+          className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+            page === 'horoscope' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Horoscope
+        </button>
+      </nav>
+
+      {page === 'events' && <EventsPage city={demoCity} />}
+      {page === 'horoscope' && <HoroscopePage />}
+    </div>
   );
 }
 
