@@ -23,69 +23,39 @@ export interface City {
   is_active: boolean;
 }
 
-export type LevelTab = 'global' | 'national' | 'provincial' | 'local';
-export type TimeTab = 'today' | 'tomorrow' | 'weekend' | 'week' | 'month' | 'upcoming';
-export type EventCategory =
-  | 'sports'
-  | 'culture'
-  | 'music'
-  | 'literature'
-  | 'food'
-  | 'religious'
-  | 'business'
-  | 'film'
-  | 'outdoor'
-  | 'family'
-  | 'conferences';
-
-export interface CityEvent {
-  id: string;
-  title: string;
-  description: string;
-  venue: string;
-  address: string;
-  city: string;
-  country: string;
-  category: EventCategory;
-  start_time: string;
-  end_time: string;
-  image_url?: string;
-  ticket_url?: string;
-  is_free: boolean;
-  price_from?: number;
-  currency?: string;
-  organizer?: string;
-  level: LevelTab;
-  lat?: number;
-  lng?: number;
-}
-
-export interface RecurringEvent {
-  id: string;
-  title: string;
-  venue: string;
-  day: string;
-  time: string;
-  category: EventCategory;
-  is_free: boolean;
-  website?: string;
-}
-
-export interface NationalEvent {
-  id: string;
-  title: string;
-  date: string;
-  type: 'holiday' | 'religious' | 'sports';
-  description: string;
-  country_code: string;
-}
-
-export interface PendingEvent {
-  name: string;
-  date: string;
-  venue: string;
-  category: string;
-  website: string;
-  city: string;
-  country_code: string;
+export interface EconomicData {
+  gdp: {
+    total: number;
+    perCapita: number;
+    growth: number;
+    bySector: { sector: string; value: number }[];
+    tenYearGrowth: { year: number; value: number }[];
+    projection: { year: number; value: number }[];
+  };
+  inflation: {
+    current: number;
+    oneYearAgo: number;
+    byCategory: { category: string; rate: number }[];
+    purchasingPower: {
+      valueToday: number;
+      valueOneYearAgo: number;
+      monthlyImpact: number;
+    };
+  };
+  employment: {
+    unemploymentRate: number;
+    youthUnemployment: number;
+    femaleUnemployment: number;
+    laborForce: number;
+  };
+  healthScore: {
+    current: number;
+    oneYearAgo: number;
+    trend: 'improving' | 'declining' | 'stable';
+    status: string;
+  };
+  debt: {
+    debtToGdp: number;
+    total: number;
+  };
 }
