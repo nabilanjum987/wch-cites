@@ -12,13 +12,6 @@ interface WorldBankData {
   currency: string;
 }
 
-interface EconomicIndicator {
-  label: string;
-  value: number | string;
-  unit: string;
-  change?: number;
-}
-
 const INDUSTRY_EMOJIS: Record<string, string> = {
   agriculture: '🌾',
   industry: '🏭',
@@ -233,7 +226,6 @@ export function EconomySection({ city }: { city: City }) {
   const unemployment = UNEMPLOYMENT_RATES[city.country_code] || 5;
   const miseryIndex = inflation + unemployment;
   const topIndustries = COUNTRY_INDUSTRIES[city.country_code] || COUNTRY_INDUSTRIES['US'];
-  const population = POPULATION[city.country_code] || 100000000;
 
   const gdpPerCapitaDaily = economyData ? economyData.gdpPerCapita : 0;
   const citizenLabel = city.country_code === 'PK'

@@ -69,8 +69,6 @@ function getAQILevel(aqi: number) {
 }
 
 function getHealthAdvice(aqi: number, group: string): string {
-  const level = getAQILevel(aqi);
-
   if (group === 'children') {
     if (aqi <= 50) return 'Safe for outdoor play';
     if (aqi <= 100) return 'Limit prolonged outdoor activity';

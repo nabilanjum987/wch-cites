@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { CitySearchResult } from '../../types/city';
 
@@ -153,8 +154,8 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
 
   return (
     <div className="relative w-full max-w-2xl mx-auto">
-      <div className="relative">
-        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <motion.div className="relative group" whileFocus="focused" initial="unfocused">
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400 group-focus-within:text-cyan-300 transition-colors" />
         <input
           ref={inputRef}
           type="text"
@@ -163,7 +164,7 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
           onKeyDown={handleKeyDown}
           onFocus={() => results.length > 0 && setIsOpen(true)}
           placeholder="Search any city, country or place..."
-          className="w-full pl-14 pr-12 py-4 text-lg rounded-full bg-white shadow-xl border-2 border-gray-100 focus:border-blue-400 focus:outline-none transition-all"
+          className="w-full pl-14 pr-12 py-4 text-lg rounded-full backdrop-blur-xl bg-white/15 border border-white/30 text-white placeholder-gray-300 focus:bg-white/25 focus:border-cyan-400/50 focus:outline-none transition-all shadow-lg focus:shadow-xl focus:shadow-cyan-500/20"
         />
         {query && (
           <button
@@ -172,61 +173,76 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
               setResults([]);
               setIsOpen(false);
             }}
-            className="absolute right-5 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+            className="absolute right-5 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-gray-400" />
+            <X className="w-5 h-5 text-white/70 hover:text-white" />
           </button>
         )}
-      </div>
+      </motion.div>
 
-      {isOpen && (
-        <div
-          ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
-        >
-          {loading ? (
-            <div className="p-4 text-center text-gray-500">
-              <div className="inline-block w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          ) : (
-            <div className="max-h-96 overflow-y-auto">
-              {results.map((city, index) => (
-                <button
-                  key={city.city_slug}
-                  onClick={() => handleSelectCity(city)}
-                  className={`w-full flex items-center justify-between px-5 py-3 text-left transition-colors ${
-                    index === selectedIndex
-                      ? 'bg-blue-50 border-l-4 border-blue-400'
-                      : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{getCountryFlag(city.country_code)}</span>
-                    <div>
-                      <span className="font-semibold text-gray-800">{city.name}</span>
-                      <span className="text-gray-400 mx-2">·</span>
-                      <span className="text-gray-600">{city.country}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3 text-sm text-gray-500">
-                    <span className="bg-gray-100 px-3 py-1 rounded-full">
-                      {formatPopulation(city.population)}
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            ref={dropdownRef}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-full left-0 right-0 mt-3 backdrop-blur-xl bg-[#030712]/95 border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50"
+          >
+            {loading ? (
+              <div className="p-4 text-center text-gray-400">
+                <motion.div
+                  className="inline-block w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                />
+              </div>
+            ) : (
+              <motion.div className="max-h-96 overflow-y-auto">
+                {results.map((city, index) => (
+                  <motion.button
+                    key={city.city_slug}
+                    onClick={() => handleSelectCity(city)}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className={`w-full flex items-center justify-between px-5 py-3 text-left transition-all ${
+                      index === selectedIndex
+                        ? 'bg-white/20 border-l-4 border-cyan-400'
+                        : 'hover:bg-white/10'
+                    }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="text-2xl">{getCountryFlag(city.country_code)}</span>
+                        <div>
+                          <span className="font-semibold text-white">{city.name}</span>
+                          <span className="text-gray-400 mx-2">·</span>
+                          <span className="text-gray-300">{city.country}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-3 text-sm text-gray-400">
+                        <span className="bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
+                          {formatPopulation(city.population)}
+                        </span>
+                      </div>
+                    </motion.button>
+                  ))}
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <button
+      <motion.button
         onClick={handleUseLocation}
-        className="flex items-center justify-center space-x-2 mt-4 mx-auto text-gray-200 hover:text-white transition-colors"
+        className="flex items-center justify-center space-x-2 mt-4 mx-auto text-gray-400 hover:text-cyan-400 transition-colors"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         <MapPin className="w-4 h-4" />
         <span className="text-sm font-medium">Use My Location</span>
-      </button>
+      </motion.button>
     </div>
   );
 }

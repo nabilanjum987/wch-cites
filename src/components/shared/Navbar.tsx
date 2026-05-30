@@ -15,11 +15,26 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
 
+  const [scrollDirection, setScrollDirection] = useState('up');
+  const [lastScrollY, setLastScrollY] = useState(0);
+
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setScrollDirection('down');
+      } else {
+        setScrollDirection('up');
+      }
+      
+      setScrolled(currentScrollY > 10);
+      setLastScrollY(currentScrollY);
+    };
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -60,16 +75,15 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
-      className={`fixed top-0 z-50 w-full transition-all duration-300`}
+      initial={{ y: 0 }}
+      animate={{ y: scrollDirection === 'down' ? -100 : 0 }}
+      transition={{ duration: 0.3 }}
+      className="fixed top-0 z-50 w-full transition-all duration-300"
       style={{
-        backdropFilter: 'blur(10px)',
-        backgroundColor: scrolled
-          ? `rgba(10, 15, 30, 0.95)`
-          : `rgba(10, 15, 30, ${scrolled ? 0.95 : 0.7})`,
-        borderBottom: `1px solid ${COLORS.border}`,
+        backdropFilter: 'blur(20px)',
+        backgroundColor: 'rgba(3, 7, 18, 0.85)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: scrolled ? '0 4px 20px rgba(0, 0, 0, 0.5)' : 'none',
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,17 +97,17 @@ export default function Navbar() {
               <motion.div
                 animate={{
                   boxShadow: [
-                    '0 0 20px rgba(99, 102, 241, 0.3)',
-                    '0 0 40px rgba(99, 102, 241, 0.6)',
-                    '0 0 20px rgba(99, 102, 241, 0.3)',
+                    '0 0 20px rgba(6, 182, 212, 0.3)',
+                    '0 0 40px rgba(6, 182, 212, 0.6)',
+                    '0 0 20px rgba(6, 182, 212, 0.3)',
                   ],
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <Globe className="w-6 h-6 text-indigo-400" />
+                <Globe className="w-6 h-6 text-cyan-400" />
               </motion.div>
               <motion.span
-                className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent tracking-tight"
+                className="text-lg font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight"
                 whileHover={{ scale: 1.02 }}
               >
                 WorldCityHub
@@ -104,6 +118,49 @@ export default function Navbar() {
           {/* Center Search Bar - Hidden on mobile */}
           <motion.div className="hidden md:flex flex-grow mx-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
             <SearchBar onCitySelect={handleCitySelect} />
+          </motion.div>
+
+          {/* Navigation Links - Hidden on mobile */}
+          <motion.div
+            className="hidden lg:flex items-center gap-2 mr-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.25 }}
+          >
+            <Link
+              href="/rates"
+              className="px-3 py-2 text-sm font-medium rounded-lg transition-all no-underline"
+              style={{
+                backgroundColor: `rgba(99, 102, 241, 0.05)`,
+                color: COLORS.accent,
+                border: `1px solid ${COLORS.border}`,
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.backgroundColor = `rgba(99, 102, 241, 0.15)`;
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.backgroundColor = `rgba(99, 102, 241, 0.05)`;
+              }}
+            >
+              Rates
+            </Link>
+            <Link
+              href="/compare"
+              className="px-3 py-2 text-sm font-medium rounded-lg transition-all no-underline"
+              style={{
+                backgroundColor: `rgba(99, 102, 241, 0.05)`,
+                color: COLORS.accent,
+                border: `1px solid ${COLORS.border}`,
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.backgroundColor = `rgba(99, 102, 241, 0.15)`;
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.backgroundColor = `rgba(99, 102, 241, 0.05)`;
+              }}
+            >
+              Compare
+            </Link>
           </motion.div>
 
           {/* Right Side Icons - Desktop */}
@@ -118,14 +175,10 @@ export default function Navbar() {
               onClick={handleMyLocation}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg transition-all"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-              }}
+              className="p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30"
               title="Find my location"
             >
-              <MapPin className="w-5 h-5 text-indigo-400" />
+              <MapPin className="w-5 h-5 text-cyan-400" />
             </motion.button>
 
             {/* Dark Mode Toggle */}
@@ -133,14 +186,10 @@ export default function Navbar() {
               onClick={toggleDarkMode}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg transition-all"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-              }}
+              className="p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30"
               title="Toggle dark mode"
             >
-              {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-indigo-400" />}
+              {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-cyan-400" />}
             </motion.button>
 
             {/* Language Toggle */}
@@ -148,12 +197,7 @@ export default function Navbar() {
               onClick={toggleLanguage}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-3 py-2 rounded-lg font-medium text-sm transition-all"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-                color: COLORS.accent,
-              }}
+              className="px-3 py-2 rounded-lg font-medium text-sm transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30 text-cyan-400"
               title="Toggle language"
             >
               {language}
@@ -162,14 +206,10 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="md:hidden p-2 rounded-lg transition-all"
+            className="md:hidden p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            style={{
-              backgroundColor: `rgba(99, 102, 241, 0.1)`,
-              border: `1px solid ${COLORS.border}`,
-            }}
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -250,7 +290,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/pakistan/punjab/lahore/news"
+              href="/rates"
               className="block px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline"
               style={{
                 backgroundColor: `rgba(99, 102, 241, 0.1)`,
@@ -259,7 +299,20 @@ export default function Navbar() {
               }}
               onClick={() => setMobileMenuOpen(false)}
             >
-              Lahore News
+              Rates
+            </Link>
+
+            <Link
+              href="/compare"
+              className="block px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline"
+              style={{
+                backgroundColor: `rgba(99, 102, 241, 0.1)`,
+                border: `1px solid ${COLORS.border}`,
+                color: COLORS.accent,
+              }}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Compare Cities
             </Link>
           </div>
         )}

@@ -709,6 +709,22 @@ export default function WonderPage() {
           </div>
         </motion.section>
 
+        {/* Link to Country Page */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="text-center pb-12"
+        >
+          <a
+            href={`/${wonder.location.country.toLowerCase().replace(/\s+/g, '-')}`}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all"
+          >
+            <MapPin className="w-5 h-5" />
+            Explore {wonder.location.country}
+          </a>
+        </motion.div>
+
       </div>
     </div>
   );

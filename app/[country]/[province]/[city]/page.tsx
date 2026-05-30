@@ -1,6 +1,7 @@
-import { fetchCity } from '@/lib/getCityData';
+import { getCityData } from '@/lib/getCityData';
 import { TickerBar } from '@/components/city/TickerBar';
 import { CityHeader } from '@/components/city/CityHeader';
+import { CityTabs } from '@/components/city/CityTabs';
 import { TimeAndCosmos } from '@/components/city/TimeAndCosmos';
 import { WeatherSnapshot } from '@/components/city/WeatherSnapshot';
 import { PrayerAndFaith } from '@/components/city/PrayerAndFaith';
@@ -31,7 +32,7 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const city = await fetchCity(params.country, params.province, params.city);
+  const city = await getCityData(params.country, params.province, params.city);
   if (!city) return {};
 
   return {
@@ -93,7 +94,7 @@ function generateJSONLD(city: any) {
 }
 
 export default async function CityPage({ params }: PageProps) {
-  const city = await fetchCity(params.country, params.province, params.city);
+  const city = await getCityData(params.country, params.province, params.city);
 
   if (!city || !city.is_active) {
     notFound();
@@ -110,19 +111,34 @@ export default async function CityPage({ params }: PageProps) {
       <main className="min-h-screen bg-gray-50">
         <TickerBar city={city} />
         <CityHeader city={city} />
+        <CityTabs />
 
         <section className="max-w-5xl mx-auto px-4 py-6">
+          <div id="weather">
+            <WeatherSnapshot city={city} />
+            <AirQuality city={city} />
+          </div>
+          <div id="prayer-times">
+            <PrayerAndFaith city={city} />
+          </div>
           <TimeAndCosmos city={city} />
           <CityFacts city={city} />
-          <WeatherSnapshot city={city} />
-          <AirQuality city={city} />
-          <PrayerAndFaith city={city} />
-          <NewsToday city={city} />
-          <EventsSection city={city} />
-          <RatesSnapshot city={city} />
+          <div id="news">
+            <NewsToday city={city} />
+          </div>
+          <div id="events">
+            <EventsSection city={city} />
+          </div>
+          <div id="rates">
+            <RatesSnapshot city={city} />
+          </div>
           <CostOfLiving city={city} />
-          <EconomySection city={city} />
-          <SportsSection city={city} />
+          <div id="economy">
+            <EconomySection city={city} />
+          </div>
+          <div id="sports">
+            <SportsSection city={city} />
+          </div>
           <FamousPersonalities city={city} />
           <FamousPlaces city={city} />
           <HeritageProducts city={city} />

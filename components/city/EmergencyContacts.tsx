@@ -10,13 +10,6 @@ interface EmergencyData {
   fire: string;
 }
 
-interface CityEmergency {
-  womenHelpline?: string;
-  childHelpline?: string;
-  mentalHealthHelpline?: string;
-  disasterManagement?: string;
-}
-
 const DEFAULT_EMERGENCY: Record<string, EmergencyData> = {
   PK: { police: '15', ambulance: '1122', fire: '16' },
   IN: { police: '100', ambulance: '102', fire: '101' },

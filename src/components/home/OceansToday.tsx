@@ -1,4 +1,5 @@
 import { Waves, Thermometer, Wind } from 'lucide-react';
+import Link from 'next/link';
 
 const oceans = [
   {
@@ -6,35 +7,40 @@ const oceans = [
     temp: 22,
     condition: 'Fair',
     waveHeight: '1.2m',
-    image: 'https://images.pexels.com/photos/1579253/pexels-photo-1579253.jpeg?auto=compress&cs=tinysrgb&w=800'
+    image: 'https://images.pexels.com/photos/1579253/pexels-photo-1579253.jpeg?auto=compress&cs=tinysrgb&w=800',
+    slug: 'pacific-ocean'
   },
   {
     name: 'Atlantic Ocean',
     temp: 19,
     condition: 'Moderate',
     waveHeight: '1.8m',
-    image: 'https://images.pexels.com/photos/1547867/pexels-photo-1547867.jpeg?auto=compress&cs=tinysrgb&w=800'
+    image: 'https://images.pexels.com/photos/1547867/pexels-photo-1547867.jpeg?auto=compress&cs=tinysrgb&w=800',
+    slug: 'atlantic-ocean'
   },
   {
     name: 'Indian Ocean',
     temp: 26,
     condition: 'Fair',
     waveHeight: '0.8m',
-    image: 'https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=800'
+    image: 'https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=800',
+    slug: 'indian-ocean'
   },
   {
     name: 'Arctic Ocean',
     temp: 2,
     condition: 'Cold',
     waveHeight: '2.1m',
-    image: 'https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&w=800'
+    image: 'https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&w=800',
+    slug: 'arctic-ocean'
   },
   {
     name: 'Southern Ocean',
     temp: 5,
     condition: 'Rough',
     waveHeight: '3.5m',
-    image: 'https://images.pexels.com/photos/2101867/pexels-photo-2101867.jpeg?auto=compress&cs=tinysrgb&w=800'
+    image: 'https://images.pexels.com/photos/2101867/pexels-photo-2101867.jpeg?auto=compress&cs=tinysrgb&w=800',
+    slug: 'southern-ocean'
   }
 ];
 
@@ -61,9 +67,10 @@ export default function OceansToday() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {oceans.map((ocean) => (
-          <div
+          <Link
             key={ocean.name}
-            className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-cyan-400/30 transition-all group"
+            href={`/oceans/${ocean.slug}`}
+            className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-cyan-400/30 transition-all group block"
           >
             <div className="relative h-32">
               <img
@@ -100,7 +107,7 @@ export default function OceansToday() {
                 </span>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

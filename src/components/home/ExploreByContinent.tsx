@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const continents = [
   {
@@ -6,56 +7,64 @@ const continents = [
     image: 'https://images.pexels.com/photos/1624076/pexels-photo-1624076.jpeg?auto=compress&cs=tinysrgb&w=800',
     countries: 48,
     cities: 4521,
-    gradient: 'from-red-600 to-orange-600'
+    gradient: 'from-red-600 to-orange-600',
+    country_slug: 'pakistan'
   },
   {
     name: 'Middle East',
     image: 'https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=800',
     countries: 18,
     cities: 892,
-    gradient: 'from-amber-600 to-yellow-600'
+    gradient: 'from-amber-600 to-yellow-600',
+    country_slug: 'united-arab-emirates'
   },
   {
     name: 'Africa',
     image: 'https://images.pexels.com/photos/1048929/pexels-photo-1048929.jpeg?auto=compress&cs=tinysrgb&w=800',
     countries: 54,
     cities: 1845,
-    gradient: 'from-emerald-600 to-teal-600'
+    gradient: 'from-emerald-600 to-teal-600',
+    country_slug: 'egypt'
   },
   {
     name: 'Europe',
     image: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=800',
     countries: 44,
     cities: 2156,
-    gradient: 'from-blue-600 to-indigo-600'
+    gradient: 'from-blue-600 to-indigo-600',
+    country_slug: 'france'
   },
   {
     name: 'N. America',
     image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=800',
     countries: 23,
     cities: 1102,
-    gradient: 'from-blue-700 to-cyan-600'
+    gradient: 'from-blue-700 to-cyan-600',
+    country_slug: 'united-states'
   },
   {
     name: 'S. America',
     image: 'https://images.pexels.com/photos/1106127/pexels-photo-1106127.jpeg?auto=compress&cs=tinysrgb&w=800',
     countries: 12,
     cities: 789,
-    gradient: 'from-green-600 to-lime-600'
+    gradient: 'from-green-600 to-lime-600',
+    country_slug: 'brazil'
   },
   {
     name: 'SE Asia',
     image: 'https://images.pexels.com/photos/1709229/pexels-photo-1709229.jpeg?auto=compress&cs=tinysrgb&w=800',
     countries: 11,
     cities: 654,
-    gradient: 'from-purple-600 to-pink-600'
+    gradient: 'from-purple-600 to-pink-600',
+    country_slug: 'thailand'
   },
   {
     name: 'Oceania',
     image: 'https://images.pexels.com/photos/1680247/pexels-photo-1680247.jpeg?auto=compress&cs=tinysrgb&w=800',
     countries: 14,
     cities: 288,
-    gradient: 'from-cyan-600 to-teal-600'
+    gradient: 'from-cyan-600 to-teal-600',
+    country_slug: 'australia'
   }
 ];
 
@@ -69,9 +78,10 @@ export default function ExploreByContinent() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {continents.map((continent) => (
-          <button
+          <Link
             key={continent.name}
-            className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 transition-all"
+            href={`/${continent.country_slug}`}
+            className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 transition-all block"
           >
             <div className="relative h-48">
               <img
@@ -98,7 +108,7 @@ export default function ExploreByContinent() {
                 <ArrowRight className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all" />
               </div>
             </div>
-          </button>
+          </Link>
         ))}
       </div>
     </div>

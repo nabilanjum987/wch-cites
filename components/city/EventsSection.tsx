@@ -47,18 +47,6 @@ const TIME_FILTERS = [
   { id: 'month', label: 'This Month' },
 ];
 
-const CATEGORY_EMOJIS: Record<string, string> = {
-  music: '🎵',
-  sports: '⚽',
-  business: '💼',
-  food: '🍕',
-  art: '🎨',
-  tech: '💻',
-  education: '📚',
-  community: '🤝',
-  default: '🎯',
-};
-
 function getCategoryEmoji(title: string): string {
   const lower = title.toLowerCase();
   if (lower.includes('music') || lower.includes('concert')) return '🎵';
@@ -115,11 +103,11 @@ async function fetchGoogleNewsRSS(query: string): Promise<Event[] | null> {
 
     while ((match = itemRegex.exec(text)) !== null) {
       const itemContent = match[1];
-      const titleMatch = /<title><!\[CDATA\[(.*?)\]\]><\/title>/s.exec(
+      const titleMatch = /<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>/.exec(
         itemContent
       );
-      const linkMatch = /<link>(.*?)<\/link>/s.exec(itemContent);
-      const dateMatch = /<pubDate>(.*?)<\/pubDate>/s.exec(itemContent);
+      const linkMatch = /<link>([\s\S]*?)<\/link>/.exec(itemContent);
+      const dateMatch = /<pubDate>([\s\S]*?)<\/pubDate>/.exec(itemContent);
 
       if (titleMatch && linkMatch) {
         items.push({

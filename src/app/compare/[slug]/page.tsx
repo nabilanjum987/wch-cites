@@ -1026,6 +1026,22 @@ export default function ComparePage() {
           </motion.div>
         </div>
 
+        {/* Back to Homepage */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="text-center pb-12"
+        >
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all"
+          >
+            <Home className="w-5 h-5" />
+            Back to Homepage
+          </a>
+        </motion.div>
+
       </div>
     </div>
   );

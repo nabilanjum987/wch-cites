@@ -1,129 +1,23 @@
-import { useEffect, useState } from 'react';
-import { Clock, Sun, Moon, Cloud, Droplets } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
-
-interface TickerItem {
-  city: string;
-  localTime: string;
-  weather: string;
-  temperature: number;
-  humidity: number;
-  isDay: boolean;
-}
-
+'use client'
 export default function TickerBar() {
-  const [tickerData, setTickerData] = useState<TickerItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const popularCities = ['London', 'New York', 'Tokyo', 'Dubai', 'Lahore'];
-
-  useEffect(() => {
-    fetchTickerData();
-  }, []);
-
-  const fetchTickerData = async () => {
-    try {
-      const { data: cities } = await supabase
-        .from('cities')
-        .select('name, timezone')
-        .in('name', popularCities);
-
-      if (cities) {
-        const tickerItems: TickerItem[] = cities.map(city => {
-          const now = new Date();
-          const localTime = now.toLocaleTimeString('en-US', {
-            timeZone: city.timezone || 'UTC',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
-
-          const hour = parseInt(now.toLocaleTimeString('en-US', {
-            timeZone: city.timezone || 'UTC',
-            hour12: false
-          }).split(':')[0]);
-
-          return {
-            city: city.name,
-            localTime,
-            weather: 'Clear',
-            temperature: Math.floor(20 + Math.random() * 15),
-            humidity: Math.floor(40 + Math.random() * 30),
-            isDay: hour >= 6 && hour < 18
-          };
-        });
-        setTickerData(tickerItems);
-      }
-    } catch (error) {
-      console.error('Error fetching ticker data:', error);
-      setTickerData(popularCities.map(city => ({
-        city,
-        localTime: '--:--',
-        weather: 'Clear',
-        temperature: 25,
-        humidity: 50,
-        isDay: true
-      })));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="bg-slate-900 text-white py-2 overflow-hidden">
-        <div className="flex items-center space-x-8 animate-pulse">
-          {[1, 2, 3, 4, 5].map(i => (
-            <div key={i} className="flex items-center space-x-3 px-4">
-              <div className="h-4 w-20 bg-slate-700 rounded"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
+  const items = [
+    '🔴 LIVE', '🥇 Gold $2,351/oz ▲', '│', '₿ BTC $67,420 ▲', '│',
+    '🛢️ Oil $82.30', '│', '💵 USD/PKR 278.50', '│',
+    '🇵🇰 Lahore 34°C ☀️', '│', '🇦🇪 Dubai 38°C ☀️', '│',
+    '🇸🇦 Mecca 38°C ☀️', '│', '🇬🇧 London 18°C ⛅', '│',
+    '🕌 Lahore Maghrib in 2h 38m', '│', '🕌 Mecca Maghrib in 2h 15m', '│',
+    '📈 Fear & Greed: 62 Greed', '│',
+  ]
   return (
-    <div className="bg-slate-900 text-white py-2 overflow-hidden border-b border-slate-800">
-      <div className="flex animate-scroll">
-        {[...tickerData, ...tickerData].map((item, index) => (
-          <div
-            key={`${item.city}-${index}`}
-            className="flex items-center space-x-6 px-8 whitespace-nowrap"
-          >
-            <div className="flex items-center space-x-2">
-              <Clock className="w-4 h-4 text-blue-400" />
-              <span className="font-semibold text-gray-200">{item.city}:</span>
-              <span className="text-white">{item.localTime}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              {item.isDay ? (
-                <Sun className="w-4 h-4 text-yellow-400" />
-              ) : (
-                <Moon className="w-4 h-4 text-blue-300" />
-              )}
-              <span className="text-gray-300">{item.temperature}°C</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Cloud className="w-4 h-4 text-gray-400" />
-              <span className="text-gray-400">{item.weather}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Droplets className="w-4 h-4 text-cyan-400" />
-              <span className="text-gray-400">{item.humidity}%</span>
-            </div>
-          </div>
+    <div className="w-full bg-[#0a0f1e] border-b border-[#6366f1]/20 overflow-hidden h-7 flex items-center">
+      <div style={{ display:'flex', width:'max-content', animation:'tickerScroll 50s linear infinite' }}>
+        {[...items,...items].map((item, i) => (
+          <span key={i} className={`text-xs px-3 whitespace-nowrap ${item.includes('LIVE') ? 'text-red-400 font-bold' : item === '│' ? 'text-white/20' : item.includes('▲') ? 'text-emerald-400' : item.includes('Maghrib') ? 'text-indigo-400' : 'text-slate-300'}`}>
+            {item}
+          </span>
         ))}
       </div>
-
-      <style>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-scroll {
-          animation: scroll 30s linear infinite;
-        }
-      `}</style>
+      <style jsx>{`@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}`}</style>
     </div>
-  );
+  )
 }

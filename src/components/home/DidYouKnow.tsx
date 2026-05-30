@@ -62,12 +62,27 @@ const getCountryFlag = (countryCode: string): string => {
 };
 
 export default function DidYouKnow() {
-  const [currentFact, setCurrentFact] = useState(dailyFacts[0]);
+  const [currentFact, setCurrentFact] = useState(0);
+  const [fade, setFade] = useState(true);
 
   useEffect(() => {
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-    setCurrentFact(dailyFacts[dayOfYear % dailyFacts.length]);
+    setCurrentFact(dayOfYear % dailyFacts.length);
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setCurrentFact((prev) => (prev + 1) % dailyFacts.length);
+        setFade(true);
+      }, 300);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const fact = dailyFacts[currentFact];
 
   return (
     <div className="mb-12">
@@ -83,13 +98,16 @@ export default function DidYouKnow() {
               <h2 className="text-xl font-bold text-white">Did You Know?</h2>
             </div>
 
-            <p className="text-gray-200 text-lg leading-relaxed mb-4">
-              {currentFact.fact}
+            <p 
+              className="text-gray-200 text-lg leading-relaxed mb-4 transition-opacity duration-300"
+              style={{ opacity: fade ? 1 : 0 }}
+            >
+              {fact.fact}
             </p>
 
             <button className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-colors">
-              <span className="text-xl">{getCountryFlag(currentFact.countryCode)}</span>
-              <span className="text-white font-medium">Explore {currentFact.city}</span>
+              <span className="text-xl">{getCountryFlag(fact.countryCode)}</span>
+              <span className="text-white font-medium">Explore {fact.city}</span>
               <ArrowRight className="w-4 h-4 text-purple-400" />
             </button>
           </div>

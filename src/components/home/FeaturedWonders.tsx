@@ -1,4 +1,5 @@
 import { Landmark, ArrowRight, Sun, Cloud } from 'lucide-react';
+import Link from 'next/link';
 
 const wonders = [
   {
@@ -6,49 +7,56 @@ const wonders = [
     country: 'Jordan',
     countryCode: 'JO',
     image: 'https://images.pexels.com/photos/2114014/pexels-photo-2114014.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 28, condition: 'sunny' }
+    weather: { temp: 28, condition: 'sunny' },
+    slug: 'petra'
   },
   {
     name: 'Great Wall of China',
     country: 'China',
     countryCode: 'CN',
     image: 'https://images.pexels.com/photos/2387878/pexels-photo-2387878.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 24, condition: 'cloudy' }
+    weather: { temp: 24, condition: 'cloudy' },
+    slug: 'great-wall-of-china'
   },
   {
     name: 'Christ the Redeemer',
     country: 'Brazil',
     countryCode: 'BR',
     image: 'https://images.pexels.com/photos/1166200/pexels-photo-1166200.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 32, condition: 'sunny' }
+    weather: { temp: 32, condition: 'sunny' },
+    slug: 'christ-the-redeemer'
   },
   {
     name: 'Machu Picchu',
     country: 'Peru',
     countryCode: 'PE',
     image: 'https://images.pexels.com/photos/2356045/pexels-photo-2356045.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 18, condition: 'cloudy' }
+    weather: { temp: 18, condition: 'cloudy' },
+    slug: 'machu-picchu'
   },
   {
     name: 'Chichen Itza',
     country: 'Mexico',
     countryCode: 'MX',
     image: 'https://images.pexels.com/photos/4058028/pexels-photo-4058028.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 35, condition: 'sunny' }
+    weather: { temp: 35, condition: 'sunny' },
+    slug: 'chichen-itza'
   },
   {
     name: 'Roman Colosseum',
     country: 'Italy',
     countryCode: 'IT',
     image: 'https://images.pexels.com/photos/1702572/pexels-photo-1702572.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 22, condition: 'sunny' }
+    weather: { temp: 22, condition: 'sunny' },
+    slug: 'roman-colosseum'
   },
   {
     name: 'Taj Mahal',
     country: 'India',
     countryCode: 'IN',
     image: 'https://images.pexels.com/photos/3581364/pexels-photo-3581364.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 38, condition: 'sunny' }
+    weather: { temp: 38, condition: 'sunny' },
+    slug: 'taj-mahal'
   }
 ];
 
@@ -68,17 +76,18 @@ export default function FeaturedWonders() {
           <Landmark className="w-5 h-5 text-purple-400" />
           <h2 className="text-2xl font-bold text-white">Featured Wonders</h2>
         </div>
-        <button className="flex items-center space-x-1 text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+        <Link href="/wonders" className="flex items-center space-x-1 text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
           <span>Explore all wonders</span>
           <ArrowRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
 
       <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
         {wonders.map((wonder) => (
-          <button
+          <Link
             key={wonder.name}
-            className="min-w-[280px] bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-white/30 transition-all flex-shrink-0 group"
+            href={`/wonders/${wonder.slug}`}
+            className="min-w-[280px] bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-white/30 transition-all flex-shrink-0 group block"
           >
             <div className="relative h-44">
               <img
@@ -107,7 +116,7 @@ export default function FeaturedWonders() {
                 <span className="text-white font-medium">{wonder.weather.temp}°C</span>
               </div>
             </div>
-          </button>
+          </Link>
         ))}
       </div>
 
