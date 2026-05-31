@@ -631,7 +631,7 @@ export default function MyLocationPage() {
 
         return {
           id: el.id.toString(),
-          name: el.tags?.name || el.tags?.name:en || '',
+          name: el.tags?.name || el.tags?.['name:en'] || '',
           type: el.tags?.amenity || 'place',
           amenity: el.tags?.amenity || 'place',
           lat: el.lat,

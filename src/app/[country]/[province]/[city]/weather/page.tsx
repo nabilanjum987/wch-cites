@@ -1,27 +1,21 @@
-'use client';
+import WeatherPageClient from '@/components/weather/WeatherPageClient'
 
-import React from 'react';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
+interface PageProps {
+  params: Promise<{ country: string; province: string; city: string }>
+}
 
-export default function WeatherPage() {
-  const params = useParams() as {
-    country?: string;
-    province?: string;
-    city?: string;
-  };
-
-  const city = params.city ? decodeURIComponent(params.city) : 'City';
-
+export default async function WeatherPage({ params }: PageProps) {
+  const p = await params
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">{city}</h1>
-      <p>Weather data loading...</p>
-      <p>
-        <Link href={`/${params.country}/${params.province}/${params.city}`}>
-          Back to city page
-        </Link>
-      </p>
-    </div>
-  );
+    <WeatherPageClient
+      cityName={p.city.charAt(0).toUpperCase() + p.city.slice(1)}
+      country={p.country}
+      province={p.province}
+      lat={31.5497}
+      lng={74.3436}
+      timezone="Asia/Karachi"
+      primaryColor="#01411C"
+      citySlug={p.city}
+    />
+  )
 }
