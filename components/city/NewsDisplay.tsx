@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { GlassCard, DataCard } from '@/components/ui/GlassCard';
+import { GlassCard } from '@/components/ui/GlassCard';
 import { ANIMATIONS, STAGGER_CONTAINER } from '@/lib/design-system';
 import { Newspaper, AlertCircle, Clock } from 'lucide-react';
 

@@ -267,7 +267,6 @@ export function RatesSnapshot({ city }: { city: City }) {
   const [currencies, setCurrencies] = useState<CurrencyPair[] | null>(null);
   const [oilData, setOilData] = useState<OilPrice[] | null>(null);
   const [fearGreed, setFearGreed] = useState<FearGreed | null>(null);
-  const [loading, setLoading] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const goldApiKey = process.env.NEXT_PUBLIC_METALPRICE_API_KEY;
@@ -294,8 +293,6 @@ export function RatesSnapshot({ city }: { city: City }) {
 
       const oil = await fetchOilPrices();
       setOilData(oil);
-
-      setLoading(false);
     }
 
     loadRates();

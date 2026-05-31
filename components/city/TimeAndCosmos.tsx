@@ -16,13 +16,6 @@ interface MoonData {
   Illumination: number;
 }
 
-interface DateInfo {
-  gregorian: string;
-  hijri: string;
-  hebrew: string;
-  buddhist: string;
-}
-
 async function fetchSunData(lat: number, lng: number): Promise<SunData | null> {
   try {
     const response = await fetch(

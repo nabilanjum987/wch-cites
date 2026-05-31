@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { GlassCard, DataCard } from '@/components/ui/GlassCard';
+import { GlassCard } from '@/components/ui/GlassCard';
 import { ANIMATIONS, STAGGER_CONTAINER } from '@/lib/design-system';
-import { User, Award, BookOpen, Globe } from 'lucide-react';
+import { Award } from 'lucide-react';
 
 interface Personality {
   name: string;

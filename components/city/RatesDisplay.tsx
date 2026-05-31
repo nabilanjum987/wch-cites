@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { GlassCard, DataCard } from '@/components/ui/GlassCard';
+import { GlassCard } from '@/components/ui/GlassCard';
 import { ANIMATIONS, STAGGER_CONTAINER } from '@/lib/design-system';
-import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface RateData {
   metal: string;
@@ -78,18 +78,18 @@ export function RatesSection({
       <GlassCard className="p-6">
         <h3 className="text-xl font-bold text-white mb-4">Market Information</h3>
         <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6" variants={STAGGER_CONTAINER} initial="initial" animate="animate">
-          <div variants={ANIMATIONS.slideUp}>
+          <motion.div variants={ANIMATIONS.slideUp}>
             <p className="text-sm text-gray-400 mb-2">Market Status</p>
             <p className="text-lg font-semibold text-amber-400">Open</p>
-          </div>
-          <div variants={ANIMATIONS.slideUp}>
+          </motion.div>
+          <motion.div variants={ANIMATIONS.slideUp}>
             <p className="text-sm text-gray-400 mb-2">Last Updated</p>
             <p className="text-lg font-semibold text-amber-400">2 mins ago</p>
-          </div>
-          <div variants={ANIMATIONS.slideUp}>
+          </motion.div>
+          <motion.div variants={ANIMATIONS.slideUp}>
             <p className="text-sm text-gray-400 mb-2">Trading Volume</p>
             <p className="text-lg font-semibold text-amber-400">High</p>
-          </div>
+          </motion.div>
         </motion.div>
       </GlassCard>
 

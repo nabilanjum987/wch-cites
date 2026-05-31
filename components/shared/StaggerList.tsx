@@ -37,7 +37,6 @@ export function StaggerList({
       y: 0,
       transition: {
         duration: 0.4,
-        ease: [0.23, 1, 0.82, 1],
       },
     },
   };

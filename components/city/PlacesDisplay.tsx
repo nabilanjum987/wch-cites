@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { GlassCard, DataCard } from '@/components/ui/GlassCard';
+import { GlassCard } from '@/components/ui/GlassCard';
 import { ANIMATIONS, STAGGER_CONTAINER } from '@/lib/design-system';
-import { Landmark, MapPin, Users, Star } from 'lucide-react';
+import { Landmark, MapPin, Star } from 'lucide-react';
 
 interface Place {
   name: string;

@@ -171,8 +171,6 @@ export function NewsToday({ city }: { city: City }) {
   const [loading, setLoading] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const apiKey = process.env.NEXT_PUBLIC_GNEWS_API_KEY;
-
   useEffect(() => {
     setLevelTab('local');
   }, []);

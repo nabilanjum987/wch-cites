@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { COLORS, ANIMATIONS, STAGGER_ITEM } from '@/lib/design-system';
+import { COLORS, STAGGER_ITEM } from '@/lib/design-system';
 import { useEffect, useState } from 'react';
 
 interface AnimatedCounterProps {
@@ -9,7 +9,6 @@ interface AnimatedCounterProps {
   value: number;
   suffix?: string;
   icon?: React.ReactNode;
-  delay?: number;
 }
 
 export function AnimatedCounter({
@@ -17,7 +16,6 @@ export function AnimatedCounter({
   value,
   suffix = '',
   icon,
-  delay = 0,
 }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = useState(0);
 
@@ -75,14 +73,12 @@ export function AnimatedCounter({
 interface GlassmorphicCardProps {
   children: React.ReactNode;
   className?: string;
-  delay?: number;
   hoverable?: boolean;
 }
 
 export function GlassmorphicCard({
   children,
   className = '',
-  delay = 0,
   hoverable = true,
 }: GlassmorphicCardProps) {
   return (
@@ -180,17 +176,20 @@ export function ParticleBackground({ children, particleCount = 20 }: ParticleBac
     <div className="relative w-full min-h-screen overflow-hidden" style={{ backgroundColor: COLORS.background }}>
       {/* Particles */}
       <div className="absolute inset-0">
-        {Array.from({ length: particleCount }).map((_, i) => (
+        {Array.from({ length: particleCount }).map((_, i) => {
+          const width = typeof window !== 'undefined' ? window.innerWidth : 1000;
+          const height = typeof window !== 'undefined' ? window.innerHeight : 1000;
+          return (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-60"
             initial={{
-              x: Math.random() * typeof window !== 'undefined' ? window.innerWidth : 1000,
-              y: Math.random() * typeof window !== 'undefined' ? window.innerHeight : 1000,
+              x: Math.random() * width,
+              y: Math.random() * height,
             }}
             animate={{
-              x: Math.random() * typeof window !== 'undefined' ? window.innerWidth : 1000,
-              y: Math.random() * typeof window !== 'undefined' ? window.innerHeight : 1000,
+              x: Math.random() * width,
+              y: Math.random() * height,
             }}
             transition={{
               duration: Math.random() * 10 + 10,
@@ -198,7 +197,8 @@ export function ParticleBackground({ children, particleCount = 20 }: ParticleBac
               ease: 'linear',
             }}
           />
-        ))}
+          );
+        })}
       </div>
 
       {/* Content */}
@@ -210,10 +210,9 @@ export function ParticleBackground({ children, particleCount = 20 }: ParticleBac
 interface AnimatedCardProps {
   children: React.ReactNode;
   index?: number;
-  delay?: number;
 }
 
-export function AnimatedCard({ children, index = 0, delay = 0 }: AnimatedCardProps) {
+export function AnimatedCard({ children, index = 0 }: AnimatedCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}

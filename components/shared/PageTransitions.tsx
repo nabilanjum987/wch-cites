@@ -18,7 +18,6 @@ const pageVariants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.23, 1, 0.82, 1],
     },
   },
   exit: {
@@ -56,7 +55,6 @@ const sectionVariants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.23, 1, 0.82, 1],
       delay,
     },
   }),

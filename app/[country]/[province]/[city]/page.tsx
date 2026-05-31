@@ -20,55 +20,51 @@ import { CityFacts } from '@/components/city/CityFacts';
 import { CostOfLiving } from '@/components/city/CostOfLiving';
 import { SportsSection } from '@/components/city/SportsSection';
 import { Chatbot } from '@/components/city/Chatbot';
-import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import type { City } from '@/types/city';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     country: string;
     province: string;
     city: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const city = await getCityData(params.country, params.province, params.city);
-  if (!city) return {};
+  const { country, province, city } = await params;
 
-  return {
-    title: `${city.name} City Portal: Prayer Times, Weather, News, Events & Live Data | WorldCityHub`,
-    description: `Complete city guide for ${city.name}, ${city.province}, ${city.country}. Live prayer times, weather forecast, breaking news, gold rates, cost of living, events, famous places, street food, emergency contacts, and more.`,
-    keywords: [
-      city.name,
-      city.country,
-      'prayer times',
-      'weather',
-      'news',
-      'events',
-      'gold rate',
-      'famous places',
-      'street food',
-      'cost of living',
-      'city guide',
-    ],
-    openGraph: {
-      title: `${city.name} City Portal | WorldCityHub`,
-      description: `Everything about ${city.name}: live data, events, places, weather, news and more.`,
-      type: 'website',
-      locale: 'en_US',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${city.name} City Portal | WorldCityHub`,
-      description: `Everything about ${city.name}: live data, events, places, weather, news and more.`,
-    },
-    alternates: {
-      canonical: `/${params.country}/${params.province}/${params.city}`,
-    },
-  };
+  try {
+    const cityData = await getCityData(country, province, city);
+    const cityName = cityData?.name || city.replace(/-/g, ' ');
+    const countryName = cityData?.country || country.replace(/-/g, ' ');
+
+    return {
+      title: `${cityName} - Weather, Prayer Times, Gold Rates | WorldCityHub`,
+      description: `Live weather, prayer times, gold rates, news and events for ${cityName}, ${countryName}.`,
+      keywords: [
+        `${cityName} weather`,
+        `${cityName} prayer times`,
+        `${cityName} gold rate`,
+      ],
+    };
+  } catch (error) {
+    const cityName = city.replace(/-/g, ' ');
+    const countryName = country.replace(/-/g, ' ');
+
+    return {
+      title: `${cityName} - Weather, Prayer Times, Gold Rates | WorldCityHub`,
+      description: `Live weather, prayer times, gold rates, news and events for ${cityName}, ${countryName}.`,
+      keywords: [
+        `${cityName} weather`,
+        `${cityName} prayer times`,
+        `${cityName} gold rate`,
+      ],
+    };
+  }
 }
 
-function generateJSONLD(city: any) {
+function generateJSONLD(city: City) {
   return {
     '@context': 'https://schema.org',
     '@type': 'City',
@@ -94,10 +90,19 @@ function generateJSONLD(city: any) {
 }
 
 export default async function CityPage({ params }: PageProps) {
-  const city = await getCityData(params.country, params.province, params.city);
+  const { country, province, city: citySlug } = await params;
+  const city = await getCityData(country, province, citySlug);
 
   if (!city || !city.is_active) {
-    notFound();
+    return (
+      <div className="min-h-screen bg-[#030712] flex items-center justify-center">
+        <div className="text-center px-4">
+          <h1 className="text-4xl font-bold text-white mb-4">🌍 City Coming Soon</h1>
+          <p className="text-slate-400">We are adding this city to our database.</p>
+          <a href="/" className="mt-6 inline-block text-[#6366f1] hover:underline">← Back to Home</a>
+        </div>
+      </div>
+    );
   }
 
   const jsonLd = generateJSONLD(city);

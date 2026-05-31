@@ -93,7 +93,6 @@ function isOpenNow(operatingHours: string): { isOpen: boolean; statusText: strin
   }
 
   const now = new Date();
-  const hours24 = parseInt(operatingHours.match(/(\d{1,2}):(\d{2})/)?.[1] || '0');
 
   const timeMatch = operatingHours.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/gi);
   if (!timeMatch || timeMatch.length < 2) {
@@ -125,7 +124,6 @@ function isOpenNow(operatingHours: string): { isOpen: boolean; statusText: strin
 }
 
 function getBestVisitTime(type: string): string {
-  const hour = new Date().getHours();
   if (type === 'Beach') return 'Early morning or sunset for best views';
   if (type === 'Religious Site') return 'Around prayer times for atmosphere';
   if (type === 'Garden' || type === 'Park') return 'Morning hours (8-10 AM) for fresh air';
@@ -137,7 +135,7 @@ function getBestVisitTime(type: string): string {
   return 'Check operating hours';
 }
 
-function PlaceCard({ place, weatherCondition }: { place: Place; weatherCondition?: string }) {
+function PlaceCard({ place }: { place: Place }) {
   const { isOpen, statusText } = isOpenNow(place.operating_hours || '');
   const bestTime = getBestVisitTime(place.type);
 
@@ -298,7 +296,7 @@ export function FamousPlaces({ city }: { city: City }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {places.map((place, idx) => (
+          {places.map((place) => (
             <PlaceCard key={place.id} place={place} />
           ))}
         </div>

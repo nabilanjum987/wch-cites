@@ -1,15 +1,8 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { City } from '@/types/city';
-
-interface PrayerTime {
-  name: string;
-  arabic: string;
-  time: string;
-  status: 'passed' | 'upcoming' | 'current';
-}
 
 interface TimingData {
   Fajr: string;

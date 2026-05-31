@@ -159,8 +159,6 @@ export function StreetFood({ city }: { city: City }) {
     load();
   }, [city.city_slug, city.name]);
 
-  const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${city.lng - 0.05}%2C${city.lat - 0.05}%2C${city.lng + 0.05}%2C${city.lat + 0.05}&layer=mapnik`;
-
   return (
     <motion.div
       className="bg-white rounded-2xl p-6 mb-6 border border-gray-100"
