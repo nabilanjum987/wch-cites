@@ -6,7 +6,6 @@ import { TrendingUp, TrendingDown, DollarSign, Briefcase, Users, Building2 } fro
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { getCityData } from '@/lib/getCityData';
-import { ANIMATIONS, STAGGER_CONTAINER } from '@/lib/design-system';
 import type { City } from '@/types/city';
 import {
   generateEconomyIntroductionParagraph,
