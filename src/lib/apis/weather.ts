@@ -1,4 +1,4 @@
-import type { WeatherData, HourlyItem, DailyItem, HistoricalData, ClimateData, AQIData, SunMoonData, WeatherAlert, NearbyCityWeather } from '../../types/city';
+import type { WeatherData, HourlyItem, DailyItem, HistoricalData, ClimateData, AQIData, SunMoonData, WeatherAlert, NearbyCityWeather } from '@/types/city';
 
 const OWM_KEY = process.env.OPENWEATHER_API_KEY || 'b843afda835d9037c7424fcd32a770cb';
 

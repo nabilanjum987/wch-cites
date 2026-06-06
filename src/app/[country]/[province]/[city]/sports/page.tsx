@@ -314,7 +314,7 @@ async function fetchTodayEvents(sport: string, date: string): Promise<SportEvent
   } catch { return []; }
 }
 
-async function fetchNationalTeam(country: string, sport: string): Promise<NationalTeam | null> {
+async function fetchNationalTeam(country: string): Promise<NationalTeam | null> {
   try {
     const res = await fetch(`${BASE}/searchteams.php?t=${encodeURIComponent(country)}`, { next: { revalidate: 86400 } });
     if (!res.ok) return null;
@@ -372,7 +372,7 @@ function getRotatingAthletes(month: number): Athlete[] {
   return Array.from({ length: 4 }, (_, i) => MOCK_ATHLETES[(startIdx + i) % MOCK_ATHLETES.length]);
 }
 
-async function fetchSportsNews(country: string): Promise<SportsNews[]> {
+async function fetchSportsNews(): Promise<SportsNews[]> {
   return [];
 }
 
@@ -479,7 +479,7 @@ function NextMatchCard({ event }: { event: SportEvent }) {
   );
 }
 
-function WBadge({ team, score, opponent, opScore }: { team: string; score: string; opponent: string; opScore: string }) {
+function WBadge({ score, opScore }: { score: string; opScore: string }) {
   const won = parseInt(score) > parseInt(opScore);
   const lost = parseInt(score) < parseInt(opScore);
 
@@ -636,7 +636,7 @@ function StadiumCard({ stadium }: { stadium: Stadium }) {
   );
 }
 
-function OlympicsCard({ medals, countryCode }: { medals: OlympicMedals[]; countryCode: string }) {
+function OlympicsCard({ medals }: { medals: OlympicMedals[] }) {
   const totalGold = medals.reduce((sum, m) => sum + m.gold, 0);
   const totalSilver = medals.reduce((sum, m) => sum + m.silver, 0);
   const totalBronze = medals.reduce((sum, m) => sum + m.bronze, 0);
@@ -696,8 +696,10 @@ function AthleteCard({ athlete }: { athlete: Athlete }) {
       className="block bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow"
     >
       <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-        {athlete.photo ? (
-          <img src={athlete.photo} alt={athlete.name} className="w-full h-full object-cover" />
+        {athlete.id ? (
+          <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <span className="text-white text-lg font-bold">{athlete.name.charAt(0)}</span>
+          </div>
         ) : (
           <span className="text-6xl">👤</span>
         )}
@@ -734,7 +736,7 @@ function NewsCard({ article }: { article: SportsNews }) {
   );
 }
 
-function AffiliateSection({ countryCode }: { countryCode: string }) {
+function AffiliateSection() {
   const affiliates = [
     {
       title: 'Buy Cricket Gear',
@@ -805,7 +807,6 @@ export default function SportsPage() {
   const [activeSport, setActiveSport] = useState<string>('');
   const [events, setEvents] = useState<SportEvent[]>([]);
   const [nationalTeam, setNationalTeam] = useState<NationalTeam | null>(null);
-  const [players, setPlayers] = useState<TeamPlayer[]>([]);
   const [nextMatches, setNextMatches] = useState<SportEvent[]>([]);
   const [recentResults, setRecentResults] = useState<SportEvent[]>([]);
   const [standings, setStandings] = useState<StandingsTeam[]>([]);
@@ -836,7 +837,7 @@ export default function SportsPage() {
         const athleteList = getRotatingAthletes(month);
         setAthletes(athleteList);
 
-        const newsData = await fetchSportsNews(data.country, 'sports OR cricket OR PSL');
+        const newsData = await fetchSportsNews();
         setNews(newsData);
       }
       setLoading(false);

@@ -136,4 +136,34 @@ export interface NearbyCityWeather {
   distance?: number;
   isCleaner?: boolean;
 }
+export interface CurrencyInfo {
+  code: string;
+  name: string;
+  symbol: string;
+  rate_to_usd: number;
+  flag: string;
+}
 
+export const COUNTRY_CURRENCIES: Record<string, CurrencyInfo> = {
+  pakistan: { code: 'PKR', name: 'Pakistani Rupee', symbol: '₨', rate_to_usd: 278.5, flag: '🇵🇰' },
+  india: { code: 'INR', name: 'Indian Rupee', symbol: '₹', rate_to_usd: 83.2, flag: '🇮🇳' },
+  'saudi-arabia': { code: 'SAR', name: 'Saudi Riyal', symbol: '﷼', rate_to_usd: 3.75, flag: '🇸🇦' },
+  uae: { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ', rate_to_usd: 3.67, flag: '🇦🇪' },
+  uk: { code: 'GBP', name: 'British Pound', symbol: '£', rate_to_usd: 0.79, flag: '🇬🇧' },
+  usa: { code: 'USD', name: 'US Dollar', symbol: '$', rate_to_usd: 1, flag: '🇺🇸' },
+  turkey: { code: 'TRY', name: 'Turkish Lira', symbol: '₺', rate_to_usd: 32.5, flag: '🇹🇷' },
+  germany: { code: 'EUR', name: 'Euro', symbol: '€', rate_to_usd: 0.92, flag: '🇩🇪' },
+  bangladesh: { code: 'BDT', name: 'Bangladeshi Taka', symbol: '৳', rate_to_usd: 110, flag: '🇧🇩' },
+};
+
+export const FLAG_COLORS: Record<string, string> = {
+  pakistan: '#01411C',
+  india: '#FF9933',
+  'saudi-arabia': '#006C35',
+  uae: '#00732F',
+  uk: '#012169',
+  usa: '#B22234',
+  turkey: '#E30A17',
+  germany: '#000000',
+  bangladesh: '#006A4E',
+};

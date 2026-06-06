@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import EventsPage from './app/events/EventsPage';
+import EventsPage from './app/[country]/[province]/[city]/events/EventsPage';
 import HoroscopePage from './app/horoscope/HoroscopePage';
 import type { City } from './types/city';
 

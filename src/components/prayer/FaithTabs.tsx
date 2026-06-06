@@ -1,43 +1,45 @@
 import { motion } from 'framer-motion';
 
-export type FaithKey = 'islam' | 'christian' | 'hindu' | 'jewish' | 'sikh' | 'none';
+export type FaithKey = 'islam' | 'christian' | 'hindu' | 'jewish' | 'buddhist' | 'sikh' | 'none';
 
-interface FaithTabsProps {
-  activeKey: FaithKey;
+export const FAITHS: { key: FaithKey; label: string; emoji: string }[] = [
+  { key: 'islam', label: 'Islam', emoji: '☪️' },
+  { key: 'christian', label: 'Christian', emoji: '✝️' },
+  { key: 'hindu', label: 'Hindu', emoji: '🕉️' },
+  { key: 'jewish', label: 'Jewish', emoji: '✡️' },
+  { key: 'buddhist', label: 'Buddhist', emoji: '☸️' },
+  { key: 'sikh', label: 'Sikh', emoji: '🙏' },
+  { key: 'none', label: 'None', emoji: '🧘' },
+];
+
+interface Props {
+  active: FaithKey;
   onChange: (key: FaithKey) => void;
 }
 
-const FAITHS: { key: FaithKey; label: string; icon: string; color: string }[] = [
-  { key: 'islam', label: 'Islam', icon: '☪', color: 'bg-emerald-500' },
-  { key: 'christian', label: 'Christian', icon: '✝', color: 'bg-sky-500' },
-  { key: 'hindu', label: 'Hindu', icon: '🕉', color: 'bg-orange-500' },
-  { key: 'jewish', label: 'Jewish', icon: '✡', color: 'bg-blue-500' },
-  { key: 'sikh', label: 'Sikh', icon: '☬', color: 'bg-amber-500' },
-  { key: 'none', label: 'None', icon: '🧘', color: 'bg-teal-500' },
-];
-
-export default function FaithTabs({ activeKey, onChange }: FaithTabsProps) {
+export default function FaithTabs({ active, onChange }: Props) {
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
-      {FAITHS.map((faith) => (
-        <button
-          key={faith.key}
-          onClick={() => onChange(faith.key)}
-          className="relative px-4 py-2 rounded-lg font-semibold text-sm transition-all"
+    <div className="flex flex-wrap gap-2">
+      {FAITHS.map((f) => (
+        <motion.button
+          key={f.key}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => onChange(f.key)}
+          className={`relative flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
+            active === f.key
+              ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-200'
+              : 'bg-white text-gray-600 border-gray-200 hover:border-emerald-400 hover:text-emerald-700'
+          }`}
         >
-          {activeKey === faith.key && (
-            <motion.div
-              layoutId="faith-tab"
-              className={`absolute inset-0 ${faith.color} rounded-lg`}
-              initial={false}
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+          <span className="text-base leading-none">{f.emoji}</span>
+          <span>{f.label}</span>
+          {active === f.key && (
+            <motion.span
+              layoutId="faith-pill"
+              className="absolute inset-0 rounded-full bg-emerald-600 -z-10"
             />
           )}
-          <span className="relative z-10 flex items-center gap-2 text-white">
-            <span>{faith.icon}</span>
-            <span>{faith.label}</span>
-          </span>
-        </button>
+        </motion.button>
       ))}
     </div>
   );

@@ -6,14 +6,14 @@ import {
   Music, Utensils, BookOpen, Briefcase, Film, Leaf, Users, Church,
   Trophy, Mic2, X,
 } from 'lucide-react';
-import { fetchCityEvents } from '../../lib/apis/events';
-import EventsMap from '../../components/city/EventsMap';
-import RecurringEvents from '../../components/city/RecurringEvents';
-import SubmitEvent from '../../components/city/SubmitEvent';
-import NationalEvents from '../../components/city/NationalEvents';
-import TourAffiliates from '../../components/city/TourAffiliates';
-import { fetchRecurringEvents } from '../../lib/apis/events';
-import type { City, CityEvent, LevelTab, TimeTab, EventCategory, RecurringEvent } from '../../types/city';
+import { fetchCityEvents } from '../../../../../lib/apis/events';
+import EventsMap from '../../../../../components/city/EventsMap';
+import RecurringEvents from '../../../../../components/city/RecurringEvents';
+import SubmitEvent from '../../../../../components/city/SubmitEvent';
+import NationalEvents from '../../../../../components/city/NationalEvents';
+import TourAffiliates from '../../../../../components/city/TourAffiliates';
+import { fetchRecurringEvents } from '../../../../../lib/apis/events';
+import type { City, CityEvent, LevelTab, TimeTab, EventCategory, RecurringEvent } from '../../../../../types/city';
 
 interface Props {
   city: City;

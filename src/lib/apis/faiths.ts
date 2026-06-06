@@ -32,6 +32,7 @@ export function getChurchCalendar(): ChurchCalendar {
   const month = now.getMonth();
   const day = now.getDate();
 
+  // Simplified church calendar
   if (month === 11 && day >= 25) return { season: 'Christmas', seasonWeek: 1, color: 'white', description: 'Celebrating the birth of Jesus Christ' };
   if (month === 11 && day >= 1 && day < 25) return { season: 'Advent', seasonWeek: Math.ceil(day / 7), color: 'purple', description: 'Preparing for the coming of Christ' };
   if (month >= 0 && month <= 2) return { season: 'Lent / Easter Season', seasonWeek: 1, color: 'purple', description: 'Penitential season preparing for Easter' };
@@ -90,17 +91,17 @@ export function getRahuKaal(): { start: string; end: string } {
 }
 
 export const HINDU_FESTIVALS = [
-  { name: 'Diwali', date: '2025-10-20', icon: 'lamp' },
-  { name: 'Holi', date: '2025-03-14', icon: 'colors' },
-  { name: 'Navaratri', date: '2025-09-22', icon: 'lotus' },
+  { name: 'Diwali', date: '2025-10-20', icon: '🪔' },
+  { name: 'Holi', date: '2025-03-14', icon: '🎨' },
+  { name: 'Navaratri', date: '2025-09-22', icon: '🪷' },
 ];
 
 export const DEITIES = [
-  { name: 'Lord Ganesha', icon: 'elephant', puja: 'Morning Ganesha worship removes obstacles' },
-  { name: 'Lord Shiva', icon: 'trident', puja: 'Monday - Abhishekam with milk and water' },
-  { name: 'Goddess Lakshmi', icon: 'lotus', puja: 'Friday - Lakshmi Puja for prosperity' },
-  { name: 'Lord Vishnu', icon: 'peacock', puja: 'Thursday - Vishnu Sahasranama recitation' },
-  { name: 'Goddess Durga', icon: 'tiger', puja: 'Tuesday - Durga Chalisa for strength' },
+  { name: 'Lord Ganesha', icon: '🐘', puja: 'Morning Ganesha worship removes obstacles' },
+  { name: 'Lord Shiva', icon: '🔱', puja: 'Monday - Abhishekam with milk and water' },
+  { name: 'Goddess Lakshmi', icon: '🪷', puja: 'Friday - Lakshmi Puja for prosperity' },
+  { name: 'Lord Vishnu', icon: '🦚', puja: 'Thursday - Vishnu Sahasranama recitation' },
+  { name: 'Goddess Durga', icon: '🐅', puja: 'Tuesday - Durga Chalisa for strength' },
 ];
 
 // Jewish APIs
@@ -155,10 +156,10 @@ export async function fetchHebrewDate(): Promise<string> {
 }
 
 export const JEWISH_HOLIDAYS = [
-  { name: 'Passover', date: '2025-04-12', icon: 'wine' },
-  { name: 'Rosh Hashanah', date: '2025-09-22', icon: 'honey' },
-  { name: 'Yom Kippur', date: '2025-10-01', icon: 'candle' },
-  { name: 'Hanukkah', date: '2025-12-14', icon: 'menorah' },
+  { name: 'Passover', date: '2025-04-12', icon: '🍷' },
+  { name: 'Rosh Hashanah', date: '2025-09-22', icon: '🍯' },
+  { name: 'Yom Kippur', date: '2025-10-01', icon: '🕯️' },
+  { name: 'Hanukkah', date: '2025-12-14', icon: '🕎' },
 ];
 
 // Sikh APIs
@@ -186,9 +187,9 @@ export async function fetchHukamnama(): Promise<Hukamnama | null> {
 }
 
 export const GURPURABS = [
-  { name: 'Guru Gobind Singh Ji Birthday', date: '2025-01-05', icon: 'sword' },
-  { name: 'Baisakhi', date: '2025-04-14', icon: 'wheat' },
-  { name: 'Guru Nanak Dev Ji Birthday', date: '2025-11-04', icon: 'star' },
+  { name: 'Guru Gobind Singh Ji Birthday', date: '2025-01-05', icon: '⚔️' },
+  { name: 'Baisakhi', date: '2025-04-14', icon: '🌾' },
+  { name: 'Guru Nanak Dev Ji Birthday', date: '2025-11-04', icon: '✨' },
 ];
 
 // Mindfulness / No Religion
