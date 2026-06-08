@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState } from 'react';
 import { Globe, Moon, TrendingUp, Thermometer, ArrowUp, ArrowDown } from 'lucide-react';
 import { supabase } from '../../lib/supabase';

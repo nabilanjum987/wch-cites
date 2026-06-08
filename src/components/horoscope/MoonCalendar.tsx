@@ -1,3 +1,4 @@
+'use client';
 import { motion } from 'framer-motion';
 import { Moon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getMoonCalendar } from '../../lib/apis/astro';

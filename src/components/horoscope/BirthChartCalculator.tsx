@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calculator, Sun, Moon, Star, Sparkles, Hash, Calendar, MapPin } from 'lucide-react';

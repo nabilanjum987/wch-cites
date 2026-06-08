@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, RotateCcw, Share2, X } from 'lucide-react';
