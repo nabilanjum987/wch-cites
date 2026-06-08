@@ -1,4 +1,4 @@
-export interface City {
+﻿export interface City {
   name: string;
   city_slug: string;
   country: string;
@@ -22,9 +22,7 @@ export interface City {
   region: string;
   is_active: boolean;
 }
-Add-Content src\types\city.ts @"
 
-// City data store
 const CITIES: City[] = [
   {
     name: 'Lahore', city_slug: 'lahore', country: 'Pakistan',
