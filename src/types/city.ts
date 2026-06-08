@@ -22,3 +22,28 @@ export interface City {
   region: string;
   is_active: boolean;
 }
+Add-Content src\types\city.ts @"
+
+// City data store
+const CITIES: City[] = [
+  {
+    name: 'Lahore', city_slug: 'lahore', country: 'Pakistan',
+    country_code: 'PK', country_slug: 'pakistan', province: 'Punjab',
+    province_slug: 'punjab', lat: 31.5204, lng: 74.3587,
+    population: 13000000, timezone: 'Asia/Karachi',
+    major_religion: 'Islam', religion_percent: 96,
+    primary_color: '#01411C', secondary_color: '#C8A951',
+    famous_for: 'Mughal Architecture, Food, Culture',
+    famous_products: 'Phulkari, Lahori Chappals',
+    emergency_police: '15', emergency_ambulance: '1122',
+    emergency_fire: '16', region: 'South Asia', is_active: true
+  }
+];
+
+export function getCityBySlug(slug: string): City | null {
+  return CITIES.find(c => c.city_slug === slug) ?? null;
+}
+
+export function getAllCities(): City[] {
+  return CITIES;
+}
