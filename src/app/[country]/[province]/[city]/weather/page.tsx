@@ -1,4 +1,4 @@
-'use server';
+'use client';
 
 import WeatherPageClient from "@/components/weather/WeatherPageClient"
 import { getCityData } from "@/lib/getCityData"
