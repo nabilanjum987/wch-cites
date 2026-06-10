@@ -45,3 +45,7 @@ export function getCityBySlug(slug: string): City | null {
 export function getAllCities(): City[] {
   return CITIES;
 }
+
+export const FLAG_COLORS: Record<string, string> = { PK: '#01411C', US: '#B22234', GB: '#012169', AE: '#00732F', SA: '#006C35' }
+export type CurrencyInfo = { code: string; symbol: string; rate: number }
+export const COUNTRY_CURRENCIES: Record<string, CurrencyInfo> = { PK: { code: 'PKR', symbol: '₨', rate: 278 }, US: { code: 'USD', symbol: '$', rate: 1 } }

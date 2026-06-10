@@ -1,0 +1,3 @@
+{
+  "/[country]/[province]/[city]/economy/page": "app/[country]/[province]/[city]/economy/page.js"
+}
