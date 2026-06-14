@@ -1,14 +1,14 @@
 import { CityEvent, EventCategory, LevelTab, TimeTab, RecurringEvent, NationalEvent, PendingEvent } from '../../types/city';
 import { supabase } from '../supabase';
 
-const TICKETMASTER_KEY = import.meta.env.VITE_TICKETMASTER_KEY as string | undefined;
+const TICKETMASTER_KEY = process.env.NEXT_PUBLIC_TICKETMASTER_KEY as string | undefined;
 
 // ─── ticketmaster helpers ────────────────────────────────────────────────────
 
 function buildTicketmasterUrl(
   city: string,
   country: string,
-  category: EventCategory | null,
+  category: string | null,
   timeTab: TimeTab
 ): string {
   const base = 'https://app.ticketmaster.com/discovery/v2/events.json';
@@ -175,7 +175,7 @@ export async function fetchCityEvents(
   cityLat: number,
   cityLng: number,
   timeTab: TimeTab,
-  category: EventCategory | null,
+  category: string | null,
   level: LevelTab
 ): Promise<CityEvent[]> {
   if (!TICKETMASTER_KEY) {

@@ -552,7 +552,7 @@ export default function EventsPage({ city }: Props) {
         <RecurringEvents events={recurringEvents} primaryColor={primaryColor} />
 
         {/* ── national events ── */}
-        <NationalEvents city={city} primaryColor={primaryColor} />
+        <NationalEvents primaryColor={primaryColor} />
 
         {/* ── submit your event ── */}
         <SubmitEvent cityName={city.name} countryCode={city.country_code} primaryColor={primaryColor} />

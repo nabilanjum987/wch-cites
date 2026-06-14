@@ -681,11 +681,18 @@ export function getBirthNumerology(birthDate: string): BirthNumerology {
     personalYearFocus: personalYearData.focus,
   };
 }
-
 export function getSignData(sign: ZodiacSign) {
   return ZODIAC_SIGNS.find(s => s.key === sign)!;
 }
 
 export function getChineseAnimalData(animal: ChineseAnimal) {
   return CHINESE_ANIMALS.find(a => a.key === animal)!;
+}
+// Alias for NationalEvents compatibility
+export function getChineseZodiacForYear(year: number): ChineseZodiacResult {
+  return getChineseAnimalData(year);
+}
+
+export function getChineseZodiacFor2025(year: number): ChineseZodiacResult {
+  return getChineseAnimalData(year);
 }

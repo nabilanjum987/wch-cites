@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,40604,o=>{"use strict";var t=o.i(43476);o.s(["default",0,function(){return(0,t.jsx)("div",{children:"Economy Coming Soon"})}])}]);

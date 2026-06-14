@@ -1,0 +1,13 @@
+{
+  "pages": {
+    "/_app": []
+  },
+  "devFiles": [],
+  "polyfillFiles": [],
+  "lowPriorityFiles": [
+    "static/mOntAhvblFrW_RuM8R868/_buildManifest.js",
+    "static/mOntAhvblFrW_RuM8R868/_ssgManifest.js",
+    "static/mOntAhvblFrW_RuM8R868/_clientMiddlewareManifest.js"
+  ],
+  "rootMainFiles": []
+}

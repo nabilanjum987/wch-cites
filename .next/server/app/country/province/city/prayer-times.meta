@@ -1,0 +1,18 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/country/layout,_N_T_/country/province/layout,_N_T_/country/province/city/layout,_N_T_/country/province/city/prayer-times/layout,_N_T_/country/province/city/prayer-times/page,_N_T_/country/province/city/prayer-times"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/country/province/city/prayer-times/__PAGE__",
+    "/country/province/city/prayer-times",
+    "/country/province/city",
+    "/country/province",
+    "/country",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -7,6 +7,7 @@ import type { ChineseAnimal, ChineseZodiacResult } from '../../types/horoscope';
 
 interface Props {
   primaryColor: string;
+  city?: any;
 }
 
 export default function ChineseZodiac({ primaryColor }: Props) {
@@ -130,3 +131,4 @@ export default function ChineseZodiac({ primaryColor }: Props) {
     </motion.div>
   );
 }
+

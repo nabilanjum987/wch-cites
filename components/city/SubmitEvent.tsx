@@ -98,7 +98,7 @@ export default function SubmitEvent({ cityName, countryCode, primaryColor }: Pro
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Karachi Jazz Night"
                     className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-gray-300"
-                    style={{ focusRingColor: primaryColor }}
+                    style={{ outlineColor: primaryColor }}
                   />
                 </div>
                 <div>

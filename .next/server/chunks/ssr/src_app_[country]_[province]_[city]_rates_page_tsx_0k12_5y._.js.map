@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/app/%5Bcountry%5D/%5Bprovince%5D/%5Bcity%5D/rates/page.tsx"],"sourcesContent":["'use client';\r\nexport default function RatesPage() {\r\n  return <div>Rates Coming Soon</div>\r\n}"],"names":["RatesPage"],"mappings":"yEACe,SAASA,EACtB,MAAO,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI,qBACd"}

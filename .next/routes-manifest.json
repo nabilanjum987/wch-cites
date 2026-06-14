@@ -1,0 +1,207 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "onMatchHeaders": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/compare/[slug]",
+      "regex": "^/compare/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/compare/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/conflicts/[slug]",
+      "regex": "^/conflicts/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/conflicts/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/oceans/[slug]",
+      "regex": "^/oceans/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/oceans/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/products/[slug]",
+      "regex": "^/products/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/products/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/wonders/[slug]",
+      "regex": "^/wonders/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/wonders/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/[country]",
+      "regex": "^/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry"
+      },
+      "namedRegex": "^/(?<nxtPcountry>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/[country]/[province]",
+      "regex": "^/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry",
+        "nxtPprovince": "nxtPprovince"
+      },
+      "namedRegex": "^/(?<nxtPcountry>[^/]+?)/(?<nxtPprovince>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/[country]/[province]/[city]",
+      "regex": "^/([^/]+?)/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry",
+        "nxtPprovince": "nxtPprovince",
+        "nxtPcity": "nxtPcity"
+      },
+      "namedRegex": "^/(?<nxtPcountry>[^/]+?)/(?<nxtPprovince>[^/]+?)/(?<nxtPcity>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/[country]/[province]/[city]/economy",
+      "regex": "^/([^/]+?)/([^/]+?)/([^/]+?)/economy(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry",
+        "nxtPprovince": "nxtPprovince",
+        "nxtPcity": "nxtPcity"
+      },
+      "namedRegex": "^/(?<nxtPcountry>[^/]+?)/(?<nxtPprovince>[^/]+?)/(?<nxtPcity>[^/]+?)/economy(?:/)?$"
+    },
+    {
+      "page": "/[country]/[province]/[city]/rates",
+      "regex": "^/([^/]+?)/([^/]+?)/([^/]+?)/rates(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry",
+        "nxtPprovince": "nxtPprovince",
+        "nxtPcity": "nxtPcity"
+      },
+      "namedRegex": "^/(?<nxtPcountry>[^/]+?)/(?<nxtPprovince>[^/]+?)/(?<nxtPcity>[^/]+?)/rates(?:/)?$"
+    },
+    {
+      "page": "/[country]/[province]/[city]/sports",
+      "regex": "^/([^/]+?)/([^/]+?)/([^/]+?)/sports(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry",
+        "nxtPprovince": "nxtPprovince",
+        "nxtPcity": "nxtPcity"
+      },
+      "namedRegex": "^/(?<nxtPcountry>[^/]+?)/(?<nxtPprovince>[^/]+?)/(?<nxtPcity>[^/]+?)/sports(?:/)?$"
+    },
+    {
+      "page": "/[country]/[province]/[city]/weather",
+      "regex": "^/([^/]+?)/([^/]+?)/([^/]+?)/weather(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry",
+        "nxtPprovince": "nxtPprovince",
+        "nxtPcity": "nxtPcity"
+      },
+      "namedRegex": "^/(?<nxtPcountry>[^/]+?)/(?<nxtPprovince>[^/]+?)/(?<nxtPcity>[^/]+?)/weather(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/country/province/city/prayer-times",
+      "regex": "^/country/province/city/prayer\\-times(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/country/province/city/prayer\\-times(?:/)?$"
+    },
+    {
+      "page": "/country/rates",
+      "regex": "^/country/rates(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/country/rates(?:/)?$"
+    },
+    {
+      "page": "/my-location",
+      "regex": "^/my\\-location(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/my\\-location(?:/)?$"
+    },
+    {
+      "page": "/rates",
+      "regex": "^/rates(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/rates(?:/)?$"
+    },
+    {
+      "page": "/robots.txt",
+      "regex": "^/robots\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/robots\\.txt(?:/)?$"
+    },
+    {
+      "page": "/sitemap.xml",
+      "regex": "^/sitemap\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/sitemap\\.xml(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

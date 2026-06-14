@@ -499,7 +499,7 @@ function RecentResultCard({ event, teamName }: { event: SportEvent; teamName: st
   return (
     <motion.div variants={fadeUp} className="bg-white rounded-xl border border-gray-100 p-3 flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <WBadge team={teamName} score={teamScore || '0'} opponent={opponent} opScore={oppScore || '0'} />
+        <WBadge score={teamScore || '0'} opScore={oppScore || '0'} />
         <span className="text-sm text-gray-700">{opponent}</span>
       </div>
       <div className="text-right">
@@ -853,7 +853,7 @@ export default function SportsPage() {
     const today = new Date().toISOString().split('T')[0];
     const [eventsData, team] = await Promise.all([
       fetchTodayEvents(sport.tsdbName, today),
-      fetchNationalTeam(city.country, sport.tsdbName),
+      fetchNationalTeam(sport.tsdbName),
     ]);
     setEvents(eventsData);
     setNationalTeam(team);
@@ -864,7 +864,6 @@ export default function SportsPage() {
         fetchNextMatches(team.idTeam, 5),
         fetchRecentResults(team.idTeam, 5),
       ]);
-      setPlayers(pl);
       setNextMatches(next);
       setRecentResults(recent);
     }
@@ -981,7 +980,7 @@ export default function SportsPage() {
           </motion.section>
         )}
 
-        {olympics.length > 0 && <OlympicsCard medals={olympics} countryCode={city?.country_code ?? ''} />}
+        {olympics.length > 0 && <OlympicsCard medals={olympics}  />}
 
         {athletes.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
@@ -997,7 +996,7 @@ export default function SportsPage() {
           </motion.section>
         )}
 
-        <AffiliateSection countryCode={city?.country_code ?? ''} />
+        <AffiliateSection  />
       </main>
     </div>
   );

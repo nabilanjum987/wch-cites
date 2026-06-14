@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/[country]/layout,_N_T_/[country]/[province]/layout,_N_T_/[country]/[province]/[city]/layout,_N_T_/[country]/[province]/[city]/page,_N_T_/pakistan/punjab/faisalabad"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/$d$country/$d$province/$d$city/__PAGE__",
+    "/$d$country/$d$province/$d$city",
+    "/$d$country/$d$province",
+    "/$d$country",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -167,3 +167,61 @@ export const FLAG_COLORS: Record<string, string> = {
   germany: '#000000',
   bangladesh: '#006A4E',
 };
+
+export type EventCategory =
+  | 'sports' | 'culture' | 'music' | 'literature' | 'food'
+  | 'religious' | 'business' | 'film' | 'outdoor' | 'family' | 'conferences';
+
+export interface RecurringEvent {
+  id: string;
+  title: string;
+  day: string;
+  time: string;
+  venue: string;
+  category: EventCategory;
+  is_free: boolean;
+  website?: string;
+}
+
+export type TimeTab = 'today' | 'tomorrow' | 'weekend' | 'week' | 'month' | 'upcoming';
+export type LevelTab = 'local' | 'provincial' | 'national' | 'global';
+
+export interface CityEvent {
+  id: string;
+  title: string;
+  description: string;
+  venue: string;
+  address: string;
+  city: string;
+  country: string;
+  category: EventCategory;
+  start_time: string;
+  end_time: string;
+  image_url?: string;
+  ticket_url?: string;
+  is_free: boolean;
+  price_from?: number;
+  currency?: string;
+  level: LevelTab;
+  lat?: number;
+  lng?: number;
+}
+
+export interface NationalEvent {
+  id: string;
+  title: string;
+  date: string;
+  type: 'holiday' | 'sports' | 'cultural' | string;
+  description?: string;
+  country_code: string;
+}
+
+export interface PendingEvent {
+  name: string;
+  date: string;
+  venue: string;
+  category: string;
+  website?: string;
+  city: string;
+  country_code: string;
+}

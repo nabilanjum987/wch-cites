@@ -1,0 +1,23 @@
+{
+  "/[country]/[province]/[city]/economy/page": "/[country]/[province]/[city]/economy",
+  "/[country]/[province]/[city]/page": "/[country]/[province]/[city]",
+  "/[country]/[province]/[city]/rates/page": "/[country]/[province]/[city]/rates",
+  "/[country]/[province]/[city]/sports/page": "/[country]/[province]/[city]/sports",
+  "/[country]/[province]/[city]/weather/page": "/[country]/[province]/[city]/weather",
+  "/[country]/[province]/page": "/[country]/[province]",
+  "/[country]/page": "/[country]",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/compare/[slug]/page": "/compare/[slug]",
+  "/conflicts/[slug]/page": "/conflicts/[slug]",
+  "/country/province/city/prayer-times/page": "/country/province/city/prayer-times",
+  "/country/rates/page": "/country/rates",
+  "/my-location/page": "/my-location",
+  "/oceans/[slug]/page": "/oceans/[slug]",
+  "/page": "/",
+  "/products/[slug]/page": "/products/[slug]",
+  "/rates/page": "/rates",
+  "/robots.txt/route": "/robots.txt",
+  "/sitemap.xml/route": "/sitemap.xml",
+  "/wonders/[slug]/page": "/wonders/[slug]"
+}

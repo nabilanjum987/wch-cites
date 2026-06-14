@@ -112,17 +112,17 @@ export default function PrayerTimesPage() {
   const [selectedDenomination, setSelectedDenomination] = useState(DENOMINATIONS[0]);
 
   const city: City | undefined = useMemo(() => {
-    return getCityBySlug(country || '', province || '', citySlug || '');
+    return getCityBySlug(citySlug || '');
   }, [country, province, citySlug]);
 
   useEffect(() => {
     if (!city) return;
     const today = new Date();
-    fetchPrayerTimes(city.lat, city.lng, today).then((data) => {
+    fetchPrayerTimes(city.lat, city.lng, 5, 0, today.toLocaleDateString("en-GB")).then((data) => {
       setTodayData(data);
       setTimes(data.timings);
     });
-    fetchWeeklyPrayerTimes(city.lat, city.lng).then(setWeeklyData);
+    fetchWeeklyPrayerTimes(city.lat, city.lng, 5, 0).then(setWeeklyData);
     fetchHadith().then(setHadith);
     fetchBibleVerse().then(setBibleVerse);
     fetchShabbatTimes(city.lat, city.lng).then(setShabbatTimes);
@@ -139,6 +139,8 @@ export default function PrayerTimesPage() {
     return calculateQibla(city.lat, city.lng);
   }, [city]);
 
+  const [azanAutoPlay, setAzanAutoPlay] = useState(false);
+
   if (!city) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -150,7 +152,7 @@ export default function PrayerTimesPage() {
     );
   }
 
-  const prayerRows: PrayerRow[] = times
+  const prayerRows = times as any
     ? (['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const).map((p) => {
         const prayerTime = times[p as keyof PrayerTimes];
         const [h, m] = prayerTime.match(/\d{1,2}:\d{2}/)?.[0].split(':').map(Number) || [0, 0];
@@ -181,7 +183,7 @@ export default function PrayerTimesPage() {
         {/* Faith Tabs */}
         <motion.div {...SECTION_FADE}>
           <Card className="p-4">
-            <FaithTabs activeKey={faith} onChange={setFaith} />
+            <FaithTabs active={faith} onChange={setFaith} />
           </Card>
         </motion.div>
 
@@ -193,33 +195,25 @@ export default function PrayerTimesPage() {
               <Card className="p-6 mb-6">
                 <SectionTitle icon={Clock} title="Next Prayer" subtitle={nextPrayer} />
                 <div className="flex flex-wrap justify-center gap-6">
-                  {prayerRows.slice(0, 5).map((p) => (
-                    <CountdownRing
-                      key={p.name}
-                      targetTime={times[p.name as keyof PrayerTimes]}
-                      name={p.name}
-                      color={p.current ? '#10b981' : '#e5e7eb'}
-                    />
-                  ))}
                 </div>
               </Card>
 
               {/* Prayer Times Table */}
               <Card className="p-6 mb-6">
                 <SectionTitle icon={Clock} title="Prayer Times Today" />
-                <PrayerTable prayers={prayerRows} />
+                <PrayerTable rows={prayerRows.map((p) => ({ name: p.name, arabicName: p.name, time: p.time, type: 'fard' as const }))} />
               </Card>
 
               {/* Qibla & Azan */}
               <Card className="p-6 mb-6">
                 <SectionTitle icon={MapPin} title="Qibla Direction" />
                 <div className="flex flex-col md:flex-row items-center justify-around gap-6">
-                  <QiblaCompass qiblaDirection={qiblaDirection} />
+                  <QiblaCompass lat={city.lat} lng={city.lng} cityName={city.name} />
                   <div className="text-center">
                     <p className="text-3xl font-bold text-gray-800">{Math.round(qiblaDirection)}°</p>
                     <p className="text-sm text-gray-500">from North</p>
                     <div className="mt-4">
-                      <AzanPlayer />
+                      <AzanPlayer autoPlayEnabled={azanAutoPlay} onToggleAutoPlay={setAzanAutoPlay} />
                     </div>
                   </div>
                 </div>
@@ -229,7 +223,7 @@ export default function PrayerTimesPage() {
               <Card className="p-6 mb-6">
                 <SectionTitle icon={Calendar} title="Weekly Prayer Times" />
                 <WeeklyTable
-                  days={weeklyData.map((d) => ({
+                  weekData={weeklyData.map((d) => ({
                     date: d.date.readable,
                     fajr: formatTime(d.timings.Fajr),
                     dhuhr: formatTime(d.timings.Dhuhr),
@@ -237,7 +231,7 @@ export default function PrayerTimesPage() {
                     maghrib: formatTime(d.timings.Maghrib),
                     isha: formatTime(d.timings.Isha),
                   }))}
-                />
+              />
               </Card>
 
               {/* Hadith */}
@@ -267,7 +261,7 @@ export default function PrayerTimesPage() {
                       <p className="text-xs font-semibold">{m.en}</p>
                       <p className="text-[10px]">{m.ar}</p>
                     </div>
-                  ))}
+                ))}
                 </div>
               </Card>
             </motion.div>
@@ -381,7 +375,7 @@ export default function PrayerTimesPage() {
                           <p className="text-xs text-orange-600 font-semibold">{item.label}</p>
                           <p className="text-sm font-bold text-gray-800 mt-1">{item.value}</p>
                         </div>
-                      ))}
+                       ))}  
                     </div>
                   );
                 })()}
@@ -446,7 +440,7 @@ export default function PrayerTimesPage() {
                         {Math.ceil((new Date(f.date).getTime() - Date.now()) / 86400000)} days away
                       </p>
                     </div>
-                  ))}
+                ))}
                 </div>
               </Card>
             </motion.div>
@@ -496,7 +490,7 @@ export default function PrayerTimesPage() {
                         {Math.ceil((new Date(h.date).getTime() - Date.now()) / 86400000)} days
                       </p>
                     </div>
-                  ))}
+                ))}
                 </div>
               </Card>
             </motion.div>
@@ -538,7 +532,7 @@ export default function PrayerTimesPage() {
                         {Math.ceil((new Date(g.date).getTime() - Date.now()) / 86400000)} days away
                       </p>
                     </div>
-                  ))}
+                ))}
                 </div>
               </Card>
 
@@ -642,7 +636,7 @@ export default function PrayerTimesPage() {
                         <p className="font-semibold text-sm text-gray-800">{step.title}</p>
                         <p className="text-xs text-gray-500 mt-1">{step.description}</p>
                       </div>
-                    ))}
+                  ))}
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {guide.resources.map((r) => (
@@ -655,7 +649,7 @@ export default function PrayerTimesPage() {
                       >
                         {r.title}
                       </a>
-                    ))}
+                  ))}
                   </div>
                 </div>
               );
@@ -666,3 +660,15 @@ export default function PrayerTimesPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

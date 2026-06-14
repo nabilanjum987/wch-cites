@@ -80,13 +80,13 @@ export async function generateMetadata({
 
   const timings = (prayer as Record<string, Record<string, string>> | null)?.data?.timings;
   const meta = generateCityMeta({
-    city: cityParams.city,
-    country: cityParams.country,
-    province: cityParams.province,
+    city: city,
+    country: country,
+    province: province,
     temp: (weather as Record<string, Record<string, number>> | null)?.main?.temp ?? null,
     weatherDesc: ((weather as Record<string, Array<Record<string, string>>> | null)?.weather?.[0]?.description) ?? null,
-  fajr: (timings as Record<string, string> | null)?.Fajr ?? null,
-maghrib: (timings as Record<string, string> | null)?.Maghrib ?? null,
+  fajr: (timings as unknown as Record<string, string> | null)?.Fajr ?? null,
+maghrib: (timings as unknown as Record<string, string> | null)?.Maghrib ?? null,
     goldPerGram: (gold as Record<string, number> | null)?.price_gram_24k ?? null,
   });
 
@@ -115,6 +115,7 @@ export default async function CityPage({
 }: {
   params: Promise<{ country: string; province: string; city: string }>;
 }) {
+  const resolvedParams = await params;
   const { country, province, city } = await params;
   const cityParams = getCityParams(country, province, city);
   if (!cityParams) notFound();
@@ -179,9 +180,9 @@ export default async function CityPage({
 
   // ── JSON-LD Schemas ──
   const schemas = generateCitySchema({
-    city: cityParams.city,
-    country: cityParams.country,
-    province: cityParams.province,
+    city: city,
+    country: country,
+    province: province,
     temp, weatherDesc, fajr: timings?.Fajr, maghrib: timings?.Maghrib,
     goldPerGram,
   });
@@ -239,9 +240,9 @@ export default async function CityPage({
           <nav className="text-xs text-green-300 mb-4">
             <a href="/" className="hover:text-white">WorldCityHub</a>
             <span className="mx-1">›</span>
-            <a href={`/${params.country}`} className="hover:text-white capitalize">{country}</a>
+            <a href={`/${resolvedParams.country}`} className="hover:text-white capitalize">{country}</a>
             <span className="mx-1">›</span>
-            <a href={`/${params.country}/${params.province}`} className="hover:text-white capitalize">{province}</a>
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}`} className="hover:text-white capitalize">{province}</a>
             <span className="mx-1">›</span>
             <span className="text-white">{city}</span>
           </nav>
@@ -253,19 +254,19 @@ export default async function CityPage({
               </h1>
               <p className="text-green-200 text-lg mb-1">{province} · {country}</p>
               <p className="text-green-300 text-sm">
-                {hijriDate ? `${hijriDate.day} ${(hijriDate.month as Record<string, string>)?.en} ${hijriDate.year} AH · ` : ''}
+                {hijriDate ? `${hijriDate.day} ${((hijriDate.month as unknown as Record<string, string>))?.en} ${hijriDate.year} AH · ` : ''}
                 {currentMonth} {currentYear}
               </p>
               <div className="mt-4 flex gap-3 flex-wrap">
-                <a href={`/${params.country}/${params.province}/${params.city}/weather`}
+                <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
                   className="bg-[#C8A951] text-[#01411C] text-sm font-semibold px-4 py-2 rounded-full hover:bg-yellow-400 transition">
                   🌤 Weather Detail
                 </a>
-                <a href={`/${params.country}/${params.province}/${params.city}/prayer-times`}
+                <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`}
                   className="border border-green-400 text-green-200 text-sm px-4 py-2 rounded-full hover:bg-green-800 transition">
                   🕌 Prayer Times
                 </a>
-                <a href={`/${params.country}/${params.province}/${params.city}/rates`}
+                <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`}
                   className="border border-green-400 text-green-200 text-sm px-4 py-2 rounded-full hover:bg-green-800 transition">
                   💰 Rates
                 </a>
@@ -356,7 +357,7 @@ export default async function CityPage({
             <p className="mt-6 text-gray-700 leading-relaxed text-sm">
               {generateWeatherParagraph(city, temp, feelsLike, humidity, weatherDesc, windSpeed ? windSpeed * 3.6 : null)}
             </p>
-            <a href={`/${params.country}/${params.province}/${params.city}/weather`}
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
               View full weather forecast →
             </a>
@@ -412,7 +413,7 @@ export default async function CityPage({
             </h2>
             {hijriDate && (
               <p className="text-sm text-gray-500 mb-4">
-                {hijriDate.day} {(hijriDate.month as Record<string, string>)?.en} {hijriDate.year} AH
+                {hijriDate.day} {((hijriDate.month as unknown as Record<string, string>))?.en} {hijriDate.year} AH
               </p>
             )}
             {timings ? (
@@ -440,7 +441,7 @@ export default async function CityPage({
             <p className="text-gray-700 leading-relaxed text-sm">
               {generatePrayerParagraph(city, timings)}
             </p>
-            <a href={`/${params.country}/${params.province}/${params.city}/prayer-times`}
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
               Full prayer timetable, Qibla compass & Zakat calculator →
             </a>
@@ -488,7 +489,7 @@ export default async function CityPage({
             <p className="mt-6 text-gray-700 leading-relaxed text-sm">
               {generateGoldParagraph(city, goldPerGram)}
             </p>
-            <a href={`/${params.country}/${params.province}/${params.city}/rates`}
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
               Full rates page — oil, silver, crypto, currency, stocks →
             </a>
@@ -530,7 +531,7 @@ export default async function CityPage({
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateNewsParagraph(city, topHeadline)}
             </p>
-            <a href={`/${params.country}/${params.province}/${params.city}/news`}
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
               Full news page — 12 categories, archive, Urdu feed →
             </a>
@@ -545,7 +546,7 @@ export default async function CityPage({
               {['Sports', 'Culture', 'Music', 'Food', 'Religion', 'Business', 'Art', 'Family'].map((cat) => (
                 <a
                   key={cat}
-                  href={`/${params.country}/${params.province}/${params.city}/events?category=${cat.toLowerCase()}`}
+                  href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events?category=${cat.toLowerCase()}`}
                   className="bg-[#F5F3EE] hover:bg-green-50 rounded-xl p-3 text-center text-sm text-gray-700 hover:text-[#01411C] transition"
                 >
                   {cat}
@@ -555,7 +556,7 @@ export default async function CityPage({
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateEventsParagraph(city)}
             </p>
-            <a href={`/${params.country}/${params.province}/${params.city}/events`}
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
               Full events calendar — map view, 16 categories, submit event →
             </a>
@@ -589,7 +590,7 @@ export default async function CityPage({
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateEconomyParagraph(city, country, gdpPerCapita, inflation, unemployment)}
             </p>
-            <a href={`/${params.country}/${params.province}/${params.city}/economy`}
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
               Full economy page — GDP charts, misery index, jobs →
             </a>
@@ -610,7 +611,7 @@ export default async function CityPage({
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateSportsParagraph(city)}
             </p>
-            <a href={`/${params.country}/sports`}
+            <a href={`/${resolvedParams.country}/sports`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
               Full sports page — live scores, PSL standings, schedules →
             </a>
@@ -893,13 +894,13 @@ export default async function CityPage({
           {/* ══ SECTION 23: FOOTER NAV ════════════════════════════════════════ */}
           <section className="text-center py-6 text-sm text-gray-400">
             <div className="flex flex-wrap justify-center gap-4 mb-4">
-              <a href={`/${params.country}/${params.province}/${params.city}/weather`} className="hover:text-[#01411C]">Weather</a>
-              <a href={`/${params.country}/${params.province}/${params.city}/prayer-times`} className="hover:text-[#01411C]">Prayer Times</a>
-              <a href={`/${params.country}/${params.province}/${params.city}/rates`} className="hover:text-[#01411C]">Rates</a>
-              <a href={`/${params.country}/${params.province}/${params.city}/news`} className="hover:text-[#01411C]">News</a>
-              <a href={`/${params.country}/${params.province}/${params.city}/events`} className="hover:text-[#01411C]">Events</a>
-              <a href={`/${params.country}/${params.province}/${params.city}/economy`} className="hover:text-[#01411C]">Economy</a>
-              <a href={`/${params.country}/sports`} className="hover:text-[#01411C]">Sports</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="hover:text-[#01411C]">Weather</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`} className="hover:text-[#01411C]">Prayer Times</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`} className="hover:text-[#01411C]">Rates</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`} className="hover:text-[#01411C]">News</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`} className="hover:text-[#01411C]">Events</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`} className="hover:text-[#01411C]">Economy</a>
+              <a href={`/${resolvedParams.country}/sports`} className="hover:text-[#01411C]">Sports</a>
             </div>
             <p className="text-xs">
               Data updates every hour. Prayer times: Karachi method. Gold: LBMA + SBP rate.
@@ -930,3 +931,7 @@ export default async function CityPage({
     </>
   );
 }
+
+
+
+
