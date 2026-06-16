@@ -185,12 +185,12 @@ export function ParticleBackground({ children, particleCount = 20 }: ParticleBac
             key={i}
             className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-60"
             initial={{
-              x: Math.random() * typeof window !== 'undefined' ? window.innerWidth : 1000,
-              y: Math.random() * typeof window !== 'undefined' ? window.innerHeight : 1000,
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
+              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 1000),
             }}
             animate={{
-              x: Math.random() * typeof window !== 'undefined' ? window.innerWidth : 1000,
-              y: Math.random() * typeof window !== 'undefined' ? window.innerHeight : 1000,
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
+              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 1000),
             }}
             transition={{
               duration: Math.random() * 10 + 10,

@@ -13,8 +13,8 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { fetchNews, fetchUrduNews, fetchNewsByDate, timeAgo, generateGlobalImpacts, generateTrendingTopics, generateWeekInReview } from '../../lib/apis/news';
-import type { City, NewsArticle, NewsCategory, LocationLevel, GlobalImpact, LanguageTab } from '../../types/city';
-import { NEWS_CATEGORIES, CATEGORY_COLORS, COUNTRY_SOURCES, DEFAULT_SOURCES } from '../../types/city';
+import type { City, NewsArticle, NewsCategory, LocationLevel, GlobalImpactObject, LanguageTab, LocationLevelObject, SourceSet } from '../../types/city';
+import { NEWS_CATEGORIES, CATEGORY_COLORS, COUNTRY_SOURCES, DEFAULT_SOURCES, getSourceName } from '../../types/city';
 import { NewsCardSkeleton, BreakingBarSkeleton, TabSkeleton } from '../shared/LoadingSkeleton';
 import NewsSearch from './NewsSearch';
 import VideoNews from './VideoNews';
@@ -39,15 +39,15 @@ const IMPACT_ICONS: Record<string, React.ElementType> = {
   Fuel, DollarSign, Thermometer, Globe, TrendingUp, TrendingDown, Minus, BarChart3, Zap,
 };
 
-const IMPACT_COLORS: Record<GlobalImpact['impact'], { bg: string; text: string; border: string; icon: React.ElementType }> = {
+const IMPACT_COLORS: Record<GlobalImpactObject['impact'], { bg: string; text: string; border: string; icon: React.ElementType }> = {
   positive: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', icon: TrendingUp },
   negative: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: TrendingDown },
   neutral: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', icon: Minus },
 };
 
 function getCategoryDotColor(category: string, isBreaking: boolean): string {
-  if (isBreaking) return CATEGORY_COLORS.breaking;
-  return CATEGORY_COLORS[category] || CATEGORY_COLORS.world;
+  if (isBreaking) return (CATEGORY_COLORS as Record<string, string>).breaking ?? '#ef4444';
+  return (CATEGORY_COLORS as Record<string, string>)[category] ?? (CATEGORY_COLORS as Record<string, string>).all ?? '#6b7280';
 }
 
 function formatRefreshTime(date: Date): string {
@@ -166,7 +166,7 @@ export default function NewsPage() {
   const globalImpacts = cityData ? generateGlobalImpacts(cityData.name, cityData.country_slug) : [];
   const sources = (country && COUNTRY_SOURCES[country]) || DEFAULT_SOURCES;
 
-  const locationLevels: LocationLevel[] = [
+  const locationLevels: LocationLevelObject[] = [
     { type: 'world', label: 'World' },
     { type: 'country', label: cityData?.country || 'Country', slug: country },
     { type: 'province', label: cityData?.province || 'Province', slug: province },
@@ -427,7 +427,7 @@ export default function NewsPage() {
                         </div>
                         <div className="sm:w-1/2 p-6 flex flex-col justify-center">
                           <div className="flex items-center gap-2 text-xs text-gray-500 mb-2 font-urdu">
-                            <span className="font-medium text-emerald-700">{urduArticles[0].source.name}</span>
+                            <span className="font-medium text-emerald-700">{getSourceName(urduArticles[0].source)}</span>
                             <span>&#183;</span>
                             <Clock className="w-3 h-3" />
                             <span>{timeAgo(urduArticles[0].publishedAt)}</span>
@@ -463,7 +463,7 @@ export default function NewsPage() {
                         </div>
                         <div className="p-4">
                           <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1.5 font-urdu">
-                            <span className="font-medium text-emerald-700">{article.source.name}</span>
+                            <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
                             <span>&#183;</span>
                             <span>{timeAgo(article.publishedAt)}</span>
                           </div>
@@ -552,7 +552,7 @@ export default function NewsPage() {
                             </div>
                             <div className="sm:w-1/2 p-6 flex flex-col justify-center">
                               <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                                <span className="font-medium text-emerald-700">{topStories[0].source.name}</span>
+                                <span className="font-medium text-emerald-700">{getSourceName(topStories[0].source)}</span>
                                 <span>&#183;</span>
                                 <Clock className="w-3 h-3" />
                                 <span>{timeAgo(topStories[0].publishedAt)}</span>
@@ -594,7 +594,7 @@ export default function NewsPage() {
                             </div>
                             <div className="p-4">
                               <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1.5">
-                                <span className="font-medium text-emerald-700">{article.source.name}</span>
+                                <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
                                 <span>&#183;</span>
                                 <span>{timeAgo(article.publishedAt)}</span>
                               </div>
@@ -636,7 +636,7 @@ export default function NewsPage() {
                             </div>
                             <div className="flex-1 p-3 sm:p-4 flex flex-col justify-center">
                               <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1">
-                                <span className="font-medium text-emerald-700">{article.source.name}</span>
+                                <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
                                 <span>&#183;</span>
                                 <Clock className="w-3 h-3" />
                                 <span>{timeAgo(article.publishedAt)}</span>
@@ -728,7 +728,7 @@ export default function NewsPage() {
                                 >
                                   {article.category}
                                 </span>
-                                <span>{article.source.name}</span>
+                                <span>{getSourceName(article.source)}</span>
                                 <span>&#183;</span>
                                 <span>{timeAgo(article.publishedAt)}</span>
                               </div>
@@ -905,7 +905,7 @@ export default function NewsPage() {
                       </div>
                       <div className="flex-1 p-3 flex flex-col justify-center">
                         <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1">
-                          <span className="font-medium text-emerald-700">{article.source.name}</span>
+                          <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
                           <span>&#183;</span>
                           <Clock className="w-3 h-3" />
                           <span>{timeAgo(article.publishedAt)}</span>
@@ -961,7 +961,7 @@ export default function NewsPage() {
             <Calendar className="w-5 h-5 text-emerald-600" />
             Week in Review
           </h2>
-          <WeekInReview cityName={cityData?.name || ''} articles={generateWeekInReview(cityData?.name || '', articles)} />
+          <WeekInReview cityName={cityData?.name || ''} articles={generateWeekInReview(articles)} />
         </motion.section>
 
         {/* Global Impact on City */}

@@ -223,14 +223,7 @@ export default function PrayerTimesPage() {
               <Card className="p-6 mb-6">
                 <SectionTitle icon={Calendar} title="Weekly Prayer Times" />
                 <WeeklyTable
-                  weekData={weeklyData.map((d) => ({
-                    date: d.date.readable,
-                    fajr: formatTime(d.timings.Fajr),
-                    dhuhr: formatTime(d.timings.Dhuhr),
-                    asr: formatTime(d.timings.Asr),
-                    maghrib: formatTime(d.timings.Maghrib),
-                    isha: formatTime(d.timings.Isha),
-                  }))}
+                  weekData={weeklyData}
               />
               </Card>
 

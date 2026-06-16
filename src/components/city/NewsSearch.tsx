@@ -5,6 +5,7 @@ import { Search, X, Clock, ExternalLink, Newspaper, Filter } from 'lucide-react'
 import { searchNews } from '../../lib/apis/news';
 import { timeAgo } from '../../lib/apis/news';
 import type { NewsArticle } from '../../types/city';
+import { getSourceName } from '../../types/city';
 
 interface NewsSearchProps {
   cityName: string;
@@ -168,7 +169,7 @@ export default function NewsSearch({ cityName, country }: NewsSearchProps) {
                         {article.title}
                       </h4>
                       <div className="flex items-center gap-1.5 mt-1 text-[11px] text-gray-400">
-                        <span className="font-medium text-emerald-700">{article.source.name}</span>
+                        <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
                         <span>&#183;</span>
                         <Clock className="w-3 h-3" />
                         <span>{timeAgo(article.publishedAt)}</span>

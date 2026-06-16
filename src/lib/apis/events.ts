@@ -1,5 +1,5 @@
-import { CityEvent, EventCategory, LevelTab, TimeTab, RecurringEvent, NationalEvent, PendingEvent } from '../../../types/city';
-import { supabase } from '../../supabase';
+import { CityEvent, EventCategory, LevelTab, TimeTab, RecurringEvent, NationalEvent, PendingEvent } from '../../types/city';
+import { supabase } from '../supabase';
 
 const TICKETMASTER_KEY = process.env.NEXT_PUBLIC_TICKETMASTER_KEY as string | undefined;
 

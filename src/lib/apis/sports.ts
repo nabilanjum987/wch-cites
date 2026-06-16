@@ -518,21 +518,3 @@ export async function fetchSportsNews(
   }
 }
 
-export type {
-  SportEvent,
-  NationalTeam,
-  TeamPlayer,
-  StandingsTeam,
-  TopScorer,
-  Stadium,
-  OlympicMedals,
-  Athlete,
-  SportsNews,
-};
-
-export {
-  fetchTodayEvents,
-  fetchNationalTeam,
-  fetchTeamPlayers,
-  fetchUpcomingEvents,
-};

@@ -80,15 +80,29 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
     try {
       const { data, error } = await supabase
         .from('cities')
-        .select('name, city_slug, country, country_code, population')
+        .select('name, city_slug, country, country_code, province, country_slug, province_slug, lat, lng, population, primary_color')
         .or(`name.ilike.%${searchQuery}%,country.ilike.%${searchQuery}%`)
         .eq('is_active', true)
         .order('population', { ascending: false })
         .limit(10);
 
       if (!error && data) {
-        setResults(data);
-        setIsOpen(data.length > 0);
+        const results = data.map((r: Record<string, unknown>) => ({
+          id: String(r.city_slug ?? r.name),
+          name: r.name as string,
+          city_slug: r.city_slug as string,
+          country: r.country as string,
+          country_code: r.country_code as string,
+          province: (r.province as string) ?? '',
+          country_slug: (r.country_slug as string) ?? String(r.country ?? '').toLowerCase().replace(/\s+/g, '-'),
+          province_slug: (r.province_slug as string) ?? String(r.province ?? '').toLowerCase().replace(/\s+/g, '-'),
+          lat: (r.lat as number) ?? 0,
+          lng: (r.lng as number) ?? 0,
+          population: (r.population as number) ?? 0,
+          primary_color: (r.primary_color as string) ?? '#01411C',
+        }));
+        setResults(results);
+        setIsOpen(results.length > 0);
       } else {
         setResults([]);
         setIsOpen(false);
@@ -136,14 +150,27 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
           const { latitude, longitude } = position.coords;
           const { data } = await supabase
             .from('cities')
-            .select('name, city_slug, country, country_code, population')
+            .select('name, city_slug, country, country_code, province, country_slug, province_slug, lat, lng, population, primary_color')
             .eq('is_active', true)
             .order('population', { ascending: false })
             .limit(1)
             .single();
 
           if (data) {
-            handleSelectCity(data);
+            handleSelectCity({
+              id: String(data.city_slug ?? data.name),
+              name: data.name,
+              city_slug: data.city_slug ?? '',
+              country: data.country ?? '',
+              country_code: data.country_code ?? '',
+              province: data.province ?? '',
+              country_slug: data.country_slug ?? String(data.country ?? '').toLowerCase().replace(/\s+/g, '-'),
+              province_slug: data.province_slug ?? String(data.province ?? '').toLowerCase().replace(/\s+/g, '-'),
+              lat: data.lat ?? 0,
+              lng: data.lng ?? 0,
+              population: data.population ?? 0,
+              primary_color: data.primary_color ?? '#01411C',
+            });
           }
         },
         (error) => {

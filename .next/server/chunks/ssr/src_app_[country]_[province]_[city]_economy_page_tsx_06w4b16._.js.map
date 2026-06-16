@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/app/%5Bcountry%5D/%5Bprovince%5D/%5Bcity%5D/economy/page.tsx"],"sourcesContent":["'use client';\nexport default function EconomyPage() {\n  return <div>Economy Coming Soon</div>\n}"],"names":["EconomyPage"],"mappings":"yEACe,SAASA,EACtB,MAAO,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI,uBACd"}

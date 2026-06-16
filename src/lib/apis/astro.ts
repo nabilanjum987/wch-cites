@@ -1,7 +1,7 @@
 import type {
   ZodiacSign, MoonPhaseData, SkyRightNowData, SkyEventData, DailyReading,
   WeeklyForecast, MonthlyForecast, SignsCompatibility, ChineseAnimal, ChineseElement,
-  ChineseZodiacResult, VedicPanchangData, MoonPhaseDay
+  ChineseAnimalData, ChineseZodiacResult, VedicPanchangData, MoonPhaseDay
 } from '../../types/horoscope';
 import { ZODIAC_SIGNS, CHINESE_ANIMALS, CHINESE_ELEMENT_COLORS } from '../../types/horoscope';
 
@@ -687,12 +687,4 @@ export function getSignData(sign: ZodiacSign) {
 
 export function getChineseAnimalData(animal: ChineseAnimal) {
   return CHINESE_ANIMALS.find(a => a.key === animal)!;
-}
-// Alias for NationalEvents compatibility
-export function getChineseZodiacForYear(year: number): ChineseZodiacResult {
-  return getChineseAnimalData(year);
-}
-
-export function getChineseZodiacFor2025(year: number): ChineseZodiacResult {
-  return getChineseAnimalData(year);
 }

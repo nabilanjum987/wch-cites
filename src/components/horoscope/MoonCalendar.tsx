@@ -1,8 +1,8 @@
 'use client';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Moon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getMoonCalendar } from '../../lib/apis/astro';
-import { useState } from 'react';
 
 interface Props {
   primaryColor: string;
@@ -96,11 +96,13 @@ export default function MoonCalendar({ primaryColor }: Props) {
 
             if (i === 0 && offset > 0) {
               return (
-                <div key={`empty-${i}`} className="aspect-square" />,
-                <div key={i} className="aspect-square flex flex-col items-center justify-center rounded-lg text-xs relative">
-                  <span className="font-medium text-gray-700">{day.date.getDate()}</span>
-                  <span className="text-base leading-none">{day.emoji}</span>
-                </div>
+                <React.Fragment key={i}>
+                  <div key={`empty-${i}`} className="aspect-square" />
+                  <div className="aspect-square flex flex-col items-center justify-center rounded-lg text-xs relative">
+                    <span className="font-medium text-gray-700">{day.date.getDate()}</span>
+                    <span className="text-base leading-none">{day.emoji}</span>
+                  </div>
+                </React.Fragment>
               );
             }
 
@@ -113,7 +115,7 @@ export default function MoonCalendar({ primaryColor }: Props) {
                 className={`aspect-square flex flex-col items-center justify-center rounded-lg text-xs relative cursor-pointer hover:ring-2 hover:ring-gray-200 transition-all ${
                   todayHighlight ? 'ring-2 ring-offset-1' : ''
                 }`}
-                style={todayHighlight ? { ringColor: primaryColor } : {}}
+                style={todayHighlight ? { outline: `2px solid ${primaryColor}`, outlineOffset: '1px' } : {}}
                 title={`${day.date.toLocaleDateString()}: ${day.phaseName}`}
               >
                 <span className={`font-medium ${todayHighlight ? '' : 'text-gray-600'}`} style={todayHighlight ? { color: primaryColor } : {}}>

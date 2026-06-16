@@ -57,9 +57,12 @@ export default function CompatibilityFinder({ primaryColor }: Props) {
   const chinese1Data = CHINESE_ANIMALS.find(a => a.key === chinese1)!;
   const chinese2Data = CHINESE_ANIMALS.find(a => a.key === chinese2)!;
 
+  const idx1 = ZODIAC_SIGNS.indexOf(sign1Data);
+  const idx2 = ZODIAC_SIGNS.indexOf(sign2Data);
+
   const lovePercent = signCompat.percentage;
-  const friendshipPercent = Math.min(100, signCompat.percentage + (sign1 === sign2 ? 0 : Math.abs(5 - Math.abs(ZODIAC_SIGNS.indexOf(sign1Data) - ZODIAC_SIGNS.indexOf(sign2Data)) * 3)));
-  const businessPercent = Math.abs(ZODIAC_SIGNS.indexOf(sign1) - ZODIAC_SIGNS.indexOf(sign2)) <= 2 || Math.abs(ZODIAC_SIGNS.indexOf(sign1) - ZODIAC_SIGNS.indexOf(sign2)) >= 10 ? signCompat.percentage - 10 : signCompat.percentage + 5;
+  const friendshipPercent = Math.min(100, signCompat.percentage + (sign1 === sign2 ? 0 : Math.abs(5 - Math.abs(idx1 - idx2) * 3)));
+  const businessPercent = Math.abs(idx1 - idx2) <= 2 || Math.abs(idx1 - idx2) >= 10 ? signCompat.percentage - 10 : signCompat.percentage + 5;
   const longTermPercent = Math.round((lovePercent + friendshipPercent + businessPercent) / 3);
 
   return (

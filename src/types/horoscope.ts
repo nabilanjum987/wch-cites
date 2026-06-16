@@ -183,3 +183,33 @@ export const CHINESE_ELEMENT_COLORS: Record<ChineseElement, string> = {
   metal: '#94A3B8',
   water: '#3B82F6',
 };
+
+// ── Aliases & missing types expected by astro.ts / SkyRightNow.tsx ───────────
+
+export interface SkyEventData {
+  name: string;
+  date: string;
+  type: 'full_moon' | 'eclipse' | 'planet' | 'meteor' | string;
+  planet?: string;
+  sign?: string;
+  retrograde?: boolean;
+  degree?: number;
+  description?: string;
+}
+
+export interface SkyRightNowData {
+  moon: {
+    phase: number;
+    illumination: number;
+    phase_name: string;
+    moon_sign: string;
+    emoji: string;
+  };
+  sun_sign: string;
+  sun_sign_transition_date: string;
+  visible_constellation: string;
+  upcoming_events: SkyEventData[];
+}
+
+/** Alias kept for backward compatibility with old imports */
+export type MoonPhaseData = MoonPhaseDay;

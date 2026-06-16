@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, ExternalLink, Newspaper } from 'lucide-react';
 import { timeAgo } from '../../lib/apis/news';
 import type { NewsArticle } from '../../types/city';
+import { getSourceName } from '../../types/city';
 
 interface WeekInReviewProps {
   cityName: string;
@@ -75,7 +76,7 @@ export default function WeekInReview({ cityName, articles }: WeekInReviewProps) 
                 {article.title}
               </h4>
               <div className="flex items-center gap-1.5 mt-1 text-[11px] text-gray-400">
-                <span className="font-medium text-emerald-700">{article.source.name}</span>
+                <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
                 <span>&#183;</span>
                 <Clock className="w-3 h-3" />
                 <span>{timeAgo(article.publishedAt)}</span>

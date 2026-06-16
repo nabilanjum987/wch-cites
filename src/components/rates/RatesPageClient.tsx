@@ -421,10 +421,11 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
   const [stressData] = useState(FINANCIAL_STRESS_DATA[countrySlug] || FINANCIAL_STRESS_DATA['pakistan']);
   const [miseryData] = useState(MISERY_INDEX_DATA.find(m => m.countrySlug === countrySlug) || MISERY_INDEX_DATA[0]);
 
-  const currency = COUNTRY_CURRENCIES[countrySlug] ?? {
+  const currency: CurrencyInfo = COUNTRY_CURRENCIES[countrySlug] ?? {
     code: 'USD',
     name: 'US Dollar',
     symbol: '$',
+    rate: 1,
     rate_to_usd: 1,
     flag: 'US',
   };
