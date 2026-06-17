@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
-import EconomyPageClient from '@/components/economy/EconomyPageClient';
+import NewsPageWrapper from '@/components/city/NewsPageWrapper';
 
 interface PageProps {
   params: Promise<{ country: string; province: string; city: string }>;
@@ -12,21 +12,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cityName = cityData?.name ?? city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   const countryName = cityData?.country ?? country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   return {
-    title: `${cityName} Economy — GDP, Inflation, Jobs & Financial Intelligence | WorldCityHub`,
-    description: `${cityName}, ${countryName} economic data: GDP, inflation, unemployment, misery index, financial stress meter, purchasing power, debt, trade and opportunity index.`,
-    alternates: { canonical: `https://worldcityhub.vercel.app/${country}/${province}/${city}/economy` },
+    title: `${cityName} News — Latest Headlines, Breaking News & Local Updates | WorldCityHub`,
+    description: `Stay updated with ${cityName} news. Breaking stories, local headlines, Urdu news, video news, and global events affecting ${cityName}, ${countryName}.`,
+    alternates: { canonical: `https://worldcityhub.vercel.app/${country}/${province}/${city}/news` },
   };
 }
 
-export default async function EconomyPage({ params }: PageProps) {
+export default async function NewsPage({ params }: PageProps) {
   const { country, province, city } = await params;
   const cityData = await getCityData(country, province, city);
 
   return (
-    <EconomyPageClient
+    <NewsPageWrapper
       country={country}
       province={province}
-      citySlug={city}
+      city={city}
       cityData={cityData}
     />
   );

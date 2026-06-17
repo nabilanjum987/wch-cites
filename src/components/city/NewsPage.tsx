@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Globe, MapPin, Landmark, Banknote, Trophy, Drama,
@@ -69,14 +69,16 @@ function getFirstDayOfMonth(year: number, month: number): number {
   return new Date(year, month, 1).getDay();
 }
 
-export default function NewsPage() {
-  const { country, province, city } = useParams<{
-    country: string;
-    province: string;
-    city: string;
-  }>();
+interface NewsPageProps {
+  country: string;
+  province: string;
+  city: string;
+  cityData?: import('../../types/city').City | null;
+}
 
-  const [cityData, setCityData] = useState<City | null>(null);
+export default function NewsPage({ country, province, city, cityData: initialCityData }: NewsPageProps) {
+
+  const [cityData, setCityData] = useState<City | null>(initialCityData ?? null);
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [urduArticles, setUrduArticles] = useState<NewsArticle[]>([]);
   const [archivedArticles, setArchivedArticles] = useState<NewsArticle[]>([]);
@@ -229,7 +231,7 @@ export default function NewsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-8">
           <Link
-            to={`/${country}/${province}/${city}`}
+            href={`/${country}/${province}/${city}`}
             className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm mb-4 transition-colors no-underline"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -242,7 +244,7 @@ export default function NewsPage() {
               <div key={level.type} className="flex items-center gap-1">
                 {idx > 0 && <ChevronRight className="w-4 h-4 text-white/50" />}
                 <Link
-                  to={level.slug ? `/${level.slug}` : '/'}
+                  href={level.slug ? `/${level.slug}` : '/'}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all no-underline ${
                     level.type === 'city'
                       ? 'bg-white text-gray-900 shadow-md'
