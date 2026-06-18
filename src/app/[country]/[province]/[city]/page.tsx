@@ -8,18 +8,37 @@ import { fetchAllCityData, type CityParams } from '@/lib/api/cityData';
 import { generateCityMeta, generateCitySchema } from '@/lib/seo/cityMeta';
 import {
   generateCityIntro,
+  generateCityIntroAfter,
   generateWeatherParagraph,
+  generateWeatherAfter,
+  generateSunMoonParagraph,
+  generateSunMoonAfter,
   generatePrayerParagraph,
+  generatePrayerAfter,
   generateGoldParagraph,
+  generateGoldAfter,
   generateNewsParagraph,
+  generateNewsAfter,
   generateEventsParagraph,
+  generateEventsAfter,
   generateEconomyParagraph,
+  generateEconomyAfter,
   generateSportsParagraph,
+  generateSportsAfter,
+  generatePersonalitiesParagraph,
+  generatePersonalitiesAfter,
+  generatePlacesParagraph,
+  generatePlacesAfter,
   generateHeritageParagraph,
+  generateHeritageAfter,
   generateStreetFoodParagraph,
+  generateStreetFoodAfter,
   generateEmergencyParagraph,
-  generateNearbyCitiesParagraph,
+  generateEmergencyAfter,
   generateCityGlanceParagraph,
+  generateCityGlanceAfter,
+  generateNearbyCitiesParagraph,
+  generateNearbyCitiesAfter,
 } from '@/lib/paragraphs/city';
 
 export const revalidate = 3600;
@@ -356,6 +375,9 @@ export default async function CityPage({
 
             <p className="mt-6 text-gray-700 leading-relaxed text-sm">
               {generateWeatherParagraph(city, temp, feelsLike, humidity, weatherDesc, windSpeed ? windSpeed * 3.6 : null)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateWeatherAfter(city, country)}
+              </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
@@ -403,6 +425,15 @@ export default async function CityPage({
                   </div>
                 )}
               </div>
+              <p className="mt-6 text-gray-700 leading-relaxed text-sm">
+                {generateSunMoonParagraph(city,
+                  sunrise ? new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone }) : null,
+                  sunset ? new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone }) : null
+                )}
+              </p>
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateSunMoonAfter(city)}
+              </p>
             </section>
           )}
 
@@ -440,6 +471,9 @@ export default async function CityPage({
             )}
             <p className="text-gray-700 leading-relaxed text-sm">
               {generatePrayerParagraph(city, timings)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generatePrayerAfter(city)}
+              </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
@@ -488,6 +522,9 @@ export default async function CityPage({
 
             <p className="mt-6 text-gray-700 leading-relaxed text-sm">
               {generateGoldParagraph(city, goldPerGram)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateGoldAfter(city)}
+              </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
@@ -530,6 +567,9 @@ export default async function CityPage({
             )}
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateNewsParagraph(city, topHeadline)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateNewsAfter(city)}
+              </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
@@ -555,6 +595,9 @@ export default async function CityPage({
             </div>
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateEventsParagraph(city)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateEventsAfter(city)}
+              </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
@@ -589,6 +632,9 @@ export default async function CityPage({
             </div>
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateEconomyParagraph(city, country, gdpPerCapita, inflation, unemployment)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateEconomyAfter(city, country)}
+              </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
@@ -610,6 +656,9 @@ export default async function CityPage({
             </div>
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateSportsParagraph(city)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateSportsAfter(city)}
+              </p>
             </p>
             <a href={`/${resolvedParams.country}/sports`}
               className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
@@ -622,6 +671,9 @@ export default async function CityPage({
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
               👤 Famous People from {city}
             </h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-6">
+                {generatePersonalitiesParagraph(city)}
+              </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {[
                 { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal' },
@@ -642,6 +694,9 @@ export default async function CityPage({
                 </a>
               ))}
             </div>
+            <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generatePersonalitiesAfter(city)}
+              </p>
           </section>
 
           {/* ══ SECTION 12: FAMOUS PLACES ════════════════════════════════════ */}
@@ -649,6 +704,9 @@ export default async function CityPage({
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
               🏛 Famous Places in {city}
             </h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-6">
+                {generatePlacesParagraph(city)}
+              </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {[
                 { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque-lahore' },
@@ -669,6 +727,9 @@ export default async function CityPage({
                 </a>
               ))}
             </div>
+            <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generatePlacesAfter(city)}
+              </p>
           </section>
 
           {/* ══ SECTION 13: HERITAGE PRODUCTS ════════════════════════════════ */}
@@ -697,6 +758,9 @@ export default async function CityPage({
             </div>
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateHeritageParagraph(city)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateHeritageAfter(city)}
+              </p>
             </p>
           </section>
 
@@ -714,6 +778,9 @@ export default async function CityPage({
             </div>
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateStreetFoodParagraph(city)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateStreetFoodAfter(city)}
+              </p>
             </p>
           </section>
 
@@ -742,6 +809,9 @@ export default async function CityPage({
             </div>
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateEmergencyParagraph(city, policeNum, ambulanceNum, fireNum)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateEmergencyAfter(city)}
+              </p>
             </p>
           </section>
 
@@ -777,11 +847,12 @@ export default async function CityPage({
                 </div>
               ))}
             </div>
-            {wiki?.extract && (
-              <p className="text-gray-700 leading-relaxed text-sm">
-                {String(generateCityIntro(city, country, province, '13M+', wiki.extract as string))}
-              </p>
-            )}
+            <p className="text-gray-700 leading-relaxed text-sm">
+              {generateCityGlanceParagraph(city, country, province, '1,772', '217', 'antiquity')}
+            </p>
+            <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              {generateCityGlanceAfter(city, country)}
+            </p>
           </section>
 
           {/* ══ SECTION 18: NEARBY CITIES ════════════════════════════════════ */}
@@ -810,6 +881,9 @@ export default async function CityPage({
             </div>
             <p className="text-gray-700 leading-relaxed text-sm">
               {generateNearbyCitiesParagraph(city)}
+              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+                {generateNearbyCitiesAfter(city)}
+              </p>
             </p>
           </section>
 
