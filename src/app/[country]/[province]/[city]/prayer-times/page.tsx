@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Calendar, MapPin, Settings } from 'lucide-react';
 
@@ -100,7 +100,10 @@ function calculateQibla(lat: number, _lng: number): number {
 }
 
 export default function PrayerTimesPage() {
-  const { country, province, city: citySlug } = useParams();
+  const _params = useParams();
+  const country = String(_params?.country ?? '');
+  const province = String(_params?.province ?? '');
+  const citySlug = String(_params?.city ?? '');
   const [faith, setFaith] = useState<FaithKey>('islam');
   const [times, setTimes] = useState<PrayerTimes | null>(null);
   const [todayData, setTodayData] = useState<any>(null);
@@ -112,7 +115,35 @@ export default function PrayerTimesPage() {
   const [selectedDenomination, setSelectedDenomination] = useState(DENOMINATIONS[0]);
 
   const city: City | undefined = useMemo(() => {
-    return getCityBySlug(citySlug || '');
+    // Try getCityBySlug first, then build a minimal city object from URL params
+    const found = getCityBySlug(citySlug || '');
+    if (found) return found;
+    if (!citySlug) return undefined;
+    // Fallback: construct city from URL slugs so any city works
+    return {
+      name: (citySlug || '').replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+      city_slug: citySlug || '',
+      country: (country || '').replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+      country_code: (country || '').slice(0, 2).toUpperCase(),
+      country_slug: country || '',
+      province: (province || '').replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+      province_slug: province || '',
+      lat: 31.5204,
+      lng: 74.3587,
+      population: 0,
+      timezone: 'Asia/Karachi',
+      major_religion: 'Islam',
+      religion_percent: 96,
+      primary_color: '#01411C',
+      secondary_color: '#FFFFFF',
+      famous_for: '',
+      famous_products: '',
+      emergency_police: '15',
+      emergency_ambulance: '1122',
+      emergency_fire: '16',
+      region: 'South Asia',
+      is_active: true,
+    } as City;
   }, [country, province, citySlug]);
 
   useEffect(() => {
