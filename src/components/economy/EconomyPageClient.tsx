@@ -15,6 +15,18 @@ import {
   calculatePurchasingPower, calculateMiseryImpact,
   type FinancialStressData, type MiseryIndex
 } from '@/lib/apis/rates';
+import {
+  generateStressMeterParagraph, generateStressMeterAfter,
+  generateMiseryParagraph, generateMiseryAfter,
+  generatePopulationParagraph, generatePopulationAfter,
+  generateEconomicCoreParagraph, generateEconomicCoreAfter,
+  generateInflationParagraph, generateInflationAfter,
+  generateEmploymentParagraph, generateEmploymentAfter,
+  generateDebtParagraph, generateDebtAfter,
+  generateHdiParagraph, generateHdiAfter,
+  generateTradeParagraph, generateTradeAfter,
+  generateOpportunityParagraph, generateOpportunityAfter,
+} from '@/lib/paragraphs/economy';
 
 // ── Country economy data ──────────────────────────────────────────────────────
 
@@ -297,11 +309,19 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       title: 'Population & Demographics',
       summary: `${eco.population}M people • ${eco.literacyRate}% literacy • ${eco.lifeExpectancy}yr life expectancy`,
       content: (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-          <StatCard icon={Users} label="Population" value={`${eco.population}M`} sub="Total population" color="#3B82F6" />
-          <StatCard icon={Activity} label="Labor Force" value={`${eco.laborForce}M`} sub="Active workers" color="#3B82F6" />
-          <StatCard icon={Award} label="Literacy Rate" value={`${eco.literacyRate}%`} sub="Population literate" color="#3B82F6" trend="up" />
-          <StatCard icon={Activity} label="Life Expectancy" value={`${eco.lifeExpectancy} yrs`} sub="Average at birth" color="#3B82F6" />
+        <div className="mt-4 space-y-4">
+          <p className="text-sm text-gray-700 leading-relaxed">
+            {generatePopulationParagraph(countryName)}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <StatCard icon={Users} label="Population" value={`${eco.population}M`} sub="Total population" color="#3B82F6" />
+            <StatCard icon={Activity} label="Labor Force" value={`${eco.laborForce}M`} sub="Active workers" color="#3B82F6" />
+            <StatCard icon={Award} label="Literacy Rate" value={`${eco.literacyRate}%`} sub="Population literate" color="#3B82F6" trend="up" />
+            <StatCard icon={Activity} label="Life Expectancy" value={`${eco.lifeExpectancy} yrs`} sub="Average at birth" color="#3B82F6" />
+          </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {generatePopulationAfter(countryName)}
+          </p>
         </div>
       ),
     },
@@ -313,6 +333,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `GDP $${eco.gdpBillions}B • Growth ${eco.gdpGrowth}% • Per capita $${eco.gdpPerCapita.toLocaleString()}`,
       content: (
         <div className="mt-4 space-y-4">
+          <p className="text-sm text-gray-700 leading-relaxed">
+            {generateEconomicCoreParagraph(countryName)}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatCard icon={DollarSign} label="Total GDP" value={`$${eco.gdpBillions}B`} sub="USD billions" color={primaryColor} />
             <StatCard icon={TrendingUp} label="GDP Growth" value={`${eco.gdpGrowth}%`} sub="Annual rate" color={primaryColor} trend={eco.gdpGrowth > 3 ? 'up' : eco.gdpGrowth > 0 ? 'neutral' : 'down'} />
@@ -325,6 +348,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
               Compare that to the USA ($223/day) or Germany ($170/day). {eco.gdpGrowth > 4 ? '📈 Growth is strong.' : eco.gdpGrowth > 1 ? '📊 Growth is moderate.' : '⚠️ Growth needs attention.'}
             </p>
           </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {generateEconomicCoreAfter(countryName)}
+          </p>
         </div>
       ),
     },
@@ -336,6 +362,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `${eco.inflation}% annual inflation • Interest rate ${eco.interestRate}%`,
       content: (
         <div className="mt-4 space-y-4">
+          <p className="text-sm text-gray-700 leading-relaxed">
+            {generateInflationParagraph(countryName)}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={TrendingUp} label="Inflation Rate" value={`${eco.inflation}%`} sub="Annual CPI change" color="#F97316" trend={eco.inflation > 10 ? 'down' : 'up'} />
             <StatCard icon={Zap} label="Interest Rate" value={`${eco.interestRate}%`} sub="Central bank rate" color="#F97316" />
@@ -356,6 +385,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                ' This is within a manageable range.'}
             </p>
           </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {generateInflationAfter(countryName)}
+          </p>
         </div>
       ),
     },
@@ -367,6 +399,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `${eco.unemployment}% unemployment • ${eco.povertyRate}% poverty rate`,
       content: (
         <div className="mt-4 space-y-4">
+          <p className="text-sm text-gray-700 leading-relaxed">
+            {generateEmploymentParagraph(countryName)}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={Briefcase} label="Unemployment" value={`${eco.unemployment}%`} sub="Of labor force" color="#8B5CF6" trend={eco.unemployment > 8 ? 'down' : 'up'} />
             <StatCard icon={Users} label="Poverty Rate" value={`${eco.povertyRate}%`} sub="Below poverty line" color="#8B5CF6" trend={eco.povertyRate > 20 ? 'down' : 'neutral'} />
@@ -379,6 +414,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                ' Near full employment suggests a healthy, active economy.'}
             </p>
           </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {generateEmploymentAfter(countryName)}
+          </p>
         </div>
       ),
     },
@@ -390,6 +428,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `${eco.debtToGdp}% debt-to-GDP • ${eco.currencySymbol}${debtPerCitizen.toLocaleString()} per citizen`,
       content: (
         <div className="mt-4 space-y-4">
+          <p className="text-sm text-gray-700 leading-relaxed">
+            {generateDebtParagraph(countryName)}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={AlertTriangle} label="Debt-to-GDP" value={`${eco.debtToGdp}%`} sub="National debt ratio" color="#EF4444" trend={eco.debtToGdp > 90 ? 'down' : 'neutral'} />
             <StatCard icon={Users} label="Debt Per Citizen" value={`$${debtPerCitizen.toLocaleString()}`} sub="Each person owes" color="#EF4444" />
@@ -404,6 +445,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                ' This is within manageable levels by global standards.'}
             </p>
           </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {generateDebtAfter(countryName)}
+          </p>
         </div>
       ),
     },
@@ -415,6 +459,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `HDI ${eco.hdi} • Gini ${eco.gini} inequality coefficient`,
       content: (
         <div className="mt-4 space-y-4">
+          <p className="text-sm text-gray-700 leading-relaxed">
+            {generateHdiParagraph(countryName)}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={Award} label="HDI Score" value={eco.hdi.toFixed(3)} sub={eco.hdi > 0.8 ? 'Very High' : eco.hdi > 0.7 ? 'High' : eco.hdi > 0.55 ? 'Medium' : 'Low'} color="#10B981" trend={eco.hdi > 0.7 ? 'up' : 'neutral'} />
             <StatCard icon={BarChart3} label="Gini Coefficient" value={eco.gini.toFixed(1)} sub={eco.gini > 40 ? 'High Inequality' : eco.gini > 30 ? 'Moderate' : 'Low Inequality'} color="#10B981" />
@@ -424,6 +471,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <IndicatorBar label="Literacy Rate" value={eco.literacyRate} max={100} color="#3B82F6" format={v => `${v}%`} />
             <IndicatorBar label="Life Expectancy (out of 90)" value={eco.lifeExpectancy} max={90} color="#8B5CF6" format={v => `${v} yrs`} />
           </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {generateHdiAfter(countryName)}
+          </p>
         </div>
       ),
     },
@@ -435,6 +485,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `Trade balance $${eco.tradeBalance}B • FDI $${eco.fdi}B`,
       content: (
         <div className="mt-4 space-y-4">
+          <p className="text-sm text-gray-700 leading-relaxed">
+            {generateTradeParagraph(countryName)}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={Globe} label="Trade Balance" value={`$${Math.abs(eco.tradeBalance)}B`} sub={eco.tradeBalance < 0 ? 'Trade deficit' : 'Trade surplus'} color="#0891B2" trend={eco.tradeBalance >= 0 ? 'up' : 'down'} />
             <StatCard icon={Building2} label="Foreign Direct Investment" value={`$${eco.fdi}B`} sub="Annual FDI inflow" color="#0891B2" trend={eco.fdi > 20 ? 'up' : 'neutral'} />
@@ -451,6 +504,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
               </p>
             </div>
           )}
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {generateTradeAfter(countryName)}
+          </p>
         </div>
       ),
     },
@@ -482,12 +538,18 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
               <Activity size={18} style={{ color: primaryColor }} />
               <h2 className="font-bold text-gray-900">Financial Stress Meter</h2>
             </div>
+            <p className="text-sm text-gray-700 leading-relaxed mb-4">
+              {generateStressMeterParagraph(countryName, cityName)}
+            </p>
             <StressMeter score={stress.score} level={stress.level} primaryColor={primaryColor} />
             <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-gray-500">
               <div><div className="font-bold text-gray-800">{stress.inflation}%</div><div>Inflation</div></div>
               <div><div className="font-bold text-gray-800">{stress.unemployment}%</div><div>Unemployment</div></div>
               <div><div className="font-bold text-gray-800">{stress.debtToGdp}%</div><div>Debt/GDP</div></div>
             </div>
+            <p className="text-sm text-gray-600 leading-relaxed mt-4">
+              {generateStressMeterAfter(countryName, cityName)}
+            </p>
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-100 p-6">
@@ -495,8 +557,14 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
               <Target size={18} style={{ color: primaryColor }} />
               <h2 className="font-bold text-gray-900">Global Misery Index</h2>
             </div>
+            <p className="text-sm text-gray-700 leading-relaxed mb-4">
+              {generateMiseryParagraph(countryName)}
+            </p>
             <MiseryTable data={MISERY_INDEX_DATA} countrySlug={country} primaryColor={primaryColor} />
             <p className="text-xs text-gray-400 mt-3">Misery Index = Inflation + Unemployment. Higher = more economic pain.</p>
+            <p className="text-sm text-gray-600 leading-relaxed mt-4">
+              {generateMiseryAfter(countryName)}
+            </p>
           </div>
         </div>
 
@@ -543,6 +611,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <Target size={18} style={{ color: primaryColor }} />
             <h2 className="font-bold text-gray-900">Opportunity Index for {cityName}</h2>
           </div>
+          <p className="text-sm text-gray-700 leading-relaxed mb-4">
+            {generateOpportunityParagraph(cityName, countryName)}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
               {
@@ -576,6 +647,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
               </div>
             ))}
           </div>
+          <p className="text-sm text-gray-600 leading-relaxed mt-4">
+            {generateOpportunityAfter(cityName, countryName)}
+          </p>
         </div>
 
         {/* Footer note */}
