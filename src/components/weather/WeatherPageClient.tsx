@@ -5,6 +5,22 @@ import { motion } from 'framer-motion';
 import type { WeatherData, HourlyItem, DailyItem, HistoricalData, ClimateData, AQIData, SunMoonData, WeatherAlert, NearbyCityWeather } from '@/types/city';
 import { fetchWeatherData, fetchHistoricalData, getClimateData, fetchAQIData, fetchSunMoonData, fetchWeatherAlerts, fetchNearbyWeather } from '@/lib/apis/weather';
 import { Wind, Droplets, Eye, Gauge, Thermometer, Sun, Cloud, CloudRain, ChevronLeft, ChevronRight, Shirt, Coffee, Moon, CloudSnow, Activity, BarChart2, Heart, ShieldAlert, AlertTriangle, Leaf, Factory, Car, Tractor, CloudFog, Clock, ShoppingBag, Sunrise, Sunset, ArrowUp, ArrowDown, ThermometerSun, CloudDrizzle, MapPin } from 'lucide-react';
+import {
+  generateHeroParagraph, generateHeroAfter,
+  generateStatsParagraph, generateStatsAfter,
+  generateWearParagraph, generateWearAfter,
+  generateStoryParagraph, generateStoryAfter,
+  generateHourlyParagraph, generateHourlyAfter,
+  generateTenDayParagraph, generateTenDayAfter,
+  generateSunMoonParagraph, generateSunMoonAfter,
+  generateMonthlyParagraph, generateMonthlyAfter,
+  generateHistoryParagraph, generateHistoryAfter,
+  generateAlertsParagraph, generateAlertsAfter,
+  generateNearbyParagraph, generateNearbyAfter,
+  generateAQIOverviewParagraph, generateAQIOverviewAfter,
+  generatePollutantsParagraph, generatePollutantsAfter,
+  generateAQIHealthParagraph, generateAQIHealthAfter,
+} from '@/lib/paragraphs/weather';
 
 // ─── Animation variants ─────────────────────────────────────────────────────
 
@@ -134,7 +150,7 @@ function NavTabs({ active, onChange }: { active: Tab; onChange: (t: Tab) => void
 
 // ─── Hero card ─────────────────────────────────────────────────────────────
 
-function HeroCard({ data, cityName, timezone }: { data: WeatherData; cityName: string; timezone: string }) {
+function HeroCard({ data, cityName, country, timezone }: { data: WeatherData; cityName: string; country: string; timezone: string }) {
   const { current } = data;
   const uv = uvLabel(current.uvi);
   const isNight = current.icon.endsWith('n');
@@ -142,6 +158,10 @@ function HeroCard({ data, cityName, timezone }: { data: WeatherData; cityName: s
   const sunsetStr = new Date(current.sunset * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: timezone });
 
   return (
+    <>
+    <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+      {generateHeroParagraph(cityName, current.temp, current.condition, data.daily[0]?.temp_max ?? null, data.daily[0]?.temp_min ?? null)}
+    </p>
     <motion.section
       initial="hidden"
       whileInView="visible"
@@ -206,6 +226,10 @@ function HeroCard({ data, cityName, timezone }: { data: WeatherData; cityName: s
         </div>
       </div>
     </motion.section>
+    <p className="text-gray-600 leading-relaxed text-sm mb-6 px-1">
+      {generateHeroAfter(cityName, country)}
+    </p>
+    </>
   );
 }
 
@@ -231,7 +255,7 @@ function StatCard({ icon, label, value, sub, accent }: { icon: React.ReactNode; 
   );
 }
 
-function StatsGrid({ data }: { data: WeatherData }) {
+function StatsGrid({ data, cityName }: { data: WeatherData; cityName: string }) {
   const { current } = data;
   const uv = uvLabel(current.uvi);
   const stats: Array<{ icon: React.ReactNode; label: string; value: string; sub?: string; accent?: boolean }> = [
@@ -247,9 +271,15 @@ function StatsGrid({ data }: { data: WeatherData }) {
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
       <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">Current Conditions</h2>
+      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+        {generateStatsParagraph(cityName, current.feels_like, current.humidity, current.wind_speed, current.pressure)}
+      </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {stats.map((s: { icon: React.ReactNode; label: string; value: string; sub?: string; accent?: boolean }) => <StatCard key={s.label} {...s} />)}
       </div>
+      <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
+        {generateStatsAfter(cityName)}
+      </p>
     </motion.section>
   );
 }
@@ -287,11 +317,14 @@ function buildWardrobeCards(data: WeatherData): WardrobeCard[] {
   ];
 }
 
-function WhatToWear({ data }: { data: WeatherData }) {
+function WhatToWear({ data, cityName }: { data: WeatherData; cityName: string }) {
   const cards = buildWardrobeCards(data);
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
       <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">What to Wear Today</h2>
+      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+        {generateWearParagraph(cityName)}
+      </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {cards.map((card: WardrobeCard) => (
           <motion.div
@@ -316,6 +349,9 @@ function WhatToWear({ data }: { data: WeatherData }) {
           </motion.div>
         ))}
       </div>
+      <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
+        {generateWearAfter(cityName)}
+      </p>
     </motion.section>
   );
 }
@@ -328,7 +364,7 @@ const CITY_LANDMARKS: Record<string, string> = {
   tokyo: 'Mount Fuji', istanbul: 'the Bosphorus', cairo: 'the Great Pyramid', mumbai: 'the Gateway of India',
 };
 
-function WeatherNarrative({ data, cityName, timezone }: { data: WeatherData; cityName: string; timezone: string }) {
+function WeatherNarrative({ data, cityName, country, timezone }: { data: WeatherData; cityName: string; country: string; timezone: string }) {
   const { current, hourly, daily } = data;
   const landmark = CITY_LANDMARKS[cityName.toLowerCase()] ?? 'the horizon';
   const eveningTemp = hourly[5]?.temp ?? daily[0]?.temp_min ?? current.temp - 3;
@@ -341,6 +377,9 @@ function WeatherNarrative({ data, cityName, timezone }: { data: WeatherData; cit
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
       <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">Today&apos;s Weather Story</h2>
+      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+        {generateStoryParagraph(cityName)}
+      </p>
       <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#01411C] flex items-center justify-center flex-shrink-0">
@@ -349,6 +388,9 @@ function WeatherNarrative({ data, cityName, timezone }: { data: WeatherData; cit
           <p className="text-gray-700 leading-relaxed text-sm">{story}</p>
         </div>
       </div>
+      <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
+        {generateStoryAfter(cityName, country)}
+      </p>
     </motion.section>
   );
 }
@@ -379,7 +421,7 @@ function HourlyCard({ item, timezone }: { item: HourlyItem; timezone: string }) 
   );
 }
 
-function HourlyForecast({ data, timezone }: { data: WeatherData; timezone: string }) {
+function HourlyForecast({ data, timezone, cityName }: { data: WeatherData; timezone: string; cityName: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (dir: 'left' | 'right') => { scrollRef.current?.scrollBy({ left: dir === 'left' ? -200 : 200, behavior: 'smooth' }); };
 
@@ -396,9 +438,15 @@ function HourlyForecast({ data, timezone }: { data: WeatherData; timezone: strin
           </button>
         </div>
       </div>
+      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+        {generateHourlyParagraph(cityName)}
+      </p>
       <div ref={scrollRef} className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {data.hourly.map((item: HourlyItem) => <HourlyCard key={item.dt} item={item} timezone={timezone} />)}
       </div>
+      <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
+        {generateHourlyAfter(cityName)}
+      </p>
     </motion.section>
   );
 }
@@ -429,7 +477,7 @@ function DailyCard({ item, timezone, isToday }: { item: DailyItem; timezone: str
   );
 }
 
-function TenDayForecast({ data, timezone }: { data: WeatherData; timezone: string }) {
+function TenDayForecast({ data, timezone, cityName, country }: { data: WeatherData; timezone: string; cityName: string; country: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (dir: 'left' | 'right') => { scrollRef.current?.scrollBy({ left: dir === 'left' ? -280 : 280, behavior: 'smooth' }); };
 
@@ -446,16 +494,22 @@ function TenDayForecast({ data, timezone }: { data: WeatherData; timezone: strin
           </button>
         </div>
       </div>
+      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+        {generateTenDayParagraph(cityName)}
+      </p>
       <div ref={scrollRef} className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {data.daily.map((item: DailyItem, i: number) => <DailyCard key={item.dt} item={item} timezone={timezone} isToday={i === 0} />)}
       </div>
+      <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
+        {generateTenDayAfter(cityName, country)}
+      </p>
     </motion.section>
   );
 }
 
 // ─── Sun & Moon Section ─────────────────────────────────────────────────
 
-function SunMoonSection({ data, timezone }: { data: SunMoonData; timezone: string }) {
+function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timezone: string; cityName: string }) {
   const formatTime = (ts: number) =>
     new Date(ts * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: timezone });
 
@@ -473,6 +527,9 @@ function SunMoonSection({ data, timezone }: { data: SunMoonData; timezone: strin
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
       <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">Sun & Moon</h2>
+      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+        {generateSunMoonParagraph(cityName, data.sunrise ? formatTime(data.sunrise) : null, data.sunset ? formatTime(data.sunset) : null)}
+      </p>
 
       {/* Animated Sun Arc */}
       <div className="bg-amber-50 rounded-xl border border-amber-100 p-5 mb-4">
@@ -620,18 +677,24 @@ function SunMoonSection({ data, timezone }: { data: SunMoonData; timezone: strin
           </div>
         </div>
       </div>
+      <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
+        {generateSunMoonAfter(cityName)}
+      </p>
     </motion.section>
   );
 }
 
 // ─── Weather Alerts Banner ───────────────────────────────────────────────
 
-function AlertsBanner({ alerts, timezone }: { alerts: WeatherAlert[]; timezone: string }) {
+function AlertsBanner({ alerts, timezone, cityName }: { alerts: WeatherAlert[]; timezone: string; cityName: string }) {
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? alerts : alerts.slice(0, 1);
 
   return (
     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+      <p className="text-gray-700 leading-relaxed text-sm mb-3 px-1">
+        {generateAlertsParagraph(cityName)}
+      </p>
       {visible.map((alert: WeatherAlert) => (
         <div
           key={alert.id}
@@ -666,6 +729,9 @@ function AlertsBanner({ alerts, timezone }: { alerts: WeatherAlert[]; timezone: 
           {expanded ? 'Show less' : `+${alerts.length - 1} more alerts`}
         </button>
       )}
+      <p className="text-gray-600 leading-relaxed text-sm mt-3 px-1">
+        {generateAlertsAfter(cityName)}
+      </p>
     </motion.div>
   );
 }
@@ -686,6 +752,9 @@ function NearbyWeatherSection({
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
       <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">Nearby Weather Comparison</h2>
+      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+        {generateNearbyParagraph(currentCity)}
+      </p>
 
       {escape && (
         <div className="bg-emerald-50 rounded-xl border border-emerald-100 p-4 mb-4">
@@ -731,6 +800,9 @@ function NearbyWeatherSection({
           </tbody>
         </table>
       </div>
+      <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
+        {generateNearbyAfter(currentCity)}
+      </p>
     </motion.section>
   );
 }
@@ -1031,19 +1103,19 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
 
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Weather Alerts Banner */}
-        {alerts.length > 0 && <AlertsBanner alerts={alerts} timezone={timezone} />}
+        {alerts.length > 0 && <AlertsBanner alerts={alerts} timezone={timezone} cityName={cityName} />}
 
         <NavTabs active={activeTab} onChange={setActiveTab} />
 
         {activeTab === 'Today' && (loading ? <LoadingSkeleton /> : error ? <ErrorCard city={cityName} /> : weather && (
           <>
-            <HeroCard data={weather} cityName={cityName} timezone={timezone} />
-            <StatsGrid data={weather} />
-            {sunMoon && <SunMoonSection data={sunMoon} timezone={timezone} />}
-            <WhatToWear data={weather} />
-            <WeatherNarrative data={weather} cityName={cityName} timezone={timezone} />
-            <HourlyForecast data={weather} timezone={timezone} />
-            <TenDayForecast data={weather} timezone={timezone} />
+            <HeroCard data={weather} cityName={cityName} country={country} timezone={timezone} />
+            <StatsGrid data={weather} cityName={cityName} />
+            {sunMoon && <SunMoonSection data={sunMoon} timezone={timezone} cityName={cityName} />}
+            <WhatToWear data={weather} cityName={cityName} />
+            <WeatherNarrative data={weather} cityName={cityName} country={country} timezone={timezone} />
+            <HourlyForecast data={weather} timezone={timezone} cityName={cityName} />
+            <TenDayForecast data={weather} timezone={timezone} cityName={cityName} country={country} />
             {nearbyWeather.length > 0 && <NearbyWeatherSection nearby={nearbyWeather} currentCity={cityName} currentTemp={weather.current.temp} />}
           </>
         ))}
@@ -1093,6 +1165,9 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
 
         {activeTab === 'Monthly' && (loading ? <LoadingSkeleton /> : error ? <ErrorCard city={cityName} /> : historical && climate && (
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-4">
+            <p className="text-gray-700 leading-relaxed text-sm px-1">
+              {generateMonthlyParagraph(cityName)}
+            </p>
             <div className="bg-gradient-to-br from-blue-50 to-sky-50 rounded-2xl border border-blue-100 p-5">
               <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><Sun size={16} className="text-amber-500" /> Climate Classification</h3>
               <p className="text-gray-700">{capitalize(climate.type)}</p>
@@ -1123,11 +1198,17 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
                 </div>
               </div>
             )}
+            <p className="text-gray-600 leading-relaxed text-sm px-1">
+              {generateMonthlyAfter(cityName)}
+            </p>
           </motion.div>
         ))}
 
         {activeTab === 'History' && (loading ? <LoadingSkeleton /> : error ? <ErrorCard city={cityName} /> : historical && (
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-4">
+            <p className="text-gray-700 leading-relaxed text-sm px-1">
+              {generateHistoryParagraph(cityName)}
+            </p>
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
               <h3 className="font-bold text-gray-800 mb-3">Historical Averages for Today</h3>
               <div className="grid grid-cols-3 gap-4 text-center">
@@ -1145,6 +1226,9 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
                 </div>
               </div>
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm px-1">
+              {generateHistoryAfter(cityName)}
+            </p>
           </motion.div>
         ))}
 
@@ -1153,13 +1237,31 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-4">
             {aqi ? (
               <>
+                <p className="text-gray-700 leading-relaxed text-sm px-1">
+                  {generateAQIOverviewParagraph(cityName, aqi.aqi, aqi.level)}
+                </p>
                 <AQIGaugeCard aqi={aqi} />
+                <p className="text-gray-600 leading-relaxed text-sm px-1">
+                  {generateAQIOverviewAfter(cityName)}
+                </p>
+                <p className="text-gray-700 leading-relaxed text-sm px-1">
+                  {generatePollutantsParagraph(cityName)}
+                </p>
                 <AQIBreakdownCard aqi={aqi} />
                 <AQISourcesCard aqi={aqi} />
+                <p className="text-gray-600 leading-relaxed text-sm px-1">
+                  {generatePollutantsAfter(cityName)}
+                </p>
+                <p className="text-gray-700 leading-relaxed text-sm px-1">
+                  {generateAQIHealthParagraph(cityName)}
+                </p>
                 <AQIHealthAdviceCard aqi={aqi} />
                 <AQIBestTimeCard />
                 <AQIPurificationCard />
                 <AQIHistoryCard aqi={aqi} />
+                <p className="text-gray-600 leading-relaxed text-sm px-1">
+                  {generateAQIHealthAfter(cityName)}
+                </p>
                 <AQIAffiliateCard />
               </>
             ) : <LoadingSkeleton />}
