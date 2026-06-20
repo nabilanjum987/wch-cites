@@ -14,6 +14,16 @@ import NationalEvents from '../../../../../components/city/NationalEvents';
 import TourAffiliates from '../../../../../components/city/TourAffiliates';
 import { fetchRecurringEvents } from '../../../../../lib/apis/events';
 import type { City, CityEvent, LevelTab, TimeTab, EventCategory, RecurringEvent } from '../../../../../types/city';
+import {
+  generateLiveNowParagraph, generateLiveNowAfter,
+  generateMapParagraph, generateMapAfter,
+  generateTodayParagraph, generateTodayAfter,
+  generateUpcomingParagraph, generateUpcomingAfter,
+  generateRecurringParagraph, generateRecurringAfter,
+  generateNationalParagraph, generateNationalAfter,
+  generateSubmitParagraph, generateSubmitAfter,
+  generateTourParagraph, generateTourAfter,
+} from '../../../../../lib/paragraphs/events';
 
 interface Props {
   city: City;
@@ -462,11 +472,29 @@ export default function EventsPage({ city }: Props) {
         </AnimatePresence>
 
         {/* ── live now ── */}
+        {!loading && liveEvents.length > 0 && (
+          <p className="text-gray-700 leading-relaxed text-sm mb-3">
+            {generateLiveNowParagraph(city.name)}
+          </p>
+        )}
         {!loading && <LiveNowSection events={liveEvents} />}
+        {!loading && liveEvents.length > 0 && (
+          <p className="text-gray-600 leading-relaxed text-sm mb-6">
+            {generateLiveNowAfter(city.name)}
+          </p>
+        )}
 
         {/* ── full-width openstreetmap ── */}
         {!loading && filteredEvents.length > 0 && (
-          <EventsMap events={filteredEvents} city={city} primaryColor={primaryColor} />
+          <>
+            <p className="text-gray-700 leading-relaxed text-sm mb-3">
+              {generateMapParagraph(city.name)}
+            </p>
+            <EventsMap events={filteredEvents} city={city} primaryColor={primaryColor} />
+            <p className="text-gray-600 leading-relaxed text-sm mt-3 mb-3">
+              {generateMapAfter(city.name)}
+            </p>
+          </>
         )}
 
         {/* ── loading skeletons ── */}
@@ -493,11 +521,17 @@ export default function EventsPage({ city }: Props) {
                 <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">{todayEvents.length}</span>
               </h2>
             </div>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateTodayParagraph(city.name)}
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {todayEvents.map((ev) => (
                 <EventCard key={ev.id} event={ev} primaryColor={primaryColor} />
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateTodayAfter(city.name)}
+            </p>
           </motion.section>
         )}
 
@@ -515,11 +549,17 @@ export default function EventsPage({ city }: Props) {
                 <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">{upcomingEvents.length}</span>
               </h2>
             </div>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateUpcomingParagraph(city.name)}
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {upcomingEvents.map((ev) => (
                 <EventCard key={ev.id} event={ev} primaryColor={primaryColor} />
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateUpcomingAfter(city.name)}
+            </p>
           </motion.section>
         )}
 
@@ -549,16 +589,40 @@ export default function EventsPage({ city }: Props) {
         )}
 
         {/* ── recurring events ── */}
+        <p className="text-gray-700 leading-relaxed text-sm mb-3">
+          {generateRecurringParagraph(city.name)}
+        </p>
         <RecurringEvents events={recurringEvents} primaryColor={primaryColor} />
+        <p className="text-gray-600 leading-relaxed text-sm mt-3 mb-6">
+          {generateRecurringAfter(city.name)}
+        </p>
 
         {/* ── national events ── */}
+        <p className="text-gray-700 leading-relaxed text-sm mb-3">
+          {generateNationalParagraph(city.country)}
+        </p>
         <NationalEvents primaryColor={primaryColor} />
+        <p className="text-gray-600 leading-relaxed text-sm mt-3 mb-6">
+          {generateNationalAfter(city.country)}
+        </p>
 
         {/* ── submit your event ── */}
+        <p className="text-gray-700 leading-relaxed text-sm mb-3">
+          {generateSubmitParagraph(city.name)}
+        </p>
         <SubmitEvent cityName={city.name} countryCode={city.country_code} primaryColor={primaryColor} />
+        <p className="text-gray-600 leading-relaxed text-sm mt-3 mb-6">
+          {generateSubmitAfter(city.name)}
+        </p>
 
         {/* ── tour booking affiliates ── */}
+        <p className="text-gray-700 leading-relaxed text-sm mb-3">
+          {generateTourParagraph(city.name)}
+        </p>
         <TourAffiliates cityName={city.name} primaryColor={primaryColor} />
+        <p className="text-gray-600 leading-relaxed text-sm mt-3">
+          {generateTourAfter(city.name)}
+        </p>
       </div>
     </div>
   );
