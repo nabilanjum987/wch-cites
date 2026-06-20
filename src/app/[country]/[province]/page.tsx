@@ -3,6 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import {
+  generateOverviewParagraph, generateOverviewAfter,
+  generateCitiesParagraph, generateCitiesAfter,
+  generateWeatherParagraph, generateWeatherAfter,
+  generateEconomyParagraph, generateEconomyAfter,
+  generateIndustriesParagraph, generateIndustriesAfter,
+  generateProductsParagraph, generateProductsAfter,
+  generateLandmarksParagraph, generateLandmarksAfter,
+  generateEmergencyParagraph, generateEmergencyAfter,
+} from '../../../lib/paragraphs/province';
 
 // === TYPES ===
 interface Province {
@@ -270,6 +280,9 @@ export default function ProvincePage() {
         {/* Province Facts */}
         <motion.section variants={fadeUp} initial="hidden" animate="visible">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Province Overview</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateOverviewParagraph(province.name, province.country, province.capital)}
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-xl border border-gray-100 p-4">
               <p className="text-sm text-gray-400">Capital</p>
@@ -288,12 +301,18 @@ export default function ProvincePage() {
               <p className="text-xl font-bold text-gray-900">{province.gdpContribution}</p>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateOverviewAfter(province.name, province.country)}
+          </p>
         </motion.section>
 
         {/* Cities Grid */}
         {cities.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Major Cities</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateCitiesParagraph(province.name)}
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {cities.map(city => (
                 <a
@@ -311,6 +330,9 @@ export default function ProvincePage() {
                 </a>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateCitiesAfter(province.name)}
+            </p>
           </motion.section>
         )}
 
@@ -318,6 +340,9 @@ export default function ProvincePage() {
         {cities.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Weather Across Province</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateWeatherParagraph(province.name)}
+            </p>
             <div className="bg-white rounded-2xl border border-gray-100 p-4">
               <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                 {cities.slice(0, 6).map(city => (
@@ -329,12 +354,18 @@ export default function ProvincePage() {
                 ))}
               </div>
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateWeatherAfter(province.name)}
+            </p>
           </motion.section>
         )}
 
         {/* Province Economy */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <h2 className="text-lg font-bold text-gray-900 mb-4">Province Economy</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateEconomyParagraph(province.name, province.country)}
+          </p>
           <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-6 text-white">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
@@ -352,12 +383,18 @@ export default function ProvincePage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateEconomyAfter(province.name, province.country)}
+          </p>
         </motion.section>
 
         {/* Famous Industries */}
         {industries.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Major Industries</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateIndustriesParagraph(province.name)}
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {industries.map(ind => (
                 <div key={ind.name} className="bg-white rounded-xl border border-gray-100 p-4">
@@ -367,6 +404,9 @@ export default function ProvincePage() {
                 </div>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateIndustriesAfter(province.name, province.country)}
+            </p>
           </motion.section>
         )}
 
@@ -374,6 +414,9 @@ export default function ProvincePage() {
         {products.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Famous Products</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateProductsParagraph(province.name)}
+            </p>
             <div className="flex flex-wrap gap-3">
               {products.map(p => (
                 <div
@@ -388,12 +431,18 @@ export default function ProvincePage() {
                 </div>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateProductsAfter(province.name)}
+            </p>
           </motion.section>
         )}
 
         {/* Province Landmarks */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <h2 className="text-lg font-bold text-gray-900 mb-4">Notable Landmarks</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateLandmarksParagraph(province.name, province.capital)}
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
               <div className="aspect-video bg-gray-200 flex items-center justify-center text-4xl">🕌</div>
@@ -424,11 +473,17 @@ export default function ProvincePage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateLandmarksAfter(province.name, province.capital)}
+          </p>
         </motion.section>
 
         {/* Emergency Contacts */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <h2 className="text-lg font-bold text-gray-900 mb-4">Emergency Contacts</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateEmergencyParagraph(province.name, province.country)}
+          </p>
           <div className="grid grid-cols-3 gap-4">
             <a href={`tel:${emergency.police}`} className="bg-red-600 hover:bg-red-700 text-white rounded-xl p-4 text-center transition-colors">
               <span className="text-3xl">🚔</span>
@@ -446,6 +501,9 @@ export default function ProvincePage() {
               <p className="text-2xl font-bold">{emergency.fire}</p>
             </a>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateEmergencyAfter(province.name, province.country)}
+          </p>
         </motion.section>
 
         {/* Back to Country */}

@@ -3,6 +3,18 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import {
+  generateCitiesWeatherParagraph, generateCitiesWeatherAfter,
+  generateFactsParagraph, generateFactsAfter,
+  generateLiveDataParagraph, generateLiveDataAfter,
+  generateProvincesParagraph, generateProvincesAfter,
+  generatePersonalitiesParagraph, generatePersonalitiesAfter,
+  generatePlacesParagraph, generatePlacesAfter,
+  generateEconomyDashboardParagraph, generateEconomyDashboardAfter,
+  generateTeamsParagraph, generateTeamsAfter,
+  generateHolidaysParagraph, generateHolidaysAfter,
+  generateEmergencyParagraph, generateEmergencyAfter,
+} from '../../lib/paragraphs/country';
 
 // === TYPES ===
 interface Country {
@@ -412,6 +424,9 @@ export default function CountryPage() {
         {/* Multi-City Weather */}
         <motion.section variants={fadeUp} initial="hidden" animate="visible">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Major Cities Weather</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateCitiesWeatherParagraph(country.name)}
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {cities.map(city => (
               <a
@@ -426,11 +441,17 @@ export default function CountryPage() {
               </a>
             ))}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateCitiesWeatherAfter(country.name)}
+          </p>
         </motion.section>
 
         {/* Country Facts */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <h2 className="text-lg font-bold text-gray-900 mb-4">Country Facts</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateFactsParagraph(country.name, country.capital)}
+          </p>
           <div className="bg-white rounded-2xl border border-gray-100 p-6">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div>
@@ -459,11 +480,17 @@ export default function CountryPage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateFactsAfter(country.name)}
+          </p>
         </motion.section>
 
         {/* Live Data Strip */}
         {economy && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateLiveDataParagraph(country.name)}
+            </p>
             <div className="bg-gray-900 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-6">
                 <div className="text-center">
@@ -484,6 +511,9 @@ export default function CountryPage() {
                 <p className="text-sm font-bold text-amber-400">Maghrib 6:45 PM</p>
               </div>
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateLiveDataAfter(country.name)}
+            </p>
           </motion.section>
         )}
 
@@ -491,6 +521,9 @@ export default function CountryPage() {
         {provinces.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">States / Provinces</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateProvincesParagraph(country.name)}
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {provinces.map(prov => (
                 <a
@@ -507,6 +540,9 @@ export default function CountryPage() {
                 </a>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateProvincesAfter(country.name)}
+            </p>
           </motion.section>
         )}
 
@@ -514,6 +550,9 @@ export default function CountryPage() {
         {personalities.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Famous Personalities</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generatePersonalitiesParagraph(country.name)}
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {personalities.map(p => (
                 <a
@@ -530,6 +569,9 @@ export default function CountryPage() {
                 </a>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generatePersonalitiesAfter(country.name)}
+            </p>
           </motion.section>
         )}
 
@@ -537,6 +579,9 @@ export default function CountryPage() {
         {landmarks.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Famous Places</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generatePlacesParagraph(country.name)}
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {landmarks.map(l => (
                 <div key={l.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden">
@@ -551,6 +596,9 @@ export default function CountryPage() {
                 </div>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generatePlacesAfter(country.name)}
+            </p>
           </motion.section>
         )}
 
@@ -558,6 +606,9 @@ export default function CountryPage() {
         {economy && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Economy Dashboard</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateEconomyDashboardParagraph(country.name)}
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-blue-50 rounded-xl p-4">
                 <p className="text-sm text-gray-500">GDP</p>
@@ -576,6 +627,9 @@ export default function CountryPage() {
                 <p className="text-2xl font-bold text-red-600">{economy.unemployment}</p>
               </div>
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateEconomyDashboardAfter(country.name)}
+            </p>
           </motion.section>
         )}
 
@@ -583,6 +637,9 @@ export default function CountryPage() {
         {teams.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">National Teams</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateTeamsParagraph(country.name)}
+            </p>
             <div className="grid md:grid-cols-3 gap-4">
               {teams.map(team => (
                 <div key={team.sport} className="bg-white rounded-xl border border-gray-100 p-4">
@@ -601,6 +658,9 @@ export default function CountryPage() {
                 </div>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateTeamsAfter(country.name)}
+            </p>
           </motion.section>
         )}
 
@@ -608,6 +668,9 @@ export default function CountryPage() {
         {holidays.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">National Holidays & Events</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateHolidaysParagraph(country.name)}
+            </p>
             <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
               {holidays.map((h, i) => (
                 <div key={i} className={`flex items-center justify-between p-4 ${i !== holidays.length - 1 ? 'border-b border-gray-100' : ''}`}>
@@ -619,12 +682,18 @@ export default function CountryPage() {
                 </div>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateHolidaysAfter(country.name)}
+            </p>
           </motion.section>
         )}
 
         {/* Emergency Contacts */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <h2 className="text-lg font-bold text-gray-900 mb-4">Emergency Contacts</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateEmergencyParagraph(country.name)}
+          </p>
           <div className="grid grid-cols-3 gap-4">
             <a href={`tel:${emergency.police}`} className="bg-red-600 hover:bg-red-700 text-white rounded-xl p-4 text-center transition-colors">
               <span className="text-3xl">🚔</span>
@@ -660,6 +729,9 @@ export default function CountryPage() {
                 </a>
               ))}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateEmergencyAfter(country.name)}
+            </p>
           </motion.section>
         )}
       </main>
