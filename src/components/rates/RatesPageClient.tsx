@@ -43,6 +43,20 @@ import {
   FLAG_COLORS,
   type CurrencyInfo,
 } from '../../types/city';
+import {
+  generateKaratParagraph, generateKaratAfter,
+  generateChartParagraph, generateChartAfter,
+  generateSummaryParagraph, generateSummaryAfter,
+  generateOilSectionParagraph, generateOilSectionAfter,
+  generateCryptoParagraph, generateCryptoAfter,
+  generateCurrencyParagraph, generateCurrencyAfter,
+  generateStocksParagraph, generateStocksAfter,
+  generateInterestParagraph, generateInterestAfter,
+  generateCommoditiesParagraph, generateCommoditiesAfter,
+  generateStressParagraph, generateStressAfter,
+  generatePurchasingParagraph, generatePurchasingAfter,
+  generateNewsParagraph, generateNewsAfter,
+} from '../../lib/paragraphs/rates';
 
 const KARATS = [
   { label: '24K', key: 'k24' as const, purity: '99.9%' },
@@ -620,6 +634,10 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   </div>
                 </div>
 
+                <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                  {generateKaratParagraph(countryName, currency.code, rates?.per_gram ?? null)}
+                </p>
+
                 <div className="space-y-2">
                   {KARATS.map((k) => {
                     const val = getUnitValue(k.key);
@@ -654,6 +672,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     );
                   })}
                 </div>
+                <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                  {generateKaratAfter(countryName)}
+                </p>
               </div>
 
               {/* Chart */}
@@ -676,6 +697,10 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     </div>
                   </div>
                 </div>
+
+                <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                  {generateChartParagraph(countryName)}
+                </p>
 
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={rates.history} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
@@ -729,6 +754,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     />
                   </AreaChart>
                 </ResponsiveContainer>
+                <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                  {generateChartAfter(countryName)}
+                </p>
               </div>
 
               {/* Today's Summary */}
@@ -736,6 +764,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <h2 className="text-lg font-semibold text-gray-900 mb-5">
                   Today's Market Summary ({currency.code})
                 </h2>
+                <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                  {generateSummaryParagraph(countryName, currency.code)}
+                </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {[
                     { label: 'Open', value: fmt(rates.open, sym), sub: currency.code },
@@ -778,6 +809,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     />
                   </div>
                 </div>
+                <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                  {generateSummaryAfter(countryName, currency.code)}
+                </p>
               </div>
             </div>
 
@@ -852,6 +886,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
               <Droplet className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">Oil & Energy Prices</h2>
             </div>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateOilSectionParagraph(countryName)}
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {oilPrices.map((oil) => {
                 const isUp = oil.change_24h >= 0;
@@ -893,6 +930,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 </div>
               </div>
             )}
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateOilSectionAfter(countryName)}
+            </p>
           </div>
 
           {/* SECTION 3 — CRYPTOCURRENCY */}
@@ -916,6 +956,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   </div>
                 </div>
               </div>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                {generateCryptoParagraph(countryName, currency.code)}
+              </p>
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
@@ -957,6 +1000,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
               <p className="text-xs text-gray-400 mt-2 text-right">
                 Prices in {currency.name} · Fear & Greed Index measures market sentiment
               </p>
+              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                {generateCryptoAfter(countryName)}
+              </p>
             </div>
           )}
 
@@ -967,6 +1013,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <DollarSign className="w-5 h-5 text-gray-600" />
                 <h2 className="text-xl font-semibold text-gray-900">Currency Exchange Rates (vs USD)</h2>
               </div>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                {generateCurrencyParagraph(countryName, currency.code)}
+              </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                   <div className="overflow-x-auto">
@@ -1035,6 +1084,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   </ResponsiveContainer>
                 </div>
               )}
+              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                {generateCurrencyAfter(countryName, currency.code)}
+              </p>
             </div>
           )}
 
@@ -1045,6 +1097,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <BarChart3 className="w-5 h-5 text-gray-600" />
                 <h2 className="text-xl font-semibold text-gray-900">{countryName} Stock Market</h2>
               </div>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                {generateStocksParagraph(countryName)}
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {stockIndices.filter(s => s.country === countrySlug).map((idx) => {
                   const isUp = idx.change >= 0;
@@ -1123,6 +1178,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   </div>
                 </div>
               )}
+              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                {generateStocksAfter(countryName)}
+              </p>
             </div>
           )}
 
@@ -1133,6 +1191,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <Percent className="w-5 h-5 text-gray-600" />
                 <h2 className="text-xl font-semibold text-gray-900">{interestRate.country} Interest Rates</h2>
               </div>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                {generateInterestParagraph(countryName, interestRate.rate)}
+              </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                   <div className="flex items-center justify-between mb-4">
@@ -1168,6 +1229,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   <p className="text-xs text-gray-500 mt-2">Per month: {sym}{calculateSavings(100000, interestRate.rate).monthlyReturn.toLocaleString()}</p>
                 </div>
               </div>
+              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                {generateInterestAfter(countryName)}
+              </p>
             </div>
           )}
 
@@ -1178,6 +1242,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <Factory className="w-5 h-5 text-gray-600" />
                 <h2 className="text-xl font-semibold text-gray-900">Commodity Prices</h2>
               </div>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                {generateCommoditiesParagraph(countryName)}
+              </p>
 
               {/* Pakistan Relevant */}
               <div className="mb-6">
@@ -1242,6 +1309,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   ))}
                 </div>
               </div>
+              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                {generateCommoditiesAfter(countryName)}
+              </p>
             </div>
           )}
 
@@ -1251,6 +1321,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
               <AlertTriangle className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">Financial Stress & Misery Index</h2>
             </div>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateStressParagraph(countryName, miseryData?.miseryIndex ?? null)}
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FinancialStressMeter data={stressData} />
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -1284,6 +1357,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 )}
               </div>
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateStressAfter(countryName, currency.code)}
+            </p>
           </div>
 
           {/* SECTION 9 — PURCHASING POWER CALCULATOR */}
@@ -1293,6 +1369,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <Clock className="w-5 h-5 text-gray-600" />
                 <h2 className="text-xl font-semibold text-gray-900">Purchasing Power Over Time</h2>
               </div>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                {generatePurchasingParagraph(countryName, currency.code)}
+              </p>
               <PurchasingPowerCalculator
                 inflation={miseryData?.inflation || 10}
                 currencyRate={currency.rate_to_usd}
@@ -1300,6 +1379,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 goldPricePerGram={rates.per_gram}
                 bitcoinPrice={cryptoData.cryptos.find(c => c.id === 'bitcoin')?.price_usd || 67000}
               />
+              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                {generatePurchasingAfter(countryName, currency.code)}
+              </p>
             </div>
           )}
 
@@ -1310,6 +1392,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <Newspaper className="w-5 h-5 text-gray-600" />
                 <h2 className="text-xl font-semibold text-gray-900">{countryName} Financial News</h2>
               </div>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                {generateNewsParagraph(countryName)}
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {financialNews.map((article, idx) => (
                   <a key={idx} href={article.url} target="_blank" rel="noopener noreferrer" className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
@@ -1326,6 +1411,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   </a>
                 ))}
               </div>
+              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                {generateNewsAfter(countryName)}
+              </p>
             </div>
           )}
           </>
