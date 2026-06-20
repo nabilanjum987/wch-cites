@@ -20,6 +20,18 @@ import NewsSearch from './NewsSearch';
 import VideoNews from './VideoNews';
 import SocialPulse from './SocialPulse';
 import WeekInReview from './WeekInReview';
+import {
+  generateSearchParagraph, generateSearchAfter,
+  generateTopStoriesParagraph, generateTopStoriesAfter,
+  generateMoreStoriesParagraph, generateMoreStoriesAfter,
+  generateLiveFeedParagraph, generateLiveFeedAfter,
+  generateArchiveParagraph, generateArchiveAfter,
+  generateVideoParagraph, generateVideoAfter,
+  generateSocialParagraph, generateSocialAfter,
+  generateWeekParagraph, generateWeekAfter,
+  generateImpactParagraph, generateImpactAfter,
+  generateSourcesParagraph, generateSourcesAfter,
+} from '../../lib/paragraphs/news';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   government: Landmark,
@@ -505,7 +517,13 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                 <Search className="w-5 h-5 text-emerald-600" />
                 Search News
               </h2>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                {generateSearchParagraph(cityData?.name || city)}
+              </p>
               <NewsSearch cityName={cityData?.name || ''} country={cityData?.country || ''} />
+              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                {generateSearchAfter(cityData?.name || city)}
+              </p>
             </motion.section>
 
             {/* Main content: Top Stories + Live Feed */}
@@ -516,6 +534,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                   <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
                   Top Stories
                 </h2>
+                <p className="text-gray-700 leading-relaxed text-sm">
+                  {generateTopStoriesParagraph(cityData?.name || city)}
+                </p>
 
                 {loading ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -611,6 +632,12 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                   </>
                 )}
 
+                {!loading && (
+                  <p className="text-gray-600 leading-relaxed text-sm">
+                    {generateTopStoriesAfter(cityData?.name || city)}
+                  </p>
+                )}
+
                 {/* More Stories */}
                 {moreStories.length > 0 && !loading && (
                   <section>
@@ -618,6 +645,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
                       More Stories
                     </h2>
+                    <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                      {generateMoreStoriesParagraph(cityData?.name || city)}
+                    </p>
                     <div className="space-y-3">
                       {moreStories.map((article, idx) => (
                         <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: idx * 0.05 }}>
@@ -653,6 +683,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                         </motion.div>
                       ))}
                     </div>
+                    <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                      {generateMoreStoriesAfter(cityData?.name || city)}
+                    </p>
                   </section>
                 )}
               </div>
@@ -677,6 +710,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       </div>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">Auto-refreshes every 15 min</p>
+                    <p className="text-xs text-gray-600 leading-relaxed mt-2">
+                      {generateLiveFeedParagraph(cityData?.name || city)}
+                    </p>
                   </div>
 
                   {loading ? (
@@ -754,6 +790,10 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               </div>
             </div>
 
+            <p className="text-gray-600 leading-relaxed text-sm">
+              {generateLiveFeedAfter(cityData?.name || city)}
+            </p>
+
             {/* Empty state */}
             {!loading && articles.length === 0 && (
               <div className="text-center py-16">
@@ -776,6 +816,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             <Calendar className="w-5 h-5 text-emerald-600" />
             Archive by Date
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateArchiveParagraph(cityData?.name || city)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Calendar */}
@@ -922,6 +965,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               )}
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateArchiveAfter(cityData?.name || city)}
+          </p>
         </motion.section>
 
         {/* Video News */}
@@ -935,7 +981,13 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             <Play className="w-5 h-5 text-red-600" />
             Video News
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateVideoParagraph(cityData?.country || country)}
+          </p>
           <VideoNews countrySlug={country || ''} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateVideoAfter(cityData?.country || country)}
+          </p>
         </motion.section>
 
         {/* Social Pulse */}
@@ -949,7 +1001,13 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             <TrendingUp className="w-5 h-5 text-emerald-600" />
             Social Pulse
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateSocialParagraph(cityData?.name || city)}
+          </p>
           <SocialPulse cityName={cityData?.name || ''} topics={generateTrendingTopics(cityData?.name || '', articles)} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateSocialAfter(cityData?.name || city)}
+          </p>
         </motion.section>
 
         {/* Week in Review */}
@@ -963,7 +1021,13 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             <Calendar className="w-5 h-5 text-emerald-600" />
             Week in Review
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateWeekParagraph(cityData?.name || city)}
+          </p>
           <WeekInReview cityName={cityData?.name || ''} articles={generateWeekInReview(articles)} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateWeekAfter(cityData?.name || city)}
+          </p>
         </motion.section>
 
         {/* Global Impact on City */}
@@ -977,6 +1041,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
               How World News Affects {cityData?.name || 'Your City'} Today
             </h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateImpactParagraph(cityData?.name || city)}
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {globalImpacts.map((impact, idx) => {
                 const style = IMPACT_COLORS[impact.impact];
@@ -1006,6 +1073,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                 );
               })}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateImpactAfter(cityData?.name || city)}
+            </p>
           </motion.section>
         )}
 
@@ -1019,6 +1089,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
             News Sources
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateSourcesParagraph(cityData?.name || city, cityData?.country || country)}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Local sources */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
@@ -1080,6 +1153,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               </div>
             )}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateSourcesAfter(cityData?.name || city, cityData?.country || country)}
+          </p>
         </motion.section>
       </div>
     </div>
