@@ -30,6 +30,14 @@ import {
   getDailyQuote,
   PRAYER_GUIDES,
 } from '../../../../../lib/apis/faiths';
+import {
+  generateNextPrayerParagraph, generateNextPrayerAfter,
+  generatePrayerTableParagraph, generatePrayerTableAfter,
+  generateQiblaParagraph, generateQiblaAfter,
+  generateWeeklyParagraph, generateWeeklyAfter,
+  generateHadithParagraph, generateHadithAfter,
+  generateHijriParagraph, generateHijriAfter,
+} from '../../../../../lib/paragraphs/prayer';
 
 type PrayerTimes = {
   Fajr: string;
@@ -225,19 +233,34 @@ export default function PrayerTimesPage() {
               {/* Countdown Rings */}
               <Card className="p-6 mb-6">
                 <SectionTitle icon={Clock} title="Next Prayer" subtitle={nextPrayer} />
+                <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                  {generateNextPrayerParagraph(city.name, nextPrayer)}
+                </p>
                 <div className="flex flex-wrap justify-center gap-6">
                 </div>
+                <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                  {generateNextPrayerAfter(city.name, nextPrayer)}
+                </p>
               </Card>
 
               {/* Prayer Times Table */}
               <Card className="p-6 mb-6">
                 <SectionTitle icon={Clock} title="Prayer Times Today" />
+                <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                  {generatePrayerTableParagraph(city.name, times)}
+                </p>
                 <PrayerTable rows={prayerRows.map((p) => ({ name: p.name, arabicName: p.name, time: p.time, type: 'fard' as const }))} />
+                <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                  {generatePrayerTableAfter(city.name)}
+                </p>
               </Card>
 
               {/* Qibla & Azan */}
               <Card className="p-6 mb-6">
                 <SectionTitle icon={MapPin} title="Qibla Direction" />
+                <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                  {generateQiblaParagraph(city.name, qiblaDirection)}
+                </p>
                 <div className="flex flex-col md:flex-row items-center justify-around gap-6">
                   <QiblaCompass lat={city.lat} lng={city.lng} cityName={city.name} />
                   <div className="text-center">
@@ -248,30 +271,48 @@ export default function PrayerTimesPage() {
                     </div>
                   </div>
                 </div>
+                <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                  {generateQiblaAfter(city.name)}
+                </p>
               </Card>
 
               {/* Weekly Times */}
               <Card className="p-6 mb-6">
                 <SectionTitle icon={Calendar} title="Weekly Prayer Times" />
+                <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                  {generateWeeklyParagraph(city.name)}
+                </p>
                 <WeeklyTable
                   weekData={weeklyData}
               />
+                <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                  {generateWeeklyAfter(city.name, city.country)}
+                </p>
               </Card>
 
               {/* Hadith */}
               {hadith && (
                 <Card className="p-6 mb-6">
                   <SectionTitle title="Daily Hadith" />
+                  <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                    {generateHadithParagraph(city.name)}
+                  </p>
                   <div className="bg-emerald-50 rounded-xl p-4">
                     <p className="text-gray-700 text-sm italic">{hadith.text.substring(0, 200)}...</p>
                     <p className="text-xs text-emerald-600 mt-2">{hadith.narrator} - {hadith.book}</p>
                   </div>
+                  <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                    {generateHadithAfter(city.name)}
+                  </p>
                 </Card>
               )}
 
               {/* Hijri Calendar */}
               <Card className="p-6">
                 <SectionTitle icon={Calendar} title="Islamic Calendar" />
+                <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                  {generateHijriParagraph(city.name, todayData?.date?.hijri?.month?.en ?? null, todayData?.date?.hijri?.date ?? null)}
+                </p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                   {HIJRI_MONTHS.map((m, i) => (
                     <div
@@ -287,6 +328,9 @@ export default function PrayerTimesPage() {
                     </div>
                 ))}
                 </div>
+                <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                  {generateHijriAfter(city.name)}
+                </p>
               </Card>
             </motion.div>
           )}
