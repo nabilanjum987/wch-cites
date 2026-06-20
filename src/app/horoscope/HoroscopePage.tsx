@@ -14,6 +14,18 @@ import ChineseZodiac from '../../components/city/NationalEvents';
 import VedicPanchang from '../../components/city/VedicPanchang';
 import { fetchSkyRightNow } from '../../lib/apis/astro';
 import type { ZodiacSign } from '../../types/horoscope';
+import {
+  generateSkyParagraph, generateSkyAfter,
+  generateZodiacGridParagraph, generateZodiacGridAfter,
+  generateNumerologyParagraph, generateNumerologyAfter,
+  generateTarotParagraph, generateTarotAfter,
+  generateChineseZodiacParagraph, generateChineseZodiacAfter,
+  generatePanchangParagraph, generatePanchangAfter,
+  generateMoonCalendarParagraph, generateMoonCalendarAfter,
+  generateBirthChartParagraph, generateBirthChartAfter,
+  generateCompatibilityParagraph, generateCompatibilityAfter,
+  generateAffiliatesParagraph, generateAffiliatesAfter,
+} from '../../lib/paragraphs/horoscope';
 
 export default function HoroscopePage() {
   const [selectedSign, setSelectedSign] = useState<ZodiacSign | null>(null);
@@ -82,39 +94,79 @@ export default function HoroscopePage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-6">
+      <div className="max-w-5xl mx-auto px-4 py-6 space-y-8">
         {/* Section 1 — Sky Right Now */}
-        <SkyRightNow data={skyData} primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateSkyParagraph()}</p>
+          <SkyRightNow data={skyData} primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateSkyAfter()}</p>
+        </div>
 
         {/* Section 2 — All 12 Western Signs Grid */}
-        <ZodiacSignsGrid
-          onSignClick={(sign) => setSelectedSign(sign)}
-          primaryColor={primaryColor}
-        />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateZodiacGridParagraph()}</p>
+          <ZodiacSignsGrid
+            onSignClick={(sign) => setSelectedSign(sign)}
+            primaryColor={primaryColor}
+          />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateZodiacGridAfter()}</p>
+        </div>
 
         {/* Section 3 — Numerology */}
-        <Numerology primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateNumerologyParagraph()}</p>
+          <Numerology primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateNumerologyAfter()}</p>
+        </div>
 
         {/* Section 4 — Tarot Card of the Day */}
-        <TarotCardOfDay primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateTarotParagraph()}</p>
+          <TarotCardOfDay primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateTarotAfter()}</p>
+        </div>
 
         {/* Section 5 — Chinese Zodiac 2025 */}
-        <ChineseZodiac primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateChineseZodiacParagraph()}</p>
+          <ChineseZodiac primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateChineseZodiacAfter()}</p>
+        </div>
 
         {/* Section 6 — Vedic Panchang */}
-        <VedicPanchang primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generatePanchangParagraph()}</p>
+          <VedicPanchang primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generatePanchangAfter()}</p>
+        </div>
 
         {/* Section 7 — Moon Calendar */}
-        <MoonCalendar primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateMoonCalendarParagraph()}</p>
+          <MoonCalendar primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateMoonCalendarAfter()}</p>
+        </div>
 
         {/* Section 8 — Birth Chart Calculator */}
-        <BirthChartCalculator primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateBirthChartParagraph()}</p>
+          <BirthChartCalculator primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateBirthChartAfter()}</p>
+        </div>
 
         {/* Section 9 — Compatibility Finder */}
-        <CompatibilityFinder primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateCompatibilityParagraph()}</p>
+          <CompatibilityFinder primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateCompatibilityAfter()}</p>
+        </div>
 
         {/* Section 10 — Affiliates */}
-        <Affiliates primaryColor={primaryColor} />
+        <div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateAffiliatesParagraph()}</p>
+          <Affiliates primaryColor={primaryColor} />
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateAffiliatesAfter()}</p>
+        </div>
 
         {/* Footer note */}
         <motion.div
