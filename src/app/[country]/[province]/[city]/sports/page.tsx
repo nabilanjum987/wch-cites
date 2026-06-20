@@ -3,6 +3,18 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  generateNextMatchParagraph, generateNextMatchAfter,
+  generateRecentParagraph, generateRecentAfter,
+  generateUpcomingMatchesParagraph, generateUpcomingMatchesAfter,
+  generateLiveScoresParagraph, generateLiveScoresAfter,
+  generateStandingsParagraph, generateStandingsAfter,
+  generateStadiumsParagraph, generateStadiumsAfter,
+  generateOlympicsParagraph, generateOlympicsAfter,
+  generateAthletesParagraph, generateAthletesAfter,
+  generateNewsParagraph, generateNewsAfter,
+  generateShopParagraph, generateShopAfter,
+} from '../../../../../lib/paragraphs/sports';
 
 // === TYPES ===
 interface City {
@@ -926,19 +938,41 @@ export default function SportsPage() {
           <SportSelectorBar sports={sports} active={activeSport} onSelect={s => { setActiveSport(s); setEvents([]); setNationalTeam(null); setNextMatches([]); setRecentResults([]); }} />
         </motion.section>
 
-        {nextMatch && <NextMatchCard event={nextMatch} />}
+        {nextMatch && (
+          <>
+            <p className="text-gray-700 leading-relaxed text-sm">
+              {generateNextMatchParagraph(city?.country ?? '', activeSportLabel)}
+            </p>
+            <NextMatchCard event={nextMatch} />
+            <p className="text-gray-600 leading-relaxed text-sm">
+              {generateNextMatchAfter(city?.country ?? '', activeSportLabel)}
+            </p>
+          </>
+        )}
 
         {recentResults.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Results</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateRecentParagraph(city?.country ?? '', activeSportLabel)}
+            </p>
             <div className="space-y-2">{recentResults.map(e => <RecentResultCard key={e.idEvent} event={e} teamName={nationalTeam?.strTeam ?? ''} />)}</div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateRecentAfter(city?.country ?? '', activeSportLabel)}
+            </p>
           </motion.section>
         )}
 
         {nextMatches.length > 1 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Upcoming Matches</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateUpcomingMatchesParagraph(city?.country ?? '', activeSportLabel)}
+            </p>
             <div className="space-y-3">{nextMatches.slice(1).map(e => <ScoreCard key={e.idEvent} event={e} />)}</div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateUpcomingMatchesAfter(city?.country ?? '', activeSportLabel)}
+            </p>
           </motion.section>
         )}
 
@@ -947,6 +981,9 @@ export default function SportsPage() {
             <h2 className="text-lg font-bold text-gray-900">Live Scores Today</h2>
             <span className="text-sm text-gray-500">— {activeSportLabel}</span>
           </div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateLiveScoresParagraph(activeSportLabel, city?.name ?? '')}
+          </p>
           <AnimatePresence mode="wait">
             {events.length > 0 ? (
               <motion.div key="events" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
@@ -958,6 +995,9 @@ export default function SportsPage() {
               </div>
             )}
           </AnimatePresence>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateLiveScoresAfter(activeSportLabel, city?.name ?? '')}
+          </p>
         </motion.section>
 
         {domesticLeague && standings.length > 0 && (
@@ -966,37 +1006,77 @@ export default function SportsPage() {
               <h2 className="text-lg font-bold text-gray-900">{domesticLeague.name}</h2>
               <span className="text-sm text-gray-500">Standings</span>
             </div>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateStandingsParagraph(domesticLeague.name, city?.country ?? '')}
+            </p>
             <div className="grid md:grid-cols-2 gap-4">
               <StandingsTable teams={standings} />
               {topScorers.length > 0 && <TopScorersCard scorers={topScorers} />}
             </div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateStandingsAfter(domesticLeague.name, city?.country ?? '')}
+            </p>
           </motion.section>
         )}
 
         {stadiums.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Major Stadiums</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateStadiumsParagraph(city?.country ?? '')}
+            </p>
             <div className="grid md:grid-cols-3 gap-4">{stadiums.map(s => <StadiumCard key={s.id} stadium={s} />)}</div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateStadiumsAfter(city?.country ?? '')}
+            </p>
           </motion.section>
         )}
 
-        {olympics.length > 0 && <OlympicsCard medals={olympics}  />}
+        {olympics.length > 0 && (
+          <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateOlympicsParagraph(city?.country ?? '')}
+            </p>
+            <OlympicsCard medals={olympics} />
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateOlympicsAfter(city?.country ?? '')}
+            </p>
+          </motion.section>
+        )}
 
         {athletes.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Greatest Athletes</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateAthletesParagraph(city?.country ?? '')}
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{athletes.map(a => <AthleteCard key={a.id} athlete={a} />)}</div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateAthletesAfter(city?.country ?? '')}
+            </p>
           </motion.section>
         )}
 
         {news.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <h2 className="text-lg font-bold text-gray-900 mb-4">Sports News</h2>
+            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              {generateNewsParagraph(city?.country ?? '')}
+            </p>
             <div className="grid md:grid-cols-2 gap-4">{news.slice(0, 5).map((n, i) => <NewsCard key={i} article={n} />)}</div>
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateNewsAfter(city?.country ?? '')}
+            </p>
           </motion.section>
         )}
 
-        <AffiliateSection  />
+        <p className="text-gray-700 leading-relaxed text-sm">
+          {generateShopParagraph(city?.country ?? '', activeSportLabel)}
+        </p>
+        <AffiliateSection />
+        <p className="text-gray-600 leading-relaxed text-sm">
+          {generateShopAfter(city?.country ?? '', activeSportLabel)}
+        </p>
       </main>
     </div>
   );
