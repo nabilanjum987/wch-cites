@@ -4,6 +4,15 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { MapPin, Thermometer, Waves, Wind, Anchor, Fish, Ship, AlertTriangle, Globe, TrendingUp, TrendingDown, ExternalLink, Calendar, Users, Building, Droplets, Activity, Anchor as AnchorIcon, Home } from 'lucide-react';
+import {
+  generateLiveConditionsParagraph, generateLiveConditionsAfter,
+  generateHistoryGeoParagraph, generateHistoryGeoAfter,
+  generateMarineLifeParagraph, generateMarineLifeAfter,
+  generateShippingParagraph, generateShippingAfter,
+  generateMonsoonParagraph, generateMonsoonAfter,
+  generateClimateParagraph, generateClimateAfter,
+  generateBorderingParagraph, generateBorderingAfter,
+} from '@/lib/paragraphs/oceans';
 
 interface Ocean {
   name: string;
@@ -290,6 +299,9 @@ export default function OceanPage() {
               Updated: {new Date(ocean.marineConditions.lastUpdated).toLocaleTimeString()}
             </div>
           </div>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateLiveConditionsParagraph(ocean.name)}
+          </p>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-xl p-5">
@@ -318,6 +330,9 @@ export default function OceanPage() {
               <div className="text-xl font-bold text-gray-900">{ocean.marineConditions.swells}</div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateLiveConditionsAfter(ocean.name)}
+          </p>
         </motion.section>
 
         {/* Conditions Rating */}
@@ -355,6 +370,9 @@ export default function OceanPage() {
           transition={{ delay: 0.3 }}
           className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
         >
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateHistoryGeoParagraph(ocean.name)}
+          </p>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
@@ -371,6 +389,9 @@ export default function OceanPage() {
               <p className="text-gray-700 leading-relaxed">{ocean.geography}</p>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateHistoryGeoAfter(ocean.name)}
+          </p>
         </motion.section>
 
         {/* Marine Life */}
@@ -384,6 +405,9 @@ export default function OceanPage() {
             <Fish className="w-7 h-7 text-cyan-600" />
             Marine Life
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateMarineLifeParagraph(ocean.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Mammals */}
@@ -434,6 +458,9 @@ export default function OceanPage() {
               </ul>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateMarineLifeAfter(ocean.name)}
+          </p>
         </motion.section>
 
         {/* Shipping Importance */}
@@ -447,6 +474,9 @@ export default function OceanPage() {
             <Ship className="w-7 h-7 text-gray-700" />
             Shipping Importance
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateShippingParagraph(ocean.name)}
+          </p>
 
           <div className="bg-white rounded-xl p-5 mb-6 border border-gray-200">
             <p className="text-gray-700 leading-relaxed">{ocean.shipping.importance}</p>
@@ -480,6 +510,9 @@ export default function OceanPage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateShippingAfter(ocean.name)}
+          </p>
         </motion.section>
 
         {/* Monsoon Patterns */}
@@ -493,6 +526,9 @@ export default function OceanPage() {
             <Calendar className="w-7 h-7 text-indigo-600" />
             Monsoon & Seasonal Patterns
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateMonsoonParagraph(ocean.name)}
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {ocean.monsoonPatterns.seasons.map((season, i) => (
@@ -508,6 +544,9 @@ export default function OceanPage() {
             <h3 className="font-semibold text-amber-900 mb-2">Historical Impact</h3>
             <p className="text-amber-800 text-sm">{ocean.monsoonPatterns.impact}</p>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateMonsoonAfter(ocean.name)}
+          </p>
         </motion.section>
 
         {/* Climate Change Impact */}
@@ -521,6 +560,9 @@ export default function OceanPage() {
             <AlertTriangle className="w-7 h-7 text-red-600" />
             Climate Change Impact
           </h2>
+          <p className="text-red-900 leading-relaxed text-sm mb-6">
+            {generateClimateParagraph(ocean.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <div className="bg-white rounded-lg p-5 border border-red-200">
@@ -557,6 +599,9 @@ export default function OceanPage() {
               ))}
             </ul>
           </div>
+          <p className="text-red-800 leading-relaxed text-sm mt-6">
+            {generateClimateAfter(ocean.name)}
+          </p>
         </motion.section>
 
         {/* Bordering Cities */}
@@ -570,6 +615,9 @@ export default function OceanPage() {
             <Building className="w-7 h-7 text-gray-700" />
             Bordering Cities
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateBorderingParagraph(ocean.name)}
+          </p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {ocean.borderingCities.map((city, i) => (
@@ -590,6 +638,9 @@ export default function OceanPage() {
               </motion.a>
             ))}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateBorderingAfter(ocean.name)}
+          </p>
         </motion.section>
 
         {/* Activities */}
