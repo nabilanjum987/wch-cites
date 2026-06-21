@@ -9,6 +9,12 @@ import { FamousWorksSection } from '@/components/personality/FamousWorksSection'
 import { FamousQuotesSection } from '@/components/personality/FamousQuotesSection';
 import { PersonalityBreadcrumb } from '@/components/personality/PersonalityBreadcrumb';
 import { PersonalityDescription } from '@/components/personality/PersonalityDescription';
+import {
+  generateTimelineParagraph, generateTimelineAfter,
+  generateAchievementsParagraph, generateAchievementsAfter,
+  generateWorksParagraph, generateWorksAfter,
+  generateQuotesParagraph, generateQuotesAfter,
+} from '@/lib/paragraphs/personality';
 
 // ── Personality data ──────────────────────────────────────────────────────────
 // In production: replace with Supabase query by slug
@@ -219,14 +225,37 @@ export default async function PersonalityPage({ params }: PageProps) {
         <PersonalityDescription sections={p.descriptionSections} />
 
         {/* Timeline */}
-        {p.timeline.length > 0 && <LifeTimeline events={p.timeline} />}
+        {p.timeline.length > 0 && (
+          <div>
+            <p className="text-gray-700 leading-relaxed text-sm mt-8 mb-4">
+              {generateTimelineParagraph(p.name, p.city)}
+            </p>
+            <LifeTimeline events={p.timeline} />
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateTimelineAfter(p.name, p.city)}
+            </p>
+          </div>
+        )}
 
         {/* Achievements */}
-        {p.achievements.length > 0 && <AchievementsSection achievements={p.achievements} />}
+        {p.achievements.length > 0 && (
+          <div>
+            <p className="text-gray-700 leading-relaxed text-sm mt-8 mb-4">
+              {generateAchievementsParagraph(p.name)}
+            </p>
+            <AchievementsSection achievements={p.achievements} />
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateAchievementsAfter(p.name)}
+            </p>
+          </div>
+        )}
 
         {/* Famous Works */}
         {p.works.length > 0 && (
           <div>
+            <p className="text-gray-700 leading-relaxed text-sm mt-8 mb-4">
+              {generateWorksParagraph(p.name)}
+            </p>
             <FamousWorksSection works={p.works} />
             {p.amazonSearch && (
               <div className="mt-3 flex justify-center">
@@ -237,11 +266,24 @@ export default async function PersonalityPage({ params }: PageProps) {
                 </a>
               </div>
             )}
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateWorksAfter(p.name)}
+            </p>
           </div>
         )}
 
         {/* Famous Quotes */}
-        {p.quotes.length > 0 && <FamousQuotesSection quotes={p.quotes} />}
+        {p.quotes.length > 0 && (
+          <div>
+            <p className="text-gray-700 leading-relaxed text-sm mt-8 mb-4">
+              {generateQuotesParagraph(p.name)}
+            </p>
+            <FamousQuotesSection quotes={p.quotes} />
+            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              {generateQuotesAfter(p.name)}
+            </p>
+          </div>
+        )}
 
         {/* External links */}
         {p.wikiUrl && (
