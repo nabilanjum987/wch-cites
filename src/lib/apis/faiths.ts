@@ -221,8 +221,8 @@ export const PRAYER_GUIDES = {
       { title: 'Complete the Rakah', description: 'Repeat cycle for required number of units (rakat)' },
     ],
     resources: [
-      { title: 'How to Pray Salah', url: 'https://www.islamicrelief.org.uk/what-we-do/supplications/how-to-pray-salah/' },
-      { title: 'New Muslim Guide', url: 'https://www.newmuslim.net/' },
+      { title: 'How to Pray Salah', url: 'https://www.islamic-relief.org.uk/resources/knowledge-base/five-pillars-of-islam/salah/how-to-pray-salah/' },
+      { title: 'New Muslim Guide', url: 'https://www.newmuslims.com/' },
     ],
   },
   christian: {
