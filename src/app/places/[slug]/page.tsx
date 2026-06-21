@@ -6,6 +6,12 @@ import {
   ExternalLink, Navigation, Info, Sun, Users,
   BookOpen, Globe, Heart
 } from 'lucide-react';
+import {
+  generateFactsParagraph, generateFactsAfter,
+  generateTipsParagraph, generateTipsAfter,
+  generateNearbyParagraph, generateNearbyAfter,
+  generateVisitorInfoParagraph, generateVisitorInfoAfter,
+} from '@/lib/paragraphs/places';
 
 // ── Place data ────────────────────────────────────────────────────────────────
 
@@ -252,6 +258,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
                 <Info size={16} style={{ color: place.primaryColor }} />
                 <h2 className="font-bold text-gray-900">Key Facts</h2>
               </div>
+              <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                {generateFactsParagraph(place.name, place.city)}
+              </p>
               <ul className="space-y-2">
                 {place.thingsToKnow.map((fact, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
@@ -263,6 +272,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
                   </li>
                 ))}
               </ul>
+              <p className="text-gray-600 text-sm leading-relaxed mt-4">
+                {generateFactsAfter(place.name, place.city)}
+              </p>
             </div>
 
             {/* Visitor Tips */}
@@ -271,6 +283,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
                 <Heart size={16} style={{ color: place.primaryColor }} />
                 <h2 className="font-bold text-gray-900">Insider Tips</h2>
               </div>
+              <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                {generateTipsParagraph(place.name)}
+              </p>
               <ul className="space-y-2">
                 {place.tips.map((tip, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
@@ -278,6 +293,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
                   </li>
                 ))}
               </ul>
+              <p className="text-gray-600 text-sm leading-relaxed mt-4">
+                {generateTipsAfter(place.name)}
+              </p>
             </div>
 
             {/* Nearby places */}
@@ -287,6 +305,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
                   <Navigation size={16} style={{ color: place.primaryColor }} />
                   <h2 className="font-bold text-gray-900">Nearby Places</h2>
                 </div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                  {generateNearbyParagraph(place.name, place.city)}
+                </p>
                 <div className="space-y-2">
                   {place.nearbyPlaces.map(nearby => (
                     <Link key={nearby.slug} href={`/places/${nearby.slug}`}
@@ -299,6 +320,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
                     </Link>
                   ))}
                 </div>
+                <p className="text-gray-600 text-sm leading-relaxed mt-4">
+                  {generateNearbyAfter(place.name, place.city)}
+                </p>
               </div>
             )}
           </div>
@@ -309,6 +333,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
             {/* Visitor Info Card */}
             <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-3">
               <h3 className="font-bold text-gray-900 mb-1">Visitor Information</h3>
+              <p className="text-gray-700 text-xs leading-relaxed">
+                {generateVisitorInfoParagraph(place.name)}
+              </p>
               <div className="flex items-start gap-2 text-sm">
                 <Clock size={15} style={{ color: place.primaryColor }} className="mt-0.5 flex-shrink-0" />
                 <div>
@@ -353,6 +380,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
                   <p className="text-gray-500 text-xs mt-0.5">{place.address}</p>
                 </div>
               </div>
+              <p className="text-gray-600 text-xs leading-relaxed pt-2 border-t border-gray-100">
+                {generateVisitorInfoAfter(place.name)}
+              </p>
             </div>
 
             {/* Action buttons */}
