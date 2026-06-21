@@ -15,32 +15,31 @@ export const FAITHS: { key: FaithKey; label: string; emoji: string }[] = [
 interface Props {
   active: FaithKey;
   onChange: (key: FaithKey) => void;
+  accent?: string;
 }
 
-export default function FaithTabs({ active, onChange }: Props) {
+export default function FaithTabs({ active, onChange, accent = '#10b981' }: Props) {
   return (
     <div className="flex flex-wrap gap-2">
-      {FAITHS.map((f) => (
-        <motion.button
-          key={f.key}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => onChange(f.key)}
-          className={`relative flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
-            active === f.key
-              ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-200'
-              : 'bg-white text-gray-600 border-gray-200 hover:border-emerald-400 hover:text-emerald-700'
-          }`}
-        >
-          <span className="text-base leading-none">{f.emoji}</span>
-          <span>{f.label}</span>
-          {active === f.key && (
-            <motion.span
-              layoutId="faith-pill"
-              className="absolute inset-0 rounded-full bg-emerald-600 -z-10"
-            />
-          )}
-        </motion.button>
-      ))}
+      {FAITHS.map((f) => {
+        const isActive = active === f.key;
+        return (
+          <motion.button
+            key={f.key}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onChange(f.key)}
+            className="relative flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border"
+            style={
+              isActive
+                ? { backgroundColor: accent, color: '#fff', borderColor: accent, boxShadow: `0 0 16px ${accent}55` }
+                : { backgroundColor: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.1)' }
+            }
+          >
+            <span className="text-base leading-none">{f.emoji}</span>
+            <span>{f.label}</span>
+          </motion.button>
+        );
+      })}
     </div>
   );
 }

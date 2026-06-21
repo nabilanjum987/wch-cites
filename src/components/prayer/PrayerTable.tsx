@@ -11,12 +11,13 @@ export interface PrayerRow {
 
 interface Props {
   rows: PrayerRow[];
+  accent?: string;
 }
 
 const TYPE_BADGE: Record<PrayerRow['type'], string> = {
-  fard: 'bg-emerald-100 text-emerald-700',
-  sunnah: 'bg-sky-100 text-sky-700',
-  optional: 'bg-amber-100 text-amber-700',
+  fard: 'bg-emerald-500/20 text-emerald-300',
+  sunnah: 'bg-sky-500/20 text-sky-300',
+  optional: 'bg-amber-500/20 text-amber-300',
 };
 
 const TYPE_LABEL: Record<PrayerRow['type'], string> = {
@@ -34,19 +35,19 @@ function isCurrentPrayer(time: string, nextTime: string): boolean {
   return nowMins >= t || nowMins < n;
 }
 
-export default function PrayerTable({ rows }: Props) {
+export default function PrayerTable({ rows, accent = '#10b981' }: Props) {
   const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
+    <div className="overflow-hidden rounded-2xl border" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-gray-50 border-b border-gray-100">
-            <th className="text-left px-4 py-3 font-semibold text-gray-500">Prayer</th>
-            <th className="text-left px-4 py-3 font-semibold text-gray-500 hidden sm:table-cell">Arabic</th>
-            <th className="text-left px-4 py-3 font-semibold text-gray-500">Time</th>
-            <th className="text-left px-4 py-3 font-semibold text-gray-500 hidden md:table-cell">Type</th>
-            <th className="text-right px-4 py-3 font-semibold text-gray-500">Status</th>
+          <tr style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+            <th className="text-left px-4 py-3 font-semibold text-white/50">Prayer</th>
+            <th className="text-left px-4 py-3 font-semibold text-white/50 hidden sm:table-cell">Arabic</th>
+            <th className="text-left px-4 py-3 font-semibold text-white/50">Time</th>
+            <th className="text-left px-4 py-3 font-semibold text-white/50 hidden md:table-cell">Type</th>
+            <th className="text-right px-4 py-3 font-semibold text-white/50">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -61,29 +62,31 @@ export default function PrayerTable({ rows }: Props) {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.04 }}
-                className={`border-b border-gray-50 transition-colors ${
-                  active ? 'bg-emerald-50' : 'hover:bg-gray-50'
-                }`}
+                className="transition-colors"
+                style={{
+                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  backgroundColor: active ? `${accent}1f` : 'transparent',
+                }}
               >
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-2">
                     {row.icon && <span className="text-lg">{row.icon}</span>}
-                    <span className={`font-semibold ${active ? 'text-emerald-700' : 'text-gray-800'}`}>
+                    <span className="font-semibold" style={{ color: active ? accent : '#fff' }}>
                       {row.name}
                     </span>
                     {active && (
                       <span className="flex h-2 w-2 relative">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: accent }} />
+                        <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: accent }} />
                       </span>
                     )}
                   </div>
                 </td>
                 <td className="px-4 py-3.5 hidden sm:table-cell">
-                  <span className="text-gray-500 font-arabic text-base">{row.arabicName}</span>
+                  <span className="text-white/45 font-arabic text-base">{row.arabicName}</span>
                 </td>
                 <td className="px-4 py-3.5">
-                  <span className={`font-mono font-semibold ${active ? 'text-emerald-700' : 'text-gray-700'}`}>
+                  <span className="font-mono font-semibold" style={{ color: active ? accent : 'rgba(255,255,255,0.8)' }}>
                     {formatTime(row.time)}
                   </span>
                 </td>
@@ -94,11 +97,11 @@ export default function PrayerTable({ rows }: Props) {
                 </td>
                 <td className="px-4 py-3.5 text-right">
                   {active ? (
-                    <span className="text-emerald-600 font-semibold text-xs">Current</span>
+                    <span className="font-semibold text-xs" style={{ color: accent }}>Current</span>
                   ) : passed ? (
-                    <span className="text-gray-400 text-xs">Done</span>
+                    <span className="text-white/30 text-xs">Done</span>
                   ) : (
-                    <span className="text-gray-400 text-xs">Upcoming</span>
+                    <span className="text-white/30 text-xs">Upcoming</span>
                   )}
                 </td>
               </motion.tr>
