@@ -4,6 +4,14 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { MapPin, Clock, DollarSign, Award, BookOpen, Users, ShoppingCart, Globe, ExternalLink, Check, X, Star, Heart, Calendar, Video, Package, Store } from 'lucide-react';
+import {
+  generateStoryParagraph, generateStoryAfter,
+  generateMakingParagraph, generateMakingAfter,
+  generateTypesParagraph, generateTypesAfter,
+  generateAuthenticParagraph, generateAuthenticAfter,
+  generateBuyParagraph, generateBuyAfter,
+  generateSimilarParagraph, generateSimilarAfter,
+} from '@/lib/paragraphs/products';
 
 interface Product {
   name: string;
@@ -448,6 +456,9 @@ export default function ProductPage() {
             <BookOpen className="w-7 h-7 text-indigo-600" />
             The Story
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateStoryParagraph(product.name, product.origin.city)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <div>
@@ -507,6 +518,9 @@ export default function ProductPage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm">
+            {generateStoryAfter(product.name, product.origin.city)}
+          </p>
         </motion.section>
 
         {/* How It Is Made */}
@@ -520,6 +534,9 @@ export default function ProductPage() {
             <Package className="w-7 h-7 text-orange-600" />
             How It Is Made
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateMakingParagraph(product.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -601,6 +618,9 @@ export default function ProductPage() {
               <path d="M 550 25 L 570 40 L 550 55 Z" fill="currentColor" />
             </svg>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateMakingAfter(product.name)}
+          </p>
         </motion.section>
 
         {/* Product Types & Prices */}
@@ -614,6 +634,9 @@ export default function ProductPage() {
             <ShoppingCart className="w-7 h-7 text-green-600" />
             Product Types & Prices
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateTypesParagraph(product.name)}
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {product.productTypes.map((item, index) => (
@@ -648,6 +671,9 @@ export default function ProductPage() {
               </motion.div>
             ))}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateTypesAfter(product.name)}
+          </p>
         </motion.section>
 
         {/* Buy Authentic */}
@@ -661,6 +687,9 @@ export default function ProductPage() {
             <Award className="w-7 h-7 text-amber-600" />
             Buy Authentic - How to Identify Real vs Fake
           </h2>
+          <p className="text-amber-900 leading-relaxed text-sm mb-6">
+            {generateAuthenticParagraph(product.name)}
+          </p>
 
           <div className="bg-white rounded-xl p-6 mb-6">
             <h3 className="font-semibold text-gray-900 mb-4">Physical Checklist</h3>
@@ -700,6 +729,9 @@ export default function ProductPage() {
               ))}
             </ul>
           </div>
+          <p className="text-amber-800 leading-relaxed text-sm mt-6">
+            {generateAuthenticAfter(product.name)}
+          </p>
         </motion.section>
 
         {/* Where to Buy */}
@@ -713,6 +745,9 @@ export default function ProductPage() {
             <Store className="w-7 h-7 text-blue-600" />
             Where to Buy
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateBuyParagraph(product.name, product.origin.city)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* In Person */}
@@ -846,6 +881,9 @@ export default function ProductPage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateBuyAfter(product.name, product.origin.city)}
+          </p>
         </motion.section>
 
         {/* Similar Products Worldwide */}
@@ -859,6 +897,9 @@ export default function ProductPage() {
             <Globe className="w-7 h-7 text-indigo-600" />
             Similar Products Worldwide
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateSimilarParagraph(product.name)}
+          </p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {product.similarProducts.map((item, index) => (
@@ -887,6 +928,9 @@ export default function ProductPage() {
               </motion.a>
             ))}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateSimilarAfter(product.name)}
+          </p>
         </motion.section>
 
       </div>
