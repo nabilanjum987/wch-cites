@@ -4,6 +4,14 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { MapPin, Clock, Sun, Cloud, Camera, Calendar, Info, ExternalLink, Shirt, DollarSign, AlertCircle, Car, Building, Sunset, Lightbulb, Star, BookOpen } from 'lucide-react';
+import {
+  generateVisitorGuideParagraph, generateVisitorGuideAfter,
+  generateStoryParagraph, generateStoryAfter,
+  generateArchitectureParagraph, generateArchitectureAfter,
+  generateFactsParagraph, generateFactsAfter,
+  generatePhotographyParagraph, generatePhotographyAfter,
+  generateNearbyParagraph, generateNearbyAfter,
+} from '@/lib/paragraphs/wonders';
 
 interface Wonder {
   name: string;
@@ -359,6 +367,9 @@ export default function WonderPage() {
             <Info className="w-7 h-7 text-blue-600" />
             Visitor Guide Today
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateVisitorGuideParagraph(wonder.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
             {/* What to Wear */}
@@ -425,6 +436,9 @@ export default function WonderPage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateVisitorGuideAfter(wonder.name)}
+          </p>
         </motion.section>
 
         {/* The Story */}
@@ -438,6 +452,9 @@ export default function WonderPage() {
             <BookOpen className="w-7 h-7 text-indigo-600" />
             The Story
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateStoryParagraph(wonder.name, wonder.location.city)}
+          </p>
           <div className="prose prose-lg max-w-none text-gray-700">
             <p className="leading-relaxed">{wonder.history.fullStory}</p>
           </div>
@@ -450,6 +467,9 @@ export default function WonderPage() {
             Read more on Wikipedia
             <ExternalLink className="w-4 h-4" />
           </a>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateStoryAfter(wonder.name)}
+          </p>
         </motion.section>
 
         {/* Architecture */}
@@ -463,6 +483,9 @@ export default function WonderPage() {
             <Building className="w-7 h-7 text-gray-700" />
             Architecture
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateArchitectureParagraph(wonder.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Unique Features */}
@@ -519,6 +542,9 @@ export default function WonderPage() {
               ))}
             </ul>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateArchitectureAfter(wonder.name)}
+          </p>
         </motion.section>
 
         {/* 5 Surprising Facts */}
@@ -532,6 +558,9 @@ export default function WonderPage() {
             <Lightbulb className="w-7 h-7 text-amber-500" />
             5 Surprising Facts
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateFactsParagraph(wonder.name)}
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {wonder.surprisingFacts.map((fact, i) => (
               <motion.div
@@ -546,6 +575,9 @@ export default function WonderPage() {
               </motion.div>
             ))}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateFactsAfter(wonder.name)}
+          </p>
         </motion.section>
 
         {/* Photography Guide Today */}
@@ -559,6 +591,9 @@ export default function WonderPage() {
             <Camera className="w-7 h-7 text-rose-600" />
             Photography Guide Today
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generatePhotographyParagraph(wonder.name)}
+          </p>
 
           <div className="bg-white rounded-xl p-5 mb-6 border border-rose-200">
             <div className="flex items-center gap-2 mb-2">
@@ -595,6 +630,9 @@ export default function WonderPage() {
               </ul>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-2">
+            {generatePhotographyAfter(wonder.name)}
+          </p>
         </motion.section>
 
         {/* Nearby Wonders */}
@@ -605,6 +643,9 @@ export default function WonderPage() {
           className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Nearby Wonders</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateNearbyParagraph(wonder.name, wonder.location.city)}
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {wonder.nearbyWonders.map((nearby) => (
               <motion.a
@@ -627,6 +668,9 @@ export default function WonderPage() {
               </motion.a>
             ))}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateNearbyAfter(wonder.name, wonder.location.city)}
+          </p>
         </motion.section>
 
         {/* All 7 Wonders Navigation */}
