@@ -4,6 +4,15 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { MapPin, AlertTriangle, Building, Heart, Globe, ExternalLink, Calendar, Handshake, AlertCircle, Newspaper, Flag } from 'lucide-react';
+import {
+  generateHumanitarianParagraph, generateHumanitarianAfter,
+  generateEconomicParagraph, generateEconomicAfter,
+  generatePeaceParagraph, generatePeaceAfter,
+  generateCitiesParagraph, generateCitiesAfter,
+  generateAidParagraph, generateAidAfter,
+  generateNewsParagraph, generateNewsAfter,
+  generateAdvisoriesParagraph, generateAdvisoriesAfter,
+} from '@/lib/paragraphs/conflicts';
 
 interface Conflict {
   name: string;
@@ -333,6 +342,9 @@ export default function ConflictPage() {
             <Heart className="w-7 h-7 text-red-600" />
             Humanitarian Impact
           </h2>
+          <p className="text-red-900 leading-relaxed text-sm mb-6">
+            {generateHumanitarianParagraph(conflict.name)}
+          </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-white rounded-xl p-5 border border-red-200">
@@ -359,6 +371,9 @@ export default function ConflictPage() {
           <div className="text-sm text-red-700">
             Last updated: {conflict.humanitarianImpact.lastUpdated} (UNHCR data)
           </div>
+          <p className="text-red-800 leading-relaxed text-sm mt-6">
+            {generateHumanitarianAfter(conflict.name)}
+          </p>
         </motion.section>
 
         {/* Economic Impact */}
@@ -372,6 +387,9 @@ export default function ConflictPage() {
             <Building className="w-7 h-7 text-gray-700" />
             Economic Impact
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateEconomicParagraph(conflict.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div className="space-y-4">
@@ -408,6 +426,9 @@ export default function ConflictPage() {
               ))}
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateEconomicAfter(conflict.name)}
+          </p>
         </motion.section>
 
         {/* Peace Efforts */}
@@ -421,6 +442,9 @@ export default function ConflictPage() {
             <Handshake className="w-7 h-7 text-indigo-600" />
             Peace Efforts
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generatePeaceParagraph(conflict.name)}
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* UN Initiatives */}
@@ -487,6 +511,9 @@ export default function ConflictPage() {
               </ul>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generatePeaceAfter(conflict.name)}
+          </p>
         </motion.section>
 
         {/* Affected Cities */}
@@ -500,6 +527,9 @@ export default function ConflictPage() {
             <MapPin className="w-7 h-7 text-red-600" />
             Affected Cities
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateCitiesParagraph(conflict.name)}
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {conflict.affectedCities.map((city, i) => (
@@ -523,6 +553,9 @@ export default function ConflictPage() {
               </motion.a>
             ))}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateCitiesAfter(conflict.name)}
+          </p>
         </motion.section>
 
         {/* Humanitarian Aid */}
@@ -536,8 +569,11 @@ export default function ConflictPage() {
             <Heart className="w-7 h-7 text-emerald-600" />
             Humanitarian Aid Organizations
           </h2>
-          <p className="text-emerald-800 mb-6 text-sm">
+          <p className="text-emerald-800 mb-2 text-sm">
             These are legitimate humanitarian organizations - NO affiliate links. We provide these links to help those affected by this conflict.
+          </p>
+          <p className="text-emerald-800 leading-relaxed text-sm mb-6">
+            {generateAidParagraph(conflict.name)}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -561,6 +597,9 @@ export default function ConflictPage() {
               </motion.a>
             ))}
           </div>
+          <p className="text-emerald-800 leading-relaxed text-sm mt-6">
+            {generateAidAfter(conflict.name)}
+          </p>
         </motion.section>
 
         {/* Latest News */}
@@ -574,8 +613,11 @@ export default function ConflictPage() {
             <Newspaper className="w-7 h-7 text-gray-700" />
             Latest News
           </h2>
-          <p className="text-gray-600 text-sm mb-4">
+          <p className="text-gray-600 text-sm mb-2">
             Sources: Reuters, AP, BBC, Al Jazeera only - no partisan sources
+          </p>
+          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            {generateNewsParagraph(conflict.name)}
           </p>
 
           <div className="space-y-4">
@@ -605,6 +647,9 @@ export default function ConflictPage() {
               </motion.a>
             ))}
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateNewsAfter(conflict.name)}
+          </p>
         </motion.section>
 
         {/* Travel Advisories */}
@@ -618,6 +663,9 @@ export default function ConflictPage() {
             <AlertTriangle className="w-7 h-7 text-orange-600" />
             Travel Advisories
           </h2>
+          <p className="text-orange-900 leading-relaxed text-sm mb-6">
+            {generateAdvisoriesParagraph(conflict.name)}
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {conflict.travelAdvisories.map((advisory, i) => (
@@ -649,6 +697,9 @@ export default function ConflictPage() {
               </div>
             ))}
           </div>
+          <p className="text-orange-800 leading-relaxed text-sm mt-6">
+            {generateAdvisoriesAfter(conflict.name)}
+          </p>
         </motion.section>
 
       </div>
