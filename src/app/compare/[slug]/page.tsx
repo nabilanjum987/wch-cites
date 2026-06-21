@@ -4,6 +4,13 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { ArrowLeftRight, GitCompare, Sun, Thermometer, Wind, Droplets, Clock, TrendingUp, Award, Shield, DollarSign, Building, UtensilsCrossed, GraduationCap, Heart, Bus, Theater, Landmark, Trophy, MessageSquare, Quote, ExternalLink, Home, MapPin } from 'lucide-react';
+import {
+  generateLiveConditionsParagraph, generateLiveConditionsAfter,
+  generateComprehensiveParagraph, generateComprehensiveAfter,
+  generateVerdictParagraph, generateVerdictAfter,
+  generateReviewsParagraph, generateReviewsAfter,
+  generateGuidesParagraph, generateGuidesAfter,
+} from '@/lib/paragraphs/compare';
 
 interface CityComparison {
   city1: {
@@ -458,6 +465,9 @@ export default function ComparePage() {
           className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
         >
           <h2 className="text-lg font-bold text-gray-900 mb-6">Live Conditions</h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateLiveConditionsParagraph(comparison.city1.name, comparison.city2.name)}
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* City 1 */}
@@ -586,6 +596,9 @@ export default function ComparePage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateLiveConditionsAfter(comparison.city1.name, comparison.city2.name)}
+          </p>
         </motion.section>
 
         {/* Comprehensive Comparison Table */}
@@ -599,6 +612,9 @@ export default function ComparePage() {
             <Award className="w-6 h-6 text-amber-600" />
             Comprehensive Comparison
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateComprehensiveParagraph(comparison.city1.name, comparison.city2.name)}
+          </p>
 
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -724,6 +740,9 @@ export default function ComparePage() {
               </>
             )}
           </p>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateComprehensiveAfter(comparison.city1.name, comparison.city2.name)}
+          </p>
         </motion.section>
 
         {/* Narrative Verdict */}
@@ -737,6 +756,9 @@ export default function ComparePage() {
             <Award className="w-6 h-6 text-amber-600" />
             Which City Should You Choose?
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateVerdictParagraph(comparison.city1.name, comparison.city2.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* City 1 */}
@@ -792,6 +814,9 @@ export default function ComparePage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            {generateVerdictAfter(comparison.city1.name, comparison.city2.name)}
+          </p>
         </motion.section>
 
         {/* What People Say */}
@@ -805,6 +830,9 @@ export default function ComparePage() {
             <MessageSquare className="w-6 h-6 text-gray-600" />
             What People Say
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateReviewsParagraph(comparison.city1.name, comparison.city2.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* City 1 Reviews */}
@@ -853,6 +881,9 @@ export default function ComparePage() {
               </div>
             </div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateReviewsAfter(comparison.city1.name, comparison.city2.name)}
+          </p>
         </motion.section>
 
         {/* City Guides Links */}
@@ -866,6 +897,9 @@ export default function ComparePage() {
             <MapPin className="w-6 h-6 text-red-600" />
             Explore Full City Guides
           </h2>
+          <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            {generateGuidesParagraph(comparison.city1.name, comparison.city2.name)}
+          </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* City 1 Grid */}
@@ -922,6 +956,9 @@ export default function ComparePage() {
               </a>
             </motion.div>
           </div>
+          <p className="text-gray-600 leading-relaxed text-sm mt-6">
+            {generateGuidesAfter(comparison.city1.name, comparison.city2.name)}
+          </p>
         </motion.section>
 
         {/* Popular Comparisons Sidebar & Affiliates */}
