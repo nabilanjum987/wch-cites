@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   ChevronRight, TrendingUp, TrendingDown, ArrowRight,
   Globe, Users, Coins, Calendar, ShieldAlert, Utensils,
-  Leaf, Trophy, Mountain, Thermometer, Star, Newspaper, Gem,
+  Leaf, Trophy, Mountain, Thermometer, Star, Newspaper, Gem, MapPin,
 } from 'lucide-react';
 import {
   generateCitiesWeatherParagraph, generateCitiesWeatherAfter,
