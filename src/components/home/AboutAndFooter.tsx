@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Globe, Mail, Github } from 'lucide-react';
+import { Globe } from 'lucide-react';
 
 const footerLinks = {
   Explore: [
