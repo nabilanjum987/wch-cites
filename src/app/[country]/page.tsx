@@ -20,7 +20,7 @@ import {
   generateTeamsParagraph, generateTeamsAfter,
   generateHolidaysParagraph, generateHolidaysAfter,
   generateEmergencyParagraph, generateEmergencyAfter,
-} from '../../lib/paragraphs/country';
+} from '@/lib/paragraphs/country';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
