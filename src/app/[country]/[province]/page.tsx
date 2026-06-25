@@ -19,7 +19,7 @@ import {
   generateProductsParagraph, generateProductsAfter,
   generateLandmarksParagraph, generateLandmarksAfter,
   generateEmergencyParagraph, generateEmergencyAfter,
-} from '../../../lib/paragraphs/province';
+} from '@/lib/paragraphs/province';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
