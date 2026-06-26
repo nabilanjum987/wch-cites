@@ -394,7 +394,7 @@ const fadeUp = {
 };
 
 function Skeleton({ className }: { className?: string }) {
-  return <div className={`animate-pulse bg-gray-200 rounded-lg ${className ?? ''}`} />;
+  return <div className={`animate-pulse bg-white/8 rounded-lg ${className ?? ''}`} />;
 }
 
 function LiveBadge({ status }: { status: string }) {
@@ -407,7 +407,7 @@ function LiveBadge({ status }: { status: string }) {
 
   return (
     <span className="inline-flex items-center gap-1 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-      <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+      <span className="w-1.5 h-1.5 bg-transparent rounded-full animate-pulse" />
       LIVE
     </span>
   );
@@ -422,7 +422,7 @@ function ScoreCard({ event }: { event: SportEvent }) {
   const hasScore = event.intHomeScore !== null && event.intAwayScore !== null;
 
   return (
-    <motion.div variants={fadeUp} className={`bg-white rounded-2xl shadow-sm border ${isLive ? 'border-red-200' : 'border-gray-100'} p-4`}>
+    <motion.div variants={fadeUp} className={`bg-transparent rounded-2xl  border ${isLive ? 'border-red-500/30' : 'border-white/8'} p-4`}>
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs text-gray-500 font-medium truncate max-w-[60%]">{event.strLeague}</span>
         <LiveBadge status={event.strStatus} />
@@ -430,21 +430,21 @@ function ScoreCard({ event }: { event: SportEvent }) {
       </div>
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1 text-center">
-          <p className="font-semibold text-gray-900 text-sm leading-tight">{event.strHomeTeam}</p>
+          <p className="font-semibold text-white text-sm leading-tight">{event.strHomeTeam}</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {hasScore ? (
             <div className="flex items-center gap-1">
-              <span className={`text-2xl font-bold ${isLive ? 'text-red-600' : 'text-gray-900'}`}>{event.intHomeScore}</span>
+              <span className={`text-2xl font-bold ${isLive ? 'text-red-400' : 'text-white'}`}>{event.intHomeScore}</span>
               <span className="text-gray-400 font-medium">—</span>
-              <span className={`text-2xl font-bold ${isLive ? 'text-red-600' : 'text-gray-900'}`}>{event.intAwayScore}</span>
+              <span className={`text-2xl font-bold ${isLive ? 'text-red-400' : 'text-white'}`}>{event.intAwayScore}</span>
             </div>
           ) : (
             <span className="text-sm font-semibold text-gray-400">{event.strTime ?? 'TBD'}</span>
           )}
         </div>
         <div className="flex-1 text-center">
-          <p className="font-semibold text-gray-900 text-sm leading-tight">{event.strAwayTeam}</p>
+          <p className="font-semibold text-white text-sm leading-tight">{event.strAwayTeam}</p>
         </div>
       </div>
       {event.strVenue && <p className="text-center text-xs text-gray-400 mt-2 truncate">📍 {event.strVenue}</p>}
@@ -465,7 +465,7 @@ function NextMatchCard({ event }: { event: SportEvent }) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Next Match</h3>
         {isTonight && (
-          <span className="bg-amber-500 text-gray-900 text-xs font-bold px-2 py-0.5 rounded-full">
+          <span className="bg-amber-500/100 text-white text-xs font-bold px-2 py-0.5 rounded-full">
             TONIGHT
           </span>
         )}
@@ -496,7 +496,7 @@ function WBadge({ score, opScore }: { score: string; opScore: string }) {
   const lost = parseInt(score) < parseInt(opScore);
 
   return (
-    <span className={`text-xs font-bold px-2 py-0.5 rounded ${won ? 'bg-green-100 text-green-700' : lost ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>
+    <span className={`text-xs font-bold px-2 py-0.5 rounded ${won ? 'bg-green-500/15 text-green-400' : lost ? 'bg-red-500/15 text-red-400' : 'bg-white/5 text-gray-300'}`}>
       {won ? 'W' : lost ? 'L' : 'D'}
     </span>
   );
@@ -509,13 +509,13 @@ function RecentResultCard({ event, teamName }: { event: SportEvent; teamName: st
   const opponent = isHome ? event.strAwayTeam : event.strHomeTeam;
 
   return (
-    <motion.div variants={fadeUp} className="bg-white rounded-xl border border-gray-100 p-3 flex items-center justify-between">
+    <motion.div variants={fadeUp} className="bg-transparent rounded-xl border border-white/8 p-3 flex items-center justify-between">
       <div className="flex items-center gap-2">
         <WBadge score={teamScore || '0'} opScore={oppScore || '0'} />
-        <span className="text-sm text-gray-700">{opponent}</span>
+        <span className="text-sm text-gray-300">{opponent}</span>
       </div>
       <div className="text-right">
-        <span className="font-bold text-gray-900">{teamScore} - {oppScore}</span>
+        <span className="font-bold text-white">{teamScore} - {oppScore}</span>
         <p className="text-xs text-gray-400">{event.dateEvent ? formatDate(event.dateEvent) : ''}</p>
       </div>
     </motion.div>
@@ -524,13 +524,13 @@ function RecentResultCard({ event, teamName }: { event: SportEvent; teamName: st
 
 function SportSelectorBar({ sports, active, onSelect }: { sports: SportPriority[]; active: string; onSelect: (id: string) => void }) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
       {sports.map((s, i) => (
         <button
           key={s.id}
           onClick={() => onSelect(s.id)}
           className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 shrink-0 ${
-            active === s.id ? 'bg-gray-900 text-white shadow-md scale-105' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
+            active === s.id ? 'bg-gray-900 text-white  scale-105' : 'bg-transparent text-gray-400 border border-white/10 hover:border-gray-400'
           }`}
         >
           <span>{s.emoji}</span>
@@ -544,32 +544,32 @@ function SportSelectorBar({ sports, active, onSelect }: { sports: SportPriority[
 
 function StandingsTable({ teams }: { teams: StandingsTeam[] }) {
   return (
-    <motion.div variants={fadeUp} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+    <motion.div variants={fadeUp} className="bg-transparent rounded-2xl border border-white/8 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50">
+          <thead className="bg-white/4">
             <tr>
-              <th className="px-3 py-2 text-left font-semibold text-gray-600">#</th>
-              <th className="px-3 py-2 text-left font-semibold text-gray-600">Team</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-600">P</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-600">W</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-600">D</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-600">L</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-600">GD</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-600">Pts</th>
+              <th className="px-3 py-2 text-left font-semibold text-gray-400">#</th>
+              <th className="px-3 py-2 text-left font-semibold text-gray-400">Team</th>
+              <th className="px-3 py-2 text-center font-semibold text-gray-400">P</th>
+              <th className="px-3 py-2 text-center font-semibold text-gray-400">W</th>
+              <th className="px-3 py-2 text-center font-semibold text-gray-400">D</th>
+              <th className="px-3 py-2 text-center font-semibold text-gray-400">L</th>
+              <th className="px-3 py-2 text-center font-semibold text-gray-400">GD</th>
+              <th className="px-3 py-2 text-center font-semibold text-gray-400">Pts</th>
             </tr>
           </thead>
           <tbody>
             {teams.map((t, i) => (
-              <tr key={t.name} className={i < 4 ? 'bg-green-50/50' : ''}>
+              <tr key={t.name} className={i < 4 ? 'bg-green-500/10/50' : ''}>
                 <td className="px-3 py-2 text-gray-500">{i + 1}</td>
-                <td className="px-3 py-2 font-medium text-gray-900">{t.name}</td>
-                <td className="px-3 py-2 text-center text-gray-600">{t.played}</td>
-                <td className="px-3 py-2 text-center text-gray-600">{t.wins}</td>
-                <td className="px-3 py-2 text-center text-gray-600">{t.draws}</td>
-                <td className="px-3 py-2 text-center text-gray-600">{t.losses}</td>
-                <td className="px-3 py-2 text-center text-gray-600">{t.goalDiff > 0 ? '+' : ''}{t.goalDiff}</td>
-                <td className="px-3 py-2 text-center font-bold text-gray-900">{t.points}</td>
+                <td className="px-3 py-2 font-medium text-white">{t.name}</td>
+                <td className="px-3 py-2 text-center text-gray-400">{t.played}</td>
+                <td className="px-3 py-2 text-center text-gray-400">{t.wins}</td>
+                <td className="px-3 py-2 text-center text-gray-400">{t.draws}</td>
+                <td className="px-3 py-2 text-center text-gray-400">{t.losses}</td>
+                <td className="px-3 py-2 text-center text-gray-400">{t.goalDiff > 0 ? '+' : ''}{t.goalDiff}</td>
+                <td className="px-3 py-2 text-center font-bold text-white">{t.points}</td>
               </tr>
             ))}
           </tbody>
@@ -581,21 +581,21 @@ function StandingsTable({ teams }: { teams: StandingsTeam[] }) {
 
 function TopScorersCard({ scorers }: { scorers: TopScorer[] }) {
   return (
-    <motion.div variants={fadeUp} className="bg-white rounded-2xl border border-gray-100 p-4">
-      <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Top Run Scorers</h4>
+    <motion.div variants={fadeUp} className="bg-transparent rounded-2xl border border-white/8 p-4">
+      <h4 className="text-sm font-bold text-gray-300 uppercase tracking-wide mb-3">Top Run Scorers</h4>
       <div className="space-y-2">
         {scorers.slice(0, 5).map((s, i) => (
           <div key={s.name} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
             <div className="flex items-center gap-2">
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'}`}>
+              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-amber-500/15 text-amber-400' : 'bg-white/5 text-gray-500'}`}>
                 {i + 1}
               </span>
               <div>
-                <p className="text-sm font-medium text-gray-900">{s.name}</p>
+                <p className="text-sm font-medium text-white">{s.name}</p>
                 <p className="text-xs text-gray-400">{s.team}</p>
               </div>
             </div>
-            <span className="font-bold text-gray-900">{s.goals.toLocaleString()}</span>
+            <span className="font-bold text-white">{s.goals.toLocaleString()}</span>
           </div>
         ))}
       </div>
@@ -622,10 +622,10 @@ function StadiumCard({ stadium }: { stadium: Stadium }) {
   }, [stadium.city]);
 
   return (
-    <motion.div variants={fadeUp} className="bg-white rounded-2xl border border-gray-100 p-4">
+    <motion.div variants={fadeUp} className="bg-transparent rounded-2xl border border-white/8 p-4">
       <div className="flex items-start justify-between">
         <div>
-          <h4 className="font-bold text-gray-900">{stadium.name}</h4>
+          <h4 className="font-bold text-white">{stadium.name}</h4>
           <p className="text-sm text-gray-500 mt-0.5">{stadium.city}, {stadium.country}</p>
         </div>
         <span className="text-2xl">🏟️</span>
@@ -633,16 +633,16 @@ function StadiumCard({ stadium }: { stadium: Stadium }) {
       <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
         <div>
           <p className="text-gray-400">Capacity</p>
-          <p className="font-semibold text-gray-900">{stadium.capacity.toLocaleString()}</p>
+          <p className="font-semibold text-white">{stadium.capacity.toLocaleString()}</p>
         </div>
         <div>
           <p className="text-gray-400">Home Team</p>
-          <p className="font-semibold text-gray-900 truncate">{stadium.team}</p>
+          <p className="font-semibold text-white truncate">{stadium.team}</p>
         </div>
       </div>
-      <div className="mt-3 pt-3 border-t border-gray-100">
+      <div className="mt-3 pt-3 border-t border-white/8">
         <p className="text-xs text-gray-400">Current Weather</p>
-        <p className="text-sm font-medium text-gray-900">{weather ?? 'Loading...'}</p>
+        <p className="text-sm font-medium text-white">{weather ?? 'Loading...'}</p>
       </div>
     </motion.div>
   );
@@ -655,43 +655,43 @@ function OlympicsCard({ medals }: { medals: OlympicMedals[] }) {
   const total = totalGold + totalSilver + totalBronze;
 
   return (
-    <motion.div variants={fadeUp} className="bg-white rounded-2xl border border-gray-100 p-5">
+    <motion.div variants={fadeUp} className="bg-transparent rounded-2xl border border-white/8 p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-gray-900">Olympics History</h3>
+        <h3 className="font-bold text-white">Olympics History</h3>
         <span className="text-2xl">🏅</span>
       </div>
 
       <div className="grid grid-cols-4 gap-2 mb-4">
-        <div className="text-center p-2 rounded-lg bg-amber-50">
-          <p className="text-2xl font-bold text-amber-600">{totalGold}</p>
-          <p className="text-xs text-amber-700">Gold</p>
+        <div className="text-center p-2 rounded-lg bg-amber-500/10">
+          <p className="text-2xl font-bold text-amber-400">{totalGold}</p>
+          <p className="text-xs text-amber-400">Gold</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-gray-100">
-          <p className="text-2xl font-bold text-gray-600">{totalSilver}</p>
-          <p className="text-xs text-gray-600">Silver</p>
+        <div className="text-center p-2 rounded-lg bg-white/5">
+          <p className="text-2xl font-bold text-gray-400">{totalSilver}</p>
+          <p className="text-xs text-gray-400">Silver</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-orange-50">
-          <p className="text-2xl font-bold text-orange-700">{totalBronze}</p>
-          <p className="text-xs text-orange-800">Bronze</p>
+        <div className="text-center p-2 rounded-lg bg-orange-500/10">
+          <p className="text-2xl font-bold text-orange-400">{totalBronze}</p>
+          <p className="text-xs text-orange-300">Bronze</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-gray-50">
-          <p className="text-2xl font-bold text-gray-900">{total}</p>
-          <p className="text-xs text-gray-600">Total</p>
+        <div className="text-center p-2 rounded-lg bg-white/4">
+          <p className="text-2xl font-bold text-white">{total}</p>
+          <p className="text-xs text-gray-400">Total</p>
         </div>
       </div>
 
-      <h4 className="text-sm font-semibold text-gray-700 mb-2">Recent Olympics</h4>
+      <h4 className="text-sm font-semibold text-gray-300 mb-2">Recent Olympics</h4>
       <div className="space-y-2">
         {medals.map(m => (
-          <div key={`${m.year}-${m.city}`} className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+          <div key={`${m.year}-${m.city}`} className="flex items-center justify-between py-2 px-3 bg-white/4 rounded-lg">
             <div>
-              <p className="font-medium text-gray-900">{m.year} {m.city}</p>
+              <p className="font-medium text-white">{m.year} {m.city}</p>
               <p className="text-xs text-gray-400">Rank: #{m.rank}</p>
             </div>
             <div className="flex gap-2 text-sm">
-              <span className="text-amber-600">{m.gold}🥇</span>
+              <span className="text-amber-400">{m.gold}🥇</span>
               <span className="text-gray-500">{m.silver}🥈</span>
-              <span className="text-orange-600">{m.bronze}🥉</span>
+              <span className="text-orange-400">{m.bronze}🥉</span>
             </div>
           </div>
         ))}
@@ -705,7 +705,7 @@ function AthleteCard({ athlete }: { athlete: Athlete }) {
     <motion.a
       variants={fadeUp}
       href={`/personalities/${athlete.id}`}
-      className="block bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow"
+      className="block bg-transparent rounded-2xl border border-white/8 overflow-hidden hover: transition-shadow"
     >
       <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
         {athlete.id ? (
@@ -717,7 +717,7 @@ function AthleteCard({ athlete }: { athlete: Athlete }) {
         )}
       </div>
       <div className="p-4">
-        <h4 className="font-bold text-gray-900">{athlete.name}</h4>
+        <h4 className="font-bold text-white">{athlete.name}</h4>
         <p className="text-sm text-gray-500">{athlete.sport} · {athlete.country}</p>
         <p className="text-xs text-gray-400 mt-1 line-clamp-2">{athlete.achievements}</p>
       </div>
@@ -732,16 +732,16 @@ function NewsCard({ article }: { article: SportsNews }) {
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="block bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+      className="block bg-transparent rounded-2xl border border-white/8 overflow-hidden hover: transition-shadow"
     >
       {article.image && (
-        <div className="aspect-video bg-gray-100">
+        <div className="aspect-video bg-white/5">
           <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
         </div>
       )}
       <div className="p-4">
         <p className="text-xs text-gray-400 mb-1">{article.source}</p>
-        <h4 className="font-semibold text-gray-900 line-clamp-2">{article.title}</h4>
+        <h4 className="font-semibold text-white line-clamp-2">{article.title}</h4>
         {article.description && <p className="text-sm text-gray-500 mt-1 line-clamp-2">{article.description}</p>}
       </div>
     </motion.a>
@@ -782,7 +782,7 @@ function AffiliateSection() {
 
   return (
     <motion.section variants={fadeUp}>
-      <h2 className="text-lg font-bold text-gray-900 mb-4">Shop & Watch</h2>
+      <h2 className="text-lg font-bold text-white mb-4">Shop & Watch</h2>
       <div className="grid grid-cols-2 gap-3">
         {affiliates.map(a => (
           <a
@@ -790,12 +790,12 @@ function AffiliateSection() {
             href={a.url}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className={`block bg-gradient-to-br ${a.bg} rounded-2xl p-4 hover:shadow-md transition-shadow`}
+            className={`block bg-gradient-to-br ${a.bg} rounded-2xl p-4 hover: transition-shadow`}
           >
             <span className="text-3xl">{a.icon}</span>
-            <h4 className="font-bold text-gray-900 mt-2">{a.title}</h4>
-            <p className="text-xs text-gray-600">{a.subtitle}</p>
-            <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium mt-2">
+            <h4 className="font-bold text-white mt-2">{a.title}</h4>
+            <p className="text-xs text-gray-400">{a.subtitle}</p>
+            <span className="inline-flex items-center gap-1 text-xs text-blue-400 font-medium mt-2">
               Shop Now <span>→</span>
             </span>
           </a>
@@ -896,7 +896,7 @@ export default function SportsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white/4">
         <div className="h-40 animate-pulse bg-gray-300" />
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-4">
           {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-32 w-full" />)}
@@ -910,7 +910,7 @@ export default function SportsPage() {
   const nextMatch = nextMatches[0];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white/4">
       <header className="relative overflow-hidden" style={{ backgroundColor: headerColor }}>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 0%, transparent 60%)' }} />
         <div className="relative max-w-4xl mx-auto px-4 py-8">
@@ -940,11 +940,11 @@ export default function SportsPage() {
 
         {nextMatch && (
           <>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-300 leading-relaxed text-sm">
               {generateNextMatchParagraph(city?.country ?? '', activeSportLabel)}
             </p>
             <NextMatchCard event={nextMatch} />
-            <p className="text-gray-600 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateNextMatchAfter(city?.country ?? '', activeSportLabel)}
             </p>
           </>
@@ -952,12 +952,12 @@ export default function SportsPage() {
 
         {recentResults.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Results</h2>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <h2 className="text-lg font-bold text-white mb-4">Recent Results</h2>
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateRecentParagraph(city?.country ?? '', activeSportLabel)}
             </p>
             <div className="space-y-2">{recentResults.map(e => <RecentResultCard key={e.idEvent} event={e} teamName={nationalTeam?.strTeam ?? ''} />)}</div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateRecentAfter(city?.country ?? '', activeSportLabel)}
             </p>
           </motion.section>
@@ -965,12 +965,12 @@ export default function SportsPage() {
 
         {nextMatches.length > 1 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Upcoming Matches</h2>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <h2 className="text-lg font-bold text-white mb-4">Upcoming Matches</h2>
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateUpcomingMatchesParagraph(city?.country ?? '', activeSportLabel)}
             </p>
             <div className="space-y-3">{nextMatches.slice(1).map(e => <ScoreCard key={e.idEvent} event={e} />)}</div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateUpcomingMatchesAfter(city?.country ?? '', activeSportLabel)}
             </p>
           </motion.section>
@@ -978,10 +978,10 @@ export default function SportsPage() {
 
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
           <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-lg font-bold text-gray-900">Live Scores Today</h2>
+            <h2 className="text-lg font-bold text-white">Live Scores Today</h2>
             <span className="text-sm text-gray-500">— {activeSportLabel}</span>
           </div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">
             {generateLiveScoresParagraph(activeSportLabel, city?.name ?? '')}
           </p>
           <AnimatePresence mode="wait">
@@ -990,12 +990,12 @@ export default function SportsPage() {
                 {events.map(e => <ScoreCard key={e.idEvent} event={e} />)}
               </motion.div>
             ) : (
-              <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
+              <div className="bg-transparent rounded-2xl border border-white/8 p-8 text-center">
                 <p className="text-gray-500 text-sm">No {activeSportLabel} matches scheduled for today.</p>
               </div>
             )}
           </AnimatePresence>
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">
             {generateLiveScoresAfter(activeSportLabel, city?.name ?? '')}
           </p>
         </motion.section>
@@ -1003,17 +1003,17 @@ export default function SportsPage() {
         {domesticLeague && standings.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <div className="flex items-center gap-2 mb-4">
-              <h2 className="text-lg font-bold text-gray-900">{domesticLeague.name}</h2>
+              <h2 className="text-lg font-bold text-white">{domesticLeague.name}</h2>
               <span className="text-sm text-gray-500">Standings</span>
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateStandingsParagraph(domesticLeague.name, city?.country ?? '')}
             </p>
             <div className="grid md:grid-cols-2 gap-4">
               <StandingsTable teams={standings} />
               {topScorers.length > 0 && <TopScorersCard scorers={topScorers} />}
             </div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateStandingsAfter(domesticLeague.name, city?.country ?? '')}
             </p>
           </motion.section>
@@ -1021,12 +1021,12 @@ export default function SportsPage() {
 
         {stadiums.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Major Stadiums</h2>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <h2 className="text-lg font-bold text-white mb-4">Major Stadiums</h2>
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateStadiumsParagraph(city?.country ?? '')}
             </p>
             <div className="grid md:grid-cols-3 gap-4">{stadiums.map(s => <StadiumCard key={s.id} stadium={s} />)}</div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateStadiumsAfter(city?.country ?? '')}
             </p>
           </motion.section>
@@ -1034,11 +1034,11 @@ export default function SportsPage() {
 
         {olympics.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateOlympicsParagraph(city?.country ?? '')}
             </p>
             <OlympicsCard medals={olympics} />
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateOlympicsAfter(city?.country ?? '')}
             </p>
           </motion.section>
@@ -1046,12 +1046,12 @@ export default function SportsPage() {
 
         {athletes.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Greatest Athletes</h2>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <h2 className="text-lg font-bold text-white mb-4">Greatest Athletes</h2>
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateAthletesParagraph(city?.country ?? '')}
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{athletes.map(a => <AthleteCard key={a.id} athlete={a} />)}</div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateAthletesAfter(city?.country ?? '')}
             </p>
           </motion.section>
@@ -1059,22 +1059,22 @@ export default function SportsPage() {
 
         {news.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Sports News</h2>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <h2 className="text-lg font-bold text-white mb-4">Sports News</h2>
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateNewsParagraph(city?.country ?? '')}
             </p>
             <div className="grid md:grid-cols-2 gap-4">{news.slice(0, 5).map((n, i) => <NewsCard key={i} article={n} />)}</div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateNewsAfter(city?.country ?? '')}
             </p>
           </motion.section>
         )}
 
-        <p className="text-gray-700 leading-relaxed text-sm">
+        <p className="text-gray-300 leading-relaxed text-sm">
           {generateShopParagraph(city?.country ?? '', activeSportLabel)}
         </p>
         <AffiliateSection />
-        <p className="text-gray-600 leading-relaxed text-sm">
+        <p className="text-gray-400 leading-relaxed text-sm">
           {generateShopAfter(city?.country ?? '', activeSportLabel)}
         </p>
       </main>
