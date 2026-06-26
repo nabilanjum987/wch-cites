@@ -107,7 +107,7 @@ function StatCard({
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
   const trendColor = trend === 'up' ? 'text-green-500' : trend === 'down' ? 'text-red-500' : 'text-gray-400';
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 hover:shadow-md transition-shadow">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="bg-transparent rounded-2xl border border-white/8 p-4 hover: transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="p-2 rounded-xl" style={{ backgroundColor: `${color}15` }}>
           <Icon size={18} style={{ color }} />
@@ -115,7 +115,7 @@ function StatCard({
         {trend && <TrendIcon size={14} className={trendColor} />}
       </div>
       <p className="text-xs text-gray-500 mb-0.5">{label}</p>
-      <p className="text-xl font-bold text-gray-900">{value}</p>
+      <p className="text-xl font-bold text-white">{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
     </div>
   );
@@ -160,10 +160,10 @@ function MiseryTable({ data, countrySlug, primaryColor }: {
   data: MiseryIndex[]; countrySlug: string; primaryColor: string;
 }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-100">
+    <div className="overflow-x-auto rounded-xl border border-white/8">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-gray-50 border-b border-gray-100">
+          <tr className="bg-white/4 border-b border-white/8">
             <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Rank</th>
             <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Country</th>
             <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500">Inflation %</th>
@@ -176,20 +176,20 @@ function MiseryTable({ data, countrySlug, primaryColor }: {
             const isThis = row.countrySlug === countrySlug || row.countrySlug === countrySlug.replace(/-/g, '');
             return (
               <tr key={row.country}
-                className={`border-b border-gray-50 transition-colors ${isThis ? 'bg-yellow-50' : 'hover:bg-gray-50'}`}>
+                className={`border-b border-gray-50 transition-colors ${isThis ? 'bg-yellow-500/10' : 'hover:bg-white/4'}`}>
                 <td className="px-4 py-2.5 text-gray-500 font-medium">{i + 1}</td>
-                <td className="px-4 py-2.5 font-medium text-gray-900">
+                <td className="px-4 py-2.5 font-medium text-white">
                   {row.country}
                   {isThis && <span className="ml-2 text-xs px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: primaryColor }}>You</span>}
                 </td>
                 <td className="px-4 py-2.5 text-right">
-                  <span className={`font-semibold ${row.inflation > 20 ? 'text-red-600' : row.inflation > 8 ? 'text-orange-500' : 'text-green-600'}`}>
+                  <span className={`font-semibold ${row.inflation > 20 ? 'text-red-400' : row.inflation > 8 ? 'text-orange-500' : 'text-green-400'}`}>
                     {row.inflation}%
                   </span>
                 </td>
-                <td className="px-4 py-2.5 text-right text-gray-700">{row.unemployment}%</td>
+                <td className="px-4 py-2.5 text-right text-gray-300">{row.unemployment}%</td>
                 <td className="px-4 py-2.5 text-right">
-                  <span className={`font-bold ${row.miseryIndex > 50 ? 'text-red-600' : row.miseryIndex > 20 ? 'text-orange-500' : 'text-green-600'}`}>
+                  <span className={`font-bold ${row.miseryIndex > 50 ? 'text-red-400' : row.miseryIndex > 20 ? 'text-orange-500' : 'text-green-400'}`}>
                     {row.miseryIndex.toFixed(1)}
                   </span>
                 </td>
@@ -212,19 +212,19 @@ function PurchasingPowerCalc({ inflation, currency, symbol, primaryColor }: {
   const loss5y = val - val / Math.pow(1 + inflation / 100, 5);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
+    <div className="bg-transparent rounded-2xl border border-white/8 p-5">
       <div className="flex items-center gap-2 mb-4">
         <Calculator size={18} style={{ color: primaryColor }} />
-        <h3 className="font-semibold text-gray-900">Purchasing Power Calculator</h3>
+        <h3 className="font-semibold text-white">Purchasing Power Calculator</h3>
       </div>
       <p className="text-xs text-gray-500 mb-3">How much does your money lose to inflation?</p>
       <div className="flex items-center gap-2 mb-5">
-        <span className="text-sm font-medium text-gray-600">{symbol}</span>
+        <span className="text-sm font-medium text-gray-400">{symbol}</span>
         <input
           type="number"
           value={amount}
           onChange={e => setAmount(e.target.value)}
-          className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2"
+          className="flex-1 border border-white/10 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2"
           style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
           placeholder="Enter amount"
         />
@@ -238,15 +238,15 @@ function PurchasingPowerCalc({ inflation, currency, symbol, primaryColor }: {
           <div key={row.label} className="flex items-center gap-3">
             <div className="flex-1">
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-600">{row.label}</span>
+                <span className="text-gray-400">{row.label}</span>
                 <span className="text-red-500 font-semibold">-{symbol}{Math.round(row.loss).toLocaleString()}</span>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                 <div className="h-full bg-red-400 rounded-full transition-all"
                   style={{ width: `${Math.min(100, (row.loss / val) * 100)}%` }} />
               </div>
             </div>
-            <span className="text-xs font-semibold text-gray-700 w-24 text-right">
+            <span className="text-xs font-semibold text-gray-300 w-24 text-right">
               {symbol}{Math.round(row.remaining).toLocaleString()} left
             </span>
           </div>
@@ -265,10 +265,10 @@ function IndicatorBar({ label, value, max, color, format }: {
   return (
     <div className="mb-3">
       <div className="flex justify-between text-xs mb-1">
-        <span className="text-gray-600">{label}</span>
-        <span className="font-semibold text-gray-800">{fmt(value)}</span>
+        <span className="text-gray-400">{label}</span>
+        <span className="font-semibold text-white">{fmt(value)}</span>
       </div>
-      <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-2.5 bg-white/5 rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -310,7 +310,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `${eco.population}M people • ${eco.literacyRate}% literacy • ${eco.lifeExpectancy}yr life expectancy`,
       content: (
         <div className="mt-4 space-y-4">
-          <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-sm text-gray-300 leading-relaxed">
             {generatePopulationParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -319,7 +319,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <StatCard icon={Award} label="Literacy Rate" value={`${eco.literacyRate}%`} sub="Population literate" color="#3B82F6" trend="up" />
             <StatCard icon={Activity} label="Life Expectancy" value={`${eco.lifeExpectancy} yrs`} sub="Average at birth" color="#3B82F6" />
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-400 leading-relaxed">
             {generatePopulationAfter(countryName)}
           </p>
         </div>
@@ -333,7 +333,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `GDP $${eco.gdpBillions}B • Growth ${eco.gdpGrowth}% • Per capita $${eco.gdpPerCapita.toLocaleString()}`,
       content: (
         <div className="mt-4 space-y-4">
-          <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-sm text-gray-300 leading-relaxed">
             {generateEconomicCoreParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -341,14 +341,14 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <StatCard icon={TrendingUp} label="GDP Growth" value={`${eco.gdpGrowth}%`} sub="Annual rate" color={primaryColor} trend={eco.gdpGrowth > 3 ? 'up' : eco.gdpGrowth > 0 ? 'neutral' : 'down'} />
             <StatCard icon={DollarSign} label="GDP Per Capita" value={`$${eco.gdpPerCapita.toLocaleString()}`} sub={`$${gdpPerCapitaDaily.toFixed(2)}/day`} color={primaryColor} />
           </div>
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm font-medium text-gray-700 mb-2">What does GDP per capita mean for you?</p>
-            <p className="text-sm text-gray-600">
+          <div className="bg-white/4 rounded-xl p-4">
+            <p className="text-sm font-medium text-gray-300 mb-2">What does GDP per capita mean for you?</p>
+            <p className="text-sm text-gray-400">
               On average, each person in {countryName} contributes <strong>${gdpPerCapitaDaily.toFixed(2)}</strong> to the economy per day.
               Compare that to the USA ($223/day) or Germany ($170/day). {eco.gdpGrowth > 4 ? '📈 Growth is strong.' : eco.gdpGrowth > 1 ? '📊 Growth is moderate.' : '⚠️ Growth needs attention.'}
             </p>
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-400 leading-relaxed">
             {generateEconomicCoreAfter(countryName)}
           </p>
         </div>
@@ -362,7 +362,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `${eco.inflation}% annual inflation • Interest rate ${eco.interestRate}%`,
       content: (
         <div className="mt-4 space-y-4">
-          <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-sm text-gray-300 leading-relaxed">
             {generateInflationParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -375,9 +375,9 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             symbol={eco.currencySymbol}
             primaryColor={primaryColor}
           />
-          <div className="bg-orange-50 border border-orange-100 rounded-xl p-4">
-            <p className="text-sm font-medium text-orange-800 mb-1">Plain Language: What does {eco.inflation}% inflation mean?</p>
-            <p className="text-sm text-orange-700">
+          <div className="bg-orange-500/10 border border-orange-100 rounded-xl p-4">
+            <p className="text-sm font-medium text-orange-300 mb-1">Plain Language: What does {eco.inflation}% inflation mean?</p>
+            <p className="text-sm text-orange-400">
               If you bought groceries for {eco.currencySymbol}1,000 last year, the same basket costs approximately <strong>{eco.currencySymbol}{Math.round(1000 * (1 + eco.inflation / 100)).toLocaleString()}</strong> today.
               Your money loses <strong>{eco.inflation}%</strong> of its purchasing power every year.
               {eco.inflation > 20 ? ' This is very high — savings in cash are being eroded rapidly.' :
@@ -385,7 +385,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                ' This is within a manageable range.'}
             </p>
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-400 leading-relaxed">
             {generateInflationAfter(countryName)}
           </p>
         </div>
@@ -399,14 +399,14 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `${eco.unemployment}% unemployment • ${eco.povertyRate}% poverty rate`,
       content: (
         <div className="mt-4 space-y-4">
-          <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-sm text-gray-300 leading-relaxed">
             {generateEmploymentParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={Briefcase} label="Unemployment" value={`${eco.unemployment}%`} sub="Of labor force" color="#8B5CF6" trend={eco.unemployment > 8 ? 'down' : 'up'} />
             <StatCard icon={Users} label="Poverty Rate" value={`${eco.povertyRate}%`} sub="Below poverty line" color="#8B5CF6" trend={eco.povertyRate > 20 ? 'down' : 'neutral'} />
           </div>
-          <div className="bg-purple-50 border border-purple-100 rounded-xl p-4">
+          <div className="bg-purple-500/10 border border-purple-100 rounded-xl p-4">
             <p className="text-sm text-purple-800">
               <strong>{eco.unemployment}%</strong> unemployment means roughly <strong>{Math.round(eco.laborForce * eco.unemployment / 100)}M people</strong> in {countryName} are actively seeking work.
               {eco.unemployment > 10 ? ' High unemployment strains social services and reduces consumer spending.' :
@@ -414,7 +414,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                ' Near full employment suggests a healthy, active economy.'}
             </p>
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-400 leading-relaxed">
             {generateEmploymentAfter(countryName)}
           </p>
         </div>
@@ -428,16 +428,16 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `${eco.debtToGdp}% debt-to-GDP • ${eco.currencySymbol}${debtPerCitizen.toLocaleString()} per citizen`,
       content: (
         <div className="mt-4 space-y-4">
-          <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-sm text-gray-300 leading-relaxed">
             {generateDebtParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={AlertTriangle} label="Debt-to-GDP" value={`${eco.debtToGdp}%`} sub="National debt ratio" color="#EF4444" trend={eco.debtToGdp > 90 ? 'down' : 'neutral'} />
             <StatCard icon={Users} label="Debt Per Citizen" value={`$${debtPerCitizen.toLocaleString()}`} sub="Each person owes" color="#EF4444" />
           </div>
-          <div className="bg-red-50 border border-red-100 rounded-xl p-4">
-            <p className="text-sm font-medium text-red-800 mb-1">What does this mean?</p>
-            <p className="text-sm text-red-700">
+          <div className="bg-red-500/10 border border-red-100 rounded-xl p-4">
+            <p className="text-sm font-medium text-red-300 mb-1">What does this mean?</p>
+            <p className="text-sm text-red-400">
               {countryName}'s national debt is <strong>{eco.debtToGdp}%</strong> of its entire annual GDP.
               Each citizen effectively owes <strong>${debtPerCitizen.toLocaleString()}</strong> as their share of this debt.
               {eco.debtToGdp > 100 ? ' A debt-to-GDP ratio above 100% is considered very high — it limits government spending on public services.' :
@@ -445,7 +445,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                ' This is within manageable levels by global standards.'}
             </p>
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-400 leading-relaxed">
             {generateDebtAfter(countryName)}
           </p>
         </div>
@@ -459,19 +459,19 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `HDI ${eco.hdi} • Gini ${eco.gini} inequality coefficient`,
       content: (
         <div className="mt-4 space-y-4">
-          <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-sm text-gray-300 leading-relaxed">
             {generateHdiParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={Award} label="HDI Score" value={eco.hdi.toFixed(3)} sub={eco.hdi > 0.8 ? 'Very High' : eco.hdi > 0.7 ? 'High' : eco.hdi > 0.55 ? 'Medium' : 'Low'} color="#10B981" trend={eco.hdi > 0.7 ? 'up' : 'neutral'} />
             <StatCard icon={BarChart3} label="Gini Coefficient" value={eco.gini.toFixed(1)} sub={eco.gini > 40 ? 'High Inequality' : eco.gini > 30 ? 'Moderate' : 'Low Inequality'} color="#10B981" />
           </div>
-          <div className="space-y-2 bg-white rounded-xl border border-gray-100 p-4">
+          <div className="space-y-2 bg-transparent rounded-xl border border-white/8 p-4">
             <IndicatorBar label="Human Development Index" value={eco.hdi} max={1} color="#10B981" format={v => v.toFixed(3)} />
             <IndicatorBar label="Literacy Rate" value={eco.literacyRate} max={100} color="#3B82F6" format={v => `${v}%`} />
             <IndicatorBar label="Life Expectancy (out of 90)" value={eco.lifeExpectancy} max={90} color="#8B5CF6" format={v => `${v} yrs`} />
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-400 leading-relaxed">
             {generateHdiAfter(countryName)}
           </p>
         </div>
@@ -485,7 +485,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       summary: `Trade balance $${eco.tradeBalance}B • FDI $${eco.fdi}B`,
       content: (
         <div className="mt-4 space-y-4">
-          <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-sm text-gray-300 leading-relaxed">
             {generateTradeParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -504,7 +504,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
               </p>
             </div>
           )}
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-400 leading-relaxed">
             {generateTradeAfter(countryName)}
           </p>
         </div>
@@ -513,7 +513,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white/4">
       {/* Header */}
       <div style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}cc 100%)` }} className="text-white py-10 px-4">
         <div className="max-w-5xl mx-auto">
@@ -533,36 +533,36 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
 
         {/* Financial Stress Meter + Misery Index side by side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl border border-gray-100 p-6">
+          <div className="bg-transparent rounded-2xl border border-white/8 p-6">
             <div className="flex items-center gap-2 mb-4">
               <Activity size={18} style={{ color: primaryColor }} />
-              <h2 className="font-bold text-gray-900">Financial Stress Meter</h2>
+              <h2 className="font-bold text-white">Financial Stress Meter</h2>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed mb-4">
+            <p className="text-sm text-gray-300 leading-relaxed mb-4">
               {generateStressMeterParagraph(countryName, cityName)}
             </p>
             <StressMeter score={stress.score} level={stress.level} primaryColor={primaryColor} />
             <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-gray-500">
-              <div><div className="font-bold text-gray-800">{stress.inflation}%</div><div>Inflation</div></div>
-              <div><div className="font-bold text-gray-800">{stress.unemployment}%</div><div>Unemployment</div></div>
-              <div><div className="font-bold text-gray-800">{stress.debtToGdp}%</div><div>Debt/GDP</div></div>
+              <div><div className="font-bold text-white">{stress.inflation}%</div><div>Inflation</div></div>
+              <div><div className="font-bold text-white">{stress.unemployment}%</div><div>Unemployment</div></div>
+              <div><div className="font-bold text-white">{stress.debtToGdp}%</div><div>Debt/GDP</div></div>
             </div>
-            <p className="text-sm text-gray-600 leading-relaxed mt-4">
+            <p className="text-sm text-gray-400 leading-relaxed mt-4">
               {generateStressMeterAfter(countryName, cityName)}
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-100 p-6">
+          <div className="bg-transparent rounded-2xl border border-white/8 p-6">
             <div className="flex items-center gap-2 mb-4">
               <Target size={18} style={{ color: primaryColor }} />
-              <h2 className="font-bold text-gray-900">Global Misery Index</h2>
+              <h2 className="font-bold text-white">Global Misery Index</h2>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed mb-4">
+            <p className="text-sm text-gray-300 leading-relaxed mb-4">
               {generateMiseryParagraph(countryName)}
             </p>
             <MiseryTable data={MISERY_INDEX_DATA} countrySlug={country} primaryColor={primaryColor} />
             <p className="text-xs text-gray-400 mt-3">Misery Index = Inflation + Unemployment. Higher = more economic pain.</p>
-            <p className="text-sm text-gray-600 leading-relaxed mt-4">
+            <p className="text-sm text-gray-400 leading-relaxed mt-4">
               {generateMiseryAfter(countryName)}
             </p>
           </div>
@@ -579,16 +579,16 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
         {/* Accordion sections */}
         <div className="space-y-3">
           {sections.map(section => (
-            <div key={section.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div key={section.id} className="bg-transparent rounded-2xl border border-white/8 overflow-hidden">
               <button
                 onClick={() => toggle(section.id)}
-                className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition text-left">
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/4 transition text-left">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-xl" style={{ backgroundColor: `${section.color}15` }}>
                     <section.icon size={16} style={{ color: section.color }} />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">{section.title}</p>
+                    <p className="font-semibold text-white text-sm">{section.title}</p>
                     <p className="text-xs text-gray-500 mt-0.5">{section.summary}</p>
                   </div>
                 </div>
@@ -606,12 +606,12 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
         </div>
 
         {/* Opportunity Index */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+        <div className="bg-transparent rounded-2xl border border-white/8 p-6">
           <div className="flex items-center gap-2 mb-4">
             <Target size={18} style={{ color: primaryColor }} />
-            <h2 className="font-bold text-gray-900">Opportunity Index for {cityName}</h2>
+            <h2 className="font-bold text-white">Opportunity Index for {cityName}</h2>
           </div>
-          <p className="text-sm text-gray-700 leading-relaxed mb-4">
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
             {generateOpportunityParagraph(cityName, countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -635,27 +635,27 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                 insight: eco.tradeBalance < -20 ? 'High import dependency = export gap opportunity' : eco.fdi > 50 ? 'Foreign confidence is high' : 'Emerging export potential',
               },
             ].map(item => (
-              <div key={item.label} className="bg-gray-50 rounded-xl p-4">
+              <div key={item.label} className="bg-white/4 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-2">
-                  <p className="text-sm font-medium text-gray-700">{item.label}</p>
+                  <p className="text-sm font-medium text-gray-300">{item.label}</p>
                   <span className="text-lg font-bold" style={{ color: item.color }}>{Math.round(item.score)}</span>
                 </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
+                <div className="h-2 bg-white/8 rounded-full overflow-hidden mb-2">
                   <div className="h-full rounded-full" style={{ width: `${item.score}%`, backgroundColor: item.color }} />
                 </div>
                 <p className="text-xs text-gray-500">{item.insight}</p>
               </div>
             ))}
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed mt-4">
+          <p className="text-sm text-gray-400 leading-relaxed mt-4">
             {generateOpportunityAfter(cityName, countryName)}
           </p>
         </div>
 
         {/* Footer note */}
-        <div className="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-xl p-4">
+        <div className="flex items-start gap-2 bg-blue-500/10 border border-blue-100 rounded-xl p-4">
           <Info size={15} className="text-blue-500 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-blue-700">
+          <p className="text-xs text-blue-400">
             Data sourced from World Bank, IMF, and national statistics bureaus. Figures are latest available estimates and subject to revision. This page is for informational purposes only and does not constitute financial advice.
           </p>
         </div>
