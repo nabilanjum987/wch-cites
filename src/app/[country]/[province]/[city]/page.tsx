@@ -227,10 +227,10 @@ export default async function CityPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.citySchema) }}
       />
 
-      <main className="min-h-screen bg-[#F5F3EE]" style={{ fontFamily: 'Inter, sans-serif' }}>
+      <main className="min-h-screen relative" style={{ backgroundColor: '#0a0f1e', fontFamily: 'Inter, sans-serif' }}>
 
         {/* ══ SECTION 1: TICKER BAR ══════════════════════════════════════════ */}
-        <div className="bg-[#01411C] text-white text-xs py-1.5 overflow-hidden">
+        <div className="text-white text-xs py-1.5 overflow-hidden" style={{ backgroundColor: 'rgba(12,122,61,0.9)', backdropFilter: 'blur(10px)' }}>
           <div className="flex gap-8 px-4 flex-wrap items-center">
             {goldPerGram && (
               <span>🥇 Gold <strong>PKR {Math.round(goldPerGram).toLocaleString()}/g</strong></span>
@@ -254,25 +254,25 @@ export default async function CityPage({
         </div>
 
         {/* ══ SECTION 2: HERO + LOCAL TIME ══════════════════════════════════ */}
-        <section className="bg-[#01411C] text-white pt-8 pb-10 px-4 md:px-8">
+        <section className="relative text-white pt-8 pb-10 px-4 md:px-8" style={{ background: 'linear-gradient(160deg, #0C7A3D22, #0a0f1e 60%)', borderBottom: '1px solid rgba(12,122,61,0.3)' }}>
           {/* Breadcrumb */}
-          <nav className="text-xs text-green-300 mb-4">
-            <a href="/" className="hover:text-white">WorldCityHub</a>
+          <nav className="text-xs text-gray-500 mb-4">
+            <a href="/" className="hover:text-gray-300 transition-colors">WorldCityHub</a>
             <span className="mx-1">›</span>
-            <a href={`/${resolvedParams.country}`} className="hover:text-white capitalize">{country}</a>
+            <a href={`/${resolvedParams.country}`} className="hover:text-gray-300 transition-colors capitalize">{country}</a>
             <span className="mx-1">›</span>
-            <a href={`/${resolvedParams.country}/${resolvedParams.province}`} className="hover:text-white capitalize">{province}</a>
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}`} className="hover:text-gray-300 transition-colors capitalize">{province}</a>
             <span className="mx-1">›</span>
             <span className="text-white">{city}</span>
           </nav>
 
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
             <div>
-              <h1 style={{ fontFamily: 'Playfair Display, serif' }} className="text-4xl md:text-5xl font-bold mb-2">
+              <h1 style={{ fontFamily: 'Playfair Display, serif', color: '#34d399' }} className="text-4xl md:text-5xl font-bold mb-2">
                 {city}
               </h1>
-              <p className="text-green-200 text-lg mb-1">{province} · {country}</p>
-              <p className="text-green-300 text-sm">
+              <p className="text-gray-400 text-lg mb-1">{province} · {country}</p>
+              <p className="text-gray-500 text-sm">
                 {hijriDate ? `${hijriDate.day} ${((hijriDate.month as unknown as Record<string, string>))?.en} ${hijriDate.year} AH · ` : ''}
                 {currentMonth} {currentYear}
               </p>
@@ -294,10 +294,10 @@ export default async function CityPage({
 
             {/* Live clock placeholder - JS hydrates this */}
             <div className="text-right hidden md:block">
-              <div className="text-6xl font-mono font-light" id="city-clock">--:--</div>
-              <div className="text-green-300 text-sm mt-1">{cityParams.timezone}</div>
+              <div className="text-6xl font-mono font-light text-white" id="city-clock">--:--</div>
+              <div className="text-gray-500 text-sm mt-1">{cityParams.timezone}</div>
               {sunrise && sunset && (
-                <div className="text-green-400 text-xs mt-2">
+                <div className="text-gray-500 text-xs mt-2">
                   🌅 Sunrise {new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
                   &nbsp;·&nbsp;
                   🌇 Sunset {new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
@@ -307,34 +307,34 @@ export default async function CityPage({
           </div>
         </section>
 
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-10">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-10 relative z-10">
 
           {/* ══ SECTION 3: WEATHER ════════════════════════════════════════════ */}
-          <section id="weather" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="weather" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🌤 Weather in {city} Today — {currentMonth} {currentYear}
             </h2>
             {temp ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-[#F5F3EE] rounded-xl p-4 text-center">
-                  <div className="text-3xl font-mono text-[#01411C]">{Math.round(temp)}°C</div>
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="text-3xl font-mono" style={{ color: '#0C7A3D' }}>{Math.round(temp)}°C</div>
                   <div className="text-xs text-gray-500 mt-1">Temperature</div>
                 </div>
-                <div className="bg-[#F5F3EE] rounded-xl p-4 text-center">
-                  <div className="text-3xl font-mono text-[#01411C]">{Math.round(feelsLike ?? temp)}°C</div>
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="text-3xl font-mono" style={{ color: '#0C7A3D' }}>{Math.round(feelsLike ?? temp)}°C</div>
                   <div className="text-xs text-gray-500 mt-1">Feels Like</div>
                 </div>
-                <div className="bg-[#F5F3EE] rounded-xl p-4 text-center">
-                  <div className="text-3xl font-mono text-[#01411C]">{humidity}%</div>
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="text-3xl font-mono" style={{ color: '#0C7A3D' }}>{humidity}%</div>
                   <div className="text-xs text-gray-500 mt-1">Humidity</div>
                 </div>
-                <div className="bg-[#F5F3EE] rounded-xl p-4 text-center">
-                  <div className="text-3xl font-mono text-[#01411C]">{Math.round((windSpeed ?? 0) * 3.6)}</div>
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="text-3xl font-mono" style={{ color: '#0C7A3D' }}>{Math.round((windSpeed ?? 0) * 3.6)}</div>
                   <div className="text-xs text-gray-500 mt-1">Wind km/h</div>
                 </div>
               </div>
             ) : (
-              <div className="bg-[#F5F3EE] rounded-xl p-4 mb-6 text-gray-500 text-sm">
+              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
                 Live weather data loading... Check back in a moment.
               </div>
             )}
@@ -342,9 +342,9 @@ export default async function CityPage({
             {/* AQI */}
             {aqi && (
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium mb-6 ${
-                aqi <= 2 ? 'bg-green-100 text-green-700' :
-                aqi === 3 ? 'bg-yellow-100 text-yellow-700' :
-                'bg-red-100 text-red-700'
+                aqi <= 2 ? 'bg-green-900/40 text-green-400' :
+                aqi === 3 ? 'bg-yellow-900/40 text-yellow-400' :
+                'bg-red-900/40 text-red-400'
               }`}>
                 💨 Air Quality: <strong>{aqiLabel}</strong> (AQI {aqi}/5)
               </div>
@@ -373,73 +373,73 @@ export default async function CityPage({
               </div>
             )}
 
-            <p className="mt-6 text-gray-700 leading-relaxed text-sm">
+            <p className="mt-6 text-gray-400 leading-relaxed text-sm">
               {generateWeatherParagraph(city, temp, feelsLike, humidity, weatherDesc, windSpeed ? windSpeed * 3.6 : null)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateWeatherAfter(city, country)}
               </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
-              className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               View full weather forecast →
             </a>
           </section>
 
           {/* ══ SECTION 4: SUN/MOON ═══════════════════════════════════════════ */}
           {(sunrise || sunset) && (
-            <section id="sun-moon" className="bg-white rounded-2xl shadow-sm p-6">
-              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+            <section id="sun-moon" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
                 🌅 Sun & Moon in {city} — {currentMonth} {currentYear}
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {sunrise && (
-                  <div className="bg-amber-50 rounded-xl p-4 text-center">
+                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(251,191,36,0.06)', borderColor: 'rgba(251,191,36,0.2)' }}>
                     <div className="text-2xl">🌅</div>
-                    <div className="font-mono text-[#01411C] font-medium">
+                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
                       {new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
                     </div>
                     <div className="text-xs text-gray-500 mt-1">Sunrise</div>
                   </div>
                 )}
                 {sunset && (
-                  <div className="bg-orange-50 rounded-xl p-4 text-center">
+                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(249,115,22,0.06)', borderColor: 'rgba(249,115,22,0.2)' }}>
                     <div className="text-2xl">🌇</div>
-                    <div className="font-mono text-[#01411C] font-medium">
+                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
                       {new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
                     </div>
                     <div className="text-xs text-gray-500 mt-1">Sunset</div>
                   </div>
                 )}
-                <div className="bg-blue-50 rounded-xl p-4 text-center">
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(59,130,246,0.06)', borderColor: 'rgba(59,130,246,0.2)' }}>
                   <div className="text-2xl">🌙</div>
-                  <div className="font-mono text-[#01411C] font-medium">Tonight</div>
+                  <div className="font-mono font-medium" style={{ color: '#34d399' }}>Tonight</div>
                   <div className="text-xs text-gray-500 mt-1">Moon Phase</div>
                 </div>
                 {sunrise && sunset && (
-                  <div className="bg-yellow-50 rounded-xl p-4 text-center">
+                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(234,179,8,0.06)', borderColor: 'rgba(234,179,8,0.2)' }}>
                     <div className="text-2xl">⏱</div>
-                    <div className="font-mono text-[#01411C] font-medium">
+                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
                       {Math.round((new Date(sunset).getTime() - new Date(sunrise).getTime()) / 3600000)}h
                     </div>
                     <div className="text-xs text-gray-500 mt-1">Daylight</div>
                   </div>
                 )}
               </div>
-              <p className="mt-6 text-gray-700 leading-relaxed text-sm">
+              <p className="mt-6 text-gray-400 leading-relaxed text-sm">
                 {generateSunMoonParagraph(city,
                   sunrise ? new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone }) : null,
                   sunset ? new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone }) : null
                 )}
               </p>
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateSunMoonAfter(city)}
               </p>
             </section>
           )}
 
           {/* ══ SECTION 5: PRAYER TIMES ═══════════════════════════════════════ */}
-          <section id="prayer-times" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-1">
+          <section id="prayer-times" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-1">
               🕌 Prayer Times in {city} — {currentMonth} {currentYear}
             </h2>
             {hijriDate && (
@@ -459,31 +459,31 @@ export default async function CityPage({
                 ].map((p) => (
                   <div key={p.name} className="bg-[#F5F3EE] rounded-xl p-3 text-center">
                     <div className="text-lg">{p.emoji}</div>
-                    <div className="font-mono text-[#01411C] font-semibold text-sm">{p.time}</div>
+                    <div className="font-mono font-semibold text-sm" style={{ color: '#34d399' }}>{p.time}</div>
                     <div className="text-xs text-gray-500 mt-0.5">{p.name}</div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="bg-[#F5F3EE] rounded-xl p-4 mb-6 text-gray-500 text-sm">
+              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
                 Prayer times loading...
               </div>
             )}
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generatePrayerParagraph(city, timings)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generatePrayerAfter(city)}
               </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`}
-              className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               Full prayer timetable, Qibla compass & Zakat calculator →
             </a>
           </section>
 
           {/* ══ SECTION 6: GOLD & METAL RATES ════════════════════════════════ */}
-          <section id="gold-rates" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="gold-rates" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🥇 Gold & Metal Rates in {city} — {currentMonth} {currentYear}
             </h2>
             {goldPerGram ? (
@@ -494,14 +494,14 @@ export default async function CityPage({
                   { label: '22 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.9167).toLocaleString()}` },
                   { label: '18 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.75).toLocaleString()}` },
                 ].map((item) => (
-                  <div key={item.label} className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <div className="text-xs text-amber-700 mb-1">{item.label}</div>
-                    <div className="font-mono font-bold text-amber-900 text-lg">{item.value}</div>
+                  <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(251,191,36,0.08)', borderColor: 'rgba(251,191,36,0.3)' }}>
+                    <div className="text-xs text-amber-400 mb-1">{item.label}</div>
+                    <div className="font-mono font-bold text-amber-300 text-lg">{item.value}</div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="bg-[#F5F3EE] rounded-xl p-4 mb-6 text-gray-500 text-sm">
+              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
                 Gold rates loading...
               </div>
             )}
@@ -511,30 +511,30 @@ export default async function CityPage({
               <div className="border-t pt-4 mt-4">
                 <h3 className="text-sm font-semibold text-gray-600 mb-3">Cryptocurrency Today</h3>
                 <div className="flex gap-4 flex-wrap">
-                  <div className="bg-orange-50 rounded-lg px-4 py-2">
+                  <div className="rounded-lg px-4 py-2 border" style={{ backgroundColor: 'rgba(249,115,22,0.08)', borderColor: 'rgba(249,115,22,0.3)' }}>
                     <span className="text-xs text-gray-500">Bitcoin (BTC)</span>
-                    <div className="font-mono font-bold text-orange-700">${btcUsd.toLocaleString()}</div>
+                    <div className="font-mono font-bold text-orange-400">${btcUsd.toLocaleString()}</div>
                     {btcPkr && <div className="text-xs text-gray-500">PKR {btcPkr.toLocaleString()}</div>}
                   </div>
                 </div>
               </div>
             )}
 
-            <p className="mt-6 text-gray-700 leading-relaxed text-sm">
+            <p className="mt-6 text-gray-400 leading-relaxed text-sm">
               {generateGoldParagraph(city, goldPerGram)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateGoldAfter(city)}
               </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`}
-              className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               Full rates page — oil, silver, crypto, currency, stocks →
             </a>
           </section>
 
           {/* ══ SECTION 7: TODAY'S NEWS ═══════════════════════════════════════ */}
-          <section id="news" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="news" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               📰 {city} News Today — {currentMonth} {currentYear}
             </h2>
             {newsArticles.length > 0 ? (
@@ -561,25 +561,25 @@ export default async function CityPage({
                 ))}
               </div>
             ) : (
-              <div className="bg-[#F5F3EE] rounded-xl p-4 mb-6 text-gray-500 text-sm">
+              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
                 News articles loading...
               </div>
             )}
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateNewsParagraph(city, topHeadline)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateNewsAfter(city)}
               </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`}
-              className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               Full news page — 12 categories, archive, Urdu feed →
             </a>
           </section>
 
           {/* ══ SECTION 8: EVENTS ═════════════════════════════════════════════ */}
-          <section id="events" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="events" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🎉 Events in {city} — {currentMonth} {currentYear}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -593,85 +593,85 @@ export default async function CityPage({
                 </a>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateEventsParagraph(city)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateEventsAfter(city)}
               </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`}
-              className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               Full events calendar — map view, 16 categories, submit event →
             </a>
           </section>
 
           {/* ══ SECTION 9: ECONOMY ════════════════════════════════════════════ */}
-          <section id="economy" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="economy" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               📊 Economy of {city} — {currentMonth} {currentYear}
             </h2>
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-[#F5F3EE] rounded-xl p-4 text-center">
+              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
                 <div className="text-xs text-gray-500 mb-1">GDP per Capita</div>
-                <div className="font-mono font-bold text-[#01411C]">
+                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
                   ${gdpPerCapita ? Math.round(gdpPerCapita).toLocaleString() : '--'}
                 </div>
               </div>
-              <div className="bg-[#F5F3EE] rounded-xl p-4 text-center">
+              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
                 <div className="text-xs text-gray-500 mb-1">Inflation</div>
-                <div className="font-mono font-bold text-[#01411C]">
+                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
                   {inflation ? `${Math.round(inflation)}%` : '--'}
                 </div>
               </div>
-              <div className="bg-[#F5F3EE] rounded-xl p-4 text-center">
+              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
                 <div className="text-xs text-gray-500 mb-1">Unemployment</div>
-                <div className="font-mono font-bold text-[#01411C]">
+                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
                   {unemployment ? `${Math.round(unemployment)}%` : '--'}
                 </div>
               </div>
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateEconomyParagraph(city, country, gdpPerCapita, inflation, unemployment)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateEconomyAfter(city, country)}
               </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`}
-              className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               Full economy page — GDP charts, misery index, jobs →
             </a>
           </section>
 
           {/* ══ SECTION 10: SPORTS ════════════════════════════════════════════ */}
-          <section id="sports" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="sports" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🏏 Sports in {city} — {currentMonth} {currentYear}
             </h2>
             <div className="flex gap-3 flex-wrap mb-6">
               {['Cricket', 'PSL', 'Hockey', 'Football', 'Squash', 'Kabaddi'].map((sport) => (
-                <span key={sport} className="bg-[#01411C] text-white text-xs px-3 py-1.5 rounded-full">
+                <span key={sport} className="text-xs px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(12,122,61,0.3)', color: '#34d399', border: '1px solid rgba(12,122,61,0.5)' }}>
                   {sport}
                 </span>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateSportsParagraph(city)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateSportsAfter(city)}
               </p>
             </p>
             <a href={`/${resolvedParams.country}/sports`}
-              className="inline-block mt-3 text-[#01411C] text-sm font-medium hover:underline">
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               Full sports page — live scores, PSL standings, schedules →
             </a>
           </section>
 
           {/* ══ SECTION 11: FAMOUS PERSONALITIES ═════════════════════════════ */}
-          <section id="personalities" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="personalities" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               👤 Famous People from {city}
             </h2>
-            <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            <p className="text-gray-400 leading-relaxed text-sm mb-6">
                 {generatePersonalitiesParagraph(city)}
               </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -684,27 +684,27 @@ export default async function CityPage({
                 <a
                   key={p.slug}
                   href={`/personalities/${p.slug}`}
-                  className="bg-[#F5F3EE] hover:bg-green-50 rounded-xl p-4 transition"
+                  className="rounded-xl p-4 border border-white/10 hover:border-green-500/40 transition" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                 >
-                  <div className="w-10 h-10 bg-[#01411C] text-white rounded-full flex items-center justify-center text-sm font-bold mb-2">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2" style={{ backgroundColor: 'rgba(12,122,61,0.4)', border: '2px solid rgba(12,122,61,0.6)', color: '#34d399' }}>
                     {p.name[0]}
                   </div>
-                  <div className="font-medium text-sm text-gray-800">{p.name}</div>
+                  <div className="font-medium text-sm text-white">{p.name}</div>
                   <div className="text-xs text-gray-500">{p.role}</div>
                 </a>
               ))}
             </div>
-            <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+            <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generatePersonalitiesAfter(city)}
               </p>
           </section>
 
           {/* ══ SECTION 12: FAMOUS PLACES ════════════════════════════════════ */}
-          <section id="places" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="places" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🏛 Famous Places in {city}
             </h2>
-            <p className="text-gray-700 leading-relaxed text-sm mb-6">
+            <p className="text-gray-400 leading-relaxed text-sm mb-6">
                 {generatePlacesParagraph(city)}
               </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -719,22 +719,22 @@ export default async function CityPage({
                 <a
                   key={place.slug}
                   href={`/places/${place.slug}`}
-                  className="bg-[#F5F3EE] hover:bg-green-50 rounded-xl p-4 transition"
+                  className="rounded-xl p-4 border border-white/10 hover:border-green-500/40 transition" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                 >
-                  <div className="font-medium text-sm text-gray-800">{place.name}</div>
+                  <div className="font-medium text-sm text-white">{place.name}</div>
                   <div className="text-xs text-gray-500 mt-0.5">{place.type}</div>
                   <div className="text-xs text-[#01411C] mt-2 font-medium">Open today? →</div>
                 </a>
               ))}
             </div>
-            <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+            <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generatePlacesAfter(city)}
               </p>
           </section>
 
           {/* ══ SECTION 13: HERITAGE PRODUCTS ════════════════════════════════ */}
-          <section id="heritage" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="heritage" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🧶 Heritage Products of {city}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
@@ -749,44 +749,44 @@ export default async function CityPage({
                 <a
                   key={p.slug}
                   href={`/products/${p.slug}`}
-                  className="bg-amber-50 border border-amber-100 hover:border-amber-300 rounded-xl p-4 transition"
+                  className="rounded-xl p-4 border hover:border-amber-400/50 transition" style={{ backgroundColor: 'rgba(251,191,36,0.06)', borderColor: 'rgba(251,191,36,0.2)' }}
                 >
-                  <div className="font-medium text-sm text-amber-900">{p.name}</div>
-                  <div className="text-xs text-amber-600 mt-1">View story & buy →</div>
+                  <div className="font-medium text-sm text-amber-300">{p.name}</div>
+                  <div className="text-xs text-amber-500 mt-1">View story & buy →</div>
                 </a>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateHeritageParagraph(city)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateHeritageAfter(city)}
               </p>
             </p>
           </section>
 
           {/* ══ SECTION 14: STREET FOOD ═══════════════════════════════════════ */}
-          <section id="food" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="food" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🍛 Street Food of {city}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {['Nihari', 'Seekh Kebabs', 'Paye', 'Halwa Puri', 'Brain Masala', 'Karahi', 'Jalebi', 'Murgh Cholay'].map((dish) => (
-                <div key={dish} className="bg-orange-50 rounded-xl p-3 text-center text-sm font-medium text-orange-800">
+                <div key={dish} className="rounded-xl p-3 text-center text-sm font-medium border" style={{ backgroundColor: 'rgba(249,115,22,0.1)', borderColor: 'rgba(249,115,22,0.3)', color: '#fb923c' }}>
                   {dish}
                 </div>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateStreetFoodParagraph(city)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateStreetFoodAfter(city)}
               </p>
             </p>
           </section>
 
           {/* ══ SECTION 15: EMERGENCY CONTACTS ═══════════════════════════════ */}
-          <section id="emergency" className="bg-white rounded-2xl shadow-sm p-6 border-l-4 border-red-500">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-red-700 mb-4">
+          <section id="emergency" className="rounded-2xl p-6 border-l-4 border-red-500" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-red-400 mb-4">
               🚨 Emergency Contacts — {city}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -799,37 +799,37 @@ export default async function CityPage({
                 <a
                   key={contact.label}
                   href={`tel:${contact.number}`}
-                  className="bg-red-50 border border-red-100 hover:bg-red-100 rounded-xl p-4 text-center transition"
+                  className="rounded-xl p-4 text-center border hover:border-red-400/60 transition" style={{ backgroundColor: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.3)' }}
                 >
                   <div className="text-2xl mb-1">{contact.emoji}</div>
-                  <div className="font-mono font-bold text-red-700 text-xl">{contact.number}</div>
-                  <div className="text-xs text-gray-600 mt-1">{contact.label}</div>
+                  <div className="font-mono font-bold text-red-400 text-xl">{contact.number}</div>
+                  <div className="text-xs text-gray-500 mt-1">{contact.label}</div>
                 </a>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateEmergencyParagraph(city, policeNum, ambulanceNum, fireNum)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateEmergencyAfter(city)}
               </p>
             </p>
           </section>
 
           {/* ══ SECTION 16: NATURAL RESOURCES ════════════════════════════════ */}
-          <section id="resources" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="resources" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               ⛏ Natural Resources of {province}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {['Salt (Khewra Mines)', 'Coal (Balochistan)', 'Natural Gas', 'Limestone', 'Marble', 'Gypsum', 'Silica Sand', 'Iron Ore'].map((r) => (
-                <div key={r} className="bg-stone-50 rounded-xl p-3 text-sm text-stone-700">{r}</div>
+                <div key={r} className="rounded-xl p-3 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#d1d5db' }}>{r}</div>
               ))}
             </div>
           </section>
 
           {/* ══ SECTION 17: CITY AT A GLANCE ═════════════════════════════════ */}
-          <section id="glance" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="glance" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               📋 {city} at a Glance — {currentYear}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
@@ -841,23 +841,23 @@ export default async function CityPage({
                 { label: 'Time Zone', value: 'PKT (UTC+5)' },
                 { label: 'Languages', value: 'Urdu, Punjabi' },
               ].map((item) => (
-                <div key={item.label} className="bg-[#F5F3EE] rounded-xl p-4">
+                <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.2)' }}>
                   <div className="text-xs text-gray-500">{item.label}</div>
                   <div className="font-semibold text-[#01411C] mt-1">{item.value}</div>
                 </div>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateCityGlanceParagraph(city, country, province, '1,772', '217', 'antiquity')}
             </p>
-            <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+            <p className="mt-4 text-gray-500 leading-relaxed text-sm">
               {generateCityGlanceAfter(city, country)}
             </p>
           </section>
 
           {/* ══ SECTION 18: NEARBY CITIES ════════════════════════════════════ */}
-          <section id="nearby" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="nearby" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🗺 Nearby Cities
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
@@ -872,16 +872,16 @@ export default async function CityPage({
                 <a
                   key={c.name}
                   href={`/${c.slug}`}
-                  className="bg-[#F5F3EE] hover:bg-green-50 rounded-xl p-4 flex justify-between items-center transition"
+                  className="rounded-xl p-4 border border-white/10 hover:border-green-500/40 flex justify-between items-center transition" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                 >
-                  <div className="font-medium text-gray-800">{c.name}</div>
+                  <div className="font-medium text-white">{c.name}</div>
                   <div className="text-xs text-gray-500">{c.dist}</div>
                 </a>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateNearbyCitiesParagraph(city)}
-              <p className="mt-4 text-gray-600 leading-relaxed text-sm">
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateNearbyCitiesAfter(city)}
               </p>
             </p>
@@ -889,14 +889,14 @@ export default async function CityPage({
 
           {/* ══ SECTION 19: PUBLIC HOLIDAYS ══════════════════════════════════ */}
           {upcomingHolidays.length > 0 && (
-            <section id="holidays" className="bg-white rounded-2xl shadow-sm p-6">
-              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+            <section id="holidays" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
                 📅 Upcoming Holidays in {country}
               </h2>
               <div className="space-y-3">
                 {upcomingHolidays.map((h, i) => (
-                  <div key={i} className="flex justify-between items-center bg-[#F5F3EE] rounded-xl px-4 py-3">
-                    <div className="font-medium text-gray-800">{h.name}</div>
+                  <div key={i} className="flex justify-between items-center rounded-xl px-4 py-3 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
+                    <div className="font-medium text-white">{h.name}</div>
                     <div className="text-sm text-gray-500">
                       {new Date(h.date).toLocaleDateString('en-PK', { day: 'numeric', month: 'long' })}
                     </div>
@@ -907,7 +907,7 @@ export default async function CityPage({
           )}
 
           {/* ══ SECTION 20: COMPARE THIS CITY ════════════════════════════════ */}
-          <section id="compare" className="bg-[#01411C] text-white rounded-2xl p-6">
+          <section id="compare" className="rounded-2xl p-6 border" style={{ background: 'linear-gradient(135deg, rgba(12,122,61,0.3), rgba(12,122,61,0.1))', borderColor: 'rgba(12,122,61,0.5)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold mb-4">
               ⚖️ Compare {city} with Another City
             </h2>
@@ -916,7 +916,7 @@ export default async function CityPage({
                 <a
                   key={c}
                   href={`/compare/${city.toLowerCase()}-vs-${c.toLowerCase()}`}
-                  className="bg-white/10 hover:bg-white/20 text-white text-sm px-4 py-2 rounded-full transition"
+                  className="text-sm px-4 py-2 rounded-full transition border border-green-500/30 hover:border-green-400/60 hover:bg-green-500/20 text-gray-300 hover:text-white"
                 >
                   {city} vs {c}
                 </a>
@@ -925,8 +925,8 @@ export default async function CityPage({
           </section>
 
           {/* ══ SECTION 21: JOBS IN CITY ══════════════════════════════════════ */}
-          <section id="jobs" className="bg-white rounded-2xl shadow-sm p-6">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-4">
+          <section id="jobs" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               💼 Jobs in {city} — {currentMonth} {currentYear}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
@@ -939,7 +939,7 @@ export default async function CityPage({
                 { sector: 'E-commerce', growth: '↑ Fast growing' },
               ].map((job) => (
                 <div key={job.sector} className="bg-[#F5F3EE] rounded-xl p-3">
-                  <div className="font-medium text-sm text-gray-800">{job.sector}</div>
+                  <div className="font-medium text-sm text-white">{job.sector}</div>
                   <div className={`text-xs mt-1 ${job.growth.includes('Fast') ? 'text-green-600' : 'text-gray-500'}`}>
                     {job.growth}
                   </div>
@@ -947,36 +947,36 @@ export default async function CityPage({
               ))}
             </div>
             <a href="https://www.rozee.pk" target="_blank" rel="noopener noreferrer"
-              className="inline-block text-[#01411C] text-sm font-medium hover:underline">
+              className="inline-block text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               Browse jobs in {city} on Rozee.pk →
             </a>
           </section>
 
           {/* ══ SECTION 22: CHATBOT CTA ═══════════════════════════════════════ */}
-          <section id="chatbot" className="bg-[#C8A951] rounded-2xl p-6 text-center">
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-[#01411C] mb-2">
+          <section id="chatbot" className="rounded-2xl p-6 text-center border" style={{ background: 'linear-gradient(135deg, rgba(200,169,81,0.2), rgba(200,169,81,0.1))', borderColor: 'rgba(200,169,81,0.4)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-2">
               💬 Ask Anything About {city}
             </h2>
-            <p className="text-[#01411C]/80 text-sm mb-4">
+            <p className="text-gray-400 text-sm mb-4">
               Weather, prayer times, gold rates, events — ask the {city} City Assistant
             </p>
-            <button className="bg-[#01411C] text-white px-6 py-3 rounded-full font-medium hover:bg-green-900 transition">
+            <button className="text-white px-6 py-3 rounded-full font-medium transition border border-green-500/50 hover:border-green-400" style={{ backgroundColor: 'rgba(12,122,61,0.6)' }}>
               Start Chat →
             </button>
           </section>
 
           {/* ══ SECTION 23: FOOTER NAV ════════════════════════════════════════ */}
-          <section className="text-center py-6 text-sm text-gray-400">
-            <div className="flex flex-wrap justify-center gap-4 mb-4">
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="hover:text-[#01411C]">Weather</a>
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`} className="hover:text-[#01411C]">Prayer Times</a>
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`} className="hover:text-[#01411C]">Rates</a>
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`} className="hover:text-[#01411C]">News</a>
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`} className="hover:text-[#01411C]">Events</a>
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`} className="hover:text-[#01411C]">Economy</a>
-              <a href={`/${resolvedParams.country}/sports`} className="hover:text-[#01411C]">Sports</a>
+          <section className="text-center py-6 text-sm text-gray-600">
+            <div className="flex flex-wrap justify-center gap-4 mb-4 text-gray-500">
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="hover:text-green-400 transition-colors">Weather</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`} className="hover:text-green-400 transition-colors">Prayer Times</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`} className="hover:text-green-400 transition-colors">Rates</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`} className="hover:text-green-400 transition-colors">News</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`} className="hover:text-green-400 transition-colors">Events</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`} className="hover:text-green-400 transition-colors">Economy</a>
+              <a href={`/${resolvedParams.country}/sports`} className="hover:text-green-400 transition-colors">Sports</a>
             </div>
-            <p className="text-xs">
+            <p className="text-xs text-gray-600">
               Data updates every hour. Prayer times: Karachi method. Gold: LBMA + SBP rate.
               <br />© {currentYear} WorldCityHub · <a href="/privacy" className="hover:underline">Privacy</a> · <a href="/sitemap.xml" className="hover:underline">Sitemap</a>
             </p>
