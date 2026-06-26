@@ -51,9 +51,9 @@ function windDirection(deg: number): string {
 
 function uvLabel(uvi: number): { label: string; color: string; bg: string } {
   if (uvi < 3) return { label: 'Low', color: 'text-emerald-700', bg: 'bg-emerald-100' };
-  if (uvi < 6) return { label: 'Moderate', color: 'text-amber-700', bg: 'bg-amber-100' };
-  if (uvi < 8) return { label: 'High', color: 'text-orange-700', bg: 'bg-orange-100' };
-  if (uvi < 11) return { label: 'Very High', color: 'text-red-700', bg: 'bg-red-100' };
+  if (uvi < 6) return { label: 'Moderate', color: 'text-amber-700', bg: 'bg-amber-500/15' };
+  if (uvi < 8) return { label: 'High', color: 'text-orange-400', bg: 'bg-orange-500/15' };
+  if (uvi < 11) return { label: 'Very High', color: 'text-red-400', bg: 'bg-red-500/15' };
   return { label: 'Extreme', color: 'text-rose-800', bg: 'bg-rose-100' };
 }
 
@@ -91,14 +91,14 @@ function LargeWeatherIcon({ conditionId, icon }: { conditionId: number; icon: st
       >
         <motion.div className="absolute inset-0 rounded-full bg-yellow-300/30 blur-xl" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 4, repeat: Infinity }} />
         <motion.div className="absolute inset-4 rounded-full bg-yellow-200/40 blur-lg" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 3, repeat: Infinity }} />
-        <motion.span className="text-7xl drop-shadow-lg" animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}>☀️</motion.span>
+        <motion.span className="text-7xl drop-" animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}>☀️</motion.span>
       </motion.div>
     );
   }
   if (isClear && isNight) {
     return (
       <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="relative flex items-center justify-center w-32 h-32">
-        <motion.span className="text-7xl drop-shadow-lg" animate={{ opacity: [1, 0.7, 1] }} transition={{ duration: 4, repeat: Infinity }}>🌙</motion.span>
+        <motion.span className="text-7xl drop-" animate={{ opacity: [1, 0.7, 1] }} transition={{ duration: 4, repeat: Infinity }}>🌙</motion.span>
         <motion.div className="absolute top-2 right-4">
           <motion.span className="text-lg" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 2, repeat: Infinity }}>⭐</motion.span>
         </motion.div>
@@ -106,21 +106,21 @@ function LargeWeatherIcon({ conditionId, icon }: { conditionId: number; icon: st
     );
   }
   if (isThunder) return (
-    <motion.span className="text-7xl drop-shadow-lg" animate={{ y: [0, -8, 0] }} transition={{ duration: 0.8, repeat: Infinity }}>⛈️</motion.span>
+    <motion.span className="text-7xl drop-" animate={{ y: [0, -8, 0] }} transition={{ duration: 0.8, repeat: Infinity }}>⛈️</motion.span>
   );
   if (isSnow) return (
-    <motion.span className="text-7xl drop-shadow-lg" animate={{ rotate: [0, 360] }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}>❄️</motion.span>
+    <motion.span className="text-7xl drop-" animate={{ rotate: [0, 360] }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}>❄️</motion.span>
   );
   if (isRain) return (
-    <motion.span className="text-7xl drop-shadow-lg" animate={{ y: [0, -4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>🌧️</motion.span>
+    <motion.span className="text-7xl drop-" animate={{ y: [0, -4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>🌧️</motion.span>
   );
   if (isFog) return (
-    <motion.span className="text-7xl drop-shadow-lg opacity-80" animate={{ opacity: [0.6, 0.9, 0.6] }} transition={{ duration: 3, repeat: Infinity }}>🌫️</motion.span>
+    <motion.span className="text-7xl drop- opacity-80" animate={{ opacity: [0.6, 0.9, 0.6] }} transition={{ duration: 3, repeat: Infinity }}>🌫️</motion.span>
   );
   if (isCloudy) return (
-    <motion.span className="text-7xl drop-shadow-lg" animate={{ x: [0, 4, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>☁️</motion.span>
+    <motion.span className="text-7xl drop-" animate={{ x: [0, 4, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>☁️</motion.span>
   );
-  return <span className="text-7xl drop-shadow-lg">🌡️</span>;
+  return <span className="text-7xl drop-">🌡️</span>;
 }
 
 // ─── Navigation tabs ──────────────────────────────────────────────────────
@@ -138,7 +138,7 @@ function NavTabs({ active, onChange }: { active: Tab; onChange: (t: Tab) => void
           className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
             active === tab
               ? 'bg-[#01411C] text-white'
-              : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+              : 'bg-white text-gray-600 border border-white/10 hover:border-gray-300 hover:bg-white/5'
           }`}
         >
           {tab}
@@ -159,7 +159,7 @@ function HeroCard({ data, cityName, country, timezone }: { data: WeatherData; ci
 
   return (
     <>
-    <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+    <p className="text-gray-300 leading-relaxed text-sm mb-4 px-1">
       {generateHeroParagraph(cityName, current.temp, current.condition, data.daily[0]?.temp_max ?? null, data.daily[0]?.temp_min ?? null)}
     </p>
     <motion.section
@@ -167,7 +167,7 @@ function HeroCard({ data, cityName, country, timezone }: { data: WeatherData; ci
       whileInView="visible"
       viewport={{ once: true }}
       variants={fadeIn}
-      className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6"
+      className="rounded-2xl border  border border-white/8 overflow-hidden mb-6"
     >
       <div className="relative p-6 sm:p-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between gap-6">
@@ -178,9 +178,9 @@ function HeroCard({ data, cityName, country, timezone }: { data: WeatherData; ci
             </div>
             <div className="flex items-baseline gap-1 mb-2">
               <span className="text-7xl sm:text-8xl font-light text-gray-900">{current.temp}</span>
-              <span className="text-3xl text-gray-400">°C</span>
+              <span className="text-3xl text-gray-600">°C</span>
             </div>
-            <p className="text-xl sm:text-2xl font-medium text-gray-800 capitalize mb-3">{current.condition}</p>
+            <p className="text-xl sm:text-2xl font-medium text-white capitalize mb-3">{current.condition}</p>
             <div className="flex items-center gap-6 text-sm text-gray-600">
               <span className="flex items-center gap-1"><ArrowUp size={14} className="text-red-500" />{data.daily[0]?.temp_max ?? '--'}°</span>
               <span className="flex items-center gap-1"><ArrowDown size={14} className="text-blue-500" />{data.daily[0]?.temp_min ?? '--'}°</span>
@@ -192,22 +192,22 @@ function HeroCard({ data, cityName, country, timezone }: { data: WeatherData; ci
         </div>
 
         {/* Stats Row */}
-        <div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="bg-gray-50 rounded-xl p-3 text-center">
+        <div className="mt-6 pt-6 border-t border-white/8 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="rounded-xl border p-3 text-center">
             <div className="flex items-center justify-center gap-1.5 mb-1.5">
               <Sunrise size={16} className="text-amber-500" />
               <p className="text-xs text-gray-500">Sunrise</p>
             </div>
-            <p className="text-sm font-semibold text-gray-800">{sunriseStr}</p>
+            <p className="text-sm font-semibold text-white">{sunriseStr}</p>
           </div>
-          <div className="bg-gray-50 rounded-xl p-3 text-center">
+          <div className="rounded-xl border p-3 text-center">
             <div className="flex items-center justify-center gap-1.5 mb-1.5">
               <Sunset size={16} className="text-orange-500" />
               <p className="text-xs text-gray-500">Sunset</p>
             </div>
-            <p className="text-sm font-semibold text-gray-800">{sunsetStr}</p>
+            <p className="text-sm font-semibold text-white">{sunsetStr}</p>
           </div>
-          <div className="bg-gray-50 rounded-xl p-3 text-center">
+          <div className="rounded-xl border p-3 text-center">
             <div className="flex items-center justify-center gap-1.5 mb-1.5">
               <ThermometerSun size={16} className="text-yellow-500" />
               <p className="text-xs text-gray-500">UV Index</p>
@@ -216,12 +216,12 @@ function HeroCard({ data, cityName, country, timezone }: { data: WeatherData; ci
               {current.uvi.toFixed(1)} {uv.label}
             </span>
           </div>
-          <div className="bg-gray-50 rounded-xl p-3 text-center">
+          <div className="rounded-xl border p-3 text-center">
             <div className="flex items-center justify-center gap-1.5 mb-1.5">
               <Droplets size={16} className="text-blue-500" />
               <p className="text-xs text-gray-500">Humidity</p>
             </div>
-            <p className="text-sm font-semibold text-gray-800">{current.humidity}%</p>
+            <p className="text-sm font-semibold text-white">{current.humidity}%</p>
           </div>
         </div>
       </div>
@@ -243,13 +243,13 @@ function StatCard({ icon, label, value, sub, accent }: { icon: React.ReactNode; 
       viewport={{ once: true }}
       variants={fadeIn}
       whileHover={{ y: -2 }}
-      className={`bg-white rounded-xl p-4 border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300 ${accent ? 'ring-2 ring-emerald-100 border-emerald-200' : ''}`}
+      className={`rounded-xl border p-4 border border-white/8 hover: hover:border-white/10 transition-all duration-300 ${accent ? 'ring-2 ring-emerald-100 border-emerald-200' : ''}`}
     >
-      <div className="flex items-center gap-2 text-gray-400 mb-2">
+      <div className="flex items-center gap-2 text-gray-600 mb-2">
         {icon}
         <span className="text-xs font-semibold uppercase tracking-wider">{label}</span>
       </div>
-      <span className="text-2xl font-bold text-gray-800">{value}</span>
+      <span className="text-2xl font-bold text-white">{value}</span>
       {sub && <p className="text-xs text-gray-500 mt-1">{sub}</p>}
     </motion.div>
   );
@@ -270,8 +270,8 @@ function StatsGrid({ data, cityName }: { data: WeatherData; cityName: string }) 
   ];
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
-      <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">Current Conditions</h2>
-      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+      <h2 className="text-lg font-bold text-white mb-4 px-1">Current Conditions</h2>
+      <p className="text-gray-300 leading-relaxed text-sm mb-4 px-1">
         {generateStatsParagraph(cityName, current.feels_like, current.humidity, current.wind_speed, current.pressure)}
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -310,9 +310,9 @@ function buildWardrobeCards(data: WeatherData): WardrobeCard[] {
 
   const isRaining = current.condition_id >= 300 && current.condition_id < 600;
   return [
-    { tod: 'Morning', tempRange: `${morningTemp}°`, items: clothingItems(morningTemp, isRaining), tip: 'Start your day right', icon: <Coffee size={18} />, gradient: 'bg-amber-50' },
-    { tod: 'Afternoon', tempRange: `${afternoonTemp}°`, items: clothingItems(afternoonTemp, isRaining), tip: 'Peak temperature hours', icon: <Sun size={18} />, gradient: 'bg-sky-50' },
-    { tod: 'Evening', tempRange: `${eveningTemp}°`, items: clothingItems(eveningTemp, false), tip: 'Cooling down', icon: <Shirt size={18} />, gradient: 'bg-orange-50' },
+    { tod: 'Morning', tempRange: `${morningTemp}°`, items: clothingItems(morningTemp, isRaining), tip: 'Start your day right', icon: <Coffee size={18} />, gradient: 'bg-amber-500/10' },
+    { tod: 'Afternoon', tempRange: `${afternoonTemp}°`, items: clothingItems(afternoonTemp, isRaining), tip: 'Peak temperature hours', icon: <Sun size={18} />, gradient: 'bg-sky-500/10' },
+    { tod: 'Evening', tempRange: `${eveningTemp}°`, items: clothingItems(eveningTemp, false), tip: 'Cooling down', icon: <Shirt size={18} />, gradient: 'bg-orange-500/10' },
     { tod: 'Night', tempRange: `${nightTemp}°`, items: clothingItems(nightTemp, false), tip: 'Sleep comfortably', icon: <Moon size={18} />, gradient: 'bg-slate-50' },
   ];
 }
@@ -321,8 +321,8 @@ function WhatToWear({ data, cityName }: { data: WeatherData; cityName: string })
   const cards = buildWardrobeCards(data);
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
-      <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">What to Wear Today</h2>
-      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+      <h2 className="text-lg font-bold text-white mb-4 px-1">What to Wear Today</h2>
+      <p className="text-gray-300 leading-relaxed text-sm mb-4 px-1">
         {generateWearParagraph(cityName)}
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -330,13 +330,13 @@ function WhatToWear({ data, cityName }: { data: WeatherData; cityName: string })
           <motion.div
             key={card.tod}
             whileHover={{ y: -2 }}
-            className={`${card.gradient} rounded-xl p-4 border border-gray-100 hover:shadow-md transition-all`}
+            className={`${card.gradient} rounded-xl p-4 border border-white/8 hover: transition-all`}
           >
             <div className="flex items-center gap-2 mb-2 text-gray-600">
               {card.icon}
               <span className="font-semibold text-sm">{card.tod}</span>
             </div>
-            <p className="text-2xl font-bold text-gray-800 mb-2">{card.tempRange}</p>
+            <p className="text-2xl font-bold text-white mb-2">{card.tempRange}</p>
             <ul className="space-y-1 mb-2">
               {card.items.map((item: string) => (
                 <li key={item} className="text-xs text-gray-600 flex items-center gap-1.5">
@@ -376,16 +376,16 @@ function WeatherNarrative({ data, cityName, country, timezone }: { data: Weather
 
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
-      <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">Today&apos;s Weather Story</h2>
-      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+      <h2 className="text-lg font-bold text-white mb-4 px-1">Today&apos;s Weather Story</h2>
+      <p className="text-gray-300 leading-relaxed text-sm mb-4 px-1">
         {generateStoryParagraph(cityName)}
       </p>
-      <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+      <div className="rounded-xl border border border-white/8 p-5 ">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#01411C] flex items-center justify-center flex-shrink-0">
             <Activity size={18} className="text-white" />
           </div>
-          <p className="text-gray-700 leading-relaxed text-sm">{story}</p>
+          <p className="text-gray-300 leading-relaxed text-sm">{story}</p>
         </div>
       </div>
       <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
@@ -405,14 +405,14 @@ function HourlyCard({ item, timezone }: { item: HourlyItem; timezone: string }) 
       className={`flex-shrink-0 w-20 sm:w-24 rounded-xl p-3 sm:p-4 flex flex-col items-center gap-2 transition-all ${
         isNow
           ? 'bg-[#01411C] text-white'
-          : 'bg-white border border-gray-100 hover:border-gray-300'
+          : 'bg-white border border-white/8 hover:border-gray-300'
       }`}
     >
-      <p className={`text-xs font-medium ${isNow ? 'text-white/70' : 'text-gray-400'}`}>
+      <p className={`text-xs font-medium ${isNow ? 'text-white/70' : 'text-gray-600'}`}>
         {isNow ? 'Now' : formatHour(item.dt, timezone)}
       </p>
       <span className="text-2xl sm:text-3xl">{conditionToEmoji(item.condition_id, item.icon)}</span>
-      <p className={`text-lg font-bold ${isNow ? 'text-white' : 'text-gray-800'}`}>{item.temp}°</p>
+      <p className={`text-lg font-bold ${isNow ? 'text-white' : 'text-white'}`}>{item.temp}°</p>
       <div className={`flex items-center gap-0.5 ${isNow ? 'text-white/60' : ''}`}>
         <CloudRain size={10} className={isNow ? 'text-white/60' : 'text-blue-400'} />
         <p className={`text-xs ${isNow ? 'text-white/60' : 'text-blue-500'}`}>{item.pop}%</p>
@@ -428,7 +428,7 @@ function HourlyForecast({ data, timezone, cityName }: { data: WeatherData; timez
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
       <div className="flex items-center justify-between mb-4 px-1">
-        <h2 className="text-lg font-bold text-gray-800">Hourly Forecast</h2>
+        <h2 className="text-lg font-bold text-white">Hourly Forecast</h2>
         <div className="flex gap-2">
           <button onClick={() => scroll('left')} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Scroll left">
             <ChevronLeft size={16} />
@@ -438,7 +438,7 @@ function HourlyForecast({ data, timezone, cityName }: { data: WeatherData; timez
           </button>
         </div>
       </div>
-      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+      <p className="text-gray-300 leading-relaxed text-sm mb-4 px-1">
         {generateHourlyParagraph(cityName)}
       </p>
       <div ref={scrollRef} className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide">
@@ -460,14 +460,14 @@ function DailyCard({ item, timezone, isToday }: { item: DailyItem; timezone: str
       className={`flex-shrink-0 w-24 sm:w-28 rounded-xl p-3 sm:p-4 flex flex-col items-center gap-2 transition-all ${
         isToday
           ? 'bg-[#01411C] text-white'
-          : 'bg-white border border-gray-100 hover:border-gray-300'
+          : 'bg-white border border-white/8 hover:border-gray-300'
       }`}
     >
-      <p className={`text-xs font-medium ${isToday ? 'text-white/70' : 'text-gray-400'}`}>{formatDay(item.dt, timezone)}</p>
+      <p className={`text-xs font-medium ${isToday ? 'text-white/70' : 'text-gray-600'}`}>{formatDay(item.dt, timezone)}</p>
       <span className="text-2xl sm:text-3xl">{conditionToEmoji(item.condition_id, item.icon)}</span>
       <div className="flex items-center gap-2">
-        <span className={`text-sm font-bold ${isToday ? 'text-white' : 'text-gray-800'}`}>{item.temp_max}°</span>
-        <span className={`text-xs ${isToday ? 'text-white/60' : 'text-gray-400'}`}>{item.temp_min}°</span>
+        <span className={`text-sm font-bold ${isToday ? 'text-white' : 'text-white'}`}>{item.temp_max}°</span>
+        <span className={`text-xs ${isToday ? 'text-white/60' : 'text-gray-600'}`}>{item.temp_min}°</span>
       </div>
       <div className={`flex items-center gap-0.5 ${isToday ? 'text-white/60' : ''}`}>
         <CloudRain size={10} className={isToday ? 'text-white/60' : 'text-blue-400'} />
@@ -484,7 +484,7 @@ function TenDayForecast({ data, timezone, cityName, country }: { data: WeatherDa
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
       <div className="flex items-center justify-between mb-4 px-1">
-        <h2 className="text-lg font-bold text-gray-800">10-Day Forecast</h2>
+        <h2 className="text-lg font-bold text-white">10-Day Forecast</h2>
         <div className="flex gap-2">
           <button onClick={() => scroll('left')} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Scroll left">
             <ChevronLeft size={16} />
@@ -494,7 +494,7 @@ function TenDayForecast({ data, timezone, cityName, country }: { data: WeatherDa
           </button>
         </div>
       </div>
-      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+      <p className="text-gray-300 leading-relaxed text-sm mb-4 px-1">
         {generateTenDayParagraph(cityName)}
       </p>
       <div ref={scrollRef} className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide">
@@ -526,13 +526,13 @@ function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timez
 
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
-      <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">Sun & Moon</h2>
-      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+      <h2 className="text-lg font-bold text-white mb-4 px-1">Sun & Moon</h2>
+      <p className="text-gray-300 leading-relaxed text-sm mb-4 px-1">
         {generateSunMoonParagraph(cityName, data.sunrise ? formatTime(data.sunrise) : null, data.sunset ? formatTime(data.sunset) : null)}
       </p>
 
       {/* Animated Sun Arc */}
-      <div className="bg-amber-50 rounded-xl border border-amber-100 p-5 mb-4">
+      <div className="bg-amber-500/10 rounded-xl border border-amber-100 p-5 mb-4">
         <div className="relative h-32 flex items-end justify-center mb-3">
           <svg viewBox="0 0 200 100" className="w-full h-full">
             <defs>
@@ -566,38 +566,38 @@ function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timez
 
       {/* Golden Hour & Twilight */}
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="bg-amber-50 rounded-xl border border-amber-100 p-4">
+        <div className="bg-amber-500/10 rounded-xl border border-amber-100 p-4">
           <div className="flex items-center gap-2 mb-2 text-amber-700">
             <Sunrise size={16} />
             <p className="text-xs font-semibold uppercase tracking-wider">Golden AM</p>
           </div>
-          <p className="font-bold text-amber-800 text-sm">{formatTime(data.goldenHourMorning.start)} - {formatTime(data.goldenHourMorning.end)}</p>
+          <p className="font-bold text-amber-300 text-sm">{formatTime(data.goldenHourMorning.start)} - {formatTime(data.goldenHourMorning.end)}</p>
         </div>
-        <div className="bg-orange-50 rounded-xl border border-orange-100 p-4">
-          <div className="flex items-center gap-2 mb-2 text-orange-700">
+        <div className="bg-orange-500/10 rounded-xl border border-orange-100 p-4">
+          <div className="flex items-center gap-2 mb-2 text-orange-400">
             <Sunset size={16} />
             <p className="text-xs font-semibold uppercase tracking-wider">Golden PM</p>
           </div>
-          <p className="font-bold text-orange-800 text-sm">{formatTime(data.goldenHourEvening.start)} - {formatTime(data.goldenHourEvening.end)}</p>
+          <p className="font-bold text-orange-300 text-sm">{formatTime(data.goldenHourEvening.start)} - {formatTime(data.goldenHourEvening.end)}</p>
         </div>
       </div>
 
       {/* Twilight Times */}
-      <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Twilight Times</p>
+      <div className="rounded-xl border border border-white/8 p-4 mb-4">
+        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Twilight Times</p>
         <div className="grid grid-cols-3 gap-3 text-sm">
           <div>
-            <p className="font-semibold text-gray-700 mb-1">Civil</p>
+            <p className="font-semibold text-gray-300 mb-1">Civil</p>
             <p className="text-gray-600 text-xs">{formatTime(data.twilight.civil.dawn)}</p>
             <p className="text-gray-600 text-xs">{formatTime(data.twilight.civil.dusk)}</p>
           </div>
           <div>
-            <p className="font-semibold text-gray-700 mb-1">Nautical</p>
+            <p className="font-semibold text-gray-300 mb-1">Nautical</p>
             <p className="text-gray-600 text-xs">{formatTime(data.twilight.nautical.dawn)}</p>
             <p className="text-gray-600 text-xs">{formatTime(data.twilight.nautical.dusk)}</p>
           </div>
           <div>
-            <p className="font-semibold text-gray-700 mb-1">Astro</p>
+            <p className="font-semibold text-gray-300 mb-1">Astro</p>
             <p className="text-gray-600 text-xs">{formatTime(data.twilight.astronomical.dawn)}</p>
             <p className="text-gray-600 text-xs">{formatTime(data.twilight.astronomical.dusk)}</p>
           </div>
@@ -608,7 +608,7 @@ function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timez
       <div className="bg-slate-50 rounded-xl border border-slate-100 p-4 mb-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Moon Phase</p>
+            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Moon Phase</p>
             <div className="flex items-center gap-3">
               <motion.span
                 className="text-4xl"
@@ -618,7 +618,7 @@ function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timez
                 {data.moon.phaseEmoji}
               </motion.span>
               <div>
-                <p className="font-bold text-gray-800">{data.moon.phase}</p>
+                <p className="font-bold text-white">{data.moon.phase}</p>
                 <p className="text-xs text-gray-500">{data.moon.illumination}% illuminated</p>
               </div>
             </div>
@@ -631,15 +631,15 @@ function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timez
       </div>
 
       {/* Upcoming Lunar Events */}
-      <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Upcoming Lunar Events</p>
+      <div className="rounded-xl border border border-white/8 p-4 mb-4">
+        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Upcoming Lunar Events</p>
         <div className="flex flex-wrap gap-2">
           {data.upcomingMoons.slice(0, 4).map((m: typeof data.upcomingMoons[number], i: number) => (
             <div key={i} className="bg-gray-50 rounded-lg px-3 py-2 flex items-center gap-2">
               <span className="text-xl">{m.phase}</span>
               <div>
-                <p className="font-semibold text-gray-700 text-xs">{m.type}</p>
-                <p className="text-xs text-gray-400">{m.date}</p>
+                <p className="font-semibold text-gray-300 text-xs">{m.type}</p>
+                <p className="text-xs text-gray-600">{m.date}</p>
               </div>
             </div>
           ))}
@@ -648,15 +648,15 @@ function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timez
 
       {/* Eclipses */}
       {data.eclipses.length > 0 && (
-        <div className="bg-rose-50 rounded-xl border border-rose-100 p-4 mb-4">
+        <div className="bg-rose-500/10 rounded-xl border border-rose-100 p-4 mb-4">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Upcoming Eclipses</p>
           <div className="space-y-2">
             {data.eclipses.slice(0, 2).map((e: typeof data.eclipses[number], i: number) => (
               <div key={i} className="flex items-center justify-between text-sm">
-                <span className="font-medium text-gray-700">{e.type}</span>
+                <span className="font-medium text-gray-300">{e.type}</span>
                 <div className="flex items-center gap-3">
                   <span className="text-gray-500">{e.date}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${e.visible ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-400'}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${e.visible ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>
                     {e.visible ? 'Visible' : 'Not visible'}
                   </span>
                 </div>
@@ -667,13 +667,13 @@ function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timez
       )}
 
       {/* Visible Constellation */}
-      <div className="bg-blue-50 rounded-xl border border-blue-100 p-4">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Constellation Tonight</p>
+      <div className="bg-blue-500/10 rounded-xl border border-blue-100 p-4">
+        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Constellation Tonight</p>
         <div className="flex items-center justify-between">
-          <p className="font-bold text-gray-800">{data.constellation.name}</p>
+          <p className="font-bold text-white">{data.constellation.name}</p>
           <div className="text-right">
             <p className="text-sm text-gray-600">{data.constellation.direction}</p>
-            <p className="text-xs text-gray-400">{data.constellation.visibility}</p>
+            <p className="text-xs text-gray-600">{data.constellation.visibility}</p>
           </div>
         </div>
       </div>
@@ -692,7 +692,7 @@ function AlertsBanner({ alerts, timezone, cityName }: { alerts: WeatherAlert[]; 
 
   return (
     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-      <p className="text-gray-700 leading-relaxed text-sm mb-3 px-1">
+      <p className="text-gray-300 leading-relaxed text-sm mb-3 px-1">
         {generateAlertsParagraph(cityName)}
       </p>
       {visible.map((alert: WeatherAlert) => (
@@ -712,9 +712,9 @@ function AlertsBanner({ alerts, timezone, cityName }: { alerts: WeatherAlert[]; 
               <AlertTriangle size={16} className="text-white" />
             </div>
             <div className="flex-1">
-              <p className="font-bold text-gray-800 text-sm">{alert.event}</p>
+              <p className="font-bold text-white text-sm">{alert.event}</p>
               <p className="text-sm text-gray-600 mt-1 line-clamp-2">{alert.description}</p>
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="text-xs text-gray-600 mt-2">
                 {new Date(alert.start * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: timezone })} - {new Date(alert.end * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: timezone, month: 'short', day: 'numeric' })}
               </p>
             </div>
@@ -724,7 +724,7 @@ function AlertsBanner({ alerts, timezone, cityName }: { alerts: WeatherAlert[]; 
       {alerts.length > 1 && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-sm text-gray-500 hover:text-gray-700 underline font-medium ml-1"
+          className="text-sm text-gray-500 hover:text-gray-300 underline font-medium ml-1"
         >
           {expanded ? 'Show less' : `+${alerts.length - 1} more alerts`}
         </button>
@@ -751,22 +751,22 @@ function NearbyWeatherSection({
 
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
-      <h2 className="text-lg font-bold text-gray-800 mb-4 px-1">Nearby Weather Comparison</h2>
-      <p className="text-gray-700 leading-relaxed text-sm mb-4 px-1">
+      <h2 className="text-lg font-bold text-white mb-4 px-1">Nearby Weather Comparison</h2>
+      <p className="text-gray-300 leading-relaxed text-sm mb-4 px-1">
         {generateNearbyParagraph(currentCity)}
       </p>
 
       {escape && (
         <div className="bg-emerald-50 rounded-xl border border-emerald-100 p-4 mb-4">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-gray-300">
             <span className="font-bold text-emerald-700">Escape the heat:</span> {escape.name} is {currentTemp - escape.temp}°C cooler
           </p>
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="rounded-xl border border border-white/8  overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-100">
+          <thead className="bg-gray-50 border-b border-white/8">
             <tr>
               <th className="py-3 px-4 text-left font-semibold text-gray-500 text-xs uppercase tracking-wider">City</th>
               <th className="py-3 px-4 text-center font-semibold text-gray-500 text-xs uppercase tracking-wider">Temp</th>
@@ -775,21 +775,21 @@ function NearbyWeatherSection({
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-[#01411C]/5 border-b border-gray-100">
+            <tr className="bg-[#01411C]/5 border-b border-white/8">
               <td className="py-3 px-4 font-bold text-[#01411C]">{currentCity}</td>
-              <td className="py-3 px-4 text-center font-bold text-gray-800">{currentTemp}°</td>
+              <td className="py-3 px-4 text-center font-bold text-white">{currentTemp}°</td>
               <td className="py-3 px-4 text-center text-gray-500">--</td>
               <td className="py-3 px-4 text-center text-gray-500 hidden sm:table-cell">--</td>
             </tr>
             {nearby.map((city: NearbyCityWeather) => (
-              <tr key={city.slug} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
-                <td className="py-3 px-4 text-gray-700">{city.name}</td>
-                <td className={`py-3 px-4 text-center font-bold ${city.isWarmer ? 'text-red-600' : 'text-blue-600'}`}>
+              <tr key={city.slug} className="border-b border-gray-50 last:border-0 hover:bg-white/5 transition-colors">
+                <td className="py-3 px-4 text-gray-300">{city.name}</td>
+                <td className={`py-3 px-4 text-center font-bold ${city.isWarmer ? 'text-red-400' : 'text-blue-400'}`}>
                   {city.temp}°
                 </td>
                 <td className="py-3 px-4 text-center">
                   <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                    city.aqi > 100 ? 'bg-red-100 text-red-700' : city.aqi > 50 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+                    city.aqi > 100 ? 'bg-red-500/15 text-red-400' : city.aqi > 50 ? 'bg-amber-500/15 text-amber-700' : 'bg-emerald-100 text-emerald-700'
                   }`}>
                     {city.aqi}
                   </span>
@@ -811,14 +811,14 @@ function NearbyWeatherSection({
 
 function LoadingSkeleton() {
   return (
-    <div className="animate-pulse space-y-6">
-      <div className="h-64 bg-gray-100 rounded-xl" />
+    <div style={{ backgroundColor: '#0a0f1e', minHeight: '100vh' }} className="relative animate-pulse space-y-6">
+      <div className="h-64 rounded-xl border" />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {Array.from({ length: 8 }, (_: undefined, i: number) => (
-          <div key={i} className="h-24 bg-gray-100 rounded-xl" />
+          <div key={i} className="h-24 rounded-xl border" />
         ))}
       </div>
-      <div className="h-40 bg-gray-100 rounded-xl" />
+      <div className="h-40 rounded-xl border" />
     </div>
   );
 }
@@ -827,10 +827,10 @@ function LoadingSkeleton() {
 
 function ErrorCard({ city }: { city: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center px-4">
+    <div style={{ backgroundColor: '#0a0f1e', minHeight: '100vh' }} className="relative flex flex-col items-center justify-center py-20 text-center px-4">
       <CloudSnow size={48} className="text-gray-300 mb-4" />
-      <h3 className="text-lg font-bold text-gray-700 mb-2">Weather data unavailable</h3>
-      <p className="text-sm text-gray-400 max-w-xs">We couldn&apos;t fetch weather data for {city} right now. Please check back in a moment.</p>
+      <h3 className="text-lg font-bold text-gray-300 mb-2">Weather data unavailable</h3>
+      <p className="text-sm text-gray-600 max-w-xs">We couldn&apos;t fetch weather data for {city} right now. Please check back in a moment.</p>
     </div>
   );
 }
@@ -841,8 +841,8 @@ function StubTab({ label, icon }: { label: string; icon: React.ReactNode }) {
   return (
     <motion.div initial="hidden" animate="visible" variants={fadeIn} className="flex flex-col items-center justify-center py-24 text-center px-4">
       <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">{icon}</div>
-      <h3 className="text-lg font-bold text-gray-700 mb-2">{label}</h3>
-      <p className="text-sm text-gray-400">Coming soon</p>
+      <h3 className="text-lg font-bold text-gray-300 mb-2">{label}</h3>
+      <p className="text-sm text-gray-600">Coming soon</p>
     </motion.div>
   );
 }
@@ -852,14 +852,14 @@ function StubTab({ label, icon }: { label: string; icon: React.ReactNode }) {
 function AQIGaugeCard({ aqi }: { aqi: AQIData }) {
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 text-center">
+      <div className="rounded-2xl border border border-white/8  p-6 text-center">
         <div className="relative w-40 h-20 mx-auto mb-4 overflow-hidden">
           <svg viewBox="0 0 100 50" className="transform -rotate-180">
             <path d="M 5 45 A 45 45 0 0 1 95 45" fill="none" stroke="#e5e7eb" strokeWidth="8" strokeLinecap="round" />
             <path d="M 5 45 A 45 45 0 0 1 95 45" fill="none" stroke={aqi.color} strokeWidth="8" strokeLinecap="round" strokeDasharray={`${(aqi.aqi / 500) * 141} 200`} />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-4xl font-bold text-gray-800">{aqi.aqi}</span>
+            <span className="text-4xl font-bold text-white">{aqi.aqi}</span>
           </div>
         </div>
         <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: aqi.color, color: '#fff' }}>{aqi.level}</span>
@@ -879,13 +879,13 @@ function AQIBreakdownCard({ aqi }: { aqi: AQIData }) {
   ];
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
-      <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><BarChart2 size={16} className="text-gray-400" /> Pollutant Breakdown</h3>
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+      <h3 className="font-bold text-white mb-3 flex items-center gap-2"><BarChart2 size={16} className="text-gray-600" /> Pollutant Breakdown</h3>
+      <div className="rounded-2xl border border border-white/8  p-4">
         <div className="grid grid-cols-3 gap-4">
           {pollutants.map((p: { label: string; value: number; limit: number; unit: string }) => (
             <div key={p.label}>
-              <p className="text-xs text-gray-400 mb-1">{p.label}</p>
-              <p className="text-lg font-bold text-gray-800">{p.value}</p>
+              <p className="text-xs text-gray-600 mb-1">{p.label}</p>
+              <p className="text-lg font-bold text-white">{p.value}</p>
               <div className="w-full bg-gray-100 rounded-full h-1.5 mt-1">
                 <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-rose-400" style={{ width: `${Math.min(100, (p.value / p.limit) * 100)}%` }} />
               </div>
@@ -906,14 +906,14 @@ function AQISourcesCard({ aqi }: { aqi: AQIData }) {
   ];
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
-      <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><Leaf size={16} className="text-gray-400" /> Likely Pollution Sources</h3>
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+      <h3 className="font-bold text-white mb-3 flex items-center gap-2"><Leaf size={16} className="text-gray-600" /> Likely Pollution Sources</h3>
+      <div className="rounded-2xl border border border-white/8  p-4">
         <div className="grid grid-cols-4 gap-3">
           {sources.map((s: { label: string; value: number; icon: React.ReactNode; color: string }) => (
             <div key={s.label} className="text-center">
               <div className={`w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-2 ${s.color}`}>{s.icon}</div>
-              <p className="text-xs text-gray-400">{s.label}</p>
-              <p className="text-lg font-bold text-gray-800">{s.value}%</p>
+              <p className="text-xs text-gray-600">{s.label}</p>
+              <p className="text-lg font-bold text-white">{s.value}%</p>
             </div>
           ))}
         </div>
@@ -930,13 +930,13 @@ function AQIHealthAdviceCard({ aqi }: { aqi: AQIData }) {
     : { title: 'Unhealthy — limit outdoor activities', text: 'Everyone may experience health effects. Limit time outdoors.', tips: ['Stay indoors when possible', 'Use air purifier', 'Keep windows closed'] };
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
-      <div className={`rounded-2xl border p-5 ${aqi.aqi <= 50 ? 'bg-emerald-50 border-emerald-200' : aqi.aqi <= 100 ? 'bg-amber-50 border-amber-200' : 'bg-rose-50 border-rose-200'}`}>
+      <div className={`rounded-2xl border p-5 ${aqi.aqi <= 50 ? 'bg-emerald-50 border-emerald-200' : aqi.aqi <= 100 ? 'bg-amber-500/10 border-amber-500/30' : 'bg-rose-500/10 border-rose-200'}`}>
         <div className="flex items-start gap-3">
           <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${aqi.aqi <= 50 ? 'bg-emerald-200' : aqi.aqi <= 100 ? 'bg-amber-200' : 'bg-rose-200'}`}>
             <ShieldAlert size={18} className={aqi.aqi <= 50 ? 'text-emerald-700' : aqi.aqi <= 100 ? 'text-amber-700' : 'text-rose-700'} />
           </div>
           <div>
-            <h3 className="font-bold text-gray-800 mb-1">{advice.title}</h3>
+            <h3 className="font-bold text-white mb-1">{advice.title}</h3>
             <p className="text-sm text-gray-600 mb-3">{advice.text}</p>
             <ul className="space-y-1">
               {advice.tips.map((tip, i) => (
@@ -957,22 +957,22 @@ function AQIBestTimeCard() {
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
       <div className="bg-gradient-to-br from-blue-50 to-sky-50 rounded-2xl border border-blue-100 p-5">
-        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><Clock size={16} className="text-blue-500" /> Best Times for Outdoor Activities</h3>
+        <h3 className="font-bold text-white mb-3 flex items-center gap-2"><Clock size={16} className="text-blue-500" /> Best Times for Outdoor Activities</h3>
         <div className="grid grid-cols-4 gap-3 text-center">
           <div>
-            <p className="text-xs text-gray-400 mb-1">Early AM</p>
+            <p className="text-xs text-gray-600 mb-1">Early AM</p>
             <p className="text-lg font-bold text-emerald-600">Best</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">Morning</p>
+            <p className="text-xs text-gray-600 mb-1">Morning</p>
             <p className="text-lg font-bold text-emerald-600">Good</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">Afternoon</p>
+            <p className="text-xs text-gray-600 mb-1">Afternoon</p>
             <p className="text-lg font-bold text-amber-600">OK</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">Evening</p>
+            <p className="text-xs text-gray-600 mb-1">Evening</p>
             <p className="text-lg font-bold text-emerald-600">Good</p>
           </div>
         </div>
@@ -984,8 +984,8 @@ function AQIBestTimeCard() {
 function AQIPurificationCard() {
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><Heart size={16} className="text-rose-400" /> Air Purification Tips</h3>
+      <div className="rounded-2xl border border border-white/8  p-5">
+        <h3 className="font-bold text-white mb-3 flex items-center gap-2"><Heart size={16} className="text-rose-400" /> Air Purification Tips</h3>
         <ul className="space-y-2">
           <li className="text-sm text-gray-600 flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />Keep windows closed during high pollution</li>
           <li className="text-sm text-gray-600 flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />Use HEPA air purifier in bedrooms</li>
@@ -1000,8 +1000,8 @@ function AQIPurificationCard() {
 function AQIHistoryCard({ aqi }: { aqi: AQIData }) {
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
-      <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><BarChart2 size={16} className="text-gray-400" /> Last 7 Days Trend</h3>
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+      <h3 className="font-bold text-white mb-3 flex items-center gap-2"><BarChart2 size={16} className="text-gray-600" /> Last 7 Days Trend</h3>
+      <div className="rounded-2xl border border border-white/8  p-4">
         <div className="flex items-end justify-between h-24 gap-2">
           {aqi.history.slice(-7).map((h: { aqi: number; date: string }, i: number) => (
             <div key={i} className="flex-1 flex flex-col items-center">
@@ -1012,7 +1012,7 @@ function AQIHistoryCard({ aqi }: { aqi: AQIData }) {
                   background: h.aqi > 100 ? '#fca5a5' : h.aqi > 50 ? '#fcd34d' : '#86efac',
                 }}
               />
-              <p className="text-xs text-gray-400 mt-1">{h.date}</p>
+              <p className="text-xs text-gray-600 mt-1">{h.date}</p>
             </div>
           ))}
         </div>
@@ -1024,15 +1024,15 @@ function AQIHistoryCard({ aqi }: { aqi: AQIData }) {
 function AQIAffiliateCard() {
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
-      <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl border border-gray-200 p-5">
-        <div className="flex items-center gap-2 mb-3"><ShoppingBag size={16} className="text-gray-400" /><h3 className="font-bold text-gray-800 text-sm">Recommended Air Purifiers</h3></div>
+      <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl border border-white/10 p-5">
+        <div className="flex items-center gap-2 mb-3"><ShoppingBag size={16} className="text-gray-600" /><h3 className="font-bold text-white text-sm">Recommended Air Purifiers</h3></div>
         <div className="grid grid-cols-2 gap-3">
-          <a href="https://amazon.com/dp/B08SXBVN2K" target="_blank" rel="noopener noreferrer" className="block p-3 bg-white rounded-xl border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all">
-            <p className="font-semibold text-gray-800 text-xs mb-1">LEVOIT Core 300</p>
+          <a href="https://amazon.com/dp/B08SXBVN2K" target="_blank" rel="noopener noreferrer" className="block p-3 rounded-xl border border border-white/8 hover: hover:border-blue-500/30 transition-all">
+            <p className="font-semibold text-white text-xs mb-1">LEVOIT Core 300</p>
             <p className="text-xs text-gray-500">HEPA filter for large rooms</p>
           </a>
-          <a href="https://amazon.com/dp/B086XVPWTV" target="_blank" rel="noopener noreferrer" className="block p-3 bg-white rounded-xl border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all">
-            <p className="font-semibold text-gray-800 text-xs mb-1">Coway Airmega 200M</p>
+          <a href="https://amazon.com/dp/B086XVPWTV" target="_blank" rel="noopener noreferrer" className="block p-3 rounded-xl border border border-white/8 hover: hover:border-blue-500/30 transition-all">
+            <p className="font-semibold text-white text-xs mb-1">Coway Airmega 200M</p>
             <p className="text-xs text-gray-500">True HEPA filtration</p>
           </a>
         </div>
@@ -1085,7 +1085,7 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
   }, [lat, lng, cityName, citySlug, timezone]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: '#0a0f1e', minHeight: '100vh' }} className="relative">
       {/* Header */}
       <header className="bg-[#01411C]">
         <div className="max-w-4xl mx-auto px-4 py-8 sm:py-10">
@@ -1122,7 +1122,7 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
 
         {activeTab === 'Tomorrow' && (loading ? <LoadingSkeleton /> : error ? <ErrorCard city={cityName} /> : weather && weather.daily[1] && (
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-4">
-            <div className="rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-slate-700 to-slate-800">
+            <div className="rounded-3xl overflow-hidden  bg-gradient-to-br from-slate-700 to-slate-800">
               <div className="px-6 py-8 text-white flex items-start justify-between">
                 <div>
                   <p className="text-sm font-medium opacity-80 uppercase tracking-widest mb-1">Tomorrow</p>
@@ -1148,15 +1148,15 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
         {activeTab === '10 Day' && (loading ? <LoadingSkeleton /> : error ? <ErrorCard city={cityName} /> : weather && (
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-3">
             {weather.daily.map((day: DailyItem, i: number) => (
-              <div key={day.dt} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center justify-between">
+              <div key={day.dt} className="rounded-xl border border border-white/8 p-4 flex items-center justify-between">
                 <div>
-                  <p className="font-semibold text-gray-800">{formatDay(day.dt, timezone)}</p>
-                  <p className="text-xs text-gray-400 capitalize">{day.condition}</p>
+                  <p className="font-semibold text-white">{formatDay(day.dt, timezone)}</p>
+                  <p className="text-xs text-gray-600 capitalize">{day.condition}</p>
                 </div>
                 <span className="text-3xl">{conditionToEmoji(day.condition_id, day.icon)}</span>
                 <div className="text-right">
-                  <p className="font-bold text-gray-800">{day.temp_max}°</p>
-                  <p className="text-sm text-gray-400">{day.temp_min}°</p>
+                  <p className="font-bold text-white">{day.temp_max}°</p>
+                  <p className="text-sm text-gray-600">{day.temp_min}°</p>
                 </div>
               </div>
             ))}
@@ -1165,17 +1165,17 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
 
         {activeTab === 'Monthly' && (loading ? <LoadingSkeleton /> : error ? <ErrorCard city={cityName} /> : historical && climate && (
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-4">
-            <p className="text-gray-700 leading-relaxed text-sm px-1">
+            <p className="text-gray-300 leading-relaxed text-sm px-1">
               {generateMonthlyParagraph(cityName)}
             </p>
             <div className="bg-gradient-to-br from-blue-50 to-sky-50 rounded-2xl border border-blue-100 p-5">
-              <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><Sun size={16} className="text-amber-500" /> Climate Classification</h3>
-              <p className="text-gray-700">{capitalize(climate.type)}</p>
+              <h3 className="font-bold text-white mb-3 flex items-center gap-2"><Sun size={16} className="text-amber-500" /> Climate Classification</h3>
+              <p className="text-gray-300">{capitalize(climate.type)}</p>
               <p className="text-sm text-gray-500 mt-2">Best months to visit: {climate.bestMonths.join(', ')}</p>
             </div>
             {historical.monthlyAverages.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2"><BarChart2 size={16} className="text-gray-400" /> Monthly Averages</h3>
+              <div className="rounded-2xl border border border-white/8  p-5">
+                <h3 className="font-bold text-white mb-3 flex items-center gap-2"><BarChart2 size={16} className="text-gray-600" /> Monthly Averages</h3>
                 <div className="space-y-2">
                   {historical.monthlyAverages.map((m: { month: string; high: number; low: number }) => (
                     <div key={m.month} className="flex items-center gap-3">
@@ -1206,23 +1206,23 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
 
         {activeTab === 'History' && (loading ? <LoadingSkeleton /> : error ? <ErrorCard city={cityName} /> : historical && (
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-4">
-            <p className="text-gray-700 leading-relaxed text-sm px-1">
+            <p className="text-gray-300 leading-relaxed text-sm px-1">
               {generateHistoryParagraph(cityName)}
             </p>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-              <h3 className="font-bold text-gray-800 mb-3">Historical Averages for Today</h3>
+            <div className="rounded-2xl border border border-white/8  p-5">
+              <h3 className="font-bold text-white mb-3">Historical Averages for Today</h3>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <p className="text-xs text-gray-400 mb-1">Average High</p>
-                  <p className="text-2xl font-bold text-gray-800">{historical.todayAvgHigh}°C</p>
+                  <p className="text-xs text-gray-600 mb-1">Average High</p>
+                  <p className="text-2xl font-bold text-white">{historical.todayAvgHigh}°C</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400 mb-1">Average Low</p>
-                  <p className="text-2xl font-bold text-gray-800">{historical.todayAvgLow}°C</p>
+                  <p className="text-xs text-gray-600 mb-1">Average Low</p>
+                  <p className="text-2xl font-bold text-white">{historical.todayAvgLow}°C</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400 mb-1">Record High</p>
-                  <p className="text-2xl font-bold text-red-600">{historical.records.hottestEver}°C</p>
+                  <p className="text-xs text-gray-600 mb-1">Record High</p>
+                  <p className="text-2xl font-bold text-red-400">{historical.records.hottestEver}°C</p>
                 </div>
               </div>
             </div>
@@ -1237,14 +1237,14 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
           <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-4">
             {aqi ? (
               <>
-                <p className="text-gray-700 leading-relaxed text-sm px-1">
+                <p className="text-gray-300 leading-relaxed text-sm px-1">
                   {generateAQIOverviewParagraph(cityName, aqi.aqi, aqi.level)}
                 </p>
                 <AQIGaugeCard aqi={aqi} />
                 <p className="text-gray-600 leading-relaxed text-sm px-1">
                   {generateAQIOverviewAfter(cityName)}
                 </p>
-                <p className="text-gray-700 leading-relaxed text-sm px-1">
+                <p className="text-gray-300 leading-relaxed text-sm px-1">
                   {generatePollutantsParagraph(cityName)}
                 </p>
                 <AQIBreakdownCard aqi={aqi} />
@@ -1252,7 +1252,7 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
                 <p className="text-gray-600 leading-relaxed text-sm px-1">
                   {generatePollutantsAfter(cityName)}
                 </p>
-                <p className="text-gray-700 leading-relaxed text-sm px-1">
+                <p className="text-gray-300 leading-relaxed text-sm px-1">
                   {generateAQIHealthParagraph(cityName)}
                 </p>
                 <AQIHealthAdviceCard aqi={aqi} />
