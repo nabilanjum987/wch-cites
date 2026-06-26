@@ -20,17 +20,17 @@ import TourAffiliates from '@/components/city/TourAffiliates';
 // ── Category config ───────────────────────────────────────────────────────────
 
 const CATEGORIES: { key: EventCategory | 'all'; label: string; icon: React.ElementType; color: string }[] = [
-  { key: 'all',         label: 'All Events', icon: Grid,        color: 'bg-gray-100 text-gray-700' },
-  { key: 'sports',      label: 'Sports',     icon: Trophy,      color: 'bg-blue-100 text-blue-700' },
+  { key: 'all',         label: 'All Events', icon: Grid,        color: 'bg-white/5 text-gray-300' },
+  { key: 'sports',      label: 'Sports',     icon: Trophy,      color: 'bg-blue-500/15 text-blue-400' },
   { key: 'music',       label: 'Music',      icon: Music,       color: 'bg-pink-100 text-pink-700' },
-  { key: 'culture',     label: 'Culture',    icon: Star,        color: 'bg-amber-100 text-amber-700' },
-  { key: 'food',        label: 'Food',       icon: Utensils,    color: 'bg-orange-100 text-orange-700' },
-  { key: 'film',        label: 'Film',       icon: Film,        color: 'bg-red-100 text-red-700' },
-  { key: 'outdoor',     label: 'Outdoor',    icon: TreePine,    color: 'bg-green-100 text-green-700' },
-  { key: 'family',      label: 'Family',     icon: Users,       color: 'bg-yellow-100 text-yellow-700' },
+  { key: 'culture',     label: 'Culture',    icon: Star,        color: 'bg-amber-500/15 text-amber-400' },
+  { key: 'food',        label: 'Food',       icon: Utensils,    color: 'bg-orange-500/15 text-orange-400' },
+  { key: 'film',        label: 'Film',       icon: Film,        color: 'bg-red-500/15 text-red-400' },
+  { key: 'outdoor',     label: 'Outdoor',    icon: TreePine,    color: 'bg-green-500/15 text-green-400' },
+  { key: 'family',      label: 'Family',     icon: Users,       color: 'bg-yellow-100 text-yellow-400' },
   { key: 'business',    label: 'Business',   icon: Building2,   color: 'bg-slate-100 text-slate-700' },
   { key: 'conferences', label: 'Conferences',icon: GraduationCap, color: 'bg-indigo-100 text-indigo-700' },
-  { key: 'religious',   label: 'Religious',  icon: Zap,         color: 'bg-teal-100 text-teal-700' },
+  { key: 'religious',   label: 'Religious',  icon: Zap,         color: 'bg-teal-100 text-teal-400' },
   { key: 'literature',  label: 'Literature', icon: GraduationCap, color: 'bg-emerald-100 text-emerald-700' },
 ];
 
@@ -80,19 +80,19 @@ function EventCard({ event, primaryColor, view }: {
       <motion.div
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex gap-4 items-start bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md transition-shadow"
+        className="flex gap-4 items-start bg-transparent rounded-xl border border-white/8 p-4 hover: transition-shadow"
       >
         {event.image_url && (
           <img src={event.image_url} alt={event.title} className="w-24 h-16 object-cover rounded-lg flex-shrink-0" />
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            {live && <span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs font-semibold rounded-full animate-pulse">🔴 Live</span>}
-            {event.is_free && <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">Free</span>}
-            <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-gray-100 text-gray-600'}`}>{catCfg?.label ?? event.category}</span>
+            {live && <span className="px-2 py-0.5 bg-red-500/15 text-red-400 text-xs font-semibold rounded-full animate-pulse">🔴 Live</span>}
+            {event.is_free && <span className="px-2 py-0.5 bg-green-500/15 text-green-400 text-xs rounded-full">Free</span>}
+            <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-white/5 text-gray-400'}`}>{catCfg?.label ?? event.category}</span>
             <span className="text-xs text-gray-400 capitalize">{event.level}</span>
           </div>
-          <h3 className="font-semibold text-gray-900 text-sm line-clamp-1">{event.title}</h3>
+          <h3 className="font-semibold text-white text-sm line-clamp-1">{event.title}</h3>
           <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{event.description}</p>
           <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
             <span className="flex items-center gap-1"><Clock size={11} /> {formatEventDate(event.start_time)}</span>
@@ -117,7 +117,7 @@ function EventCard({ event, primaryColor, view }: {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group"
+      className="bg-transparent rounded-xl border border-white/8 overflow-hidden hover: transition-shadow group"
     >
       <div className="relative h-36 bg-gradient-to-br from-gray-100 to-gray-200">
         {event.image_url
@@ -127,20 +127,20 @@ function EventCard({ event, primaryColor, view }: {
             </div>
         }
         {live && (
-          <div className="absolute top-2 left-2 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+          <div className="absolute top-2 left-2 px-2 py-0.5 bg-red-500/100 text-white text-xs font-bold rounded-full animate-pulse">
             🔴 Live
           </div>
         )}
         {event.is_free && (
-          <div className="absolute top-2 right-2 px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded-full">FREE</div>
+          <div className="absolute top-2 right-2 px-2 py-0.5 bg-green-500/100 text-white text-xs font-bold rounded-full">FREE</div>
         )}
       </div>
       <div className="p-3">
         <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-          <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-gray-100 text-gray-600'}`}>{catCfg?.label ?? event.category}</span>
+          <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-white/5 text-gray-400'}`}>{catCfg?.label ?? event.category}</span>
           <span className="text-xs text-gray-400 capitalize">{event.level}</span>
         </div>
-        <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1">{event.title}</h3>
+        <h3 className="font-semibold text-white text-sm line-clamp-2 mb-1">{event.title}</h3>
         <div className="text-xs text-gray-500 space-y-0.5">
           <div className="flex items-center gap-1"><Clock size={10} /> {formatEventDate(event.start_time)}</div>
           <div className="flex items-center gap-1"><MapPin size={10} /> {event.venue}</div>
@@ -209,7 +209,7 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
   const upcoming = filtered.filter(e => !isHappeningNow(e));
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="min-h-screen bg-white/4">
       {/* Header */}
       <div style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%)` }} className="text-white py-10 px-4">
         <div className="max-w-7xl mx-auto">
@@ -232,7 +232,7 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
         <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-hide">
           {TIME_TABS.map(tab => (
             <button key={tab.key} onClick={() => setTimeTab(tab.key)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition ${timeTab === tab.key ? 'text-white shadow' : 'bg-white text-gray-600 border hover:border-gray-300'}`}
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition ${timeTab === tab.key ? 'text-white shadow' : 'bg-transparent text-gray-400 border hover:border-white/15'}`}
               style={timeTab === tab.key ? { backgroundColor: primaryColor } : {}}>
               {tab.label}
             </button>
@@ -243,7 +243,7 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
         <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-hide">
           {LEVEL_TABS.map(tab => (
             <button key={tab.key} onClick={() => setLevelTab(tab.key)}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition ${levelTab === tab.key ? 'text-white shadow' : 'bg-white text-gray-600 border hover:border-gray-300'}`}
+              className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition ${levelTab === tab.key ? 'text-white shadow' : 'bg-transparent text-gray-400 border hover:border-white/15'}`}
               style={levelTab === tab.key ? { backgroundColor: primaryColor } : {}}>
               <tab.icon size={14} /> {tab.label}
             </button>
@@ -254,7 +254,7 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
           {CATEGORIES.map(cat => (
             <button key={cat.key} onClick={() => setActiveCategory(cat.key as EventCategory | 'all')}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition border ${activeCategory === cat.key ? 'ring-2 ' + cat.color : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`}
+              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition border ${activeCategory === cat.key ? 'ring-2 ' + cat.color : 'bg-transparent text-gray-400 border-white/10 hover:border-white/15'}`}
               style={activeCategory === cat.key ? { outlineColor: primaryColor } : {}}>
               <cat.icon size={12} /> {cat.label}
             </button>
@@ -267,20 +267,20 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder={`Search events in ${city.name}...`}
-              className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 bg-white"
+              className="w-full pl-9 pr-4 py-2.5 border border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 bg-transparent"
               style={{ '--tw-ring-color': primaryColor } as React.CSSProperties} />
           </div>
           <button onClick={() => setView(v => v === 'grid' ? 'list' : 'grid')}
-            className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white text-gray-600 hover:border-gray-300 transition flex items-center gap-2 text-sm">
+            className="px-4 py-2.5 border border-white/10 rounded-xl bg-transparent text-gray-400 hover:border-white/15 transition flex items-center gap-2 text-sm">
             {view === 'grid' ? <List size={16} /> : <Grid size={16} />}
             {view === 'grid' ? 'List' : 'Grid'}
           </button>
           <button onClick={() => setShowMap(m => !m)}
-            className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white text-gray-600 hover:border-gray-300 transition flex items-center gap-2 text-sm">
+            className="px-4 py-2.5 border border-white/10 rounded-xl bg-transparent text-gray-400 hover:border-white/15 transition flex items-center gap-2 text-sm">
             <MapPin size={16} /> Map
           </button>
           <button onClick={loadEvents}
-            className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white text-gray-600 hover:border-gray-300 transition">
+            className="px-4 py-2.5 border border-white/10 rounded-xl bg-transparent text-gray-400 hover:border-white/15 transition">
             <RefreshCw size={16} />
           </button>
         </div>
@@ -288,7 +288,7 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
         {/* Map view */}
         <AnimatePresence>
           {showMap && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 400 }} exit={{ opacity: 0, height: 0 }} className="mb-6 rounded-2xl overflow-hidden border border-gray-200">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 400 }} exit={{ opacity: 0, height: 0 }} className="mb-6 rounded-2xl overflow-hidden border border-white/10">
               <EventsMap events={filtered} city={city} primaryColor={primaryColor} />
             </motion.div>
           )}
@@ -296,10 +296,10 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
 
         {/* Live now banner */}
         {liveNow.length > 0 && (
-          <div className="mb-6 p-4 rounded-2xl border-2 border-red-200 bg-red-50">
+          <div className="mb-6 p-4 rounded-2xl border-2 border-red-500/30 bg-red-500/10">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
-              <span className="font-bold text-red-700 text-sm">Happening Right Now ({liveNow.length})</span>
+              <div className="w-2.5 h-2.5 bg-red-500/100 rounded-full animate-pulse" />
+              <span className="font-bold text-red-400 text-sm">Happening Right Now ({liveNow.length})</span>
             </div>
             <div className={`grid gap-3 ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
               {liveNow.map(e => <EventCard key={e.id} event={e} primaryColor={primaryColor} view={view} />)}
@@ -311,18 +311,18 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-xl border border-gray-100 overflow-hidden animate-pulse">
-                <div className="h-36 bg-gray-200" />
+              <div key={i} className="bg-transparent rounded-xl border border-white/8 overflow-hidden animate-pulse">
+                <div className="h-36 bg-white/8" />
                 <div className="p-3 space-y-2">
-                  <div className="h-3 bg-gray-200 rounded w-1/3" />
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
-                  <div className="h-3 bg-gray-200 rounded w-1/2" />
+                  <div className="h-3 bg-white/8 rounded w-1/3" />
+                  <div className="h-4 bg-white/8 rounded w-3/4" />
+                  <div className="h-3 bg-white/8 rounded w-1/2" />
                 </div>
               </div>
             ))}
           </div>
         ) : upcoming.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+          <div className="text-center py-16 bg-transparent rounded-2xl border border-white/8">
             <Calendar size={40} className="mx-auto mb-3 text-gray-300" />
             <p className="text-gray-500 text-sm">No events found for this filter.</p>
             <p className="text-gray-400 text-xs mt-1">Try changing the time range or category.</p>
@@ -338,7 +338,7 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
           <div className="mt-10">
             <div className="flex items-center gap-2 mb-4">
               <Repeat size={18} style={{ color: primaryColor }} />
-              <h2 className="text-lg font-bold text-gray-900">Regular Weekly Events</h2>
+              <h2 className="text-lg font-bold text-white">Regular Weekly Events</h2>
             </div>
             <RecurringEvents events={recurringEvents} primaryColor={primaryColor} />
           </div>
