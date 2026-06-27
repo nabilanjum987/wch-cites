@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import type { FlagPalette } from '@/lib/design/flagPalettes';
 
 /**
@@ -49,6 +50,7 @@ export function FlagAuroraBackground({
           />
         ))}
       </div>
+      <FlagSymbolBackground countrySlug={palette.name.toLowerCase().replace(/ /g, '-')} />
       <div className="relative z-10">{children}</div>
     </div>
   );
