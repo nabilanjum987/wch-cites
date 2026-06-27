@@ -30,9 +30,9 @@ export default function VideoNews({ countrySlug }: VideoNewsProps) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="h-28 bg-gray-200 rounded-xl" />
-              <div className="mt-2 h-3 bg-gray-200 rounded w-3/4" />
-              <div className="mt-1 h-2.5 bg-gray-100 rounded w-1/2" />
+              <div className="h-28 bg-transparent/8 rounded-xl" />
+              <div className="mt-2 h-3 bg-transparent/8 rounded w-3/4" />
+              <div className="mt-1 h-2.5 bg-transparent/5 rounded w-1/2" />
             </div>
           ))}
         </div>
@@ -63,7 +63,7 @@ export default function VideoNews({ countrySlug }: VideoNewsProps) {
                 )}
                 {/* Play overlay */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                  <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ">
                     <Play className="w-4 h-4 text-white ml-0.5" />
                   </div>
                 </div>
@@ -73,7 +73,7 @@ export default function VideoNews({ countrySlug }: VideoNewsProps) {
                   {video.channel}
                 </span>
               </div>
-              <h4 className="mt-2 text-xs font-semibold text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2">
+              <h4 className="mt-2 text-xs font-semibold text-white leading-snug group-hover:text-emerald-400 transition-colors line-clamp-2">
                 {video.title}
               </h4>
               <div className="flex items-center gap-1 mt-1 text-[10px] text-gray-400">
