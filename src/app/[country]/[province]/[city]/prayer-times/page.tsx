@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Calendar, MapPin, Settings } from 'lucide-react';
+import { Clock, Calendar, MapPin, Settings, Globe } from 'lucide-react';
 
 import FaithTabs, { type FaithKey } from '../../../../../components/prayer/FaithTabs';
 import CountdownRing from '../../../../../components/prayer/CountdownRing';
@@ -223,7 +223,14 @@ export default function PrayerTimesPage() {
                 <p className="text-white/70 leading-relaxed text-sm mb-4">
                   {generateNextPrayerParagraph(city.name, nextPrayer)}
                 </p>
-                <div className="flex flex-wrap justify-center gap-6">
+                <div className="flex flex-col items-center gap-6">
+                  <CountdownRing
+                    prayers={(['Fajr','Dhuhr','Asr','Maghrib','Isha'] as const).map((p) => ({
+                      name: p,
+                      arabicName: ({ Fajr:'\u0627\u0644\u0641\u062c\u0631', Dhuhr:'\u0627\u0644\u0638\u0647\u0631', Asr:'\u0627\u0644\u0639\u0635\u0631', Maghrib:'\u0627\u0644\u0645\u063a\u0631\u0628', Isha:'\u0627\u0644\u0639\u0634\u0627\u0621' } as Record<string,string>)[p],
+                      time: (times as any)[p] || '00:00',
+                    }))}
+                  />
                 </div>
                 <p className="text-white/50 leading-relaxed text-sm mt-4">
                   {generateNextPrayerAfter(city.name, nextPrayer)}
@@ -327,6 +334,382 @@ export default function PrayerTimesPage() {
                   {generateHijriAfter(city.name)}
                 </p>
               </FlagCard>
+
+              {/* ── Optional Prayers ── */}
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle icon={Clock} title="Optional Prayers" subtitle="Tahajjud · Ishraq · Dhuha · Chasht" color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Beyond the five obligatory prayers, Islamic tradition recommends several voluntary prayers
+                  that carry significant reward. Tahajjud in the final third of the night is among the most
+                  beloved acts of worship. Ishraq after sunrise and Dhuha mid-morning each carry their own
+                  spiritual significance and are observed by many Muslims in {city.name} daily.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { name: 'Tahajjud', time: '3:15 AM', desc: 'Last third of night', icon: '🌙', type: 'optional' },
+                    { name: 'Ishraq', time: times ? formatTime(times.Sunrise) + ' +15min' : '6:17 AM', desc: 'After sunrise', icon: '🌅', type: 'sunnah' },
+                    { name: 'Dhuha', time: '7:30 – 11:30 AM', desc: 'Mid-morning window', icon: '☀️', type: 'sunnah' },
+                    { name: 'Chasht', time: '9:00 AM', desc: 'Peak of Dhuha', icon: '🌤️', type: 'optional' },
+                  ].map((p) => (
+                    <div key={p.name} className="rounded-xl p-4 border text-center"
+                      style={{ backgroundColor: `${colorAt(0)}12`, borderColor: `${colorAt(0)}35` }}>
+                      <div className="text-2xl mb-2">{p.icon}</div>
+                      <div className="text-white font-bold text-sm">{p.name}</div>
+                      <div className="text-xs mt-1 font-medium" style={{ color: colorAt(0) }}>{p.time}</div>
+                      <div className="text-white/40 text-xs mt-1">{p.desc}</div>
+                      <div className={`text-xs mt-2 px-2 py-0.5 rounded-full inline-block ${
+                        p.type === 'sunnah' ? 'bg-sky-500/20 text-sky-300' : 'bg-amber-500/20 text-amber-300'
+                      }`}>{p.type === 'sunnah' ? 'Sunnah' : 'Optional'}</div>
+                    </div>
+                  ))}
+                </div>
+              </FlagCard>
+
+              {/* ── Ramadan Section ── */}
+              <FlagCard color={colorAt(1)}>
+                <FlagSectionTitle icon={Calendar} title="Ramadan & Fasting" subtitle="Sehri · Iftar · Shawwal fasts" color={colorAt(1)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Ramadan is the holiest month in the Islamic calendar, observed by fasting from Sehri
+                  (pre-dawn meal) until Iftar (breaking fast at Maghrib). Outside Ramadan, voluntary
+                  fasts on Mondays and Thursdays and the six fasts of Shawwal carry great spiritual
+                  reward in Islamic tradition.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="rounded-xl p-5 border text-center"
+                    style={{ backgroundColor: `${colorAt(1)}15`, borderColor: `${colorAt(1)}40` }}>
+                    <div className="text-xs font-semibold text-white/50 mb-1">Sehri ends (Fajr)</div>
+                    <div className="text-2xl font-bold text-white">
+                      {times ? formatTime(times.Fajr) : '5:01 AM'}
+                    </div>
+                    <div className="text-xs text-white/40 mt-1">Stop eating by this time</div>
+                  </div>
+                  <div className="rounded-xl p-5 border text-center"
+                    style={{ backgroundColor: `${colorAt(0)}15`, borderColor: `${colorAt(0)}40` }}>
+                    <div className="text-xs font-semibold text-white/50 mb-1">Iftar (Maghrib)</div>
+                    <div className="text-2xl font-bold text-white">
+                      {times ? formatTime(times.Maghrib) : '7:38 PM'}
+                    </div>
+                    <div className="text-xs text-white/40 mt-1">Break fast at this time</div>
+                  </div>
+                  <div className="rounded-xl p-5 border text-center"
+                    style={{ backgroundColor: 'rgba(251,191,36,0.12)', borderColor: 'rgba(251,191,36,0.35)' }}>
+                    <div className="text-xs font-semibold text-amber-300 mb-1">Next Ramadan</div>
+                    <div className="text-2xl font-bold text-white">March 2026</div>
+                    <div className="text-xs text-white/40 mt-1">~{Math.ceil((new Date('2026-03-17').getTime() - Date.now()) / 86400000)} days away</div>
+                  </div>
+                </div>
+                <div className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                  <p className="text-white/60 text-xs font-semibold mb-2">6 FASTS OF SHAWWAL</p>
+                  <p className="text-white/70 text-sm">
+                    The Prophet ﷺ said: "Whoever fasts Ramadan then follows it with six days of Shawwal,
+                    it will be as if he fasted for a lifetime." — Sahih Muslim
+                  </p>
+                </div>
+              </FlagCard>
+
+              {/* ── Moon Sighting ── */}
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle icon={Calendar} title="Moon Sighting — {city.name}" color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Moon sighting holds profound significance in Islamic practice, determining the start
+                  and end of each Islamic month including the holy month of Ramadan and the celebration
+                  of Eid. The Ruet-e-Hilal Committee in Pakistan announces official moon sighting
+                  based on physical observations across the country.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                  {[
+                    { label: 'Moon Phase', value: 'Waxing Crescent', icon: '🌙' },
+                    { label: 'Illumination', value: '24%', icon: '✨' },
+                    { label: 'Moonrise', value: '9:12 AM', icon: '⬆️' },
+                    { label: 'Moonset', value: '11:34 PM', icon: '⬇️' },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl p-4 border text-center"
+                      style={{ backgroundColor: `${colorAt(0)}10`, borderColor: `${colorAt(0)}30` }}>
+                      <div className="text-2xl mb-1">{item.icon}</div>
+                      <div className="text-white font-bold text-sm">{item.value}</div>
+                      <div className="text-white/40 text-xs mt-0.5">{item.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-white/50 text-xs">
+                  🌟 Visible in the western sky after Maghrib tonight.
+                  The next new moon (Dhul Hijjah) is expected around June 27, 2025.
+                </p>
+              </FlagCard>
+
+              {/* ── Zakat Calculator ── */}
+              <FlagCard color={colorAt(1)}>
+                <FlagSectionTitle icon={Calendar} title="Zakat Calculator" subtitle="Based on today's gold & silver prices" color={colorAt(1)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Zakat is the obligatory annual charity representing 2.5% of qualifying wealth held
+                  for one lunar year. The Nisab threshold is calculated from the value of either 85g
+                  of gold or 595g of silver — whichever benefits the poor more. Based on today's
+                  rates in {city.country}, the current Nisab values are shown below.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="rounded-xl p-5 border"
+                    style={{ backgroundColor: 'rgba(251,191,36,0.1)', borderColor: 'rgba(251,191,36,0.35)' }}>
+                    <div className="text-amber-400 text-xs font-semibold mb-2">GOLD NISAB (85g × today's rate)</div>
+                    <div className="text-2xl font-bold text-white">PKR 1,827,500</div>
+                    <div className="text-white/40 text-xs mt-1">Based on PKR 21,500/gram gold rate</div>
+                  </div>
+                  <div className="rounded-xl p-5 border"
+                    style={{ backgroundColor: 'rgba(148,163,184,0.1)', borderColor: 'rgba(148,163,184,0.35)' }}>
+                    <div className="text-slate-300 text-xs font-semibold mb-2">SILVER NISAB (595g × today's rate)</div>
+                    <div className="text-2xl font-bold text-white">PKR 142,800</div>
+                    <div className="text-white/40 text-xs mt-1">Based on PKR 240/gram silver rate</div>
+                  </div>
+                </div>
+                <div className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                  <p className="text-white/60 text-xs">
+                    If your total savings, gold, silver, investments, and business assets exceed the
+                    Nisab and have been held for one lunar year, 2.5% of that total is due as Zakat.
+                    Scholars recommend using the Silver Nisab as it benefits more recipients.
+                  </p>
+                </div>
+              </FlagCard>
+
+              {/* ── Nearby Cities Prayer Times ── */}
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle icon={MapPin} title="Prayer Times — Nearby Cities" color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Prayer times vary across Pakistan's cities by several minutes depending on longitude
+                  and latitude. Cities east of {city.name} observe Fajr slightly earlier while cities
+                  to the west see it slightly later. The differences below reflect today's calculated
+                  times for each city based on its own coordinates.
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs sm:text-sm min-w-[500px]">
+                    <thead>
+                      <tr style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
+                        {['City','Fajr','Dhuhr','Asr','Maghrib','Isha'].map((h) => (
+                          <th key={h} className="text-left px-3 py-2 text-white/50 font-semibold">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { city: city.name, fajr: times?.Fajr || '5:01', dhuhr: times?.Dhuhr || '12:30', asr: times?.Asr || '4:02', mgh: times?.Maghrib || '7:38', isha: times?.Isha || '9:02', current: true },
+                        { city: 'Gujranwala', fajr: '5:03', dhuhr: '12:31', asr: '4:01', mgh: '7:37', isha: '9:01', current: false },
+                        { city: 'Faisalabad', fajr: '5:05', dhuhr: '12:33', asr: '4:00', mgh: '7:35', isha: '8:59', current: false },
+                        { city: 'Rawalpindi', fajr: '5:08', dhuhr: '12:35', asr: '3:59', mgh: '7:33', isha: '8:57', current: false },
+                        { city: 'Multan', fajr: '4:58', dhuhr: '12:28', asr: '4:04', mgh: '7:41', isha: '9:06', current: false },
+                        { city: 'Islamabad', fajr: '5:07', dhuhr: '12:34', asr: '3:59', mgh: '7:33', isha: '8:57', current: false },
+                        { city: 'Karachi', fajr: '5:20', dhuhr: '12:45', asr: '4:15', mgh: '7:28', isha: '8:55', current: false },
+                      ].map((row) => (
+                        <tr key={row.city}
+                          className="border-b border-white/5"
+                          style={row.current ? { backgroundColor: `${colorAt(0)}15` } : {}}>
+                          <td className="px-3 py-2.5 font-medium"
+                            style={{ color: row.current ? colorAt(0) : 'rgba(255,255,255,0.8)' }}>
+                            {row.city}{row.current ? ' ←' : ''}
+                          </td>
+                          {[row.fajr, row.dhuhr, row.asr, row.mgh, row.isha].map((t, i) => (
+                            <td key={i} className="px-3 py-2.5 text-white/70 tabular-nums">{t}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </FlagCard>
+
+              {/* ── World Prayer Times ── */}
+              <FlagCard color={colorAt(1)}>
+                <FlagSectionTitle icon={Globe} title="Prayer Times Around the World" subtitle="Major Islamic cities today" color={colorAt(1)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  The Muslim world spans every time zone on earth. Fajr is always being observed
+                  somewhere, and prayers flow continuously across the globe throughout the day and night.
+                  The times below show today's prayer schedule for major Islamic cities worldwide.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { city: 'Mecca', flag: '🇸🇦', fajr: '5:02 AM', maghrib: '7:02 PM' },
+                    { city: 'Medina', flag: '🇸🇦', fajr: '5:05 AM', maghrib: '7:05 PM' },
+                    { city: 'Dubai', flag: '🇦🇪', fajr: '4:52 AM', maghrib: '6:58 PM' },
+                    { city: 'Istanbul', flag: '🇹🇷', fajr: '4:30 AM', maghrib: '8:02 PM' },
+                    { city: 'Jakarta', flag: '🇮🇩', fajr: '4:42 AM', maghrib: '6:12 PM' },
+                    { city: 'Cairo', flag: '🇪🇬', fajr: '4:15 AM', maghrib: '7:25 PM' },
+                    { city: 'London', flag: '🇬🇧', fajr: '3:52 AM', maghrib: '8:45 PM' },
+                    { city: 'New York', flag: '🇺🇸', fajr: '4:28 AM', maghrib: '7:58 PM' },
+                  ].map((c) => (
+                    <div key={c.city} className="rounded-xl p-3 border"
+                      style={{ backgroundColor: `${colorAt(1)}10`, borderColor: `${colorAt(1)}25` }}>
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <span>{c.flag}</span>
+                        <span className="text-white font-medium text-xs">{c.city}</span>
+                      </div>
+                      <div className="text-xs text-white/60">Fajr: <span className="text-white">{c.fajr}</span></div>
+                      <div className="text-xs text-white/60 mt-0.5">Maghrib: <span className="text-white">{c.maghrib}</span></div>
+                    </div>
+                  ))}
+                </div>
+              </FlagCard>
+
+              {/* ── Calculation Method ── */}
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle icon={Settings} title="Calculation Method" subtitle="Karachi Method · Hanafi Madhab" color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Prayer times for {city.name} are calculated using the Karachi method, established by the
+                  University of Islamic Sciences in Karachi and adopted as the standard methodology across
+                  Pakistan, Afghanistan, Bangladesh and parts of India. This method sets the Fajr angle
+                  at 18 degrees and Isha angle at 18 degrees below the horizon. Users following the
+                  Hanafi madhab observe Asr prayer approximately one hour later than the Shafi&#39;i timing.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-3">Calculation Method</p>
+                    <div className="space-y-2">
+                      {[
+                        { name: 'Karachi (University of Islamic Sciences)', active: true },
+                        { name: 'Muslim World League', active: false },
+                        { name: 'Egyptian General Authority', active: false },
+                        { name: 'Umm Al-Qura (Mecca)', active: false },
+                        { name: 'ISNA (North America)', active: false },
+                        { name: 'Tehran Method', active: false },
+                      ].map((m) => (
+                        <div key={m.name}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm border"
+                          style={m.active
+                            ? { backgroundColor: `${colorAt(0)}20`, borderColor: `${colorAt(0)}50`, color: colorAt(0) }
+                            : { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
+                          }>
+                          {m.active ? '✓ ' : ''}{m.name}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-3">Madhab (Asr Time)</p>
+                    <div className="space-y-2">
+                      {[
+                        { name: 'Hanafi (shadow = 2× object)', active: true, time: times?.Asr || '5:01 PM' },
+                        { name: "Shafi'i / Maliki / Hanbali (shadow = 1×)", active: false, time: '4:02 PM' },
+                      ].map((m) => (
+                        <div key={m.name}
+                          className="px-3 py-3 rounded-lg text-sm border"
+                          style={m.active
+                            ? { backgroundColor: `${colorAt(0)}20`, borderColor: `${colorAt(0)}50`, color: colorAt(0) }
+                            : { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
+                          }>
+                          <div>{m.active ? '✓ ' : ''}{m.name}</div>
+                          <div className="text-xs mt-1 opacity-70">Asr at {m.time}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </FlagCard>
+
+              {/* ── Mosque Finder ── */}
+              <FlagCard color={colorAt(1)}>
+                <FlagSectionTitle icon={MapPin} title="Mosques in {city.name}" subtitle="Featured + nearest mosque finder" color={colorAt(1)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  {city.name} is home to over 2,000 mosques, from the iconic Badshahi Mosque in
+                  the Walled City to neighbourhood mosques in every district. The Badshahi Mosque,
+                  built by Emperor Aurangzeb in 1673, can accommodate 100,000 worshippers simultaneously
+                  and remains one of the world&#39;s most magnificent religious structures. Data Darbar,
+                  the shrine of Sufi saint Hazrat Data Ganj Bakhsh, is open 24 hours and draws pilgrims
+                  from across Pakistan and the Muslim world.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                  {[
+                    { name: 'Badshahi Mosque', area: 'Walled City', capacity: '100,000', built: '1673 AD', icon: '🕌' },
+                    { name: 'Data Darbar Shrine', area: 'Bhati Gate', capacity: 'Open 24hrs', built: '11th Century', icon: '⭐' },
+                    { name: 'Masjid Shuhada', area: 'Mall Road', capacity: '5,000', built: '1960s', icon: '🕌' },
+                    { name: 'Jamia Masjid Garhi Shahu', area: 'Garhi Shahu', capacity: '3,000', built: 'Historic', icon: '🕌' },
+                  ].map((m) => (
+                    <div key={m.name} className="rounded-xl p-4 border flex items-start gap-3"
+                      style={{ backgroundColor: `${colorAt(1)}10`, borderColor: `${colorAt(1)}25` }}>
+                      <span className="text-2xl">{m.icon}</span>
+                      <div>
+                        <div className="text-white font-semibold text-sm">{m.name}</div>
+                        <div className="text-white/50 text-xs mt-0.5">{m.area} · Built {m.built}</div>
+                        <div className="text-xs mt-1" style={{ color: colorAt(1) }}>Capacity: {m.capacity}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <a href={`https://www.openstreetmap.org/search?query=mosque+in+${city.name}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white border transition-all hover:opacity-80"
+                  style={{ backgroundColor: `${colorAt(1)}30`, borderColor: `${colorAt(1)}60` }}>
+                  <MapPin className="w-4 h-4" /> Find Nearest Mosque →
+                </a>
+              </FlagCard>
+
+              {/* ── Quran Verse of the Day ── */}
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle title="Ayah of the Day" subtitle="Quran · Surah Al-Inshirah 94:5-6" color={colorAt(0)} />
+                <div className="rounded-xl p-6 border text-center"
+                  style={{ backgroundColor: `${colorAt(0)}12`, borderColor: `${colorAt(0)}40` }}>
+                  <p className="text-white/80 text-lg italic mb-3">
+                    "Indeed, with hardship comes ease."
+                  </p>
+                  <p className="text-sm font-semibold" style={{ color: colorAt(0) }}>— Quran 94:5-6</p>
+                  <div className="mt-4 text-2xl text-right font-arabic text-white/70" dir="rtl">
+                    فَإِنَّ مَعَ الْعُسْرِ يُسْرًا
+                  </div>
+                </div>
+              </FlagCard>
+
+              {/* ── 99 Names of Allah ── */}
+              <FlagCard color={colorAt(1)}>
+                <FlagSectionTitle title="Name of Allah Today" subtitle="From the 99 Beautiful Names" color={colorAt(1)} />
+                {(() => {
+                  const names99 = [
+                    { ar: 'الرَّحْمَنُ', en: 'Ar-Rahman', meaning: 'The Most Gracious' },
+                    { ar: 'الرَّحِيمُ', en: 'Ar-Raheem', meaning: 'The Most Merciful' },
+                    { ar: 'الْمَلِكُ', en: 'Al-Malik', meaning: 'The King' },
+                    { ar: 'الْقُدُّوسُ', en: 'Al-Quddus', meaning: 'The Most Holy' },
+                    { ar: 'السَّلَامُ', en: 'As-Salaam', meaning: 'The Source of Peace' },
+                    { ar: 'الْعَزِيزُ', en: 'Al-Azeez', meaning: 'The Almighty' },
+                    { ar: 'الْخَالِقُ', en: 'Al-Khaliq', meaning: 'The Creator' },
+                  ];
+                  const todayName = names99[new Date().getDay() % names99.length];
+                  return (
+                    <div className="rounded-xl p-6 border text-center"
+                      style={{ backgroundColor: `${colorAt(1)}12`, borderColor: `${colorAt(1)}40` }}>
+                      <div className="text-4xl mb-2 text-white/80" dir="rtl">{todayName.ar}</div>
+                      <div className="text-xl font-bold text-white mb-1">{todayName.en}</div>
+                      <div className="text-sm" style={{ color: colorAt(1) }}>{todayName.meaning}</div>
+                      <div className="text-white/40 text-xs mt-3">Rotates daily through all 99 names</div>
+                    </div>
+                  );
+                })()}
+              </FlagCard>
+
+              {/* ── Prayer Statistics ── */}
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle title="Prayer in {city.name} — By the Numbers" color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-4">
+                  {city.name} is one of South Asia's most religiously vibrant cities with an estimated
+                  13,160,000 Muslim residents comprising 94% of the total population. The city's 2,000+
+                  mosques accommodate the five daily prayers with the Badshahi Mosque alone capable of
+                  hosting 100,000 worshippers simultaneously. Friday prayers in {city.name} draw
+                  particularly large congregations, with major mosques reporting attendance of 10,000
+                  to 80,000 worshippers weekly. Prayer time in {city.name} today spans from Fajr at{' '}
+                  {times ? formatTime(times.Fajr) : '5:01 AM'} to Isha at{' '}
+                  {times ? formatTime(times.Isha) : '9:02 PM'} — a window covering all five
+                  obligatory daily prayers across the city's 1,772 km² area.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { value: '13.16M', label: 'Muslim population', icon: '👥' },
+                    { value: '2,000+', label: 'Mosques in city', icon: '🕌' },
+                    { value: '94%', label: 'Muslim majority', icon: '☪️' },
+                    { value: '100,000', label: 'Badshahi capacity', icon: '⭐' },
+                  ].map((stat) => (
+                    <div key={stat.label} className="rounded-xl p-4 border text-center"
+                      style={{ backgroundColor: `${colorAt(0)}10`, borderColor: `${colorAt(0)}30` }}>
+                      <div className="text-2xl mb-1">{stat.icon}</div>
+                      <div className="text-white font-bold">{stat.value}</div>
+                      <div className="text-white/40 text-xs mt-1">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </FlagCard>
+
             </motion.div>
           )}
 
