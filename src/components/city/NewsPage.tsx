@@ -52,9 +52,9 @@ const IMPACT_ICONS: Record<string, React.ElementType> = {
 };
 
 const IMPACT_COLORS: Record<GlobalImpactObject['impact'], { bg: string; text: string; border: string; icon: React.ElementType }> = {
-  positive: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', icon: TrendingUp },
-  negative: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: TrendingDown },
-  neutral: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', icon: Minus },
+  positive: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30', icon: TrendingUp },
+  negative: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/30', icon: TrendingDown },
+  neutral: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30', icon: Minus },
 };
 
 function getCategoryDotColor(category: string, isBreaking: boolean): string {
@@ -234,7 +234,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-transparent/4">
       {/* Header */}
       <div
         className="relative overflow-hidden"
@@ -259,15 +259,15 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                   href={level.slug ? `/${level.slug}` : '/'}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all no-underline ${
                     level.type === 'city'
-                      ? 'bg-white text-gray-900 shadow-md'
-                      : 'bg-white/15 text-white hover:bg-white/25'
+                      ? 'bg-transparent text-white '
+                      : 'bg-transparent/15 text-white hover:bg-transparent/25'
                   }`}
                 >
                   {level.type === 'world' && <Globe className="w-3.5 h-3.5" />}
                   {level.type === 'city' && <MapPin className="w-3.5 h-3.5" />}
                   {level.label}
                   {level.type === 'city' && (
-                    <span className="text-emerald-600 font-bold">&#10003;</span>
+                    <span className="text-emerald-400 font-bold">&#10003;</span>
                   )}
                 </Link>
               </div>
@@ -323,13 +323,13 @@ export default function NewsPage({ country, province, city, cityData: initialCit
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           {/* Language Toggle */}
           <div className="flex items-center gap-3 mb-3">
-            <div className="inline-flex bg-white rounded-xl border border-gray-200 p-1 shadow-sm">
+            <div className="inline-flex bg-transparent rounded-xl border border-white/10 p-1 ">
               <button
                 onClick={() => setLanguageTab('english')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   languageTab === 'english'
-                    ? 'bg-gray-900 text-white shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-black/50 text-white '
+                    : 'text-gray-400 hover:text-white'
                 }`}
               >
                 English
@@ -338,15 +338,15 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                 onClick={() => setLanguageTab('urdu')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all font-urdu ${
                   languageTab === 'urdu'
-                    ? 'bg-gray-900 text-white shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-black/50 text-white '
+                    : 'text-gray-400 hover:text-white'
                 }`}
               >
                 اردو
               </button>
             </div>
             {languageTab === 'urdu' && (
-              <span className="flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+              <span className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
                 <Languages className="w-3 h-3" />
                 RTL - Noto Nastaliq Urdu
               </span>
@@ -363,8 +363,8 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                   onClick={() => setActiveCategory(null)}
                   className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     activeCategory === null
-                      ? 'bg-gray-900 text-white shadow-sm'
-                      : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:text-gray-900'
+                      ? 'bg-black/50 text-white '
+                      : 'bg-transparent text-gray-400 border border-white/10 hover:border-white/15 hover:text-white'
                   }`}
                 >
                   All News
@@ -377,8 +377,8 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       onClick={() => setActiveCategory(cat.key)}
                       className={`flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                         activeCategory === cat.key
-                          ? 'bg-gray-900 text-white shadow-sm'
-                          : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:text-gray-900'
+                          ? 'bg-black/50 text-white '
+                          : 'bg-transparent text-gray-400 border border-white/10 hover:border-white/15 hover:text-white'
                       }`}
                     >
                       <Icon className="w-3.5 h-3.5" />
@@ -401,11 +401,11 @@ export default function NewsPage({ country, province, city, cityData: initialCit
           >
             {/* Urdu sources badge */}
             <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <span className="text-sm font-bold text-gray-900 font-urdu">اردو ذرائع:</span>
+              <span className="text-sm font-bold text-white font-urdu">اردو ذرائع:</span>
               {(sources.urdu || DEFAULT_SOURCES.urdu).map((source) => (
                 <span
                   key={source}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-lg border border-emerald-100 font-urdu"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-lg border border-emerald-500/20 font-urdu"
                 >
                   {source}
                 </span>
@@ -427,7 +427,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       href={urduArticles[0].url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow no-underline group"
+                      className="block bg-transparent rounded-2xl  border border-white/8 overflow-hidden hover: transition-shadow no-underline group"
                     >
                       <div className="sm:flex">
                         <div className="sm:w-1/2 h-64 sm:h-80 relative overflow-hidden">
@@ -441,15 +441,15 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                         </div>
                         <div className="sm:w-1/2 p-6 flex flex-col justify-center">
                           <div className="flex items-center gap-2 text-xs text-gray-500 mb-2 font-urdu">
-                            <span className="font-medium text-emerald-700">{getSourceName(urduArticles[0].source)}</span>
+                            <span className="font-medium text-emerald-400">{getSourceName(urduArticles[0].source)}</span>
                             <span>&#183;</span>
                             <Clock className="w-3 h-3" />
                             <span>{timeAgo(urduArticles[0].publishedAt)}</span>
                           </div>
-                          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-emerald-700 transition-colors font-urdu">
+                          <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 leading-snug group-hover:text-emerald-400 transition-colors font-urdu">
                             {urduArticles[0].title}
                           </h3>
-                          <p className="text-gray-600 text-sm leading-loose font-urdu">{urduArticles[0].description}</p>
+                          <p className="text-gray-400 text-sm leading-loose font-urdu">{urduArticles[0].description}</p>
                         </div>
                       </div>
                     </a>
@@ -464,7 +464,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                         href={article.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow no-underline group h-full"
+                        className="block bg-transparent rounded-2xl  border border-white/8 overflow-hidden hover: transition-shadow no-underline group h-full"
                       >
                         <div className="h-40 relative overflow-hidden">
                           {article.image ? (
@@ -477,11 +477,11 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                         </div>
                         <div className="p-4">
                           <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1.5 font-urdu">
-                            <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
+                            <span className="font-medium text-emerald-400">{getSourceName(article.source)}</span>
                             <span>&#183;</span>
                             <span>{timeAgo(article.publishedAt)}</span>
                           </div>
-                          <h4 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors font-urdu line-clamp-3">
+                          <h4 className="text-sm font-bold text-white leading-snug group-hover:text-emerald-400 transition-colors font-urdu line-clamp-3">
                             {article.title}
                           </h4>
                         </div>
@@ -496,7 +496,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             {!urduLoading && urduArticles.length === 0 && (
               <div className="text-center py-16">
                 <Newspaper className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-gray-600 mb-1 font-urdu">خبریں نہیں ملیں</h3>
+                <h3 className="text-lg font-semibold text-gray-400 mb-1 font-urdu">خبریں نہیں ملیں</h3>
                 <p className="text-sm text-gray-400 font-urdu">براہ کرم بعد میں دوبارہ چیک کریں</p>
               </div>
             )}
@@ -512,16 +512,16 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
             >
-              <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
                 <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-                <Search className="w-5 h-5 text-emerald-600" />
+                <Search className="w-5 h-5 text-emerald-400" />
                 Search News
               </h2>
-              <p className="text-gray-700 leading-relaxed text-sm mb-4">
+              <p className="text-gray-300 leading-relaxed text-sm mb-4">
                 {generateSearchParagraph(cityData?.name || city)}
               </p>
               <NewsSearch cityName={cityData?.name || ''} country={cityData?.country || ''} />
-              <p className="text-gray-600 leading-relaxed text-sm mt-4">
+              <p className="text-gray-400 leading-relaxed text-sm mt-4">
                 {generateSearchAfter(cityData?.name || city)}
               </p>
             </motion.section>
@@ -530,11 +530,11 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column: Top Stories */}
               <div className="lg:col-span-2 space-y-4">
-                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
                   Top Stories
                 </h2>
-                <p className="text-gray-700 leading-relaxed text-sm">
+                <p className="text-gray-300 leading-relaxed text-sm">
                   {generateTopStoriesParagraph(cityData?.name || city)}
                 </p>
 
@@ -553,7 +553,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                           href={topStories[0].url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow no-underline group"
+                          className="block bg-transparent rounded-2xl  border border-white/8 overflow-hidden hover: transition-shadow no-underline group"
                         >
                           <div className="sm:flex">
                             <div className="sm:w-1/2 h-64 sm:h-80 relative overflow-hidden">
@@ -575,16 +575,16 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                             </div>
                             <div className="sm:w-1/2 p-6 flex flex-col justify-center">
                               <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                                <span className="font-medium text-emerald-700">{getSourceName(topStories[0].source)}</span>
+                                <span className="font-medium text-emerald-400">{getSourceName(topStories[0].source)}</span>
                                 <span>&#183;</span>
                                 <Clock className="w-3 h-3" />
                                 <span>{timeAgo(topStories[0].publishedAt)}</span>
                               </div>
-                              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-emerald-700 transition-colors">
+                              <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 leading-snug group-hover:text-emerald-400 transition-colors">
                                 {topStories[0].title}
                               </h3>
-                              <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{topStories[0].description}</p>
-                              <div className="mt-4 inline-flex items-center gap-1 text-emerald-700 text-sm font-medium">
+                              <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{topStories[0].description}</p>
+                              <div className="mt-4 inline-flex items-center gap-1 text-emerald-400 text-sm font-medium">
                                 Read full story <ExternalLink className="w-3.5 h-3.5" />
                               </div>
                             </div>
@@ -601,7 +601,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                             href={article.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow no-underline group h-full"
+                            className="block bg-transparent rounded-2xl  border border-white/8 overflow-hidden hover: transition-shadow no-underline group h-full"
                           >
                             <div className="h-40 relative overflow-hidden">
                               {article.image ? (
@@ -617,11 +617,11 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                             </div>
                             <div className="p-4">
                               <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1.5">
-                                <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
+                                <span className="font-medium text-emerald-400">{getSourceName(article.source)}</span>
                                 <span>&#183;</span>
                                 <span>{timeAgo(article.publishedAt)}</span>
                               </div>
-                              <h4 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors line-clamp-3">
+                              <h4 className="text-sm font-bold text-white leading-snug group-hover:text-emerald-400 transition-colors line-clamp-3">
                                 {article.title}
                               </h4>
                             </div>
@@ -633,7 +633,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                 )}
 
                 {!loading && (
-                  <p className="text-gray-600 leading-relaxed text-sm">
+                  <p className="text-gray-400 leading-relaxed text-sm">
                     {generateTopStoriesAfter(cityData?.name || city)}
                   </p>
                 )}
@@ -641,11 +641,11 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                 {/* More Stories */}
                 {moreStories.length > 0 && !loading && (
                   <section>
-                    <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                       <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
                       More Stories
                     </h2>
-                    <p className="text-gray-700 leading-relaxed text-sm mb-4">
+                    <p className="text-gray-300 leading-relaxed text-sm mb-4">
                       {generateMoreStoriesParagraph(cityData?.name || city)}
                     </p>
                     <div className="space-y-3">
@@ -655,7 +655,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                             href={article.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow no-underline group"
+                            className="flex bg-transparent rounded-xl  border border-white/8 overflow-hidden hover: transition-shadow no-underline group"
                           >
                             <div className="w-28 sm:w-36 flex-shrink-0 h-24 sm:h-28 relative overflow-hidden">
                               {article.image ? (
@@ -668,14 +668,14 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                             </div>
                             <div className="flex-1 p-3 sm:p-4 flex flex-col justify-center">
                               <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1">
-                                <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
+                                <span className="font-medium text-emerald-400">{getSourceName(article.source)}</span>
                                 <span>&#183;</span>
                                 <Clock className="w-3 h-3" />
                                 <span>{timeAgo(article.publishedAt)}</span>
                                 <span>&#183;</span>
                                 <span className="capitalize">{article.category}</span>
                               </div>
-                              <h4 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2">
+                              <h4 className="text-sm font-bold text-white leading-snug group-hover:text-emerald-400 transition-colors line-clamp-2">
                                 {article.title}
                               </h4>
                             </div>
@@ -683,7 +683,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                         </motion.div>
                       ))}
                     </div>
-                    <p className="text-gray-600 leading-relaxed text-sm mt-4">
+                    <p className="text-gray-400 leading-relaxed text-sm mt-4">
                       {generateMoreStoriesAfter(cityData?.name || city)}
                     </p>
                   </section>
@@ -696,11 +696,11 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.2 }}
-                  className="bg-white rounded-2xl shadow-sm border border-gray-100 sticky top-20"
+                  className="bg-transparent rounded-2xl  border border-white/8 sticky top-20"
                 >
-                  <div className="p-4 border-b border-gray-100">
+                  <div className="p-4 border-b border-white/8">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                      <h2 className="text-base font-bold text-white flex items-center gap-2">
                         <Radio className="w-4 h-4 text-red-500" />
                         Live Feed
                       </h2>
@@ -710,7 +710,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       </div>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">Auto-refreshes every 15 min</p>
-                    <p className="text-xs text-gray-600 leading-relaxed mt-2">
+                    <p className="text-xs text-gray-400 leading-relaxed mt-2">
                       {generateLiveFeedParagraph(cityData?.name || city)}
                     </p>
                   </div>
@@ -719,10 +719,10 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                     <div className="p-4 space-y-3">
                       {Array.from({ length: 10 }).map((_, i) => (
                         <div key={i} className="flex items-start gap-3 animate-pulse">
-                          <div className="w-2.5 h-2.5 rounded-full bg-gray-200 mt-1.5 flex-shrink-0" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-transparent/8 mt-1.5 flex-shrink-0" />
                           <div className="flex-1 space-y-1.5">
-                            <div className="h-3 bg-gray-200 rounded w-3/4" />
-                            <div className="h-2.5 bg-gray-100 rounded w-1/2" />
+                            <div className="h-3 bg-transparent/8 rounded w-3/4" />
+                            <div className="h-2.5 bg-transparent/5 rounded w-1/2" />
                           </div>
                         </div>
                       ))}
@@ -740,7 +740,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                             initial={{ opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="flex items-start gap-3 p-3.5 hover:bg-gray-50 transition-colors no-underline group"
+                            className="flex items-start gap-3 p-3.5 hover:bg-transparent/4 transition-colors no-underline group"
                           >
                             <span className="relative flex-shrink-0 mt-1.5">
                               <span
@@ -753,7 +753,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                               />
                             </span>
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-[13px] font-semibold text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2">
+                              <h4 className="text-[13px] font-semibold text-white leading-snug group-hover:text-emerald-400 transition-colors line-clamp-2">
                                 {article.title}
                               </h4>
                               <div className="flex items-center gap-1.5 mt-1 text-[11px] text-gray-400">
@@ -778,19 +778,19 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                   )}
 
                   {/* Category legend */}
-                  <div className="p-3 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl">
+                  <div className="p-3 border-t border-white/8 bg-transparent/4/50 rounded-b-2xl">
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-gray-500">
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500" /> Breaking</span>
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500" /> Sports</span>
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500" /> Finance</span>
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-gray-500" /> World</span>
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500/100" /> Breaking</span>
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500/100" /> Sports</span>
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500/100" /> Finance</span>
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-transparent/40" /> World</span>
                     </div>
                   </div>
                 </motion.div>
               </div>
             </div>
 
-            <p className="text-gray-600 leading-relaxed text-sm">
+            <p className="text-gray-400 leading-relaxed text-sm">
               {generateLiveFeedAfter(cityData?.name || city)}
             </p>
 
@@ -798,7 +798,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             {!loading && articles.length === 0 && (
               <div className="text-center py-16">
                 <Newspaper className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-gray-600 mb-1">No stories found</h3>
+                <h3 className="text-lg font-semibold text-gray-400 mb-1">No stories found</h3>
                 <p className="text-sm text-gray-400">Try selecting a different category or check back later</p>
               </div>
             )}
@@ -811,37 +811,37 @@ export default function NewsPage({ country, province, city, cityData: initialCit
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.25 }}
         >
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-            <Calendar className="w-5 h-5 text-emerald-600" />
+            <Calendar className="w-5 h-5 text-emerald-400" />
             Archive by Date
           </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">
             {generateArchiveParagraph(cityData?.name || city)}
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Calendar */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <div className="bg-transparent rounded-2xl  border border-white/8 p-5">
               {/* Month navigation */}
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={prevMonth}
-                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-transparent/5 transition-colors"
                   aria-label="Previous month"
                 >
-                  <ChevronLeft className="w-4 h-4 text-gray-600" />
+                  <ChevronLeft className="w-4 h-4 text-gray-400" />
                 </button>
-                <h3 className="text-sm font-bold text-gray-900">
+                <h3 className="text-sm font-bold text-white">
                   {MONTH_NAMES[calendarMonth]} {calendarYear}
                 </h3>
                 <button
                   onClick={nextMonth}
-                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-transparent/5 transition-colors"
                   aria-label="Next month"
                   disabled={calendarYear === today.getFullYear() && calendarMonth === today.getMonth()}
                 >
-                  <ChevronRight className="w-4 h-4 text-gray-600" />
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
 
@@ -871,12 +871,12 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       disabled={isFut}
                       className={`relative w-8 h-8 rounded-lg text-xs font-medium transition-all mx-auto ${
                         isSel
-                          ? 'bg-emerald-600 text-white shadow-sm'
+                          ? 'bg-emerald-600 text-white '
                           : isTod
-                          ? 'bg-emerald-50 text-emerald-700 font-bold ring-1 ring-emerald-200'
+                          ? 'bg-emerald-500/10 text-emerald-400 font-bold ring-1 ring-emerald-200'
                           : isFut
                           ? 'text-gray-300 cursor-not-allowed'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          : 'text-gray-300 hover:bg-transparent/5'
                       }`}
                     >
                       {day}
@@ -888,7 +888,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               {selectedDate && (
                 <button
                   onClick={() => setSelectedDate(null)}
-                  className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                  className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs text-gray-500 hover:text-gray-300 transition-colors"
                 >
                   <X className="w-3 h-3" />
                   Clear selection
@@ -899,7 +899,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             {/* Archived articles */}
             <div className="lg:col-span-2">
               {!selectedDate ? (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+                <div className="bg-transparent rounded-2xl  border border-white/8 p-8 text-center">
                   <Calendar className="w-10 h-10 text-gray-200 mx-auto mb-3" />
                   <h3 className="text-sm font-semibold text-gray-500 mb-1">Select a date</h3>
                   <p className="text-xs text-gray-400">Click any day on the calendar to view news from that date</p>
@@ -911,7 +911,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                   ))}
                 </div>
               ) : archivedArticles.length === 0 ? (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+                <div className="bg-transparent rounded-2xl  border border-white/8 p-8 text-center">
                   <Search className="w-10 h-10 text-gray-200 mx-auto mb-3" />
                   <h3 className="text-sm font-semibold text-gray-500 mb-1">No articles found</h3>
                   <p className="text-xs text-gray-400">
@@ -921,7 +921,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               ) : (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm font-bold text-gray-900">
+                    <span className="text-sm font-bold text-white">
                       {selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </span>
                     <span className="text-xs text-gray-400">
@@ -937,7 +937,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="flex bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow no-underline group"
+                      className="flex bg-transparent rounded-xl  border border-white/8 overflow-hidden hover: transition-shadow no-underline group"
                     >
                       <div className="w-24 sm:w-32 flex-shrink-0 h-20 sm:h-24 relative overflow-hidden">
                         {article.image ? (
@@ -950,12 +950,12 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       </div>
                       <div className="flex-1 p-3 flex flex-col justify-center">
                         <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1">
-                          <span className="font-medium text-emerald-700">{getSourceName(article.source)}</span>
+                          <span className="font-medium text-emerald-400">{getSourceName(article.source)}</span>
                           <span>&#183;</span>
                           <Clock className="w-3 h-3" />
                           <span>{timeAgo(article.publishedAt)}</span>
                         </div>
-                        <h4 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2">
+                        <h4 className="text-sm font-bold text-white leading-snug group-hover:text-emerald-400 transition-colors line-clamp-2">
                           {article.title}
                         </h4>
                       </div>
@@ -965,7 +965,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               )}
             </div>
           </div>
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">
             {generateArchiveAfter(cityData?.name || city)}
           </p>
         </motion.section>
@@ -976,16 +976,16 @@ export default function NewsPage({ country, province, city, cityData: initialCit
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-            <Play className="w-5 h-5 text-red-600" />
+            <Play className="w-5 h-5 text-red-400" />
             Video News
           </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">
             {generateVideoParagraph(cityData?.country || country)}
           </p>
           <VideoNews countrySlug={country || ''} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">
             {generateVideoAfter(cityData?.country || country)}
           </p>
         </motion.section>
@@ -996,16 +996,16 @@ export default function NewsPage({ country, province, city, cityData: initialCit
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.35 }}
         >
-          <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
             <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-            <TrendingUp className="w-5 h-5 text-emerald-600" />
+            <TrendingUp className="w-5 h-5 text-emerald-400" />
             Social Pulse
           </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">
             {generateSocialParagraph(cityData?.name || city)}
           </p>
           <SocialPulse cityName={cityData?.name || ''} topics={generateTrendingTopics(cityData?.name || '', articles)} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">
             {generateSocialAfter(cityData?.name || city)}
           </p>
         </motion.section>
@@ -1016,16 +1016,16 @@ export default function NewsPage({ country, province, city, cityData: initialCit
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
         >
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-            <Calendar className="w-5 h-5 text-emerald-600" />
+            <Calendar className="w-5 h-5 text-emerald-400" />
             Week in Review
           </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">
             {generateWeekParagraph(cityData?.name || city)}
           </p>
           <WeekInReview cityName={cityData?.name || ''} articles={generateWeekInReview(articles)} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">
             {generateWeekAfter(cityData?.name || city)}
           </p>
         </motion.section>
@@ -1037,11 +1037,11 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.3 }}
           >
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
               How World News Affects {cityData?.name || 'Your City'} Today
             </h2>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateImpactParagraph(cityData?.name || city)}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1066,14 +1066,14 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                           <h3 className={`text-sm font-bold ${style.text}`}>{impact.title}</h3>
                           <TrendIcon className={`w-4 h-4 flex-shrink-0 ${style.text}`} />
                         </div>
-                        <p className="text-xs text-gray-600 leading-relaxed">{impact.description}</p>
+                        <p className="text-xs text-gray-400 leading-relaxed">{impact.description}</p>
                       </div>
                     </div>
                   </motion.div>
                 );
               })}
             </div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateImpactAfter(cityData?.name || city)}
             </p>
           </motion.section>
@@ -1085,19 +1085,19 @@ export default function NewsPage({ country, province, city, cityData: initialCit
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
         >
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
             News Sources
           </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">
             {generateSourcesParagraph(cityData?.name || city, cityData?.country || country)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Local sources */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <div className="bg-transparent rounded-2xl  border border-white/8 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <MapPin className="w-4 h-4 text-emerald-600" />
-                <h3 className="text-sm font-bold text-gray-900">
+                <MapPin className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-sm font-bold text-white">
                   {cityData?.country || 'Local'} Sources
                 </h3>
               </div>
@@ -1105,7 +1105,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                 {sources.local.map((source) => (
                   <span
                     key={source}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-lg border border-emerald-100"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-lg border border-emerald-500/20"
                   >
                     <Newspaper className="w-3 h-3" />
                     {source}
@@ -1115,16 +1115,16 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             </div>
 
             {/* International sources */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <div className="bg-transparent rounded-2xl  border border-white/8 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <Globe className="w-4 h-4 text-blue-600" />
-                <h3 className="text-sm font-bold text-gray-900">International Sources</h3>
+                <Globe className="w-4 h-4 text-blue-400" />
+                <h3 className="text-sm font-bold text-white">International Sources</h3>
               </div>
               <div className="flex flex-wrap gap-2">
                 {sources.international.map((source) => (
                   <span
                     key={source}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-medium rounded-lg border border-blue-100"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-500/10 text-blue-400 text-xs font-medium rounded-lg border border-blue-100"
                   >
                     <Globe className="w-3 h-3" />
                     {source}
@@ -1135,16 +1135,16 @@ export default function NewsPage({ country, province, city, cityData: initialCit
 
             {/* Urdu sources */}
             {(sources.urdu || DEFAULT_SOURCES.urdu) && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+              <div className="bg-transparent rounded-2xl  border border-white/8 p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <Languages className="w-4 h-4 text-amber-600" />
-                  <h3 className="text-sm font-bold text-gray-900">Urdu Sources</h3>
+                  <Languages className="w-4 h-4 text-amber-400" />
+                  <h3 className="text-sm font-bold text-white">Urdu Sources</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {(sources.urdu || DEFAULT_SOURCES.urdu).map((source) => (
                     <span
                       key={source}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 text-xs font-medium rounded-lg border border-amber-100 font-urdu"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-500/10 text-amber-400 text-xs font-medium rounded-lg border border-amber-100 font-urdu"
                     >
                       {source}
                     </span>
@@ -1153,7 +1153,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               </div>
             )}
           </div>
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">
             {generateSourcesAfter(cityData?.name || city, cityData?.country || country)}
           </p>
         </motion.section>
