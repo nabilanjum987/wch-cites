@@ -93,10 +93,18 @@ function fmt(val: number, symbol: string) {
 function SkeletonCard() {
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="bg-transparent rounded-2xl  border border-white/8 p-6 animate-pulse">
-      <div className="h-4 bg-white/8 rounded w-1/3 mb-4" />
+
+      {/* Dark aurora orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-8"
+          style={{ backgroundColor: "#0C7A3D" }} />
+        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-6"
+          style={{ backgroundColor: "#0C7A3D" }} />
+      </div>
+      <div className="h-4 bg-transparent/8 rounded w-1/3 mb-4" />
       <div className="space-y-3">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="h-10 bg-white/5 rounded-xl" />
+          <div key={i} className="h-10 bg-transparent/5 rounded-xl" />
         ))}
       </div>
     </div>
@@ -128,13 +136,13 @@ function ZakatCalculator({ nisabValue, nisabGrams, currency, perGram }: ZakatCal
   }, [wealth, goldGrams, perGram, nisabValue]);
 
   return (
-    <div className="bg-transparent rounded-2xl  border border-white/8 p-6">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="bg-transparent rounded-2xl  border border-white/8 p-6">
       <div className="flex items-center gap-2 mb-5">
         <Calculator className="w-5 h-5 text-amber-400" />
         <h2 className="text-lg font-semibold text-white">Zakat Nisab Calculator</h2>
       </div>
 
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-5">
+      <div className="bg-amber-500/100/10 border border-amber-500/30 rounded-xl p-4 mb-5">
         <p className="text-sm text-amber-300 font-medium">
           Nisab: {fmt(nisabValue, currency.symbol)} {currency.code}
         </p>
@@ -181,8 +189,8 @@ function ZakatCalculator({ nisabValue, nisabGrams, currency, perGram }: ZakatCal
         <div
           className={`mt-4 p-4 rounded-xl border ${
             result.owes
-              ? 'bg-green-500/10 border-green-500/30 text-green-300'
-              : 'bg-white/4 border-white/10 text-gray-400'
+              ? 'bg-green-500/100/10 border-green-500/30 text-green-300'
+              : 'bg-transparent/4 border-white/10 text-gray-400'
           }`}
         >
           {result.owes ? (
@@ -218,7 +226,7 @@ function CurrencyConverter({ rates, currency, rateToUsd }: CurrencyConverterProp
         <h2 className="text-lg font-semibold text-white">Currency Converter</h2>
       </div>
 
-      <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 mb-4">
+      <div className="bg-blue-500/100/10 border border-blue-500/30 rounded-xl p-3 mb-4">
         <p className="text-xs text-blue-400 font-medium">
           1 USD = {rateToUsd.toLocaleString()} {currency.code}
         </p>
@@ -236,7 +244,7 @@ function CurrencyConverter({ rates, currency, rateToUsd }: CurrencyConverterProp
             className="w-full border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           />
         </div>
-        <div className="bg-white/4 rounded-xl px-4 py-3 border border-white/8">
+        <div className="bg-transparent/4 rounded-xl px-4 py-3 border border-white/8">
           <p className="text-xs text-gray-400 mb-1">{currency.name}</p>
           <p className="text-xl font-bold text-white font-mono">
             {fmt(converted, currency.symbol)} {currency.code}
@@ -329,7 +337,7 @@ function PurchasingPowerCalculator({ inflation, currencyRate, currencySymbol, go
         <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full border border-white/10 rounded-lg px-3 py-2 text-sm" />
       </div>
       <div className="space-y-3">
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+        <div className="bg-red-500/100/10 border border-red-500/30 rounded-lg p-3">
           <p className="text-xs text-red-400 font-medium mb-1">What {sym}{parseFloat(amount).toLocaleString()} was worth:</p>
           <div className="grid grid-cols-3 gap-2 text-sm">
             <div><span className="text-gray-500">1 yr ago</span><p className="font-bold">{sym}{result.oneYearAgo.toLocaleString()}</p></div>
@@ -337,7 +345,7 @@ function PurchasingPowerCalculator({ inflation, currencyRate, currencySymbol, go
             <div><span className="text-gray-500">5 yr ago</span><p className="font-bold">{sym}{result.fiveYearsAgo.toLocaleString()}</p></div>
           </div>
         </div>
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
+        <div className="bg-amber-500/100/10 border border-amber-500/30 rounded-lg p-3">
           <p className="text-xs text-amber-400 font-medium mb-1">Today's {sym}{parseFloat(amount).toLocaleString()} equals:</p>
           <div className="grid grid-cols-3 gap-2 text-sm">
             <div><span className="text-gray-500">Gold</span><p className="font-bold">{result.goldGrams.toFixed(3)}g</p></div>
@@ -391,7 +399,7 @@ function RemittanceCalculator({ currency, currencyPairs }: RemittanceCalculatorP
             </select>
           </div>
         </div>
-        <div className="bg-white/4 rounded-lg p-3 text-center">
+        <div className="bg-transparent/4 rounded-lg p-3 text-center">
           <p className="text-xs text-gray-500">You receive</p>
           <p className="text-xl font-bold text-white">{result.convertedAmount.toLocaleString()} {toCurrency}</p>
         </div>
@@ -542,8 +550,8 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <div
                   className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold ${
                     isPositive
-                      ? 'bg-emerald-500/100/20 text-emerald-400 border border-emerald-500/30'
-                      : 'bg-red-500/100/20 text-red-400 border border-red-500/30'
+                      ? 'bg-emerald-500/100/100/20 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-red-500/100/100/20 text-red-400 border border-red-500/30'
                   }`}
                 >
                   {isPositive ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
@@ -617,7 +625,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     </h2>
                     <p className="text-sm text-gray-400">All prices in {currency.name}</p>
                   </div>
-                  <div className="flex gap-1 bg-white/5 rounded-xl p-1">
+                  <div className="flex gap-1 bg-transparent/5 rounded-xl p-1">
                     {UNITS.map((u) => (
                       <button
                         key={u.key}
@@ -646,13 +654,13 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                       <div
                         key={k.key}
                         className={`flex items-center justify-between px-4 py-3.5 rounded-xl ${
-                          isK24 ? 'bg-amber-500/10 border border-amber-500/30' : 'bg-white/4 border border-white/8'
+                          isK24 ? 'bg-amber-500/100/10 border border-amber-500/30' : 'bg-transparent/4 border border-white/8'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div
                             className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${
-                              isK24 ? 'bg-amber-500/100 text-white' : 'bg-white/8 text-gray-300'
+                              isK24 ? 'bg-amber-500/100/100 text-white' : 'bg-transparent/8 text-gray-300'
                             }`}
                           >
                             {k.label}
@@ -689,7 +697,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   <div className="flex items-center gap-2">
                     <div
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${
-                        isYTDPositive ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'
+                        isYTDPositive ? 'bg-green-500/100/15 text-green-400' : 'bg-red-500/100/15 text-red-400'
                       }`}
                     >
                       {isYTDPositive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
@@ -779,7 +787,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                       className={`rounded-xl p-4 text-center ${
                         item.highlight
                           ? 'bg-amber-600 text-white'
-                          : 'bg-white/4 border border-white/8'
+                          : 'bg-transparent/4 border border-white/8'
                       }`}
                     >
                       <p className={`text-xs uppercase tracking-wide mb-2 ${item.highlight ? 'text-amber-100' : 'text-gray-400'}`}>
@@ -800,7 +808,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     <span>Low {fmt(rates.low, sym)}</span>
                     <span>High {fmt(rates.high, sym)}</span>
                   </div>
-                  <div className="relative h-2 bg-white/5 rounded-full overflow-hidden">
+                  <div className="relative h-2 bg-transparent/5 rounded-full overflow-hidden">
                     <div
                       className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-300 to-amber-600 rounded-full"
                       style={{
@@ -859,7 +867,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
               />
 
               {/* Info */}
-              <div className="bg-gray-900 rounded-2xl p-6">
+              <div className="bg-black/30 rounded-2xl p-6">
                 <div className="flex items-center gap-2 mb-3">
                   <Info className="w-4 h-4 text-amber-400" />
                   <h3 className="text-sm font-semibold text-white">Reference</h3>
@@ -880,6 +888,44 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
             </div>
           </div>
 
+
+          {/* Quick Navigation */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              { label: '💰 Gold & Silver', href: '#gold' },
+              { label: '🛢️ Oil & Energy', href: '#oil' },
+              { label: '₿ Crypto', href: '#crypto' },
+              { label: '💵 Currency', href: '#currency' },
+              { label: '📈 Stock Market', href: '#stocks' },
+              { label: '🏦 Interest Rates', href: '#interest' },
+              { label: '📊 Commodities', href: '#commodities' },
+              { label: '🌍 Financial Stress', href: '#stress' },
+            ].map((item) => (
+              <a key={item.label} href={item.href}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium border transition-all hover:opacity-80"
+                style={{ backgroundColor: 'rgba(12,122,61,0.15)', borderColor: 'rgba(12,122,61,0.4)', color: '#34d399' }}>
+                {item.label}
+              </a>
+            ))}
+          </div>
+
+
+              {/* Gold vs Silver Ratio */}
+              <div className="rounded-xl p-4 border mt-4"
+                style={{ backgroundColor: 'rgba(251,191,36,0.08)', borderColor: 'rgba(251,191,36,0.25)' }}>
+                <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mb-2">⚖️ Gold / Silver Ratio</p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white text-2xl font-bold">87.7 : 1</p>
+                    <p className="text-white/50 text-xs mt-0.5">Buy 87.7 oz silver to equal 1 oz gold</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-amber-400 text-sm font-medium">Historical avg: 65:1</p>
+                    <p className="text-white/50 text-xs mt-0.5">Silver may be undervalued</p>
+                  </div>
+                </div>
+              </div>
+
           {/* SECTION 2 — OIL & ENERGY */}
           <div className="mt-8">
             <div className="flex items-center gap-2 mb-4">
@@ -896,7 +942,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   <div key={oil.name} className="bg-transparent rounded-2xl  border border-white/8 p-5">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-medium text-gray-400">{oil.name}</span>
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${isUp ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'}`}>
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${isUp ? 'bg-green-500/100/15 text-green-400' : 'bg-red-500/100/15 text-red-400'}`}>
                         {isUp ? '+' : ''}{oil.change_24h}%
                       </span>
                     </div>
@@ -908,7 +954,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
             </div>
 
             {/* How oil affects country */}
-            <div className="mt-4 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+            <div className="mt-4 bg-amber-500/100/10 border border-amber-500/30 rounded-xl p-4">
               <p className="text-sm text-amber-300 leading-relaxed">{generateOilAffectParagraph(countrySlug)}</p>
             </div>
 
@@ -935,6 +981,27 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
             </p>
           </div>
 
+
+              {/* Energy Security Index */}
+              <div className="rounded-xl p-4 border mt-4"
+                style={{ backgroundColor: 'rgba(251,146,60,0.08)', borderColor: 'rgba(251,146,60,0.25)' }}>
+                <p className="text-orange-400 text-xs font-semibold uppercase tracking-wider mb-3">⚡ Pakistan Energy Security Index</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { label: 'Security Score', value: '42/100', color: '#f87171' },
+                    { label: 'Import Dependency', value: 'High ⚠️', color: '#fb923c' },
+                    { label: 'Renewable Capacity', value: '12%', color: '#34d399' },
+                    { label: 'Energy Deficit', value: '3,000 MW', color: '#f87171' },
+                  ].map((item) => (
+                    <div key={item.label} className="text-center">
+                      <p className="text-lg font-bold" style={{ color: item.color }}>{item.value}</p>
+                      <p className="text-white/40 text-xs mt-0.5">{item.label}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-white/40 text-xs mt-3">Pakistan imports ~80% of oil needs · Annual oil import bill: $15 Billion</p>
+              </div>
+
           {/* SECTION 3 — CRYPTOCURRENCY */}
           {cryptoData && (
             <div className="mt-8">
@@ -948,9 +1015,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     BTC Dominance: <span className="font-semibold text-amber-400">{cryptoData.market.btc_dominance}%</span>
                   </div>
                   <div className={`text-xs px-2 py-1 rounded-full font-semibold ${
-                    cryptoData.market.fear_greed_index >= 60 ? 'bg-green-500/15 text-green-400' :
+                    cryptoData.market.fear_greed_index >= 60 ? 'bg-green-500/100/15 text-green-400' :
                     cryptoData.market.fear_greed_index >= 40 ? 'bg-yellow-100 text-yellow-400' :
-                    'bg-red-500/15 text-red-400'
+                    'bg-red-500/100/15 text-red-400'
                   }`}>
                     {cryptoData.market.fear_greed_index} - {cryptoData.market.fear_greed_label}
                   </div>
@@ -962,7 +1029,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
               <div className="bg-transparent rounded-2xl  border border-white/8 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-white/4 border-b border-white/8">
+                    <thead className="bg-transparent/4 border-b border-white/8">
                       <tr>
                         <th className="text-left py-3 px-4 font-medium text-gray-500">#</th>
                         <th className="text-left py-3 px-4 font-medium text-gray-500">Coin</th>
@@ -975,7 +1042,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                       {cryptoData.cryptos.map((crypto, idx) => {
                         const isUp = crypto.change_24h >= 0;
                         return (
-                          <tr key={crypto.id} className="border-b border-gray-50 last:border-0 hover:bg-white/4 transition-colors">
+                          <tr key={crypto.id} className="border-b border-gray-50 last:border-0 hover:bg-transparent/4 transition-colors">
                             <td className="py-3 px-4 text-gray-400">{idx + 1}</td>
                             <td className="py-3 px-4">
                               <div className="flex items-center gap-2">
@@ -1006,6 +1073,27 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
             </div>
           )}
 
+
+              {/* Pakistan Crypto Context */}
+              <div className="rounded-xl p-4 border mt-4"
+                style={{ backgroundColor: 'rgba(139,92,246,0.08)', borderColor: 'rgba(139,92,246,0.25)' }}>
+                <p className="text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3">🇵🇰 Pakistan Crypto Context</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                  {[
+                    { label: 'Crypto Users', value: '15M+', color: '#a78bfa' },
+                    { label: 'Global Rank', value: 'Top 10', color: '#a78bfa' },
+                    { label: 'Annual Volume', value: '$20B', color: '#a78bfa' },
+                    { label: 'Status', value: 'SECP Regulating', color: '#fbbf24' },
+                  ].map((item) => (
+                    <div key={item.label} className="text-center">
+                      <p className="text-base font-bold" style={{ color: item.color }}>{item.value}</p>
+                      <p className="text-white/40 text-xs mt-0.5">{item.label}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-white/50 text-xs">Primary uses: Store of value vs inflation · Remittances · Dollar hedge · Investment</p>
+              </div>
+
           {/* SECTION 4 — CURRENCY EXCHANGE with Remittance Calculator */}
           {currencyPairs.length > 0 && (
             <div className="mt-8">
@@ -1020,7 +1108,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <div className="lg:col-span-2 bg-transparent rounded-2xl  border border-white/8 overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
-                      <thead className="bg-white/4 border-b border-white/8">
+                      <thead className="bg-transparent/4 border-b border-white/8">
                         <tr>
                           <th className="text-left py-3 px-4 font-medium text-gray-500">Currency</th>
                           <th className="text-right py-3 px-4 font-medium text-gray-500">Interbank</th>
@@ -1032,7 +1120,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                         {currencyPairs.slice(0, 10).map((pair) => {
                           const isUp = pair.change_24h >= 0;
                           return (
-                            <tr key={pair.code} className="border-b border-gray-50 last:border-0 hover:bg-white/4 transition-colors">
+                            <tr key={pair.code} className="border-b border-gray-50 last:border-0 hover:bg-transparent/4 transition-colors">
                               <td className="py-3 px-4">
                                 <div className="flex items-center gap-2">
                                   <span className="font-bold text-white">{pair.code}</span>
@@ -1131,7 +1219,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   {stockIndices.filter(s => s.country !== countrySlug).slice(0, 8).map((idx) => {
                     const isUp = idx.change >= 0;
                     return (
-                      <span key={idx.symbol} className="text-xs bg-white/4 px-2 py-1 rounded">
+                      <span key={idx.symbol} className="text-xs bg-transparent/4 px-2 py-1 rounded">
                         {idx.symbol} <span className={isUp ? 'text-green-400' : 'text-red-400'}>
                           {isUp ? '+' : ''}{idx.changePercent.toFixed(1)}%
                         </span>
@@ -1144,7 +1232,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
               {/* Top Movers */}
               {stockMovers && (
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                  <div className="bg-green-500/100/10 border border-green-500/30 rounded-xl p-4">
                     <h3 className="text-sm font-semibold text-green-300 mb-3 flex items-center gap-2">
                       <TrendingUp className="w-4 h-4" /> Top Gainers Today
                     </h3>
@@ -1160,7 +1248,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                       ))}
                     </div>
                   </div>
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                  <div className="bg-red-500/100/10 border border-red-500/30 rounded-xl p-4">
                     <h3 className="text-sm font-semibold text-red-300 mb-3 flex items-center gap-2">
                       <TrendingDown className="w-4 h-4" /> Top Losers Today
                     </h3>
@@ -1199,9 +1287,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm font-medium text-gray-400">{interestRate.name}</span>
                     <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      interestRate.changeDirection === 'hike' ? 'bg-red-500/15 text-red-400' :
-                      interestRate.changeDirection === 'cut' ? 'bg-green-500/15 text-green-400' :
-                      'bg-white/5 text-gray-400'
+                      interestRate.changeDirection === 'hike' ? 'bg-red-500/100/15 text-red-400' :
+                      interestRate.changeDirection === 'cut' ? 'bg-green-500/100/15 text-green-400' :
+                      'bg-transparent/5 text-gray-400'
                     }`}>
                       {interestRate.changeDirection.toUpperCase()}
                     </span>
@@ -1235,6 +1323,30 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
             </div>
           )}
 
+
+              {/* Rate Cut Forecast */}
+              <div className="rounded-xl p-4 border mt-4"
+                style={{ backgroundColor: 'rgba(59,130,246,0.08)', borderColor: 'rgba(59,130,246,0.25)' }}>
+                <p className="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-3">📉 Rate Cut Forecast</p>
+                <div className="flex items-end gap-4 overflow-x-auto pb-2">
+                  {[
+                    { period: 'Current', rate: 22, label: '22%', color: '#f87171' },
+                    { period: 'Apr 2025', rate: 20.5, label: '20.5%', color: '#fb923c' },
+                    { period: 'Jun 2025', rate: 19, label: '19%', color: '#fbbf24' },
+                    { period: 'Dec 2025', rate: 16, label: '16%', color: '#34d399' },
+                  ].map((item) => (
+                    <div key={item.period} className="flex flex-col items-center gap-1 flex-shrink-0">
+                      <div className="text-xs font-bold" style={{ color: item.color }}>{item.label}</div>
+                      <div className="w-12 rounded-t-sm" style={{ height: `${item.rate * 3}px`, backgroundColor: item.color, opacity: 0.7 }} />
+                      <div className="text-white/40 text-xs text-center">{item.period}</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-white/40 text-xs mt-3">
+                  If rates reach 16% by Dec 2025, monthly payments on a PKR 5M home loan fall by ~PKR 26,000
+                </p>
+              </div>
+
           {/* SECTION 7 — COMMODITIES (Pakistan Relevant Highlighted) */}
           {commodities.length > 0 && (
             <div className="mt-8">
@@ -1257,7 +1369,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     const isUp = commod.change_24h >= 0;
                     const localPrice = Math.round(commod.price_usd * currency.rate_to_usd * 100) / 100;
                     return (
-                      <div key={commod.name} className="bg-green-500/10 rounded-xl border-2 border-green-300 p-4">
+                      <div key={commod.name} className="bg-green-500/100/10 rounded-xl border-2 border-green-300 p-4">
                         <div className="flex items-center justify-between mb-1">
                           <p className="text-sm font-semibold text-green-300">{commod.name}</p>
                           <span className="text-xs bg-green-600 text-white px-1.5 py-0.5 rounded">{commod.relevanceNote}</span>
@@ -1334,7 +1446,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                 <p className="text-xs text-gray-500 mb-4">Misery Index = Inflation + Unemployment</p>
                 <div className="space-y-3">
                   {MISERY_INDEX_DATA.slice(0, 5).map((item, idx) => (
-                    <div key={item.countrySlug} className={`flex items-center justify-between text-sm ${item.countrySlug === countrySlug ? 'bg-amber-500/10 -mx-2 px-2 py-1 rounded' : ''}`}>
+                    <div key={item.countrySlug} className={`flex items-center justify-between text-sm ${item.countrySlug === countrySlug ? 'bg-amber-500/100/10 -mx-2 px-2 py-1 rounded' : ''}`}>
                       <span className="font-medium text-gray-300">#{idx + 1} {item.country}</span>
                       <span className={`font-bold ${item.miseryIndex >= 30 ? 'text-red-400' : item.miseryIndex >= 15 ? 'text-orange-400' : 'text-green-400'}`}>
                         {item.miseryIndex}
