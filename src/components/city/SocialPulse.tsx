@@ -21,14 +21,14 @@ export default function SocialPulse({ cityName, topics }: SocialPulseProps) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.08 }}
-            className="bg-white rounded-xl border border-gray-100 p-3.5 hover:shadow-sm transition-shadow group"
+            className="bg-transparent rounded-xl border border-white/8 p-3.5 hover: transition-shadow group"
           >
             <div className="flex items-center gap-2.5">
               <span className="text-2xl">{topic.emoji}</span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <Hash className="w-3 h-3 text-emerald-500" />
-                  <h4 className="text-sm font-bold text-gray-900 group-hover:text-emerald-700 transition-colors truncate">
+                  <h4 className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors truncate">
                     {topic.keyword}
                   </h4>
                 </div>
@@ -42,12 +42,12 @@ export default function SocialPulse({ cityName, topics }: SocialPulseProps) {
             </div>
 
             {/* Visual bar */}
-            <div className="mt-2.5 h-1 bg-gray-100 rounded-full overflow-hidden">
+            <div className="mt-2.5 h-1 bg-transparent/5 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min((topic.articleCount / (topics[0]?.articleCount || 1)) * 100, 100)}%` }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="h-full bg-emerald-500 rounded-full"
+                className="h-full bg-emerald-500/100 rounded-full"
               />
             </div>
           </motion.div>
