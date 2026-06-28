@@ -62,16 +62,16 @@ const CATEGORIES: { key: EventCategory; label: string; icon: React.ReactNode }[]
 ];
 
 const CATEGORY_COLORS: Record<EventCategory, string> = {
-  sports: 'bg-blue-100 text-blue-700',
-  culture: 'bg-amber-100 text-amber-700',
+  sports: 'bg-blue-500/15 text-blue-400',
+  culture: 'bg-amber-500/15 text-amber-400',
   music: 'bg-pink-100 text-pink-700',
-  literature: 'bg-emerald-100 text-emerald-700',
-  food: 'bg-orange-100 text-orange-700',
-  religious: 'bg-teal-100 text-teal-700',
+  literature: 'bg-emerald-100 text-emerald-400',
+  food: 'bg-orange-100 text-orange-400',
+  religious: 'bg-teal-100 text-teal-400',
   business: 'bg-slate-100 text-slate-700',
-  film: 'bg-red-100 text-red-700',
-  outdoor: 'bg-green-100 text-green-700',
-  family: 'bg-yellow-100 text-yellow-700',
+  film: 'bg-red-500/15 text-red-400',
+  outdoor: 'bg-green-500/15 text-green-400',
+  family: 'bg-yellow-100 text-yellow-400',
   conferences: 'bg-cyan-100 text-cyan-700',
 };
 
@@ -109,15 +109,23 @@ function isToday(event: CityEvent): boolean {
 
 function EventCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-      <div className="h-44 bg-gray-200" />
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="bg-transparent rounded-2xl  border border-white/8 overflow-hidden animate-pulse">
+
+      {/* Dark aurora orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-8"
+          style={{ backgroundColor: "#0C7A3D" }} />
+        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-6"
+          style={{ backgroundColor: "#0C7A3D" }} />
+      </div>
+      <div className="h-44 bg-white/8" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-100 rounded w-1/2" />
-        <div className="h-3 bg-gray-100 rounded w-2/3" />
+        <div className="h-4 bg-white/8 rounded w-3/4" />
+        <div className="h-3 bg-white/5 rounded w-1/2" />
+        <div className="h-3 bg-white/5 rounded w-2/3" />
         <div className="flex gap-2 mt-4">
-          <div className="h-8 bg-gray-200 rounded-lg flex-1" />
-          <div className="h-8 bg-gray-100 rounded-lg w-16" />
+          <div className="h-8 bg-white/8 rounded-lg flex-1" />
+          <div className="h-8 bg-white/5 rounded-lg w-16" />
         </div>
       </div>
     </div>
@@ -137,22 +145,22 @@ function LiveNowSection({ events }: { events: CityEvent[] }) {
       <div className="flex items-center gap-2 mb-3">
         <span className="relative flex h-3 w-3">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500/100" />
         </span>
-        <h2 className="text-base font-semibold text-gray-900 tracking-tight">Live Now</h2>
-        <span className="text-xs bg-red-100 text-red-600 font-medium px-2 py-0.5 rounded-full">{events.length}</span>
+        <h2 className="text-base font-semibold text-white tracking-tight">Live Now</h2>
+        <span className="text-xs bg-red-500/15 text-red-400 font-medium px-2 py-0.5 rounded-full">{events.length}</span>
       </div>
       <div className="flex flex-col gap-2">
         {events.map((ev) => (
           <motion.div
             key={ev.id}
             whileHover={{ x: 2 }}
-            className="flex items-center justify-between bg-white border border-red-100 rounded-xl px-4 py-3 shadow-sm gap-3"
+            className="flex items-center justify-between bg-transparent border border-red-100 rounded-xl px-4 py-3  gap-3"
           >
             <div className="flex items-center gap-3 min-w-0">
               <Zap size={16} className="text-red-500 shrink-0" />
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-gray-900 truncate">{ev.title}</p>
+                <p className="text-sm font-semibold text-white truncate">{ev.title}</p>
                 <p className="text-xs text-gray-500 truncate">{ev.venue}</p>
               </div>
             </div>
@@ -163,7 +171,7 @@ function LiveNowSection({ events }: { events: CityEvent[] }) {
                   href={ev.ticket_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs bg-red-500 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-red-600 transition-colors whitespace-nowrap"
+                  className="text-xs bg-red-500/100 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-red-600 transition-colors whitespace-nowrap"
                 >
                   Attend
                 </a>
@@ -179,7 +187,7 @@ function LiveNowSection({ events }: { events: CityEvent[] }) {
 // ─── event card ───────────────────────────────────────────────────────────────
 
 function EventCard({ event, primaryColor }: { event: CityEvent; primaryColor: string }) {
-  const catStyle = CATEGORY_COLORS[event.category] ?? 'bg-gray-100 text-gray-600';
+  const catStyle = CATEGORY_COLORS[event.category] ?? 'bg-white/5 text-gray-400';
   const catObj = CATEGORIES.find((c) => c.key === event.category);
 
   return (
@@ -189,9 +197,9 @@ function EventCard({ event, primaryColor }: { event: CityEvent; primaryColor: st
       viewport={{ once: true }}
       whileHover={{ y: -3 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col"
+      className="bg-transparent rounded-2xl  border border-white/8 overflow-hidden flex flex-col"
     >
-      <div className="relative h-44 overflow-hidden bg-gray-100">
+      <div className="relative h-44 overflow-hidden bg-white/5">
         {event.image_url ? (
           <img
             src={event.image_url}
@@ -212,13 +220,13 @@ function EventCard({ event, primaryColor }: { event: CityEvent; primaryColor: st
         </div>
         {event.is_free && (
           <div className="absolute top-3 right-3">
-            <span className="text-xs bg-green-500 text-white font-bold px-2 py-1 rounded-lg">FREE</span>
+            <span className="text-xs bg-green-500/100 text-white font-bold px-2 py-1 rounded-lg">FREE</span>
           </div>
         )}
       </div>
 
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-semibold text-gray-900 text-sm leading-snug mb-2 line-clamp-2">{event.title}</h3>
+        <h3 className="font-semibold text-white text-sm leading-snug mb-2 line-clamp-2">{event.title}</h3>
         {event.description && (
           <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2">{event.description}</p>
         )}
@@ -309,7 +317,7 @@ export default function EventsPage({ city }: Props) {
   const citySlug = city.city_slug || city.name.toLowerCase().replace(/\s+/g, '-');
 
   return (
-    <div className="min-h-screen bg-gray-50 font-[Inter,sans-serif]">
+    <div className="min-h-screen/4 font-[Inter,sans-serif]">
       {/* ── page header ── */}
       <div
         className="relative overflow-hidden"
@@ -342,7 +350,7 @@ export default function EventsPage({ city }: Props) {
               </p>
             </div>
             {liveEvents.length > 0 && (
-              <div className="shrink-0 flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2">
+              <div className="shrink-0 flex items-center gap-2 bg-transparent/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-red-400" />
@@ -365,8 +373,8 @@ export default function EventsPage({ city }: Props) {
                 onClick={() => setLevelTab(tab.key)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap border ${
                   active
-                    ? 'text-white border-transparent shadow-sm'
-                    : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                    ? 'text-white border-transparent '
+                    : 'bg-transparent text-gray-400 border-white/10 hover:border-white/15'
                 }`}
                 style={active ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
               >
@@ -379,7 +387,7 @@ export default function EventsPage({ city }: Props) {
         </div>
 
         {/* ── time tabs ── */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-1 flex gap-1 mb-5 overflow-x-auto scrollbar-hide">
+        <div className="bg-transparent rounded-2xl  border border-white/8 p-1 flex gap-1 mb-5 overflow-x-auto scrollbar-hide">
           {TIME_TABS.map((tab) => {
             const active = tab.key === timeTab;
             return (
@@ -387,7 +395,7 @@ export default function EventsPage({ city }: Props) {
                 key={tab.key}
                 onClick={() => setTimeTab(tab.key)}
                 className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
-                  active ? 'text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  active ? 'text-white ' : 'text-gray-500 hover:text-gray-300 hover:bg-white/4'
                 }`}
                 style={active ? { backgroundColor: primaryColor } : {}}
               >
@@ -406,10 +414,10 @@ export default function EventsPage({ city }: Props) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search events, venues..."
-              className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
+              className="w-full pl-9 pr-4 py-2.5 bg-transparent border border-white/10 rounded-xl text-sm focus:outline-none focus:border-white/15 focus:ring-2 focus:ring-gray-100 transition-all"
             />
             {search && (
-              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-400">
                 <X size={14} />
               </button>
             )}
@@ -417,7 +425,7 @@ export default function EventsPage({ city }: Props) {
           <button
             onClick={() => setShowFilters((v) => !v)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${
-              showFilters || activeCategory ? 'text-white border-transparent' : 'bg-white text-gray-600 border-gray-200'
+              showFilters || activeCategory ? 'text-white border-transparent' : 'bg-transparent text-gray-400 border-white/10'
             }`}
             style={showFilters || activeCategory ? { backgroundColor: primaryColor } : {}}
           >
@@ -442,7 +450,7 @@ export default function EventsPage({ city }: Props) {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                     activeCategory === null
                       ? 'text-white border-transparent'
-                      : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                      : 'bg-transparent text-gray-400 border-white/10 hover:border-white/15'
                   }`}
                   style={activeCategory === null ? { backgroundColor: primaryColor } : {}}
                 >
@@ -457,7 +465,7 @@ export default function EventsPage({ city }: Props) {
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                         active
                           ? 'text-white border-transparent'
-                          : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                          : 'bg-transparent text-gray-400 border-white/10 hover:border-white/15'
                       }`}
                       style={active ? { backgroundColor: primaryColor } : {}}
                     >
@@ -473,13 +481,13 @@ export default function EventsPage({ city }: Props) {
 
         {/* ── live now ── */}
         {!loading && liveEvents.length > 0 && (
-          <p className="text-gray-700 leading-relaxed text-sm mb-3">
+          <p className="text-gray-300 leading-relaxed text-sm mb-3">
             {generateLiveNowParagraph(city.name)}
           </p>
         )}
         {!loading && <LiveNowSection events={liveEvents} />}
         {!loading && liveEvents.length > 0 && (
-          <p className="text-gray-600 leading-relaxed text-sm mb-6">
+          <p className="text-gray-400 leading-relaxed text-sm mb-6">
             {generateLiveNowAfter(city.name)}
           </p>
         )}
@@ -487,11 +495,11 @@ export default function EventsPage({ city }: Props) {
         {/* ── full-width openstreetmap ── */}
         {!loading && filteredEvents.length > 0 && (
           <>
-            <p className="text-gray-700 leading-relaxed text-sm mb-3">
+            <p className="text-gray-300 leading-relaxed text-sm mb-3">
               {generateMapParagraph(city.name)}
             </p>
             <EventsMap events={filteredEvents} city={city} primaryColor={primaryColor} />
-            <p className="text-gray-600 leading-relaxed text-sm mt-3 mb-3">
+            <p className="text-gray-400 leading-relaxed text-sm mt-3 mb-3">
               {generateMapAfter(city.name)}
             </p>
           </>
@@ -500,7 +508,7 @@ export default function EventsPage({ city }: Props) {
         {/* ── loading skeletons ── */}
         {loading && (
           <div>
-            <div className="h-5 w-32 bg-gray-200 rounded mb-4 animate-pulse" />
+            <div className="h-5 w-32 bg-white/8 rounded mb-4 animate-pulse" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {Array.from({ length: 6 }).map((_, i) => <EventCardSkeleton key={i} />)}
             </div>
@@ -515,13 +523,13 @@ export default function EventsPage({ city }: Props) {
             className="mb-10"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+              <h2 className="text-base font-bold text-white flex items-center gap-2">
                 <Calendar size={16} style={{ color: primaryColor }} />
                 Today's Events
-                <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">{todayEvents.length}</span>
+                <span className="text-xs bg-white/5 text-gray-500 px-2 py-0.5 rounded-full font-medium">{todayEvents.length}</span>
               </h2>
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateTodayParagraph(city.name)}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -529,7 +537,7 @@ export default function EventsPage({ city }: Props) {
                 <EventCard key={ev.id} event={ev} primaryColor={primaryColor} />
               ))}
             </div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateTodayAfter(city.name)}
             </p>
           </motion.section>
@@ -543,13 +551,13 @@ export default function EventsPage({ city }: Props) {
             className="mb-10"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+              <h2 className="text-base font-bold text-white flex items-center gap-2">
                 <Clock size={16} style={{ color: primaryColor }} />
                 Upcoming Events
-                <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">{upcomingEvents.length}</span>
+                <span className="text-xs bg-white/5 text-gray-500 px-2 py-0.5 rounded-full font-medium">{upcomingEvents.length}</span>
               </h2>
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
               {generateUpcomingParagraph(city.name)}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -557,7 +565,7 @@ export default function EventsPage({ city }: Props) {
                 <EventCard key={ev.id} event={ev} primaryColor={primaryColor} />
               ))}
             </div>
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateUpcomingAfter(city.name)}
             </p>
           </motion.section>
@@ -576,7 +584,7 @@ export default function EventsPage({ city }: Props) {
             >
               <Calendar size={32} style={{ color: primaryColor }} className="opacity-50" />
             </div>
-            <h3 className="font-semibold text-gray-800 mb-1">No events found</h3>
+            <h3 className="font-semibold text-white mb-1">No events found</h3>
             <p className="text-sm text-gray-500">Try a different time range or category</p>
             <button
               onClick={() => { setActiveCategory(null); setSearch(''); setTimeTab('upcoming'); }}
@@ -589,38 +597,38 @@ export default function EventsPage({ city }: Props) {
         )}
 
         {/* ── recurring events ── */}
-        <p className="text-gray-700 leading-relaxed text-sm mb-3">
+        <p className="text-gray-300 leading-relaxed text-sm mb-3">
           {generateRecurringParagraph(city.name)}
         </p>
         <RecurringEvents events={recurringEvents} primaryColor={primaryColor} />
-        <p className="text-gray-600 leading-relaxed text-sm mt-3 mb-6">
+        <p className="text-gray-400 leading-relaxed text-sm mt-3 mb-6">
           {generateRecurringAfter(city.name)}
         </p>
 
         {/* ── national events ── */}
-        <p className="text-gray-700 leading-relaxed text-sm mb-3">
+        <p className="text-gray-300 leading-relaxed text-sm mb-3">
           {generateNationalParagraph(city.country)}
         </p>
         <NationalEvents primaryColor={primaryColor} />
-        <p className="text-gray-600 leading-relaxed text-sm mt-3 mb-6">
+        <p className="text-gray-400 leading-relaxed text-sm mt-3 mb-6">
           {generateNationalAfter(city.country)}
         </p>
 
         {/* ── submit your event ── */}
-        <p className="text-gray-700 leading-relaxed text-sm mb-3">
+        <p className="text-gray-300 leading-relaxed text-sm mb-3">
           {generateSubmitParagraph(city.name)}
         </p>
         <SubmitEvent cityName={city.name} countryCode={city.country_code} primaryColor={primaryColor} />
-        <p className="text-gray-600 leading-relaxed text-sm mt-3 mb-6">
+        <p className="text-gray-400 leading-relaxed text-sm mt-3 mb-6">
           {generateSubmitAfter(city.name)}
         </p>
 
         {/* ── tour booking affiliates ── */}
-        <p className="text-gray-700 leading-relaxed text-sm mb-3">
+        <p className="text-gray-300 leading-relaxed text-sm mb-3">
           {generateTourParagraph(city.name)}
         </p>
         <TourAffiliates cityName={city.name} primaryColor={primaryColor} />
-        <p className="text-gray-600 leading-relaxed text-sm mt-3">
+        <p className="text-gray-400 leading-relaxed text-sm mt-3">
           {generateTourAfter(city.name)}
         </p>
       </div>
