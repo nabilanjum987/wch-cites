@@ -394,7 +394,7 @@ const fadeUp = {
 };
 
 function Skeleton({ className }: { className?: string }) {
-  return <div className={`animate-pulse bg-white/8 rounded-lg ${className ?? ''}`} />;
+  return <div className={`animate-pulse bg-transparent/8 rounded-lg ${className ?? ''}`} />;
 }
 
 function LiveBadge({ status }: { status: string }) {
@@ -460,12 +460,12 @@ function NextMatchCard({ event }: { event: SportEvent }) {
   return (
     <motion.div
       variants={fadeUp}
-      className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white shadow-xl"
+      className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white "
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Next Match</h3>
         {isTonight && (
-          <span className="bg-amber-500/100 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+          <span className="bg-amber-500/100/100 text-white text-xs font-bold px-2 py-0.5 rounded-full">
             TONIGHT
           </span>
         )}
@@ -496,7 +496,7 @@ function WBadge({ score, opScore }: { score: string; opScore: string }) {
   const lost = parseInt(score) < parseInt(opScore);
 
   return (
-    <span className={`text-xs font-bold px-2 py-0.5 rounded ${won ? 'bg-green-500/15 text-green-400' : lost ? 'bg-red-500/15 text-red-400' : 'bg-white/5 text-gray-300'}`}>
+    <span className={`text-xs font-bold px-2 py-0.5 rounded ${won ? 'bg-green-500/100/15 text-green-400' : lost ? 'bg-red-500/100/15 text-red-400' : 'bg-transparent/5 text-gray-300'}`}>
       {won ? 'W' : lost ? 'L' : 'D'}
     </span>
   );
@@ -525,12 +525,20 @@ function RecentResultCard({ event, teamName }: { event: SportEvent; teamName: st
 function SportSelectorBar({ sports, active, onSelect }: { sports: SportPriority[]; active: string; onSelect: (id: string) => void }) {
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+
+      {/* Dark aurora orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-8"
+          style={{ backgroundColor: "#0C7A3D" }} />
+        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-6"
+          style={{ backgroundColor: "#0C7A3D" }} />
+      </div>
       {sports.map((s, i) => (
         <button
           key={s.id}
           onClick={() => onSelect(s.id)}
           className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 shrink-0 ${
-            active === s.id ? 'bg-gray-900 text-white  scale-105' : 'bg-transparent text-gray-400 border border-white/10 hover:border-gray-400'
+            active === s.id ? 'bg-black/50 text-white  scale-105' : 'bg-transparent text-gray-400 border border-white/10 hover:border-gray-400'
           }`}
         >
           <span>{s.emoji}</span>
@@ -547,7 +555,7 @@ function StandingsTable({ teams }: { teams: StandingsTeam[] }) {
     <motion.div variants={fadeUp} className="bg-transparent rounded-2xl border border-white/8 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-white/4">
+          <thead className="bg-transparent/4">
             <tr>
               <th className="px-3 py-2 text-left font-semibold text-gray-400">#</th>
               <th className="px-3 py-2 text-left font-semibold text-gray-400">Team</th>
@@ -561,7 +569,7 @@ function StandingsTable({ teams }: { teams: StandingsTeam[] }) {
           </thead>
           <tbody>
             {teams.map((t, i) => (
-              <tr key={t.name} className={i < 4 ? 'bg-green-500/10/50' : ''}>
+              <tr key={t.name} className={i < 4 ? 'bg-green-500/100/10/50' : ''}>
                 <td className="px-3 py-2 text-gray-500">{i + 1}</td>
                 <td className="px-3 py-2 font-medium text-white">{t.name}</td>
                 <td className="px-3 py-2 text-center text-gray-400">{t.played}</td>
@@ -587,7 +595,7 @@ function TopScorersCard({ scorers }: { scorers: TopScorer[] }) {
         {scorers.slice(0, 5).map((s, i) => (
           <div key={s.name} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
             <div className="flex items-center gap-2">
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-amber-500/15 text-amber-400' : 'bg-white/5 text-gray-500'}`}>
+              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-amber-500/100/15 text-amber-400' : 'bg-transparent/5 text-gray-500'}`}>
                 {i + 1}
               </span>
               <div>
@@ -662,19 +670,19 @@ function OlympicsCard({ medals }: { medals: OlympicMedals[] }) {
       </div>
 
       <div className="grid grid-cols-4 gap-2 mb-4">
-        <div className="text-center p-2 rounded-lg bg-amber-500/10">
+        <div className="text-center p-2 rounded-lg bg-amber-500/100/10">
           <p className="text-2xl font-bold text-amber-400">{totalGold}</p>
           <p className="text-xs text-amber-400">Gold</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-white/5">
+        <div className="text-center p-2 rounded-lg bg-transparent/5">
           <p className="text-2xl font-bold text-gray-400">{totalSilver}</p>
           <p className="text-xs text-gray-400">Silver</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-orange-500/10">
+        <div className="text-center p-2 rounded-lg bg-orange-500/100/10">
           <p className="text-2xl font-bold text-orange-400">{totalBronze}</p>
           <p className="text-xs text-orange-300">Bronze</p>
         </div>
-        <div className="text-center p-2 rounded-lg bg-white/4">
+        <div className="text-center p-2 rounded-lg bg-transparent/4">
           <p className="text-2xl font-bold text-white">{total}</p>
           <p className="text-xs text-gray-400">Total</p>
         </div>
@@ -683,7 +691,7 @@ function OlympicsCard({ medals }: { medals: OlympicMedals[] }) {
       <h4 className="text-sm font-semibold text-gray-300 mb-2">Recent Olympics</h4>
       <div className="space-y-2">
         {medals.map(m => (
-          <div key={`${m.year}-${m.city}`} className="flex items-center justify-between py-2 px-3 bg-white/4 rounded-lg">
+          <div key={`${m.year}-${m.city}`} className="flex items-center justify-between py-2 px-3 bg-transparent/4 rounded-lg">
             <div>
               <p className="font-medium text-white">{m.year} {m.city}</p>
               <p className="text-xs text-gray-400">Rank: #{m.rank}</p>
@@ -735,7 +743,7 @@ function NewsCard({ article }: { article: SportsNews }) {
       className="block bg-transparent rounded-2xl border border-white/8 overflow-hidden hover: transition-shadow"
     >
       {article.image && (
-        <div className="aspect-video bg-white/5">
+        <div className="aspect-video bg-transparent/5">
           <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
         </div>
       )}
@@ -896,7 +904,7 @@ export default function SportsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white/4">
+      <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="min-h-screen bg-transparent/4">
         <div className="h-40 animate-pulse bg-gray-300" />
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-4">
           {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-32 w-full" />)}
@@ -910,7 +918,7 @@ export default function SportsPage() {
   const nextMatch = nextMatches[0];
 
   return (
-    <div className="min-h-screen bg-white/4">
+    <div className="min-h-screen bg-transparent/4">
       <header className="relative overflow-hidden" style={{ backgroundColor: headerColor }}>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 0%, transparent 60%)' }} />
         <div className="relative max-w-4xl mx-auto px-4 py-8">
