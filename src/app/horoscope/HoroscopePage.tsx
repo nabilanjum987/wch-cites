@@ -43,7 +43,15 @@ export default function HoroscopePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-[Inter,sans-serif]">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="min-h-screen/4 font-[Inter,sans-serif]">
+
+      {/* Dark aurora orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-8"
+          style={{ backgroundColor: "#0C7A3D" }} />
+        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-6"
+          style={{ backgroundColor: "#0C7A3D" }} />
+      </div>
       {/* Page header */}
       <div className="relative overflow-hidden" style={{ backgroundColor: primaryColor }}>
         <div
@@ -58,7 +66,7 @@ export default function HoroscopePage() {
           {Array.from({ length: 20 }).map((_, i) => (
             <div
               key={i}
-              className="absolute rounded-full bg-white animate-pulse"
+              className="absolute rounded-full bg-transparent animate-pulse"
               style={{
                 width: `${1 + (i % 3)}px`,
                 height: `${1 + (i % 3)}px`,
@@ -97,75 +105,75 @@ export default function HoroscopePage() {
       <div className="max-w-5xl mx-auto px-4 py-6 space-y-8">
         {/* Section 1 — Sky Right Now */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateSkyParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateSkyParagraph()}</p>
           <SkyRightNow data={skyData} primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateSkyAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateSkyAfter()}</p>
         </div>
 
         {/* Section 2 — All 12 Western Signs Grid */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateZodiacGridParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateZodiacGridParagraph()}</p>
           <ZodiacSignsGrid
             onSignClick={(sign) => setSelectedSign(sign)}
             primaryColor={primaryColor}
           />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateZodiacGridAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateZodiacGridAfter()}</p>
         </div>
 
         {/* Section 3 — Numerology */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateNumerologyParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateNumerologyParagraph()}</p>
           <Numerology primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateNumerologyAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateNumerologyAfter()}</p>
         </div>
 
         {/* Section 4 — Tarot Card of the Day */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateTarotParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateTarotParagraph()}</p>
           <TarotCardOfDay primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateTarotAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateTarotAfter()}</p>
         </div>
 
         {/* Section 5 — Chinese Zodiac 2025 */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateChineseZodiacParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateChineseZodiacParagraph()}</p>
           <ChineseZodiac primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateChineseZodiacAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateChineseZodiacAfter()}</p>
         </div>
 
         {/* Section 6 — Vedic Panchang */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generatePanchangParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generatePanchangParagraph()}</p>
           <VedicPanchang primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generatePanchangAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generatePanchangAfter()}</p>
         </div>
 
         {/* Section 7 — Moon Calendar */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateMoonCalendarParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateMoonCalendarParagraph()}</p>
           <MoonCalendar primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateMoonCalendarAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateMoonCalendarAfter()}</p>
         </div>
 
         {/* Section 8 — Birth Chart Calculator */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateBirthChartParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateBirthChartParagraph()}</p>
           <BirthChartCalculator primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateBirthChartAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateBirthChartAfter()}</p>
         </div>
 
         {/* Section 9 — Compatibility Finder */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateCompatibilityParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateCompatibilityParagraph()}</p>
           <CompatibilityFinder primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateCompatibilityAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateCompatibilityAfter()}</p>
         </div>
 
         {/* Section 10 — Affiliates */}
         <div>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">{generateAffiliatesParagraph()}</p>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateAffiliatesParagraph()}</p>
           <Affiliates primaryColor={primaryColor} />
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">{generateAffiliatesAfter()}</p>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">{generateAffiliatesAfter()}</p>
         </div>
 
         {/* Footer note */}
