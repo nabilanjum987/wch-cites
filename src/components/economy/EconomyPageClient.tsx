@@ -108,6 +108,14 @@ function StatCard({
   const trendColor = trend === 'up' ? 'text-green-500' : trend === 'down' ? 'text-red-500' : 'text-gray-400';
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="bg-transparent rounded-2xl border border-white/8 p-4 hover: transition-shadow">
+
+      {/* Dark aurora orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-8"
+          style={{ backgroundColor: "#0C7A3D" }} />
+        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-6"
+          style={{ backgroundColor: "#0C7A3D" }} />
+      </div>
       <div className="flex items-start justify-between mb-3">
         <div className="p-2 rounded-xl" style={{ backgroundColor: `${color}15` }}>
           <Icon size={18} style={{ color }} />
@@ -130,7 +138,7 @@ function StressMeter({ score, level, primaryColor }: {
   const levelLabel = { low: 'Low Stress', medium: 'Moderate', high: 'High Stress', critical: 'Critical' };
 
   return (
-    <div className="flex flex-col items-center">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="flex flex-col items-center">
       <svg viewBox="0 0 200 110" className="w-48">
         <defs>
           <linearGradient id="meterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -163,7 +171,7 @@ function MiseryTable({ data, countrySlug, primaryColor }: {
     <div className="overflow-x-auto rounded-xl border border-white/8">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-white/4 border-b border-white/8">
+          <tr className="bg-transparent/4 border-b border-white/8">
             <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Rank</th>
             <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Country</th>
             <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500">Inflation %</th>
@@ -176,7 +184,7 @@ function MiseryTable({ data, countrySlug, primaryColor }: {
             const isThis = row.countrySlug === countrySlug || row.countrySlug === countrySlug.replace(/-/g, '');
             return (
               <tr key={row.country}
-                className={`border-b border-gray-50 transition-colors ${isThis ? 'bg-yellow-500/10' : 'hover:bg-white/4'}`}>
+                className={`border-b border-gray-50 transition-colors ${isThis ? 'bg-yellow-500/100/10' : 'hover:bg-transparent/4'}`}>
                 <td className="px-4 py-2.5 text-gray-500 font-medium">{i + 1}</td>
                 <td className="px-4 py-2.5 font-medium text-white">
                   {row.country}
@@ -241,7 +249,7 @@ function PurchasingPowerCalc({ inflation, currency, symbol, primaryColor }: {
                 <span className="text-gray-400">{row.label}</span>
                 <span className="text-red-500 font-semibold">-{symbol}{Math.round(row.loss).toLocaleString()}</span>
               </div>
-              <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+              <div className="h-2 bg-transparent/5 rounded-full overflow-hidden">
                 <div className="h-full bg-red-400 rounded-full transition-all"
                   style={{ width: `${Math.min(100, (row.loss / val) * 100)}%` }} />
               </div>
@@ -268,7 +276,7 @@ function IndicatorBar({ label, value, max, color, format }: {
         <span className="text-gray-400">{label}</span>
         <span className="font-semibold text-white">{fmt(value)}</span>
       </div>
-      <div className="h-2.5 bg-white/5 rounded-full overflow-hidden">
+      <div className="h-2.5 bg-transparent/5 rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -341,7 +349,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <StatCard icon={TrendingUp} label="GDP Growth" value={`${eco.gdpGrowth}%`} sub="Annual rate" color={primaryColor} trend={eco.gdpGrowth > 3 ? 'up' : eco.gdpGrowth > 0 ? 'neutral' : 'down'} />
             <StatCard icon={DollarSign} label="GDP Per Capita" value={`$${eco.gdpPerCapita.toLocaleString()}`} sub={`$${gdpPerCapitaDaily.toFixed(2)}/day`} color={primaryColor} />
           </div>
-          <div className="bg-white/4 rounded-xl p-4">
+          <div className="bg-transparent/4 rounded-xl p-4">
             <p className="text-sm font-medium text-gray-300 mb-2">What does GDP per capita mean for you?</p>
             <p className="text-sm text-gray-400">
               On average, each person in {countryName} contributes <strong>${gdpPerCapitaDaily.toFixed(2)}</strong> to the economy per day.
@@ -375,7 +383,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             symbol={eco.currencySymbol}
             primaryColor={primaryColor}
           />
-          <div className="bg-orange-500/10 border border-orange-100 rounded-xl p-4">
+          <div className="bg-orange-500/100/10 border border-orange-100 rounded-xl p-4">
             <p className="text-sm font-medium text-orange-300 mb-1">Plain Language: What does {eco.inflation}% inflation mean?</p>
             <p className="text-sm text-orange-400">
               If you bought groceries for {eco.currencySymbol}1,000 last year, the same basket costs approximately <strong>{eco.currencySymbol}{Math.round(1000 * (1 + eco.inflation / 100)).toLocaleString()}</strong> today.
@@ -406,8 +414,8 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <StatCard icon={Briefcase} label="Unemployment" value={`${eco.unemployment}%`} sub="Of labor force" color="#8B5CF6" trend={eco.unemployment > 8 ? 'down' : 'up'} />
             <StatCard icon={Users} label="Poverty Rate" value={`${eco.povertyRate}%`} sub="Below poverty line" color="#8B5CF6" trend={eco.povertyRate > 20 ? 'down' : 'neutral'} />
           </div>
-          <div className="bg-purple-500/10 border border-purple-100 rounded-xl p-4">
-            <p className="text-sm text-purple-800">
+          <div className="bg-purple-500/100/10 border border-purple-100 rounded-xl p-4">
+            <p className="text-sm text-purple-300">
               <strong>{eco.unemployment}%</strong> unemployment means roughly <strong>{Math.round(eco.laborForce * eco.unemployment / 100)}M people</strong> in {countryName} are actively seeking work.
               {eco.unemployment > 10 ? ' High unemployment strains social services and reduces consumer spending.' :
                eco.unemployment > 5 ? ' Moderate levels suggest the economy is growing but not at full capacity.' :
@@ -435,7 +443,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <StatCard icon={AlertTriangle} label="Debt-to-GDP" value={`${eco.debtToGdp}%`} sub="National debt ratio" color="#EF4444" trend={eco.debtToGdp > 90 ? 'down' : 'neutral'} />
             <StatCard icon={Users} label="Debt Per Citizen" value={`$${debtPerCitizen.toLocaleString()}`} sub="Each person owes" color="#EF4444" />
           </div>
-          <div className="bg-red-500/10 border border-red-100 rounded-xl p-4">
+          <div className="bg-red-500/100/10 border border-red-100 rounded-xl p-4">
             <p className="text-sm font-medium text-red-300 mb-1">What does this mean?</p>
             <p className="text-sm text-red-400">
               {countryName}'s national debt is <strong>{eco.debtToGdp}%</strong> of its entire annual GDP.
@@ -513,7 +521,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
   ];
 
   return (
-    <div className="min-h-screen bg-white/4">
+    <div className="min-h-screen bg-transparent/4">
       {/* Header */}
       <div style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}cc 100%)` }} className="text-white py-10 px-4">
         <div className="max-w-5xl mx-auto">
@@ -582,7 +590,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <div key={section.id} className="bg-transparent rounded-2xl border border-white/8 overflow-hidden">
               <button
                 onClick={() => toggle(section.id)}
-                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/4 transition text-left">
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-transparent/4 transition text-left">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-xl" style={{ backgroundColor: `${section.color}15` }}>
                     <section.icon size={16} style={{ color: section.color }} />
@@ -635,12 +643,12 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                 insight: eco.tradeBalance < -20 ? 'High import dependency = export gap opportunity' : eco.fdi > 50 ? 'Foreign confidence is high' : 'Emerging export potential',
               },
             ].map(item => (
-              <div key={item.label} className="bg-white/4 rounded-xl p-4">
+              <div key={item.label} className="bg-transparent/4 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-2">
                   <p className="text-sm font-medium text-gray-300">{item.label}</p>
                   <span className="text-lg font-bold" style={{ color: item.color }}>{Math.round(item.score)}</span>
                 </div>
-                <div className="h-2 bg-white/8 rounded-full overflow-hidden mb-2">
+                <div className="h-2 bg-transparent/8 rounded-full overflow-hidden mb-2">
                   <div className="h-full rounded-full" style={{ width: `${item.score}%`, backgroundColor: item.color }} />
                 </div>
                 <p className="text-xs text-gray-500">{item.insight}</p>
@@ -653,7 +661,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
         </div>
 
         {/* Footer note */}
-        <div className="flex items-start gap-2 bg-blue-500/10 border border-blue-100 rounded-xl p-4">
+        <div className="flex items-start gap-2 bg-blue-500/100/10 border border-blue-100 rounded-xl p-4">
           <Info size={15} className="text-blue-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-blue-400">
             Data sourced from World Bank, IMF, and national statistics bureaus. Figures are latest available estimates and subject to revision. This page is for informational purposes only and does not constitute financial advice.
