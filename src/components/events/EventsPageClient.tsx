@@ -20,18 +20,18 @@ import TourAffiliates from '@/components/city/TourAffiliates';
 // ── Category config ───────────────────────────────────────────────────────────
 
 const CATEGORIES: { key: EventCategory | 'all'; label: string; icon: React.ElementType; color: string }[] = [
-  { key: 'all',         label: 'All Events', icon: Grid,        color: 'bg-white/5 text-gray-300' },
-  { key: 'sports',      label: 'Sports',     icon: Trophy,      color: 'bg-blue-500/15 text-blue-400' },
+  { key: 'all',         label: 'All Events', icon: Grid,        color: 'bg-transparent/5 text-gray-300' },
+  { key: 'sports',      label: 'Sports',     icon: Trophy,      color: 'bg-blue-500/100/15 text-blue-400' },
   { key: 'music',       label: 'Music',      icon: Music,       color: 'bg-pink-100 text-pink-700' },
-  { key: 'culture',     label: 'Culture',    icon: Star,        color: 'bg-amber-500/15 text-amber-400' },
-  { key: 'food',        label: 'Food',       icon: Utensils,    color: 'bg-orange-500/15 text-orange-400' },
-  { key: 'film',        label: 'Film',       icon: Film,        color: 'bg-red-500/15 text-red-400' },
-  { key: 'outdoor',     label: 'Outdoor',    icon: TreePine,    color: 'bg-green-500/15 text-green-400' },
+  { key: 'culture',     label: 'Culture',    icon: Star,        color: 'bg-amber-500/100/15 text-amber-400' },
+  { key: 'food',        label: 'Food',       icon: Utensils,    color: 'bg-orange-500/100/15 text-orange-400' },
+  { key: 'film',        label: 'Film',       icon: Film,        color: 'bg-red-500/100/15 text-red-400' },
+  { key: 'outdoor',     label: 'Outdoor',    icon: TreePine,    color: 'bg-green-500/100/15 text-green-400' },
   { key: 'family',      label: 'Family',     icon: Users,       color: 'bg-yellow-100 text-yellow-400' },
   { key: 'business',    label: 'Business',   icon: Building2,   color: 'bg-slate-100 text-slate-700' },
-  { key: 'conferences', label: 'Conferences',icon: GraduationCap, color: 'bg-indigo-100 text-indigo-700' },
+  { key: 'conferences', label: 'Conferences',icon: GraduationCap, color: 'bg-indigo-100 text-indigo-400' },
   { key: 'religious',   label: 'Religious',  icon: Zap,         color: 'bg-teal-100 text-teal-400' },
-  { key: 'literature',  label: 'Literature', icon: GraduationCap, color: 'bg-emerald-100 text-emerald-700' },
+  { key: 'literature',  label: 'Literature', icon: GraduationCap, color: 'bg-emerald-100 text-emerald-400' },
 ];
 
 const TIME_TABS: { key: TimeTab; label: string }[] = [
@@ -87,9 +87,9 @@ function EventCard({ event, primaryColor, view }: {
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            {live && <span className="px-2 py-0.5 bg-red-500/15 text-red-400 text-xs font-semibold rounded-full animate-pulse">🔴 Live</span>}
-            {event.is_free && <span className="px-2 py-0.5 bg-green-500/15 text-green-400 text-xs rounded-full">Free</span>}
-            <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-white/5 text-gray-400'}`}>{catCfg?.label ?? event.category}</span>
+            {live && <span className="px-2 py-0.5 bg-red-500/100/15 text-red-400 text-xs font-semibold rounded-full animate-pulse">🔴 Live</span>}
+            {event.is_free && <span className="px-2 py-0.5 bg-green-500/100/15 text-green-400 text-xs rounded-full">Free</span>}
+            <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-transparent/5 text-gray-400'}`}>{catCfg?.label ?? event.category}</span>
             <span className="text-xs text-gray-400 capitalize">{event.level}</span>
           </div>
           <h3 className="font-semibold text-white text-sm line-clamp-1">{event.title}</h3>
@@ -127,17 +127,17 @@ function EventCard({ event, primaryColor, view }: {
             </div>
         }
         {live && (
-          <div className="absolute top-2 left-2 px-2 py-0.5 bg-red-500/100 text-white text-xs font-bold rounded-full animate-pulse">
+          <div className="absolute top-2 left-2 px-2 py-0.5 bg-red-500/100/100 text-white text-xs font-bold rounded-full animate-pulse">
             🔴 Live
           </div>
         )}
         {event.is_free && (
-          <div className="absolute top-2 right-2 px-2 py-0.5 bg-green-500/100 text-white text-xs font-bold rounded-full">FREE</div>
+          <div className="absolute top-2 right-2 px-2 py-0.5 bg-green-500/100/100 text-white text-xs font-bold rounded-full">FREE</div>
         )}
       </div>
       <div className="p-3">
         <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-          <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-white/5 text-gray-400'}`}>{catCfg?.label ?? event.category}</span>
+          <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-transparent/5 text-gray-400'}`}>{catCfg?.label ?? event.category}</span>
           <span className="text-xs text-gray-400 capitalize">{event.level}</span>
         </div>
         <h3 className="font-semibold text-white text-sm line-clamp-2 mb-1">{event.title}</h3>
@@ -209,7 +209,15 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
   const upcoming = filtered.filter(e => !isHappeningNow(e));
 
   return (
-    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="min-h-screen bg-white/4">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="min-h-screen bg-transparent/4">
+
+      {/* Dark aurora orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-8"
+          style={{ backgroundColor: "#0C7A3D" }} />
+        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-6"
+          style={{ backgroundColor: "#0C7A3D" }} />
+      </div>
       {/* Header */}
       <div style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%)` }} className="text-white py-10 px-4">
         <div className="max-w-7xl mx-auto">
@@ -296,9 +304,9 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
 
         {/* Live now banner */}
         {liveNow.length > 0 && (
-          <div className="mb-6 p-4 rounded-2xl border-2 border-red-500/30 bg-red-500/10">
+          <div className="mb-6 p-4 rounded-2xl border-2 border-red-500/30 bg-red-500/100/10">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2.5 h-2.5 bg-red-500/100 rounded-full animate-pulse" />
+              <div className="w-2.5 h-2.5 bg-red-500/100/100 rounded-full animate-pulse" />
               <span className="font-bold text-red-400 text-sm">Happening Right Now ({liveNow.length})</span>
             </div>
             <div className={`grid gap-3 ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
@@ -312,11 +320,11 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="bg-transparent rounded-xl border border-white/8 overflow-hidden animate-pulse">
-                <div className="h-36 bg-white/8" />
+                <div className="h-36 bg-transparent/8" />
                 <div className="p-3 space-y-2">
-                  <div className="h-3 bg-white/8 rounded w-1/3" />
-                  <div className="h-4 bg-white/8 rounded w-3/4" />
-                  <div className="h-3 bg-white/8 rounded w-1/2" />
+                  <div className="h-3 bg-transparent/8 rounded w-1/3" />
+                  <div className="h-4 bg-transparent/8 rounded w-3/4" />
+                  <div className="h-3 bg-transparent/8 rounded w-1/2" />
                 </div>
               </div>
             ))}
