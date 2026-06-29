@@ -461,7 +461,7 @@ export default function CountryPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: bg }}>
 
-      {/* Aurora background orbs */}
+      {/* Aurora background orbs + Flag symbols */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <motion.div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-10"
           style={{ backgroundColor: accent }}
@@ -469,6 +469,7 @@ export default function CountryPage() {
         <motion.div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-8"
           style={{ backgroundColor: accent }}
           animate={{ y: [0, 40, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 5 }} />
+        <FlagSymbolBackground countrySlug={params?.country as string ?? 'pakistan'} />
       </div>
 
       {/* Breadcrumb */}
@@ -479,8 +480,6 @@ export default function CountryPage() {
           <span className="text-white">{country.name}</span>
         </div>
       </div>
-      <FlagSymbolBackground countrySlug={params?.country as string ?? 'pakistan'} />
-
       {/* Hero */}
       <div className="relative z-10 h-72 md:h-96 overflow-hidden">
         <img src={country.heroImage} alt={country.name} className="w-full h-full object-cover" />
