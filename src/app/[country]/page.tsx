@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -478,6 +479,7 @@ export default function CountryPage() {
           <span className="text-white">{country.name}</span>
         </div>
       </div>
+      <FlagSymbolBackground countrySlug={params?.country as string ?? 'pakistan'} />
 
       {/* Hero */}
       <div className="relative z-10 h-72 md:h-96 overflow-hidden">
