@@ -443,6 +443,7 @@ export default function ProvincePage() {
         <motion.div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-8"
           style={{ backgroundColor: accent }}
           animate={{ y: [0, 40, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 5 }} />
+        <FlagSymbolBackground countrySlug={params?.country as string ?? 'pakistan'} />
       </div>
 
       {/* Breadcrumb */}
@@ -455,8 +456,6 @@ export default function ProvincePage() {
           <span className="text-white">{province.name}</span>
         </div>
       </div>
-      <FlagSymbolBackground countrySlug={params?.country as string ?? 'pakistan'} />
-
       {/* Hero */}
       <div className="relative z-10 h-64 md:h-80 overflow-hidden">
         <img src={province.heroImage} alt={province.name} className="w-full h-full object-cover" />
