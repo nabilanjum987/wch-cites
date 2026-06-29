@@ -21,7 +21,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   pakistan: {
     primaryColor: '#0C7A3D',
     secondaryColor: '#FFFFFF',
-    opacity: 0.06,
+    opacity: 0.12,
     symbols: [
       {
         type: 'svg',
@@ -37,7 +37,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   'saudi-arabia': {
     primaryColor: '#006C35',
     secondaryColor: '#FFFFFF',
-    opacity: 0.05,
+    opacity: 0.10,
     symbols: [
       {
         type: 'svg',
@@ -54,7 +54,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   turkey: {
     primaryColor: '#E30A17',
     secondaryColor: '#FFFFFF',
-    opacity: 0.06,
+    opacity: 0.10,
     symbols: [
       {
         type: 'svg',
@@ -70,7 +70,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   malaysia: {
     primaryColor: '#CC0001',
     secondaryColor: '#FFCC00',
-    opacity: 0.06,
+    opacity: 0.10,
     symbols: [
       {
         type: 'svg',
@@ -86,7 +86,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   india: {
     primaryColor: '#000080',
     secondaryColor: '#FF9933',
-    opacity: 0.05,
+    opacity: 0.10,
     symbols: [
       {
         type: 'svg',
@@ -110,7 +110,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   china: {
     primaryColor: '#FFDE00',
     secondaryColor: '#DE2910',
-    opacity: 0.07,
+    opacity: 0.12,
     symbols: [
       {
         type: 'svg',
@@ -126,7 +126,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   japan: {
     primaryColor: '#BC002D',
     secondaryColor: '#FFFFFF',
-    opacity: 0.05,
+    opacity: 0.10,
     symbols: [
       {
         type: 'svg',
@@ -141,7 +141,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   'united-states': {
     primaryColor: '#0A3161',
     secondaryColor: '#B31942',
-    opacity: 0.04,
+    opacity: 0.09,
     symbols: [
       {
         type: 'svg',
@@ -156,7 +156,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   'united-kingdom': {
     primaryColor: '#012169',
     secondaryColor: '#C8102E',
-    opacity: 0.04,
+    opacity: 0.09,
     symbols: [
       {
         type: 'svg',
@@ -213,7 +213,7 @@ const FLAG_SYMBOLS: Record<string, FlagSymbolConfig> = {
   _default: {
     primaryColor: '#6366f1',
     secondaryColor: '#06b6d4',
-    opacity: 0.04,
+    opacity: 0.08,
     symbols: [
       {
         type: 'svg',
@@ -277,9 +277,9 @@ export default function FlagSymbolBackground({
     const colors = [config.primaryColor, config.secondaryColor, config.primaryColor];
     symbols.current = Array.from({ length: count }, (_, i) => ({
       id: i,
-      x: [15, 75, 50][i] ?? 20 + i * 25,
-      y: [20, 60, 85][i] ?? 20 + i * 30,
-      size: [320, 240, 180][i] ?? 200,
+      x: [12, 70, 52][i] ?? 20 + i * 25,
+      y: [15, 55, 80][i] ?? 20 + i * 30,
+      size: [420, 300, 220][i] ?? 250,
       parallaxX: [0.025, -0.015, 0.01][i] ?? 0.02,
       parallaxY: [0.02, -0.012, 0.015][i] ?? 0.015,
       scrollSpeed: [0.15, 0.08, 0.12][i] ?? 0.1,
@@ -357,7 +357,7 @@ export default function FlagSymbolBackground({
               transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) rotate(${sym.rotation}deg)`,
               transition: 'opacity 0.3s ease',
               willChange: 'transform',
-              filter: `drop-shadow(0 0 ${sym.size * 0.15}px ${sym.color}60)`,
+              filter: `drop-shadow(0 0 ${sym.size * 0.25}px ${sym.color}80)`,
             }}
             dangerouslySetInnerHTML={{
               __html: svgWithColor(sym.color),
