@@ -44,11 +44,17 @@ export async function fetchPrayerTimes(
   const d = date || new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
   const url = `https://api.aladhan.com/v1/timings/${d}?latitude=${lat}&longitude=${lng}&method=${method}&school=${madhab}`;
   try {
-    const res = await fetch(url, { next: { revalidate: 86400 } } as RequestInit);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error('fetchPrayerTimes: HTTP', res.status, url);
+      return null;
+    }
     const json = await res.json();
     if (json.code === 200) return json.data as DayData;
+    console.error('fetchPrayerTimes: API returned non-200 code', json.code, json);
     return null;
-  } catch {
+  } catch (err) {
+    console.error('fetchPrayerTimes: fetch failed', err);
     return null;
   }
 }
@@ -63,11 +69,16 @@ export async function fetchMonthlyPrayerTimes(
 ): Promise<DayData[]> {
   const url = `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${lat}&longitude=${lng}&method=${method}&school=${madhab}`;
   try {
-    const res = await fetch(url, { next: { revalidate: 86400 } } as RequestInit);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error('fetchMonthlyPrayerTimes: HTTP', res.status, url);
+      return [];
+    }
     const json = await res.json();
     if (json.code === 200) return json.data as DayData[];
     return [];
-  } catch {
+  } catch (err) {
+    console.error('fetchMonthlyPrayerTimes: fetch failed', err);
     return [];
   }
 }

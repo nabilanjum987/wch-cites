@@ -284,7 +284,7 @@ export default function PrayerTimesPage() {
 
         {/* Islamic Content */}
         <AnimatePresence mode="wait">
-          {faith === 'islam' && times && (
+          {faith === 'islam' && (
             <motion.div key="islam" {...SECTION_FADE} className="space-y-6">
               {/* Countdown Rings */}
               <FlagCard color={colorAt(0)}>
