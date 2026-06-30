@@ -297,7 +297,7 @@ export default function PrayerTimesPage() {
                     prayers={(['Fajr','Dhuhr','Asr','Maghrib','Isha'] as const).map((p) => ({
                       name: p,
                       arabicName: ({ Fajr:'\u0627\u0644\u0641\u062c\u0631', Dhuhr:'\u0627\u0644\u0638\u0647\u0631', Asr:'\u0627\u0644\u0639\u0635\u0631', Maghrib:'\u0627\u0644\u0645\u063a\u0631\u0628', Isha:'\u0627\u0644\u0639\u0634\u0627\u0621' } as Record<string,string>)[p],
-                      time: (times as any)[p] || '00:00',
+                      time: (times ? (times as any)[p] : null) || '00:00',
                     }))}
                   />
                 </div>
