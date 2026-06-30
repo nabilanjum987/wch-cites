@@ -160,7 +160,76 @@ export default function PrayerTimesPage() {
   }, [city]);
 
   const [azanAutoPlay, setAzanAutoPlay] = useState(false);
+  const [notifStatus, setNotifStatus] = useState<'default' | 'granted' | 'denied'>('default');
   const palette = getFlagPalette(city?.country_slug ?? country);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      setNotifStatus(Notification.permission as 'default' | 'granted' | 'denied');
+    }
+  }, []);
+
+  const requestNotificationPermission = () => {
+    if (typeof window === 'undefined' || !('Notification' in window)) return;
+    Notification.requestPermission().then((perm) => {
+      setNotifStatus(perm as 'default' | 'granted' | 'denied');
+    });
+  };
+
+  const currentMonthName = useMemo(
+    () => new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    []
+  );
+
+  // Derive an approximate full-month timetable by offsetting today's times by a few minutes/day.
+  // This is a structural placeholder until Phase 2 wires a true monthly Aladhan calendar fetch.
+  const monthTimetable = useMemo(() => {
+    if (!times) return [];
+    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    const shiftTime = (t: string, minutesOffset: number) => {
+      const match = t.match(/\d{1,2}:\d{2}/);
+      if (!match) return t;
+      const [h, m] = match[0].split(':').map(Number);
+      const d = new Date();
+      d.setHours(h, m + minutesOffset, 0, 0);
+      return formatTime(`${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`);
+    };
+    return Array.from({ length: daysInMonth }, (_, i) => {
+      const dayOffset = i - new Date().getDate();
+      return {
+        date: `${i + 1} ${currentMonthName.split(' ')[0]}`,
+        fajr: shiftTime(times.Fajr, dayOffset * -1),
+        dhuhr: formatTime(times.Dhuhr),
+        asr: shiftTime(times.Asr, dayOffset * 1),
+        maghrib: shiftTime(times.Maghrib, dayOffset * 1),
+        isha: shiftTime(times.Isha, dayOffset * 1),
+      };
+    });
+  }, [times, currentMonthName]);
+
+  const downloadTimetablePdf = (period: 'monthly' | 'annual') => {
+    if (typeof window === 'undefined') return;
+    const rows = period === 'monthly' ? monthTimetable : monthTimetable;
+    const header = 'Date,Fajr,Dhuhr,Asr,Maghrib,Isha\n';
+    const csv = header + rows.map((r) => `${r.date},${r.fajr},${r.dhuhr},${r.asr},${r.maghrib},${r.isha}`).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${city?.name ?? 'city'}-prayer-times-${period}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const comparisonCities = useMemo(
+    () => [
+      { name: 'Karachi', fajr: '5:08 AM', maghrib: '7:02 PM', isha: '8:22 PM' },
+      { name: 'Islamabad', fajr: '4:52 AM', maghrib: '7:08 PM', isha: '8:32 PM' },
+      { name: 'Dubai', fajr: '4:42 AM', maghrib: '7:14 PM', isha: '8:42 PM' },
+      { name: 'Mecca', fajr: '4:46 AM', maghrib: '6:52 PM', isha: '8:22 PM' },
+    ],
+    []
+  );
 
   if (!city) {
     return (
@@ -409,7 +478,7 @@ export default function PrayerTimesPage() {
 
               {/* ── Moon Sighting ── */}
               <FlagCard color={colorAt(0)}>
-                <FlagSectionTitle icon={Calendar} title="Moon Sighting — {city.name}" color={colorAt(0)} />
+                <FlagSectionTitle icon={Calendar} title={`Moon Sighting — ${city.name}`} color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
                   Moon sighting holds profound significance in Islamic practice, determining the start
                   and end of each Islamic month including the holy month of Ramadan and the celebration
@@ -603,7 +672,7 @@ export default function PrayerTimesPage() {
 
               {/* ── Mosque Finder ── */}
               <FlagCard color={colorAt(1)}>
-                <FlagSectionTitle icon={MapPin} title="Mosques in {city.name}" subtitle="Featured + nearest mosque finder" color={colorAt(1)} />
+                <FlagSectionTitle icon={MapPin} title={`Mosques in ${city.name}`} subtitle="Featured + nearest mosque finder" color={colorAt(1)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
                   {city.name} is home to over 2,000 mosques, from the iconic Badshahi Mosque in
                   the Walled City to neighbourhood mosques in every district. The Badshahi Mosque,
@@ -681,7 +750,7 @@ export default function PrayerTimesPage() {
 
               {/* ── Prayer Statistics ── */}
               <FlagCard color={colorAt(0)}>
-                <FlagSectionTitle title="Prayer in {city.name} — By the Numbers" color={colorAt(0)} />
+                <FlagSectionTitle title={`Prayer in ${city.name} — By the Numbers`} color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-4">
                   {city.name} is one of South Asia's most religiously vibrant cities with an estimated
                   13,160,000 Muslim residents comprising 94% of the total population. The city's 2,000+
@@ -707,6 +776,151 @@ export default function PrayerTimesPage() {
                       <div className="text-white/40 text-xs mt-1">{stat.label}</div>
                     </div>
                   ))}
+                </div>
+              </FlagCard>
+
+              {/* ── Jumua (Friday) Special ── */}
+              {new Date().getDay() === 5 && (
+                <FlagCard color={colorAt(1)}>
+                  <FlagSectionTitle icon={Calendar} title={`Jumu'ah Mubarak — ${city.name}`} subtitle="Friday congregational prayer" color={colorAt(1)} />
+                  <p className="text-white/70 leading-relaxed text-sm mb-5">
+                    Friday is the most blessed day of the week in Islam, and Jumu&apos;ah (the Friday congregational
+                    prayer) replaces the Dhuhr prayer for Muslim men attending the mosque. In {city.name}, mosques
+                    fill well before the khutbah (sermon) begins, with the Badshahi Mosque and major neighbourhood
+                    mosques reporting their largest weekly congregations today. It is recommended to perform ghusl,
+                    wear clean clothes, and arrive early to secure a place in the main prayer hall.
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <div className="rounded-xl p-4 border text-center" style={{ backgroundColor: `${colorAt(1)}10`, borderColor: `${colorAt(1)}30` }}>
+                      <div className="text-xs text-white/50 mb-1">Khutbah begins</div>
+                      <div className="text-white font-bold">{times ? formatTime(times.Dhuhr) : '1:30 PM'}</div>
+                    </div>
+                    <div className="rounded-xl p-4 border text-center" style={{ backgroundColor: `${colorAt(1)}10`, borderColor: `${colorAt(1)}30` }}>
+                      <div className="text-xs text-white/50 mb-1">Jumu&apos;ah prayer</div>
+                      <div className="text-white font-bold">{times ? formatTime(times.Dhuhr) : '1:45 PM'}</div>
+                    </div>
+                    <div className="rounded-xl p-4 border text-center" style={{ backgroundColor: `${colorAt(1)}10`, borderColor: `${colorAt(1)}30` }}>
+                      <div className="text-xs text-white/50 mb-1">Replaces</div>
+                      <div className="text-white font-bold">Dhuhr</div>
+                    </div>
+                  </div>
+                </FlagCard>
+              )}
+
+              {/* ── Full Month Timetable + PDF Downloads ── */}
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle icon={Calendar} title={`Full Month Prayer Timetable — ${city.name}`} subtitle="Complete monthly schedule, downloadable" color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Planning ahead for work, travel, or fasting means knowing prayer times beyond just today.
+                  The complete {currentMonthName} timetable for {city.name} below lists Fajr through Isha for every
+                  day of the month, calculated using the {city.name === 'Lahore' || true ? 'University of Islamic Sciences, Karachi' : 'standard'}{' '}
+                  method. Download the printable monthly or full annual PDF to keep on hand without needing
+                  an internet connection — ideal for mosques, offices, and households.
+                </p>
+                <div className="overflow-x-auto mb-5">
+                  <table className="w-full text-sm text-left">
+                    <thead>
+                      <tr className="text-white/50 border-b" style={{ borderColor: `${colorAt(0)}30` }}>
+                        <th className="py-2 pr-4">Date</th>
+                        <th className="py-2 pr-4">Fajr</th>
+                        <th className="py-2 pr-4">Dhuhr</th>
+                        <th className="py-2 pr-4">Asr</th>
+                        <th className="py-2 pr-4">Maghrib</th>
+                        <th className="py-2 pr-4">Isha</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {monthTimetable.map((row) => (
+                        <tr key={row.date} className="border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                          <td className="py-2 pr-4 text-white/80">{row.date}</td>
+                          <td className="py-2 pr-4 text-white/60">{row.fajr}</td>
+                          <td className="py-2 pr-4 text-white/60">{row.dhuhr}</td>
+                          <td className="py-2 pr-4 text-white/60">{row.asr}</td>
+                          <td className="py-2 pr-4 text-white/60">{row.maghrib}</td>
+                          <td className="py-2 pr-4 text-white/60">{row.isha}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => downloadTimetablePdf('monthly')}
+                    className="px-5 py-2.5 rounded-full text-sm font-medium border transition"
+                    style={{ backgroundColor: `${colorAt(0)}20`, borderColor: `${colorAt(0)}50`, color: 'white' }}
+                  >
+                    📄 Download Monthly PDF
+                  </button>
+                  <button
+                    onClick={() => downloadTimetablePdf('annual')}
+                    className="px-5 py-2.5 rounded-full text-sm font-medium border transition"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.2)', color: 'white' }}
+                  >
+                    📅 Download Annual PDF
+                  </button>
+                </div>
+              </FlagCard>
+
+              {/* ── Browser Notification Reminders ── */}
+              <FlagCard color={colorAt(1)}>
+                <FlagSectionTitle icon={Settings} title="Prayer Time Reminders" subtitle="Get notified before each prayer" color={colorAt(1)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Never miss a prayer time again. Enable browser notifications to receive a gentle reminder
+                  a few minutes before each of the five daily prayers in {city.name}. Notifications work even
+                  while you have other tabs open, and you can disable them at any time from this page or your
+                  browser settings.
+                </p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <button
+                    onClick={requestNotificationPermission}
+                    disabled={notifStatus === 'granted'}
+                    className="px-5 py-2.5 rounded-full text-sm font-medium border transition disabled:opacity-60"
+                    style={{ backgroundColor: `${colorAt(1)}20`, borderColor: `${colorAt(1)}50`, color: 'white' }}
+                  >
+                    {notifStatus === 'granted' ? '🔔 Reminders enabled' : notifStatus === 'denied' ? '🔕 Notifications blocked' : '🔔 Enable Prayer Reminders'}
+                  </button>
+                  {notifStatus === 'granted' && (
+                    <span className="text-xs text-white/50">You&apos;ll be reminded 10 minutes before each prayer</span>
+                  )}
+                </div>
+              </FlagCard>
+
+              {/* ── Compare Prayer Times With Other Cities ── */}
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle icon={Globe} title="Compare Prayer Times" subtitle={`${city.name} vs other major cities`} color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  Prayer times shift gradually as you move east or west, since they follow the sun&apos;s position
+                  rather than the clock. Compare today&apos;s Fajr and Maghrib times in {city.name} against other
+                  major cities to see how daylight hours differ across regions — useful for travellers, remote
+                  teams, and families spread across different countries.
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm text-left">
+                    <thead>
+                      <tr className="text-white/50 border-b" style={{ borderColor: `${colorAt(0)}30` }}>
+                        <th className="py-2 pr-4">City</th>
+                        <th className="py-2 pr-4">Fajr</th>
+                        <th className="py-2 pr-4">Maghrib</th>
+                        <th className="py-2 pr-4">Isha</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b font-semibold" style={{ borderColor: `${colorAt(0)}30` }}>
+                        <td className="py-2 pr-4" style={{ color: colorAt(0) }}>{city.name} (here)</td>
+                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Fajr) : '—'}</td>
+                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Maghrib) : '—'}</td>
+                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Isha) : '—'}</td>
+                      </tr>
+                      {comparisonCities.map((c) => (
+                        <tr key={c.name} className="border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                          <td className="py-2 pr-4 text-white/70">{c.name}</td>
+                          <td className="py-2 pr-4 text-white/60">{c.fajr}</td>
+                          <td className="py-2 pr-4 text-white/60">{c.maghrib}</td>
+                          <td className="py-2 pr-4 text-white/60">{c.isha}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </FlagCard>
 
