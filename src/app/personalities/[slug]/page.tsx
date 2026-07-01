@@ -42,6 +42,8 @@ interface Personality {
   descriptionSections: { title: string; content: string }[];
   wikiUrl?: string;
   amazonSearch?: string;
+  era?: 'Ancient' | 'Medieval' | 'Colonial' | 'Modern' | 'Contemporary';
+  bornInCity?: boolean; // true = born in city, false = lived/worked in city
 }
 
 const PERSONALITIES: Record<string, Personality> = {
@@ -90,6 +92,8 @@ const PERSONALITIES: Record<string, Personality> = {
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Muhammad_Iqbal',
     amazonSearch: 'https://www.amazon.com/s?k=allama+iqbal+books',
+    era: 'Colonial',
+    bornInCity: false, // Born in Sialkot, lived and died in Lahore
   },
   'imran-khan': {
     slug: 'imran-khan',
@@ -129,6 +133,8 @@ const PERSONALITIES: Record<string, Personality> = {
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Imran_Khan',
     amazonSearch: 'https://www.amazon.com/s?k=imran+khan+books',
+    era: 'Contemporary',
+    bornInCity: true, // Born in Lahore
   },
 };
 
@@ -207,15 +213,23 @@ export default async function PersonalityPage({ params }: PageProps) {
       </div>
 
       {/* City connection badge */}
-      <div className="max-w-5xl mx-auto px-4 -mt-4 mb-6">
+      <div className="max-w-5xl mx-auto px-4 -mt-4 mb-6 flex flex-wrap gap-3 items-center">
         <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 text-sm shadow-sm">
           <MapPin size={14} style={{ color: p.primaryColor }} />
-          <span className="text-gray-600">Connected to</span>
+          <span className="text-gray-600">
+            {p.bornInCity === false ? 'Lived & worked in' : 'Born & raised in'}
+          </span>
           <Link href={`/${p.countrySlug}/${p.provinceSlug}/${p.citySlug}`}
             className="font-semibold hover:underline" style={{ color: p.primaryColor }}>
             {p.city}, {p.country}
           </Link>
         </div>
+        {p.era && (
+          <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 text-sm shadow-sm">
+            <span className="text-gray-500">Era:</span>
+            <span className="font-semibold" style={{ color: p.primaryColor }}>{p.era}</span>
+          </div>
+        )}
       </div>
 
       {/* Main content */}
