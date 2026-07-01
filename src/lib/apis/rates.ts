@@ -525,7 +525,6 @@ export function fetchCommodities(): Commodity[] {
     { name: 'Gold', category: 'metals', price_usd: 2320, unit: '/oz', change_24h: 0.8, ytd_change: 12.5 },
     { name: 'Silver', category: 'metals', price_usd: 28.50, unit: '/oz', change_24h: 1.2, ytd_change: 18.2 },
     { name: 'Platinum', category: 'metals', price_usd: 985, unit: '/oz', change_24h: -0.5, ytd_change: -5.2 },
-    { name: 'Palladium', category: 'metals', price_usd: 1020, unit: '/oz', change_24h: -1.1, ytd_change: -18.5 },
     { name: 'Copper', category: 'metals', price_usd: 4.25, unit: '/lb', change_24h: 0.3, ytd_change: 8.5 },
     { name: 'Aluminum', category: 'metals', price_usd: 2550, unit: '/ton', change_24h: -1.2, ytd_change: -3.8 },
     { name: 'Nickel', category: 'metals', price_usd: 16800, unit: '/ton', change_24h: 2.1, ytd_change: 15.2 },

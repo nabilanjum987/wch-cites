@@ -786,20 +786,6 @@ function AffiliateSection() {
       url: 'https://www.ticketmaster.com/sports',
       bg: 'from-green-50 to-emerald-50',
     },
-    {
-      title: 'Buy Jerseys',
-      subtitle: 'Official team gear',
-      icon: '👕',
-      url: 'https://www.amazon.com/s?k=cricket+pakistan+jersey&tag=worldcityhub-20',
-      bg: 'from-red-50 to-rose-50',
-    },
-    {
-      title: 'Stream Sports',
-      subtitle: 'ESPN+ & live coverage',
-      icon: '📡',
-      url: 'https://plus.espn.com/',
-      bg: 'from-sky-50 to-cyan-50',
-    },
   ];
 
   return (
@@ -1091,29 +1077,6 @@ export default function SportsPage() {
             </p>
           </motion.section>
         )}
-
-        <motion.section variants={fadeUp}>
-          <h2 className="text-lg font-bold text-white mb-4">🏆 Historic Achievements</h2>
-          <div className="space-y-3">
-            {(city?.country === 'Pakistan' || city?.country_slug === 'pakistan' ? [
-              { year: '1992', title: 'Cricket World Cup Champions', detail: 'Pakistan beat England at MCG under Imran Khan\'s captaincy — only World Cup win.' },
-              { year: '1994', title: 'Squash World Open — Jansher Khan', detail: '8-time World Open champion from Peshawar, widely considered the greatest squash player ever.' },
-              { year: '2009', title: 'ICC World Twenty20 Champions', detail: 'Pakistan beat Sri Lanka in the T20 World Cup final at Lord\'s.' },
-              { year: '2017', title: 'ICC Champions Trophy', detail: 'Pakistan defeated India by 180 runs in the final at The Oval, London.' },
-            ] : [
-              { year: '—', title: 'Major Championship', detail: 'Historic sporting achievement for this city and country.' },
-              { year: '—', title: 'World Record', detail: 'Internationally recognised sporting milestone.' },
-            ]).map((a) => (
-              <div key={a.year + a.title} className="flex gap-4 items-start rounded-xl p-4 border border-white/8" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
-                <div className="text-2xl font-bold text-white/20 min-w-[3rem] text-center">{a.year}</div>
-                <div>
-                  <div className="text-white font-semibold text-sm">{a.title}</div>
-                  <div className="text-gray-400 text-xs mt-0.5">{a.detail}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.section>
 
         <p className="text-gray-300 leading-relaxed text-sm">
           {generateShopParagraph(city?.country ?? '', activeSportLabel)}

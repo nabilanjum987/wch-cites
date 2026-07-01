@@ -42,8 +42,6 @@ import {
   generateCityGlanceAfter,
   generateNearbyCitiesParagraph,
   generateNearbyCitiesAfter,
-  generateMultiFaithParagraph,
-  generateMultiFaithAfter,
 } from '@/lib/paragraphs/city';
 
 export const dynamic = 'force-dynamic';
@@ -890,75 +888,7 @@ export default async function CityPage({
             </p>
           </section>
 
-          {/* ══ SECTION 19: MULTI-FAITH CALENDAR ════════════════════════════ */}
-          <section id="multi-faith-calendar" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-2">
-              🗓️ All Faiths Calendar — {city} Today
-            </h2>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              {generateMultiFaithParagraph(city, country)}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {[
-                {
-                  emoji: '☪️',
-                  label: 'Islamic (Hijri)',
-                  value: hijriDate
-                    ? `${hijriDate.day} ${(hijriDate.month as unknown as Record<string,string>)?.en} ${hijriDate.year} AH`
-                    : `${currentMonth} ${currentYear}`,
-                  sub: 'Lunar calendar · Since 622 CE',
-                  color: '#0C7A3D',
-                },
-                {
-                  emoji: '✝️',
-                  label: 'Christian (Gregorian)',
-                  value: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }),
-                  sub: 'Solar calendar · Global civil standard',
-                  color: '#3b82f6',
-                },
-                {
-                  emoji: '✡️',
-                  label: 'Hebrew',
-                  value: new Date().toLocaleDateString('he-IL-u-ca-hebrew', { day: 'numeric', month: 'long', year: 'numeric' }),
-                  sub: 'Lunisolar calendar · Since antiquity',
-                  color: '#6366f1',
-                },
-                {
-                  emoji: '🕉️',
-                  label: 'Hindu (Panchang)',
-                  value: `${currentMonth} ${currentYear} VS`,
-                  sub: 'Lunisolar calendar · Vikram Samvat',
-                  color: '#f59e0b',
-                },
-                {
-                  emoji: '☸️',
-                  label: 'Buddhist Era',
-                  value: `${new Date().getFullYear() + 543} BE`,
-                  sub: 'Solar calendar · Since parinirvana',
-                  color: '#ec4899',
-                },
-                {
-                  emoji: '🪯',
-                  label: 'Sikh (Nanakshahi)',
-                  value: `${currentMonth} ${new Date().getFullYear() - 1469} NS`,
-                  sub: 'Solar calendar · Since 1469 CE',
-                  color: '#f97316',
-                },
-              ].map((cal) => (
-                <div key={cal.label} className="rounded-xl p-4 border" style={{ backgroundColor: `${cal.color}10`, borderColor: `${cal.color}30` }}>
-                  <div className="text-2xl mb-2">{cal.emoji}</div>
-                  <div className="text-xs text-gray-500 mb-1">{cal.label}</div>
-                  <div className="text-white font-semibold text-sm">{cal.value}</div>
-                  <div className="text-gray-600 text-xs mt-1">{cal.sub}</div>
-                </div>
-              ))}
-            </div>
-            <p className="text-gray-500 text-sm leading-relaxed mt-6">
-              {generateMultiFaithAfter(city)}
-            </p>
-          </section>
-
-          {/* ══ SECTION 20: PUBLIC HOLIDAYS ══════════════════════════════════ */}
+          {/* ══ SECTION 19: PUBLIC HOLIDAYS ══════════════════════════════════ */}
           {upcomingHolidays.length > 0 && (
             <section id="holidays" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
               <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">

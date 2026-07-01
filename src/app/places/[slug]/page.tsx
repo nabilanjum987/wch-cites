@@ -46,8 +46,6 @@ interface Place {
   thingsToKnow: string[];
   bookingUrl?: string;
   wikiUrl?: string;
-  virtualTourUrl?: string;
-  closedDays?: string[]; // e.g. ['Monday'] — used for "Is it open today?"
 }
 
 const PLACES: Record<string, Place> = {
@@ -92,8 +90,6 @@ const PLACES: Record<string, Place> = {
     ],
     bookingUrl: 'https://www.viator.com/Lahore/d24054-ttd',
     wikiUrl: 'https://en.wikipedia.org/wiki/Badshahi_Mosque',
-    virtualTourUrl: 'https://www.google.com/maps/@31.5881,74.3104,3a,75y,90t/data=!3m6!1e1',
-    closedDays: [], // Open every day
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Badshahi_Mosque_July_1_2005_pic32_by_Ali_Imran.jpg/1280px-Badshahi_Mosque_July_1_2005_pic32_by_Ali_Imran.jpg',
   },
   'lahore-fort': {
@@ -136,8 +132,6 @@ const PLACES: Record<string, Place> = {
     ],
     bookingUrl: 'https://www.viator.com/tours/Lahore/Lahore-Fort',
     wikiUrl: 'https://en.wikipedia.org/wiki/Lahore_Fort',
-    virtualTourUrl: 'https://www.google.com/maps/@31.5879,74.3143,3a,75y,90t/data=!3m6!1e1',
-    closedDays: [], // Open every day
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Lahore_Fort_-_from_outside.jpg/1280px-Lahore_Fort_-_from_outside.jpg',
   },
 };
@@ -392,16 +386,6 @@ export default async function FamousPlacePage({ params }: PageProps) {
             </div>
 
             {/* Action buttons */}
-            {(() => {
-              const todayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
-              const isClosed = place.closedDays?.includes(todayName);
-              return (
-                <div className={`rounded-xl px-4 py-3 border text-sm font-medium flex items-center gap-2 ${isClosed ? 'bg-red-50 border-red-200 text-red-700' : 'bg-green-50 border-green-200 text-green-700'}`}>
-                  <span>{isClosed ? '🔴' : '🟢'}</span>
-                  <span>{isClosed ? `Closed today (${todayName})` : `Open today (${todayName})`}</span>
-                </div>
-              );
-            })()}
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-white font-medium text-sm transition hover:opacity-90"
               style={{ backgroundColor: place.primaryColor }}>
@@ -413,13 +397,6 @@ export default async function FamousPlacePage({ params }: PageProps) {
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border-2 font-medium text-sm transition hover:bg-gray-50"
                 style={{ borderColor: place.primaryColor, color: place.primaryColor }}>
                 <Ticket size={16} /> Book a Tour
-              </a>
-            )}
-
-            {place.virtualTourUrl && (
-              <a href={place.virtualTourUrl} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-medium text-sm transition hover:bg-gray-50">
-                🌐 Virtual Tour (Street View)
               </a>
             )}
 
