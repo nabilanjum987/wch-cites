@@ -5,7 +5,7 @@
 import type { Metadata } from 'next';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import { notFound } from 'next/navigation';
-import { fetchAllCityData, type CityParams } from '@/lib/api/cityData';
+import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { generateCityMeta, generateCitySchema } from '@/lib/seo/cityMeta';
 import {
   generateCityIntro,

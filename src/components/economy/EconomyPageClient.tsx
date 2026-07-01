@@ -10,6 +10,8 @@ import {
   Award, Minus
 } from 'lucide-react';
 import type { City } from '@/types/city';
+import GrowthDashboard from '@/components/shared/GrowthDashboard';
+import { countrySlugToIso2 } from '@/lib/apis/worldbank';
 import {
   FINANCIAL_STRESS_DATA, MISERY_INDEX_DATA, INTEREST_RATES,
   calculatePurchasingPower, calculateMiseryImpact,
@@ -24,6 +26,7 @@ import {
   generateEmploymentParagraph, generateEmploymentAfter,
   generateDebtParagraph, generateDebtAfter,
   generateHdiParagraph, generateHdiAfter,
+  generateEconomyGrowthParagraph, generateEconomyGrowthAfter,
   generateTradeParagraph, generateTradeAfter,
   generateOpportunityParagraph, generateOpportunityAfter,
 } from '@/lib/paragraphs/economy';
@@ -481,6 +484,24 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
           </div>
           <p className="text-sm text-gray-400 leading-relaxed">
             {generateHdiAfter(countryName)}
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'growth-dashboard',
+      icon: TrendingUp,
+      color: '#10B981',
+      title: '10-Year Growth Trends',
+      summary: 'GDP, population & exports — World Bank data',
+      content: (
+        <div className="mt-4 space-y-4">
+          <p className="text-sm text-gray-300 leading-relaxed">
+            {generateEconomyGrowthParagraph(countryName)}
+          </p>
+          <GrowthDashboard countryCode={countrySlugToIso2(country)} accentColor="#10B981" />
+          <p className="text-sm text-gray-400 leading-relaxed">
+            {generateEconomyGrowthAfter(countryName)}
           </p>
         </div>
       ),

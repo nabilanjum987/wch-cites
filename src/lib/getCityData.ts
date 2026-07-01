@@ -1,5 +1,5 @@
 import { City } from '@/types/city';
-import { supabase } from './supabase';
+import { getSupabase } from './supabase';
 
 // Fallback mock data for development
 const MOCK_CITIES: Record<string, City> = {
@@ -156,6 +156,7 @@ export async function getCityData(
 ): Promise<City | null> {
   try {
     try {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('cities')
         .select('*')
@@ -226,6 +227,7 @@ export async function getCitiesData(
   citySlugs: string[]
 ): Promise<City[]> {
   try {
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('cities')
       .select('*')

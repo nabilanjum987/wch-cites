@@ -11,7 +11,7 @@ import {
   BarChart3, Zap, RefreshCw, Calendar, ChevronLeft,
   Languages, Search, X, Play
 } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { getSupabase } from '../../lib/supabase';
 import { fetchNews, fetchUrduNews, fetchNewsByDate, timeAgo, generateGlobalImpacts, generateTrendingTopics, generateWeekInReview } from '../../lib/apis/news';
 import type { City, NewsArticle, NewsCategory, LocationLevel, GlobalImpactObject, LanguageTab, LocationLevelObject, SourceSet } from '../../types/city';
 import { NEWS_CATEGORIES, CATEGORY_COLORS, COUNTRY_SOURCES, DEFAULT_SOURCES, getSourceName } from '../../types/city';
@@ -111,14 +111,19 @@ export default function NewsPage({ country, province, city, cityData: initialCit
 
   const loadCity = useCallback(async () => {
     if (!country || !province || !city) return;
-    const { data } = await supabase
-      .from('cities')
-      .select('*')
-      .eq('country_slug', country)
-      .eq('province_slug', province)
-      .eq('city_slug', city)
-      .maybeSingle();
+    try {
+      const supabase = getSupabase();
+      const { data } = await supabase
+        .from('cities')
+        .select('*')
+        .eq('country_slug', country)
+        .eq('province_slug', province)
+        .eq('city_slug', city)
+        .maybeSingle();
     if (data) setCityData(data as City);
+    } catch (err) {
+      console.error('Failed to load city data:', err);
+    }
   }, [country, province, city]);
 
   const loadNews = useCallback(async () => {

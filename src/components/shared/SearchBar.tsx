@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../../lib/supabase';
+import { getSupabase } from '../../lib/supabase';
 import { CitySearchResult } from '../../types/city';
 
 interface SearchBarProps {
@@ -78,6 +78,7 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
   const searchCities = async (searchQuery: string) => {
     setLoading(true);
     try {
+      const supabase = getSupabase();
       const { data, error } = await supabase
         .from('cities')
         .select('name, city_slug, country, country_code, province, country_slug, province_slug, lat, lng, population, primary_color')
@@ -148,29 +149,34 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          const { data } = await supabase
-            .from('cities')
-            .select('name, city_slug, country, country_code, province, country_slug, province_slug, lat, lng, population, primary_color')
-            .eq('is_active', true)
-            .order('population', { ascending: false })
-            .limit(1)
-            .single();
+          try {
+            const supabase = getSupabase();
+            const { data } = await supabase
+              .from('cities')
+              .select('name, city_slug, country, country_code, province, country_slug, province_slug, lat, lng, population, primary_color')
+              .eq('is_active', true)
+              .order('population', { ascending: false })
+              .limit(1)
+              .single();
 
-          if (data) {
-            handleSelectCity({
-              id: String(data.city_slug ?? data.name),
-              name: data.name,
-              city_slug: data.city_slug ?? '',
-              country: data.country ?? '',
-              country_code: data.country_code ?? '',
-              province: data.province ?? '',
-              country_slug: data.country_slug ?? String(data.country ?? '').toLowerCase().replace(/\s+/g, '-'),
-              province_slug: data.province_slug ?? String(data.province ?? '').toLowerCase().replace(/\s+/g, '-'),
-              lat: data.lat ?? 0,
-              lng: data.lng ?? 0,
-              population: data.population ?? 0,
-              primary_color: data.primary_color ?? '#01411C',
-            });
+            if (data) {
+              handleSelectCity({
+                id: String(data.city_slug ?? data.name),
+                name: data.name,
+                city_slug: data.city_slug ?? '',
+                country: data.country ?? '',
+                country_code: data.country_code ?? '',
+                province: data.province ?? '',
+                country_slug: data.country_slug ?? String(data.country ?? '').toLowerCase().replace(/\s+/g, '-'),
+                province_slug: data.province_slug ?? String(data.province ?? '').toLowerCase().replace(/\s+/g, '-'),
+                lat: data.lat ?? 0,
+                lng: data.lng ?? 0,
+                population: data.population ?? 0,
+                primary_color: data.primary_color ?? '#01411C',
+              });
+            }
+          } catch (err) {
+            console.error('Failed to find nearest city:', err);
           }
         },
         (error) => {

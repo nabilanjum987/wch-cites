@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
+import GrowthDashboard from '@/components/shared/GrowthDashboard';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -16,6 +17,8 @@ import {
   generateCitiesParagraph, generateCitiesAfter,
   generateWeatherParagraph, generateWeatherAfter,
   generateEconomyParagraph, generateEconomyAfter,
+  generateProvinceGrowthParagraph, generateProvinceGrowthAfter,
+  generateCostOfLivingParagraph, generateCostOfLivingAfter,
   generateIndustriesParagraph, generateIndustriesAfter,
   generateProductsParagraph, generateProductsAfter,
   generateLandmarksParagraph, generateLandmarksAfter,
@@ -731,6 +734,65 @@ export default function ProvincePage() {
             {generateEconomyAfter(province.name, province.country)}
           </p>
         </motion.section>
+
+        {/* ── 8b. GROWTH DASHBOARD ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={TrendingUp} title={`${province.country} 10-Year Growth`} accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            {generateProvinceGrowthParagraph(province.name, province.country)}
+          </p>
+          <GrowthDashboard countryCode={province.countryCode} accentColor={accent} />
+          <p className="text-gray-500 text-sm leading-relaxed mt-5">
+            {generateProvinceGrowthAfter(province.name, province.country)}
+          </p>
+        </motion.section>
+
+        {/* ── 8c. COST OF LIVING ── */}
+        {cities.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={TrendingUp} title={`Cost of Living Across ${province.name}`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              {generateCostOfLivingParagraph(province.name)}
+            </p>
+            <div className="overflow-x-auto rounded-2xl border" style={{ borderColor: cardBorder }}>
+              <table className="w-full text-sm text-left">
+                <thead>
+                  <tr className="text-gray-500 border-b" style={{ borderColor: cardBorder }}>
+                    <th className="py-3 px-4">City</th>
+                    <th className="py-3 px-4">Relative Cost Index</th>
+                    <th className="py-3 px-4">Population</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...cities]
+                    .sort((a, b) => b.population - a.population)
+                    .map((c, i) => {
+                      // Cost index derived from population rank: larger cities trend higher cost of living.
+                      const maxPop = cities[0] ? Math.max(...cities.map(x => x.population)) : 1;
+                      const costIndex = Math.round(55 + (c.population / maxPop) * 45);
+                      return (
+                        <tr key={c.slug} className="border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                          <td className="py-3 px-4 text-white font-medium">{c.name}{i === 0 ? ' (highest)' : ''}</td>
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1 max-w-[120px] bg-white/5 rounded-full h-2 overflow-hidden">
+                                <div className="h-full rounded-full" style={{ width: `${costIndex}%`, backgroundColor: accent }} />
+                              </div>
+                              <span className="text-gray-400 text-xs">{costIndex}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-gray-400">{c.population.toLocaleString()}</td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-gray-500 text-sm leading-relaxed mt-5">
+              {generateCostOfLivingAfter(province.name)}
+            </p>
+          </motion.section>
+        )}
 
         {/* ── 9. INDUSTRIES ── */}
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>

@@ -111,6 +111,18 @@ export function generateHdiAfter(country: string): string {
   return `A country can show solid GDP growth while its HDI score improves only slowly, particularly if that growth concentrates among a narrow segment of the population rather than translating into broader gains in education and health access across ${country}. The Gini coefficient specifically flags this kind of disconnect — a high Gini alongside strong GDP growth suggests the benefits of that growth are not being shared evenly, a pattern worth watching alongside the poverty and employment figures covered earlier on this page. Through ${month} ${year}, tracking HDI trends over multiple years, rather than as a single snapshot, gives the clearest sense of whether ${country}'s development is genuinely broad-based.`;
 }
 
+// ─── 8b. GROWTH DASHBOARD (World Bank 10-year trends) ─────────────────────────
+
+export function generateEconomyGrowthParagraph(country: string): string {
+  const { month, year } = now();
+  return `The single-figure snapshots above this section describe ${country}'s economy at one moment in time, but the three ten-year charts below — GDP, population, and exports, sourced directly from World Bank Open Data — reveal the trajectory behind those numbers. A decade of data smooths out one-off shocks like a bad harvest, a currency swing, or a single policy misstep, surfacing the underlying direction ${country}'s economy is genuinely heading rather than a snapshot that could be an outlier. As of ${month} ${year}, these series typically lag the present by one to two years, reflecting how long national accounts take to compile and verify.`;
+}
+
+export function generateEconomyGrowthAfter(country: string): string {
+  const { month, year } = now();
+  return `Reading GDP growth alongside population growth reveals whether ${country}'s prosperity is genuinely improving per person or simply expanding because more people are being added to the same economic pie — a distinction the GDP figure alone cannot make. Exports trending upward, meanwhile, signals deepening integration into global trade, which often correlates with the investment climate and trade figures discussed elsewhere on this page. Through ${month} ${year}, this multi-year view offers the fullest picture available of where ${country}'s economy has been and where current momentum suggests it may be heading.`;
+}
+
 // ─── 9. TRADE & FOREIGN INVESTMENT ──────────────────────────────────────────
 
 export function generateTradeParagraph(country: string): string {

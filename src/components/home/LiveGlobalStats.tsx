@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Globe, Moon, TrendingUp, Thermometer, ArrowUp, ArrowDown } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { getSupabase } from '../../lib/supabase';
 
 interface GlobalStats {
   cityCount: number;
@@ -25,6 +25,7 @@ export default function LiveGlobalStats() {
 
   const fetchStats = async () => {
     try {
+      const supabase = getSupabase();
       const { count } = await supabase
         .from('cities')
         .select('*', { count: 'exact', head: true })

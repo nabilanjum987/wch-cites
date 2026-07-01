@@ -63,6 +63,30 @@ export function generateEconomyAfter(province: string, country: string): string 
   return `The population share figure above, alongside the GDP contribution, together reveal whether ${province}'s economic weight within ${country} is proportional to, above, or below its population share — a useful indicator of relative economic productivity and development concentration within the province. This economic snapshot connects directly to the Major Industries section further down this page, where the specific sectors driving ${province}'s contribution to ${country}'s economy are detailed individually. Through ${month} ${year}, understanding this economic role provides useful context for ${province}'s broader significance within the national conversation.`;
 }
 
+// ─── 4b. GROWTH DASHBOARD (World Bank 10-year trends) ─────────────────────────
+
+export function generateProvinceGrowthParagraph(province: string, country: string): string {
+  const { month, year } = now();
+  return `While ${province}-specific economic series are harder to find than national data, the national-level GDP, population, and exports trends below from World Bank Open Data give essential context for the economic environment ${province} operates within. As one of ${country}'s constituent provinces, ${province}'s own trajectory is closely tied to — though not identical to — these national patterns, since provincial growth typically tracks national growth with a province-specific premium or discount depending on local industry mix. As of ${month} ${year}, this ten-year view captures the broader economic backdrop against which ${province}'s own contribution should be read.`;
+}
+
+export function generateProvinceGrowthAfter(province: string, country: string): string {
+  const { month, year } = now();
+  return `Reading these national trends alongside ${province}'s own GDP contribution percentage further up this page gives a fuller picture — whether ${province} is gaining or losing share of ${country}'s growing or shrinking economy over time. Through ${month} ${year}, this combined view of national trajectory and provincial share offers a more complete economic picture than either figure provides alone.`;
+}
+
+// ─── 4c. COST OF LIVING COMPARISON ────────────────────────────────────────────
+
+export function generateCostOfLivingParagraph(province: string): string {
+  const { month, year } = now();
+  return `Cost of living varies meaningfully even within a single province, shaped by each city's size, industry base, and housing demand. The comparison below sets ${province}'s major cities side by side across rent, groceries, transport, and overall cost index, helping residents, job-seekers, and businesses understand where their money goes furthest within ${province}. As of ${month} ${year}, these figures offer a relative comparison rather than absolute pricing, since on-the-ground costs shift with inflation, season, and local market conditions.`;
+}
+
+export function generateCostOfLivingAfter(province: string): string {
+  const { month, year } = now();
+  return `These city-to-city cost differences within ${province} often mirror — and sometimes exceed — cost gaps seen between entire provinces or even countries, underscoring that "where in ${province}" can matter as much as "which province" for household budgeting. Through ${month} ${year}, checking back periodically captures how these relative cost positions shift as cities within ${province} grow and develop at different rates.`;
+}
+
 // ─── 5. MAJOR INDUSTRIES ─────────────────────────────────────────────────────
 
 export function generateIndustriesParagraph(province: string): string {

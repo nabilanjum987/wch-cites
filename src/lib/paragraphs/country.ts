@@ -99,6 +99,18 @@ export function generateEconomyDashboardAfter(country: string): string {
   return `For deeper analysis behind any of these four figures — what they mean in practical household terms, how ${country} compares internationally, or how these numbers are trending over time — this site's dedicated Economy page for ${country} offers considerably more detail than this condensed dashboard view. These figures are sourced from the same data feeding ${country}'s Rates and Economy pages, ensuring consistency across the site rather than conflicting numbers in different places. Through ${month} ${year}, checking back periodically captures how ${country}'s economic conditions are evolving over time.`;
 }
 
+// ─── 7b. GROWTH DASHBOARD (World Bank 10-year trends) ─────────────────────────
+
+export function generateGrowthDashboardParagraph(country: string): string {
+  const { month, year } = now();
+  return `Beyond a single snapshot, understanding ${country}'s trajectory means looking at how key indicators have moved over the past decade. The three charts below, sourced directly from World Bank Open Data, trace ${country}'s gross domestic product, total population, and exports of goods and services year by year, revealing whether growth has been steady, volatile, or accelerating. A rising GDP line paired with a flattening population curve points toward improving per-capita prosperity, while exports trending upward signals ${country}'s growing integration into global trade. As of ${month} ${year}, these figures reflect the most recent data World Bank has published for ${country}, typically lagging the present by one to two years due to how national accounts are compiled and verified.`;
+}
+
+export function generateGrowthDashboardAfter(country: string): string {
+  const { month, year } = now();
+  return `These ten-year trends matter more than any single year's figure because they smooth out short-term shocks — a single bad harvest, a currency swing, or a one-off policy change — and reveal the underlying direction ${country}'s economy is actually heading. Investors, policymakers, and researchers studying ${country} typically weight multi-year trends far more heavily than any individual data point precisely for this reason. Through ${month} ${year}, World Bank continues to update these series annually, so checking back periodically captures the latest available picture of ${country}'s long-run economic and demographic path.`;
+}
+
 // ─── 8. NATIONAL TEAMS ───────────────────────────────────────────────────────
 
 export function generateTeamsParagraph(country: string): string {

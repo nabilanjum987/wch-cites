@@ -1,5 +1,5 @@
 import { CityEvent, EventCategory, LevelTab, TimeTab, RecurringEvent, NationalEvent, PendingEvent } from '../../types/city';
-import { supabase } from '../supabase';
+import { getSupabase } from '../supabase';
 
 const TICKETMASTER_KEY = process.env.NEXT_PUBLIC_TICKETMASTER_KEY as string | undefined;
 
@@ -290,6 +290,7 @@ export function fetchRecurringEvents(city: string): RecurringEvent[] {
 
 export async function submitPendingEvent(event: PendingEvent): Promise<{ success: boolean; error?: string }> {
   try {
+    const supabase = getSupabase();
     const { error } = await supabase
       .from('pending_events')
       .insert([{

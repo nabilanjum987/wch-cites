@@ -22,11 +22,9 @@
     ],
     "paths": {
       "@/*": [
-        "./src/*",
-        "./*"
+        "./src/*"
       ],
       "@/components/*": [
-        "./components/*",
         "./src/components/*"
       ]
     },

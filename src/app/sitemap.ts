@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://worldcityhub.com'
@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic city pages from Supabase
   try {
+    const supabase = getSupabase();
     const { data: cities } = await supabase
       .from('cities')
       .select('country_slug, province_slug, city_slug')

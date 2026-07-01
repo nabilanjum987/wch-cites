@@ -12,8 +12,7 @@ import {
 } from 'lucide-react';
 import type { City, CityEvent, RecurringEvent, EventCategory, TimeTab, LevelTab } from '@/types/city';
 import { fetchCityEvents, fetchRecurringEvents } from '@/lib/apis/events';
-import dynamic from 'next/dynamic';
-const EventsMap = dynamic(() => import('@/components/city/EventsMap'), { ssr: false });
+import EventsMap from '@/components/city/EventsMap';
 import RecurringEvents from '@/components/city/RecurringEvents';
 import SubmitEvent from '@/components/city/SubmitEvent';
 import TourAffiliates from '@/components/city/TourAffiliates';

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
+import GrowthDashboard from '@/components/shared/GrowthDashboard';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -18,6 +19,7 @@ import {
   generatePersonalitiesParagraph, generatePersonalitiesAfter,
   generatePlacesParagraph, generatePlacesAfter,
   generateEconomyDashboardParagraph, generateEconomyDashboardAfter,
+  generateGrowthDashboardParagraph, generateGrowthDashboardAfter,
   generateTeamsParagraph, generateTeamsAfter,
   generateHolidaysParagraph, generateHolidaysAfter,
   generateEmergencyParagraph, generateEmergencyAfter,
@@ -770,6 +772,18 @@ export default function CountryPage() {
             </p>
           </motion.section>
         )}
+
+        {/* ── 9b. GROWTH DASHBOARD ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={TrendingUp} title={`${country.name} 10-Year Growth`} accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            {generateGrowthDashboardParagraph(country.name)}
+          </p>
+          <GrowthDashboard countryCode={country.code} accentColor={accent} />
+          <p className="text-gray-500 text-sm leading-relaxed mt-5">
+            {generateGrowthDashboardAfter(country.name)}
+          </p>
+        </motion.section>
 
         {/* ── 9. PERSONALITIES ── */}
         {personalities.length > 0 && (
