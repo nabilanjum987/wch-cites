@@ -1,5 +1,7 @@
 // app/[country]/[province]/[city]/page.tsx
-// City Main Page — 23 sections, real API data, ISR revalidate 3600
+// City Main Page — 23 sections, real API data, rendered on-demand per request.
+// force-dynamic prevents pre-rendering at build time, which would fire 14
+// external API calls per city simultaneously and crash Vercel on rate limits.
 // Test URL: /pakistan/punjab/lahore
 
 import type { Metadata } from 'next';
@@ -42,7 +44,7 @@ import {
   generateNearbyCitiesAfter,
 } from '@/lib/paragraphs/city';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 // ─── CITY DATABASE (expand to all cities) ────────────────────────────────────
 // For scale: move this to Supabase / Firebase
@@ -93,21 +95,19 @@ export async function generateMetadata({
   const cityParams = getCityParams(country, province, city);
   if (!cityParams) return { title: 'City Not Found | WorldCityHub' };
 
-  const data = await fetchAllCityData(cityParams);
-  const weather = data.weather as Record<string, unknown> | null;
-  const prayer = data.prayerTimes as Record<string, unknown> | null;
-  const gold = data.goldRates as Record<string, unknown> | null;
-
-  const timings = (prayer as Record<string, Record<string, string>> | null)?.data?.timings;
+  // Do NOT call fetchAllCityData here — it fires 14 external API calls for
+  // every static page at build time, crashing the Vercel worker on rate limits
+  // and timeouts. Metadata is generated from static slug data only; live
+  // enrichment (temp, prayer times, gold) is loaded client-side at runtime.
   const meta = generateCityMeta({
-    city: city,
-    country: country,
-    province: province,
-    temp: (weather as Record<string, Record<string, number>> | null)?.main?.temp ?? null,
-    weatherDesc: ((weather as Record<string, Array<Record<string, string>>> | null)?.weather?.[0]?.description) ?? null,
-  fajr: (timings as unknown as Record<string, string> | null)?.Fajr ?? null,
-maghrib: (timings as unknown as Record<string, string> | null)?.Maghrib ?? null,
-    goldPerGram: (gold as Record<string, number> | null)?.price_gram_24k ?? null,
+    city,
+    country,
+    province,
+    temp: null,
+    weatherDesc: null,
+    fajr: null,
+    maghrib: null,
+    goldPerGram: null,
   });
 
   return {
