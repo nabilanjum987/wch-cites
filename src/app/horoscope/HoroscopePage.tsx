@@ -148,7 +148,86 @@ export default function HoroscopePage() {
           <p className="text-gray-400 leading-relaxed text-sm mt-4">{generatePanchangAfter()}</p>
         </div>
 
-        {/* Section 7 — Moon Calendar */}
+        {/* Section 7 — Islamic Lunar Calendar */}
+        <div>
+          <h2 className="text-xl font-bold text-white mb-3">☪️ Islamic Lunar Calendar</h2>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">
+            The Islamic Hijri calendar is a purely lunar calendar consisting of 12 months of 29 or 30 days each,
+            making the Islamic year approximately 11 days shorter than the Gregorian year. Each month begins with
+            the sighting of the new crescent moon. The calendar began in 622 CE, the year of the Prophet Muhammad's
+            migration (Hijra) from Mecca to Medina. Today, the Hijri calendar determines the dates of all major
+            Islamic observances — Ramadan, Eid al-Fitr, Eid al-Adha, Laylat al-Qadr, and the Hajj pilgrimage.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: 'Today (Hijri)', value: new Date().toLocaleDateString('ar-SA-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' }) },
+              { label: 'Current Month', value: new Date().toLocaleDateString('ar-SA-u-ca-islamic', { month: 'long' }) },
+              { label: 'Hijri Year', value: new Date().toLocaleDateString('ar-SA-u-ca-islamic', { year: 'numeric' }) },
+              { label: 'Month Type', value: 'Lunar month' },
+            ].map(item => (
+              <div key={item.label} className="rounded-xl border p-3 text-center" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: `${primaryColor}30` }}>
+                <div className="text-xs text-gray-500 mb-1">{item.label}</div>
+                <div className="text-white font-semibold text-sm">{item.value}</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 rounded-xl border p-4" style={{ backgroundColor: `${primaryColor}08`, borderColor: `${primaryColor}20` }}>
+            <p className="text-xs text-gray-400 leading-relaxed">
+              <strong className="text-white">Sacred Islamic dates this Hijri year:</strong> The exact dates shift annually
+              against the Gregorian calendar. Ramadan (month 9) involves a daily fast from Fajr to Maghrib. Eid al-Fitr
+              marks Ramadan's end (1 Shawwal). Eid al-Adha falls on 10 Dhul Hijja. Laylat al-Qadr (Night of Power) is
+              sought in the last 10 nights of Ramadan.
+            </p>
+          </div>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">
+            For Muslim communities worldwide, the Hijri calendar is not merely a timekeeping system — it is a spiritual
+            framework that organises the rhythm of worship, fasting, charity, and pilgrimage across 1.8 billion people.
+            Every city page on WorldCityHub displays today's Hijri date alongside the Gregorian date, and the Prayer
+            Times page for each city shows the full Islamic calendar including Ramadan timetables.
+          </p>
+        </div>
+
+        {/* Section 8 — Hebrew / Mazalot */}
+        <div>
+          <h2 className="text-xl font-bold text-white mb-3">✡️ Hebrew Calendar & Mazalot</h2>
+          <p className="text-gray-300 leading-relaxed text-sm mb-4">
+            The Hebrew calendar (Luach Ivri) is a lunisolar calendar used for Jewish religious observances and the
+            official calendar of the State of Israel. It traces its roots to antiquity, with year 1 corresponding
+            to 3761 BCE in the Gregorian calendar — the traditional Jewish date of creation. The Hebrew calendar
+            adds a leap month (Adar II) seven times in every 19-year cycle to keep lunar months aligned with solar
+            seasons. Mazalot (מזלות) is the Hebrew term for the twelve zodiac constellations, deeply embedded in
+            Jewish mystical tradition through Kabbalah and the Sefer Yetzirah.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {[
+              { label: 'Today (Hebrew)', value: new Date().toLocaleDateString('he-IL-u-ca-hebrew', { day: 'numeric', month: 'long', year: 'numeric' }) },
+              { label: 'Hebrew Year', value: new Date().toLocaleDateString('he-IL-u-ca-hebrew', { year: 'numeric' }) },
+              { label: 'Hebrew Month', value: new Date().toLocaleDateString('he-IL-u-ca-hebrew', { month: 'long' }) },
+              { label: "Today's Mazal", value: (() => {
+                const mazalot = ['Aries (טָלֶה)', 'Taurus (שׁוֹר)', 'Gemini (תְּאוֹמִים)', 'Cancer (סַרְטָן)',
+                  'Leo (אַרְיֵה)', 'Virgo (בְּתוּלָה)', 'Libra (מֹאזְנַיִם)', 'Scorpio (עַקְרָב)',
+                  'Sagittarius (קֶשֶׁת)', 'Capricorn (גְּדִי)', 'Aquarius (דְּלִי)', 'Pisces (דָּגִים)'];
+                const month = new Date().getMonth();
+                return mazalot[month];
+              })() },
+              { label: 'Calendar Type', value: 'Lunisolar' },
+              { label: 'Epoch Year', value: '3761 BCE' },
+            ].map(item => (
+              <div key={item.label} className="rounded-xl border p-3 text-center" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(99,102,241,0.3)' }}>
+                <div className="text-xs text-gray-500 mb-1">{item.label}</div>
+                <div className="text-white font-semibold text-sm">{item.value}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-gray-400 leading-relaxed text-sm mt-4">
+            The Mazalot tradition within Judaism differs from Western astrology in its mystical rather than predictive
+            emphasis — each Mazal is associated with one of the twelve tribes of Israel, a month in the Hebrew calendar,
+            and specific spiritual qualities described in Kabbalistic texts. The Talmud discusses the Mazalot extensively,
+            though mainstream Jewish theology regards them as representing divine order rather than human destiny.
+          </p>
+        </div>
+
+        {/* Section 9 — Moon Calendar */}
         <div>
           <p className="text-gray-300 leading-relaxed text-sm mb-4">{generateMoonCalendarParagraph()}</p>
           <MoonCalendar primaryColor={primaryColor} />
