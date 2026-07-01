@@ -305,6 +305,54 @@ export default function Home() {
         </section>
       </ScrollAnimation>
 
+      {/* ── ACTIVE CONFLICTS ── */}
+      <ScrollAnimation>
+        <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
+          <div className="max-w-6xl mx-auto">
+            <SectionHeader title="Active Conflicts" subtitle="Factual, educational overview. Sources: UN, ACLED. No sides taken." />
+            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
+              Approximately 32 armed conflicts are active worldwide as of today, affecting over
+              100 million people through displacement, economic disruption, and humanitarian
+              crisis. WorldCityHub tracks these situations factually and without editorial bias,
+              drawing exclusively from United Nations reports, ACLED conflict data, and
+              internationally recognised humanitarian organisations.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {[
+                { region: 'Middle East', conflicts: 4, displaced: '8.2M', severity: 'High', color: '#ef4444' },
+                { region: 'Sub-Saharan Africa', conflicts: 12, displaced: '32M', severity: 'High', color: '#f97316' },
+                { region: 'Eastern Europe', conflicts: 2, displaced: '6.5M', severity: 'High', color: '#ef4444' },
+                { region: 'South Asia', conflicts: 3, displaced: '4.1M', severity: 'Medium', color: '#f59e0b' },
+                { region: 'Southeast Asia', conflicts: 4, displaced: '1.8M', severity: 'Medium', color: '#f59e0b' },
+                { region: 'Latin America', conflicts: 7, displaced: '7.4M', severity: 'Medium', color: '#f59e0b' },
+              ].map((r) => (
+                <div key={r.region} className="rounded-2xl border p-5" style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderColor: `${r.color}30` }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-white font-semibold text-sm">{r.region}</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: `${r.color}20`, color: r.color }}>{r.severity}</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <div>
+                      <div className="text-2xl font-bold" style={{ color: r.color }}>{r.conflicts}</div>
+                      <div className="text-gray-500 text-xs">active conflicts</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-gray-300">{r.displaced}</div>
+                      <div className="text-gray-500 text-xs">displaced people</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center">
+              <a href="/conflicts/overview" className="inline-block text-sm px-6 py-2.5 rounded-full border transition" style={{ borderColor: 'rgba(255,255,255,0.15)', color: '#9ca3af' }}>
+                View All Conflicts →
+              </a>
+            </div>
+          </div>
+        </section>
+      </ScrollAnimation>
+
       {/* ── ALL FAITHS TODAY ── */}
       <ScrollAnimation>
         <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
