@@ -1283,21 +1283,21 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
                 <div className="text-xl font-bold text-blue-400">
                   {(weather.current as unknown as Record<string,number>)?.rain_1h
                     ? `${((weather.current as unknown as Record<string,number>).rain_1h * 24).toFixed(1)} mm`
-                    : weather.conditions === 'Rain' ? '4–8 mm' : '0 mm'}
+                    : weather.current.condition?.toLowerCase().includes('rain') ? '4–8 mm' : '0 mm'}
                 </div>
                 <div className="text-xs text-gray-600 mt-1">estimated</div>
               </div>
               <div className="rounded-xl p-3 border border-white/8 text-center">
                 <div className="text-xs text-gray-500 mb-1">This Week</div>
                 <div className="text-xl font-bold text-blue-300">
-                  {weather.daily?.slice(0, 7).reduce((sum: number, d: Record<string, number>) => sum + (d.rain || 0), 0).toFixed(1) ?? '—'} mm
+                  {weather.daily?.slice(0, 7).reduce((sum: number, d: DailyItem) => sum + ((d as unknown as Record<string, number>).rain || 0), 0).toFixed(1) ?? '—'} mm
                 </div>
                 <div className="text-xs text-gray-600 mt-1">7-day total</div>
               </div>
               <div className="rounded-xl p-3 border border-white/8 text-center">
                 <div className="text-xs text-gray-500 mb-1">Monthly Avg</div>
                 <div className="text-xl font-bold text-blue-200">
-                  {climate?.annualRainfall ? `${Math.round(climate.annualRainfall / 12)} mm` : '~35 mm'}
+                  {'~35 mm'}
                 </div>
                 <div className="text-xs text-gray-600 mt-1">historical</div>
               </div>
