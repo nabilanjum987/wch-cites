@@ -443,7 +443,7 @@ export default function ProvincePage() {
         <motion.div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-10"
           style={{ backgroundColor: accent }}
           animate={{ y: [0, -40, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} />
-        <motion.div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-8"
+        <motion.div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-5"
           style={{ backgroundColor: accent }}
           animate={{ y: [0, 40, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 5 }} />
         <FlagSymbolBackground countrySlug={params?.country as string ?? 'pakistan'} />

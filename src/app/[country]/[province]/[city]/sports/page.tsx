@@ -528,9 +528,9 @@ function SportSelectorBar({ sports, active, onSelect }: { sports: SportPriority[
 
       {/* Dark aurora orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-8"
+        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-5"
           style={{ backgroundColor: "#0C7A3D" }} />
-        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-6"
+        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-5"
           style={{ backgroundColor: "#0C7A3D" }} />
       </div>
       {sports.map((s, i) => (

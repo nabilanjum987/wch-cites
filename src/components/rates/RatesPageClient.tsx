@@ -96,9 +96,9 @@ function SkeletonCard() {
 
       {/* Dark aurora orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-8"
+        <div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-5"
           style={{ backgroundColor: "#0C7A3D" }} />
-        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-6"
+        <div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-5"
           style={{ backgroundColor: "#0C7A3D" }} />
       </div>
       <div className="h-4 bg-transparent/8 rounded w-1/3 mb-4" />
@@ -516,9 +516,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
   const sym = currency.symbol;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen" style={{ backgroundColor: '#0a0f1e', color: 'white' }}>
       {/* Hero Header */}
-      <div className="gradient-hero border-b border-gray-800/50">
+      <div style={{ background: `linear-gradient(135deg, ${headerColor}cc 0%, #0a0f1e 100%)`, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <div className="flex items-center gap-3 mb-8">

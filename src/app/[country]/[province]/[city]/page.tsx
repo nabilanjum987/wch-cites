@@ -230,6 +230,11 @@ export default async function CityPage({
 
       <main className="min-h-screen relative" style={{ backgroundColor: '#0a0f1e', fontFamily: 'Inter, sans-serif' }}>
 
+        {/* ── FLAG SYMBOL BACKGROUND ── */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+          <FlagSymbolBackground countrySlug={country} />
+        </div>
+
         {/* ══ SECTION 1: TICKER BAR ══════════════════════════════════════════ */}
         <div className="text-white text-xs py-1.5 overflow-hidden" style={{ backgroundColor: 'rgba(12,122,61,0.9)', backdropFilter: 'blur(10px)' }}>
           <div className="flex gap-8 px-4 flex-wrap items-center">

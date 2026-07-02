@@ -239,7 +239,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
   };
 
   return (
-    <div className="min-h-screen bg-transparent/4">
+    <div className="min-h-screen" style={{ backgroundColor: '#0a0f1e' }}>
       {/* Header */}
       <div
         className="relative overflow-hidden"
