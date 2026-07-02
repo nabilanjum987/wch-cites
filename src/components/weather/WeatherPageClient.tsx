@@ -138,7 +138,7 @@ function NavTabs({ active, onChange }: { active: Tab; onChange: (t: Tab) => void
           className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
             active === tab
               ? 'bg-[#01411C] text-white'
-              : 'bg-white text-gray-600 border border-white/10 hover:border-gray-300 hover:bg-white/5'
+              : 'border border-white/10 text-white/60 hover:border-white/30 hover:bg-white/5'
           }`}
         >
           {tab}
@@ -405,7 +405,7 @@ function HourlyCard({ item, timezone }: { item: HourlyItem; timezone: string }) 
       className={`flex-shrink-0 w-20 sm:w-24 rounded-xl p-3 sm:p-4 flex flex-col items-center gap-2 transition-all ${
         isNow
           ? 'bg-[#01411C] text-white'
-          : 'bg-white border border-white/8 hover:border-gray-300'
+          : 'border border-white/20 bg-white/8 hover:border-white/30'
       }`}
     >
       <p className={`text-xs font-medium ${isNow ? 'text-white/70' : 'text-gray-600'}`}>
@@ -430,10 +430,10 @@ function HourlyForecast({ data, timezone, cityName }: { data: WeatherData; timez
       <div className="flex items-center justify-between mb-4 px-1">
         <h2 className="text-lg font-bold text-white">Hourly Forecast</h2>
         <div className="flex gap-2">
-          <button onClick={() => scroll('left')} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Scroll left">
+          <button onClick={() => scroll('left')} style={{ backgroundColor: "rgba(255,255,255,0.08)" }} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-80" aria-label="Scroll left">
             <ChevronLeft size={16} />
           </button>
-          <button onClick={() => scroll('right')} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Scroll right">
+          <button onClick={() => scroll('right')} style={{ backgroundColor: "rgba(255,255,255,0.08)" }} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-80" aria-label="Scroll right">
             <ChevronRight size={16} />
           </button>
         </div>
@@ -460,7 +460,7 @@ function DailyCard({ item, timezone, isToday }: { item: DailyItem; timezone: str
       className={`flex-shrink-0 w-24 sm:w-28 rounded-xl p-3 sm:p-4 flex flex-col items-center gap-2 transition-all ${
         isToday
           ? 'bg-[#01411C] text-white'
-          : 'bg-white border border-white/8 hover:border-gray-300'
+          : 'border border-white/20 bg-white/8 hover:border-white/30'
       }`}
     >
       <p className={`text-xs font-medium ${isToday ? 'text-white/70' : 'text-gray-600'}`}>{formatDay(item.dt, timezone)}</p>
@@ -486,10 +486,10 @@ function TenDayForecast({ data, timezone, cityName, country }: { data: WeatherDa
       <div className="flex items-center justify-between mb-4 px-1">
         <h2 className="text-lg font-bold text-white">10-Day Forecast</h2>
         <div className="flex gap-2">
-          <button onClick={() => scroll('left')} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Scroll left">
+          <button onClick={() => scroll('left')} style={{ backgroundColor: "rgba(255,255,255,0.08)" }} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-80" aria-label="Scroll left">
             <ChevronLeft size={16} />
           </button>
-          <button onClick={() => scroll('right')} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Scroll right">
+          <button onClick={() => scroll('right')} style={{ backgroundColor: "rgba(255,255,255,0.08)" }} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-80" aria-label="Scroll right">
             <ChevronRight size={16} />
           </button>
         </div>
@@ -656,7 +656,7 @@ function SunMoonSection({ data, timezone, cityName }: { data: SunMoonData; timez
                 <span className="font-medium text-gray-300">{e.type}</span>
                 <div className="flex items-center gap-3">
                   <span className="text-gray-500">{e.date}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${e.visible ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${e.visible ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/8 text-white/50'}`}>
                     {e.visible ? 'Visible' : 'Not visible'}
                   </span>
                 </div>
@@ -789,7 +789,7 @@ function NearbyWeatherSection({
                 </td>
                 <td className="py-3 px-4 text-center">
                   <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                    city.aqi > 100 ? 'bg-red-500/15 text-red-400' : city.aqi > 50 ? 'bg-amber-500/15 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+                    city.aqi > 100 ? 'bg-red-500/15 text-red-400' : city.aqi > 50 ? 'bg-amber-500/15 text-amber-700' : 'bg-emerald-500/20 text-emerald-400'
                   }`}>
                     {city.aqi}
                   </span>

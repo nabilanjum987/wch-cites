@@ -353,16 +353,16 @@ export default function ProductPage() {
   }
 
   if (!product) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">No product found</div>;
+    return <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="flex items-center justify-center text-white">No product found</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
       {/* Breadcrumb Header */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="bg-white border-b border-gray-200"
+        style={{ backgroundColor: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.08)" }} className=""
       >
         <div className="max-w-7xl mx-auto px-4 py-3">
           <nav className="text-sm text-gray-600">
@@ -382,7 +382,7 @@ export default function ProductPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl overflow-hidden"
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Image */}
@@ -450,7 +450,7 @@ export default function ProductPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-6 md:p-8"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
             <BookOpen className="w-7 h-7 text-indigo-600" />
@@ -464,11 +464,11 @@ export default function ProductPage() {
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Cultural History</h3>
               <div className="space-y-3">
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div style={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="rounded-lg p-4">
                   <div className="text-sm text-gray-600 mb-1">When it Started</div>
                   <div className="font-semibold text-gray-900">{product.history.started}</div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div style={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="rounded-lg p-4">
                   <div className="text-sm text-gray-600 mb-1">Who Made It</div>
                   <div className="font-semibold text-gray-900">{product.history.founders}</div>
                 </div>
@@ -528,7 +528,7 @@ export default function ProductPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-6 md:p-8"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
             <Package className="w-7 h-7 text-orange-600" />
@@ -589,7 +589,7 @@ export default function ProductPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.05 }}
-                className="bg-gray-50 border border-gray-200 rounded-xl p-5"
+                style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-xl p-5"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold">
@@ -628,7 +628,7 @@ export default function ProductPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-6 md:p-8"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
             <ShoppingCart className="w-7 h-7 text-green-600" />
@@ -645,7 +645,7 @@ export default function ProductPage() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.35 + index * 0.1 }}
-                className="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden"
+                style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-xl overflow-hidden"
               >
                 <div className="h-40 relative">
                   <img src={item.image} alt={item.category} className="w-full h-full object-cover" />
@@ -691,11 +691,11 @@ export default function ProductPage() {
             {generateAuthenticParagraph(product.name)}
           </p>
 
-          <div className="bg-white rounded-xl p-6 mb-6">
+          <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-xl p-6 mb-6">
             <h3 className="font-semibold text-gray-900 mb-4">Physical Checklist</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {product.authenticity.checklist.map((item, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-4">
+                <div key={index} style={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="rounded-lg p-4">
                   <div className="font-semibold text-gray-900 mb-3">{item.feature}</div>
                   <div className="space-y-2">
                     <div className="flex items-start gap-2">
@@ -718,7 +718,7 @@ export default function ProductPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6">
+          <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-xl p-6">
             <h3 className="font-semibold text-gray-900 mb-3">Pro Tips</h3>
             <ul className="space-y-2">
               {product.authenticity.tips.map((tip, index) => (
@@ -739,7 +739,7 @@ export default function ProductPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-6 md:p-8"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
             <Store className="w-7 h-7 text-blue-600" />
@@ -833,7 +833,7 @@ export default function ProductPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl overflow-hidden"
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
             {/* Artisan Photo */}
@@ -891,7 +891,7 @@ export default function ProductPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-6 md:p-8"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
             <Globe className="w-7 h-7 text-indigo-600" />
@@ -912,7 +912,7 @@ export default function ProductPage() {
                 whileHover={{ scale: 1.03 }}
                 className="group"
               >
-                <div className="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
+                <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-xl overflow-hidden">
                   <div className="h-32">
                     <img
                       src={item.image}
@@ -940,7 +940,7 @@ export default function ProductPage() {
 
 function LoadingSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
       <div className="bg-white border-b border-gray-200 animate-pulse">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="h-4 bg-gray-200 rounded w-1/3"></div>

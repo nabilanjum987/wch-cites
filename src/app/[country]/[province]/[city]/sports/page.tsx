@@ -904,8 +904,8 @@ export default function SportsPage() {
 
   if (loading) {
     return (
-      <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="min-h-screen bg-transparent/4">
-        <div className="h-40 animate-pulse bg-gray-300" />
+      <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }} className="">
+        <div className="h-40 animate-pulse" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-4">
           {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-32 w-full" />)}
         </div>
@@ -918,7 +918,7 @@ export default function SportsPage() {
   const nextMatch = nextMatches[0];
 
   return (
-    <div className="min-h-screen bg-transparent/4">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="">
       <header className="relative overflow-hidden" style={{ backgroundColor: headerColor }}>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 0%, transparent 60%)' }} />
         <div className="relative max-w-4xl mx-auto px-4 py-8">

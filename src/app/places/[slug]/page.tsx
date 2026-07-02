@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import {
   ArrowLeft, MapPin, Clock, Ticket, Camera, Star,
   ExternalLink, Navigation, Info, Sun, Users,
@@ -176,10 +177,14 @@ export default async function FamousPlacePage({ params }: PageProps) {
   const mapsUrl = `https://www.google.com/maps?q=${place.lat},${place.lng}`;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
+      {/* Flag background symbol */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+        <FlagSymbolBackground countrySlug={place.countrySlug} />
+      </div>
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3">
+      <div style={{ backgroundColor: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.08)" }} className="px-4 py-3">
         <div className="max-w-5xl mx-auto flex items-center gap-2 text-sm text-gray-500 flex-wrap">
           <Link href="/" className="hover:text-gray-700">Home</Link>
           <span>/</span>
@@ -229,13 +234,13 @@ export default async function FamousPlacePage({ params }: PageProps) {
           <div className="lg:col-span-2 space-y-6">
 
             {/* Tagline */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
               <p className="text-lg font-medium text-gray-800 italic">"{place.tagline}"</p>
               <p className="text-gray-600 text-sm mt-3 leading-relaxed">{place.description}</p>
             </div>
 
             {/* History */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <BookOpen size={16} style={{ color: place.primaryColor }} />
                 <h2 className="font-bold text-gray-900">History</h2>
@@ -244,7 +249,7 @@ export default async function FamousPlacePage({ params }: PageProps) {
             </div>
 
             {/* Significance */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Globe size={16} style={{ color: place.primaryColor }} />
                 <h2 className="font-bold text-gray-900">Why It Matters</h2>
@@ -253,7 +258,7 @@ export default async function FamousPlacePage({ params }: PageProps) {
             </div>
 
             {/* Things to Know */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Info size={16} style={{ color: place.primaryColor }} />
                 <h2 className="font-bold text-gray-900">Key Facts</h2>
@@ -278,7 +283,7 @@ export default async function FamousPlacePage({ params }: PageProps) {
             </div>
 
             {/* Visitor Tips */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Heart size={16} style={{ color: place.primaryColor }} />
                 <h2 className="font-bold text-gray-900">Insider Tips</h2>
@@ -300,7 +305,7 @@ export default async function FamousPlacePage({ params }: PageProps) {
 
             {/* Nearby places */}
             {place.nearbyPlaces.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-5">
+              <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <Navigation size={16} style={{ color: place.primaryColor }} />
                   <h2 className="font-bold text-gray-900">Nearby Places</h2>

@@ -8,6 +8,7 @@ import { AchievementsSection } from '@/components/personality/AchievementsSectio
 import { FamousWorksSection } from '@/components/personality/FamousWorksSection';
 import { FamousQuotesSection } from '@/components/personality/FamousQuotesSection';
 import { PersonalityBreadcrumb } from '@/components/personality/PersonalityBreadcrumb';
+import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import { PersonalityDescription } from '@/components/personality/PersonalityDescription';
 import {
   generateTimelineParagraph, generateTimelineAfter,
@@ -172,10 +173,14 @@ export default async function PersonalityPage({ params }: PageProps) {
   if (!p) notFound();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
+      {/* Flag background symbol */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+        <FlagSymbolBackground countrySlug={p.countrySlug} />
+      </div>
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3">
+      <div style={{ backgroundColor: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.08)" }} className="px-4 py-3">
         <div className="max-w-5xl mx-auto flex items-center gap-2 text-sm text-gray-500 flex-wrap">
           <Link href="/" className="hover:text-gray-700">Home</Link>
           <span>/</span>
@@ -208,7 +213,7 @@ export default async function PersonalityPage({ params }: PageProps) {
 
       {/* City connection badge */}
       <div className="max-w-5xl mx-auto px-4 -mt-4 mb-6">
-        <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 text-sm shadow-sm">
+        <div style={{ backgroundColor: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)" }} className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm">
           <MapPin size={14} style={{ color: p.primaryColor }} />
           <span className="text-gray-600">Connected to</span>
           <Link href={`/${p.countrySlug}/${p.provinceSlug}/${p.citySlug}`}
@@ -287,13 +292,13 @@ export default async function PersonalityPage({ params }: PageProps) {
 
         {/* External links */}
         {p.wikiUrl && (
-          <div className="mt-10 p-4 bg-white rounded-2xl border border-gray-200 flex items-center justify-between">
+          <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }} className="mt-10 p-4 rounded-2xl flex items-center justify-between">
             <div>
               <p className="font-semibold text-gray-900 text-sm">Learn More</p>
               <p className="text-xs text-gray-500 mt-0.5">External sources for deeper reading</p>
             </div>
             <a href={p.wikiUrl} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 transition">
+              style={{ border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition hover:opacity-80">
               Wikipedia <ExternalLink size={13} />
             </a>
           </div>
