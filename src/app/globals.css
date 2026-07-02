@@ -52,6 +52,36 @@ html, body {
 .text-gray-700 { color: rgba(255, 255, 255, 0.75) !important; }
 .text-gray-600 { color: rgba(255, 255, 255, 0.60) !important; }
 .text-gray-500 { color: rgba(255, 255, 255, 0.50) !important; }
+.text-black    { color: rgba(255, 255, 255, 0.95) !important; }
+.text-slate-900 { color: rgba(255, 255, 255, 0.95) !important; }
+.text-slate-800 { color: rgba(255, 255, 255, 0.85) !important; }
+.text-slate-700 { color: rgba(255, 255, 255, 0.75) !important; }
+.text-slate-600 { color: rgba(255, 255, 255, 0.60) !important; }
+.text-slate-500 { color: rgba(255, 255, 255, 0.50) !important; }
+.text-zinc-900  { color: rgba(255, 255, 255, 0.95) !important; }
+.text-zinc-800  { color: rgba(255, 255, 255, 0.85) !important; }
+.text-neutral-900 { color: rgba(255, 255, 255, 0.95) !important; }
+.text-neutral-800 { color: rgba(255, 255, 255, 0.85) !important; }
+
+/* Backgrounds that create invisible text zones */
+.bg-gray-800 { background-color: rgba(255, 255, 255, 0.06) !important; }
+.bg-gray-900 { background-color: rgba(255, 255, 255, 0.04) !important; }
+.bg-slate-50  { background-color: #0d1424 !important; }
+.bg-slate-100 { background-color: #111827 !important; }
+.bg-slate-800 { background-color: rgba(255, 255, 255, 0.06) !important; }
+.bg-slate-900 { background-color: #0a0f1e !important; }
+.bg-zinc-50   { background-color: #0d1424 !important; }
+.bg-zinc-100  { background-color: #111827 !important; }
+.bg-neutral-50  { background-color: #0d1424 !important; }
+.bg-neutral-100 { background-color: #111827 !important; }
+
+/* Gradient backgrounds that were light */
+.from-gray-50  { --tw-gradient-from: #0d1424 !important; }
+.from-gray-100 { --tw-gradient-from: #111827 !important; }
+.to-gray-50    { --tw-gradient-to: #0d1424 !important; }
+.to-gray-100   { --tw-gradient-to: #111827 !important; }
+.from-slate-50 { --tw-gradient-from: #0d1424 !important; }
+.to-slate-50   { --tw-gradient-to: #0d1424 !important; }
 
 /* Remove light box shadows — they look wrong on dark */
 .shadow-sm,
