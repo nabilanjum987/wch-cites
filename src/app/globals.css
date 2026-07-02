@@ -2,6 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+/* ─── GLOBAL BASE ─────────────────────────────────────────────────────────── */
+html, body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #0a0f1e;
+  color: #ffffff;
 }
+
+/* ─── DARK THEME OVERRIDE ─────────────────────────────────────────────────── */
+/* Forces all light-background Tailwind/shadcn classes to dark equivalents.
+   This handles the 50+ components that use bg-white/bg-gray-50 etc.
+   Country accent colors are applied via inline styles — unaffected by this. */
+
+.bg-white,
+[class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+.bg-gray-50 {
+  background-color: #0d1424 !important;
+}
+
+.bg-gray-100 {
+  background-color: #111827 !important;
+}
+
+.bg-gray-200 {
+  background-color: #1f2937 !important;
+}
+
+.bg-gray-950 {
+  background-color: #0a0f1e !important;
+}
+
+/* Borders */
+.border-gray-100 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+.border-gray-200 {
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+.border-gray-300 {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Text */
+.text-gray-900 { color: rgba(255, 255, 255, 0.95) !important; }
+.text-gray-800 { color: rgba(255, 255, 255, 0.85) !important; }
+.text-gray-700 { color: rgba(255, 255, 255, 0.75) !important; }
+.text-gray-600 { color: rgba(255, 255, 255, 0.60) !important; }
+.text-gray-500 { color: rgba(255, 255, 255, 0.50) !important; }
+
+/* Remove light box shadows — they look wrong on dark */
+.shadow-sm,
+.shadow,
+.shadow-md,
+.shadow-lg,
+.shadow-xl {
+  box-shadow: none !important;
+}
+
+/* Input fields */
+input, textarea, select {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
