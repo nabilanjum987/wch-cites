@@ -39,7 +39,7 @@ export default function HoroscopeIndexClient() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
       {/* Hero */}
       <div className="relative bg-gradient-to-b from-indigo-950 via-purple-950 to-gray-950 py-14 px-4 text-center overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{

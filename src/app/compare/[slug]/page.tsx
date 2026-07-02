@@ -319,7 +319,7 @@ export default function ComparePage() {
   }
 
   if (!comparison) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">No comparison data available</div>;
+    return <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="flex items-center justify-center text-white">No comparison data available</div>;
   }
 
   const categories = [
@@ -337,7 +337,7 @@ export default function ComparePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -1109,7 +1109,7 @@ function MetricCard({ icon: Icon, label, value, subValue, winner, colorClass }: 
 
 function LoadingSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-6 animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>

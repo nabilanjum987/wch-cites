@@ -59,7 +59,7 @@ export default function SignDetailPage({ sign, onBack, primaryColor }: Props) {
   }, [sign1Select, sign2Select]);
 
   return (
-    <div className="min-h-screen bg-gray-50 font-[Inter,sans-serif]">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="font-[Inter,sans-serif]">
       {/* Header */}
       <div className="relative overflow-hidden" style={{ backgroundColor: primaryColor }}>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, white 0%, transparent 60%), radial-gradient(circle at 70% 20%, white 0%, transparent 50%)' }} />

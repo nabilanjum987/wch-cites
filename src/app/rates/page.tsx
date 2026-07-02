@@ -257,9 +257,9 @@ export default function WorldRatesPage() {
   const isYTDPositive = rates ? rates.ytd_change_percent >= 0 : true;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }}>
       {/* Hero Header */}
-      <div className="gradient-hero border-b border-gray-800/50">
+      <div style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.15) 0%, #0a0f1e 60%)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
           <div className="flex items-start justify-between flex-wrap gap-6">
             <div>

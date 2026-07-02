@@ -218,11 +218,11 @@ export default function WonderPage() {
   }
 
   if (!wonder) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Wonder not found</div>;
+    return <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="flex items-center justify-center text-white">Wonder not found</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -776,7 +776,7 @@ export default function WonderPage() {
 
 function LoadingSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50 animate-pulse">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="animate-pulse">
       <div className="h-[70vh] bg-gray-300"></div>
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (

@@ -117,7 +117,7 @@ function LocationRequestCard({ onRequest }: { onRequest: () => void }) {
       animate={{ opacity: 1, scale: 1 }}
       className="max-w-md mx-auto px-4 py-12"
     >
-      <div className="bg-white rounded-3xl shadow-xl p-8 text-center">
+      <div style={{ backgroundColor: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)" }} className="rounded-3xl p-8 text-center">
         <motion.div
           animate={{ y: [0, -10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
@@ -213,7 +213,7 @@ function WeatherCard({ weather }: { weather: WeatherData }) {
   return (
     <motion.div
       variants={fadeUp}
-      className="bg-white rounded-2xl border border-gray-100 p-5"
+      style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} className="rounded-2xl p-5"
     >
       <div className="flex items-center justify-between">
         <div>
@@ -245,7 +245,7 @@ function PrayerTimesCard({ times }: { times: PrayerTimes }) {
   return (
     <motion.div
       variants={fadeUp}
-      className="bg-white rounded-2xl border border-gray-100 p-5"
+      style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} className="rounded-2xl p-5"
     >
       <h3 className="font-bold text-gray-900 mb-3">Prayer Times</h3>
       <div className="grid grid-cols-5 gap-2">
@@ -273,7 +273,7 @@ function NearbyPlacesSection({ places }: { places: NearbyPlace[] }) {
       href={`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="bg-gray-50 hover:bg-gray-100 rounded-xl p-3 flex items-center gap-3 transition-colors"
+      style={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="hover:opacity-80 rounded-xl p-3 flex items-center gap-3 transition-colors"
     >
       <span className="text-2xl">{icon}</span>
       <div className="flex-1 min-w-0">
@@ -415,7 +415,7 @@ function ShareLocationSection({ lat, lng }: { lat: number; lng: number }) {
   return (
     <motion.section variants={fadeUp}>
       <h2 className="text-lg font-bold text-gray-900 mb-4">Share Location</h2>
-      <div className="bg-white rounded-2xl border border-gray-100 p-5">
+      <div style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} className="rounded-2xl p-5">
         <div className="bg-gray-50 rounded-lg p-3 mb-4">
           <p className="text-xs text-gray-400 mb-1">Shareable Link</p>
           <p className="text-sm font-mono text-gray-700 break-all">{shareUrl}</p>
@@ -721,7 +721,7 @@ export default function MyLocationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }}>
       <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         <LocationHeader location={location} geo={geo} />
 

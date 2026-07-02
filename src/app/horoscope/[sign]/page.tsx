@@ -42,7 +42,7 @@ export default function HoroscopeSignPage() {
   const signMeta = ZODIAC_SIGNS.find(s => s.key === sign)!;
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
       <div className="bg-gray-900 border-b border-gray-800 px-4 py-3">
         <div className="max-w-5xl mx-auto flex items-center gap-3">
           <Link href="/horoscope" className="flex items-center gap-1.5 text-gray-400 hover:text-white text-sm transition">
