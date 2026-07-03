@@ -1,111 +1,33 @@
-import { ArrowRight } from 'lucide-react';
+'use client';
 import Link from 'next/link';
 
-const continents = [
-  {
-    name: 'Asia',
-    image: 'https://images.pexels.com/photos/1624076/pexels-photo-1624076.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countries: 48,
-    cities: 4521,
-    gradient: 'from-red-600 to-orange-600',
-    country_slug: 'pakistan'
-  },
-  {
-    name: 'Middle East',
-    image: 'https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countries: 18,
-    cities: 892,
-    gradient: 'from-amber-600 to-yellow-600',
-    country_slug: 'united-arab-emirates'
-  },
-  {
-    name: 'Africa',
-    image: 'https://images.pexels.com/photos/1048929/pexels-photo-1048929.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countries: 54,
-    cities: 1845,
-    gradient: 'from-emerald-600 to-teal-600',
-    country_slug: 'egypt'
-  },
-  {
-    name: 'Europe',
-    image: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countries: 44,
-    cities: 2156,
-    gradient: 'from-blue-600 to-indigo-600',
-    country_slug: 'france'
-  },
-  {
-    name: 'N. America',
-    image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countries: 23,
-    cities: 1102,
-    gradient: 'from-blue-700 to-cyan-600',
-    country_slug: 'united-states'
-  },
-  {
-    name: 'S. America',
-    image: 'https://images.pexels.com/photos/1106127/pexels-photo-1106127.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countries: 12,
-    cities: 789,
-    gradient: 'from-green-600 to-lime-600',
-    country_slug: 'brazil'
-  },
-  {
-    name: 'SE Asia',
-    image: 'https://images.pexels.com/photos/1709229/pexels-photo-1709229.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countries: 11,
-    cities: 654,
-    gradient: 'from-purple-600 to-pink-600',
-    country_slug: 'thailand'
-  },
-  {
-    name: 'Oceania',
-    image: 'https://images.pexels.com/photos/1680247/pexels-photo-1680247.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countries: 14,
-    cities: 288,
-    gradient: 'from-cyan-600 to-teal-600',
-    country_slug: 'australia'
-  }
+const CONTINENTS = [
+  { name: 'Asia',          emoji: '🌏', cities: '4,847', color: '#FF6B35', desc: 'Largest & most populous continent',  slug: 'asia'          },
+  { name: 'Africa',        emoji: '🌍', cities: '2,214', color: '#F7B731', desc: '54 countries, richest biodiversity',  slug: 'africa'        },
+  { name: 'Europe',        emoji: '🌍', cities: '1,842', color: '#4ECDC4', desc: 'History, art and culture hub',        slug: 'europe'        },
+  { name: 'North America', emoji: '🌎', cities: '1,103', color: '#45B7D1', desc: 'From Arctic to Caribbean',            slug: 'north-america' },
+  { name: 'South America', emoji: '🌎', cities: '892',   color: '#96CEB4', desc: 'Amazon, Andes and ancient wonders',   slug: 'south-america' },
+  { name: 'Oceania',       emoji: '🌏', cities: '284',   color: '#FFEAA7', desc: 'Pacific islands & Australia',         slug: 'oceania'       },
+  { name: 'Antarctica',    emoji: '🧊', cities: '6',     color: '#DFE6E9', desc: 'World\'s southernmost continent',     slug: 'antarctica'    },
 ];
 
 export default function ExploreByContinent() {
   return (
-    <div className="mb-12">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-white">Explore by Continent</h2>
-        <span className="text-gray-400">Discover cities worldwide</span>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {continents.map((continent) => (
-          <Link
-            key={continent.name}
-            href={`/${continent.country_slug}`}
-            className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 transition-all block"
-          >
-            <div className="relative h-48">
-              <img
-                src={continent.image}
-                alt={continent.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className={`absolute inset-0 bg-gradient-to-t ${continent.gradient} opacity-60 group-hover:opacity-70 transition-opacity`} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-            </div>
-
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <h3 className="text-xl font-bold text-white mb-2">{continent.name}</h3>
-
+    <div className="mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {CONTINENTS.map((c) => (
+          <Link key={c.slug} href={`/countries?continent=${c.slug}`} className="no-underline group">
+            <div className="relative rounded-2xl overflow-hidden border p-4 h-32 flex flex-col justify-between transition-all group-hover:scale-[1.02]"
+              style={{ background: `linear-gradient(135deg, ${c.color}20, #0a0f1e)`, borderColor: `${c.color}30` }}>
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4 text-sm">
-                  <div className="text-gray-200">
-                    <span className="font-semibold text-white">{continent.countries}</span> countries
-                  </div>
-                  <div className="text-gray-200">
-                    <span className="font-semibold text-white">{continent.cities.toLocaleString()}</span> cities
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all" />
+                <span className="text-2xl">{c.emoji}</span>
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: `${c.color}20`, color: c.color }}>
+                  {c.cities} cities
+                </span>
+              </div>
+              <div>
+                <div className="text-white font-bold text-sm">{c.name}</div>
+                <div className="text-white/40 text-xs mt-0.5 line-clamp-1">{c.desc}</div>
               </div>
             </div>
           </Link>

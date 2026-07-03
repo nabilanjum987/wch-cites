@@ -1,129 +1,66 @@
-import { Landmark, ArrowRight, Sun, Cloud } from 'lucide-react';
+'use client';
 import Link from 'next/link';
+import { useEffect, useRef } from 'react';
 
-const wonders = [
-  {
-    name: 'Petra',
-    country: 'Jordan',
-    countryCode: 'JO',
-    image: 'https://images.pexels.com/photos/2114014/pexels-photo-2114014.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 28, condition: 'sunny' },
-    slug: 'petra'
-  },
-  {
-    name: 'Great Wall of China',
-    country: 'China',
-    countryCode: 'CN',
-    image: 'https://images.pexels.com/photos/2387878/pexels-photo-2387878.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 24, condition: 'cloudy' },
-    slug: 'great-wall-of-china'
-  },
-  {
-    name: 'Christ the Redeemer',
-    country: 'Brazil',
-    countryCode: 'BR',
-    image: 'https://images.pexels.com/photos/1166200/pexels-photo-1166200.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 32, condition: 'sunny' },
-    slug: 'christ-the-redeemer'
-  },
-  {
-    name: 'Machu Picchu',
-    country: 'Peru',
-    countryCode: 'PE',
-    image: 'https://images.pexels.com/photos/2356045/pexels-photo-2356045.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 18, condition: 'cloudy' },
-    slug: 'machu-picchu'
-  },
-  {
-    name: 'Chichen Itza',
-    country: 'Mexico',
-    countryCode: 'MX',
-    image: 'https://images.pexels.com/photos/4058028/pexels-photo-4058028.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 35, condition: 'sunny' },
-    slug: 'chichen-itza'
-  },
-  {
-    name: 'Roman Colosseum',
-    country: 'Italy',
-    countryCode: 'IT',
-    image: 'https://images.pexels.com/photos/1702572/pexels-photo-1702572.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 22, condition: 'sunny' },
-    slug: 'roman-colosseum'
-  },
-  {
-    name: 'Taj Mahal',
-    country: 'India',
-    countryCode: 'IN',
-    image: 'https://images.pexels.com/photos/3581364/pexels-photo-3581364.jpeg?auto=compress&cs=tinysrgb&w=800',
-    weather: { temp: 38, condition: 'sunny' },
-    slug: 'taj-mahal'
-  }
+const WONDERS = [
+  { name: 'Great Wall of China',    country: 'China',  emoji: '🏯', slug: 'great-wall-of-china',    color: '#CC0000', desc: '21,196 km wall built over centuries' },
+  { name: 'Petra',                  country: 'Jordan', emoji: '🏛️', slug: 'petra',                   color: '#C4A265', desc: 'Rose-red city carved into rock' },
+  { name: 'Christ the Redeemer',    country: 'Brazil', emoji: '✝️', slug: 'christ-the-redeemer',     color: '#009C3B', desc: '38m statue overlooking Rio' },
+  { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', slug: 'machu-picchu',            color: '#D9A028', desc: '15th-century Inca citadel' },
+  { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', slug: 'chichen-itza',            color: '#006847', desc: 'Ancient Mayan pyramid city' },
+  { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', slug: 'roman-colosseum',         color: '#008C45', desc: 'Iconic amphitheatre from 70 AD' },
+  { name: 'Taj Mahal',              country: 'India',  emoji: '🕌', slug: 'taj-mahal',               color: '#FF9933', desc: 'White marble mausoleum in Agra' },
 ];
 
-const getCountryFlag = (countryCode: string): string => {
-  const codePoints = countryCode
-    .toUpperCase()
-    .split('')
-    .map(char => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
-};
-
 export default function FeaturedWonders() {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let pos = 0;
+    let raf: number;
+    const step = () => {
+      pos += 0.4;
+      const half = track.scrollWidth / 2;
+      if (pos >= half) pos = 0;
+      track.style.transform = `translateX(-${pos}px)`;
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const doubled = [...WONDERS, ...WONDERS];
+
   return (
-    <div className="mb-12">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-2">
-          <Landmark className="w-5 h-5 text-purple-400" />
-          <h2 className="text-2xl font-bold text-white">Featured Wonders</h2>
-        </div>
-        <Link href="/wonders" className="flex items-center space-x-1 text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
-          <span>Explore all wonders</span>
-          <ArrowRight className="w-4 h-4" />
+    <div className="mb-4">
+      <div className="flex justify-end mb-4">
+        <Link href="/wonders/great-wall-of-china" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors no-underline">
+          Explore All 7 Wonders →
         </Link>
       </div>
-
-      <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
-        {wonders.map((wonder) => (
-          <Link
-            key={wonder.name}
-            href={`/wonders/${wonder.slug}`}
-            className="min-w-[280px] bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-white/30 transition-all flex-shrink-0 group block"
-          >
-            <div className="relative h-44">
-              <img
-                src={wonder.image}
-                alt={wonder.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="flex items-center space-x-2">
-                  <span className="text-xl">{getCountryFlag(wonder.countryCode)}</span>
-                  <span className="text-white font-semibold">{wonder.name}</span>
+      <div className="overflow-hidden rounded-2xl">
+        <div ref={trackRef} className="flex gap-4" style={{ width: 'max-content' }}>
+          {doubled.map((w, i) => (
+            <Link key={i} href={`/wonders/${w.slug}`} className="no-underline flex-shrink-0 w-52">
+              <div className="relative h-44 rounded-2xl overflow-hidden group border"
+                style={{ borderColor: `${w.color}40`, background: `linear-gradient(135deg, ${w.color}20, #0a0f1e)` }}>
+                <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-15 select-none pointer-events-none">{w.emoji}</div>
+                <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
+                  <div className="text-3xl">{w.emoji}</div>
+                  <div>
+                    <div className="text-white font-bold text-sm leading-tight">{w.name}</div>
+                    <div className="text-white/50 text-xs mt-0.5">{w.country}</div>
+                    <div className="text-white/40 text-xs mt-1 line-clamp-2">{w.desc}</div>
+                  </div>
                 </div>
-                <div className="text-gray-300 text-sm">{wonder.country}</div>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: `${w.color}15` }} />
               </div>
-            </div>
-
-            <div className="p-3 flex items-center justify-between">
-              <span className="text-gray-400 text-sm">Weather TODAY</span>
-              <div className="flex items-center space-x-2">
-                {wonder.weather.condition === 'sunny' ? (
-                  <Sun className="w-4 h-4 text-yellow-400" />
-                ) : (
-                  <Cloud className="w-4 h-4 text-gray-400" />
-                )}
-                <span className="text-white font-medium">{wonder.weather.temp}°C</span>
-              </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
-
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
     </div>
   );
 }

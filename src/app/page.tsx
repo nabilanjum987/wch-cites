@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import SearchBar from '@/components/shared/SearchBar';
-import TickerBar from '@/components/shared/TickerBar';
 import LiveGlobalStats from '@/components/home/LiveGlobalStats';
 import FeaturedCitiesGrid from '@/components/home/FeaturedCitiesGrid';
 import ExploreByContinent from '@/components/home/ExploreByContinent';
@@ -18,6 +17,7 @@ import WorldWeatherExtremes from '@/components/home/WorldWeatherExtremes';
 import AllFaithsToday from '@/components/home/AllFaithsToday';
 import HeritageSpotlight from '@/components/home/HeritageSpotlight';
 import AboutAndFooter from '@/components/home/AboutAndFooter';
+import ActiveConflictsWidget from '@/components/home/ActiveConflictsWidget';
 import {
   AuroraBackground,
   AnimatedGradientText,
@@ -28,7 +28,7 @@ import { COLORS, STAGGER_CONTAINER } from '@/lib/design-system';
 import { Globe, Users, Clock, TrendingUp } from 'lucide-react';
 
 export default function Home() {
-  const handleCitySelect = (city: any) => {
+  const handleCitySelect = (city: { country_slug: string; province_slug: string; city_slug: string }) => {
     if (city) {
       window.location.href = `/${city.country_slug}/${city.province_slug}/${city.city_slug}`;
     }
@@ -38,95 +38,45 @@ export default function Home() {
     <>
       {/* ── HERO ── */}
       <AuroraBackground>
-        <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden pt-20">
-          <motion.div
-            className="absolute top-20 right-1/4 w-72 h-72 bg-indigo-500/20 rounded-full filter blur-3xl"
-            animate={{ y: [0, -50, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute bottom-20 left-1/4 w-72 h-72 bg-cyan-500/20 rounded-full filter blur-3xl"
-            animate={{ y: [0, 50, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
-          />
+        <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+          <motion.div className="absolute top-20 right-1/4 w-72 h-72 bg-indigo-500/20 rounded-full filter blur-3xl"
+            animate={{ y: [0, -50, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
+          <motion.div className="absolute bottom-20 left-1/4 w-72 h-72 bg-cyan-500/20 rounded-full filter blur-3xl"
+            animate={{ y: [0, 50, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 4 }} />
 
-          <div className="max-w-6xl mx-auto w-full z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-12"
-            >
+          <div className="max-w-4xl mx-auto w-full z-10 text-center">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+
               <AnimatedGradientText
                 text="Every City. Every Culture. Every Day."
-                className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight block"
               />
 
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-                className="text-xl md:text-2xl mb-8"
-                style={{ color: COLORS.textSecondary }}
-              >
-                Explore the world's cities with real-time data, cultural insights, and global connections
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+                className="text-base md:text-lg mb-4 max-w-2xl mx-auto leading-relaxed"
+                style={{ color: COLORS.textSecondary }}>
+                Live weather, prayer times, gold rates, news and culture for 10,247 cities across 195 countries — updated every day.
               </motion.p>
 
-              {/* SEO Intro Paragraph */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-base md:text-lg max-w-3xl mx-auto mb-10 leading-relaxed"
-                style={{ color: COLORS.textSecondary, opacity: 0.75 }}
-              >
-                WorldCityHub covers 10,247 cities across 195 countries with information that
-                actually changes every day. Each city page gives you the current weather, prayer
-                and faith times for every religion, gold and currency rates, local news, heritage
-                crafts, famous personalities, and cultural events — all gathered from live data
-                sources and updated around the clock. Search any city below, or explore the world
-                by continent, country, faith, or ocean. Whatever corner of the earth you are
-                curious about, you will find it here.
-              </motion.p>
-
-              {/* Search Bar */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="max-w-2xl mx-auto mb-12"
-              >
-                <div
-                  className="backdrop-blur-md border rounded-2xl p-4 shadow-2xl"
-                  style={{
-                    backgroundColor: `rgba(10, 15, 30, 0.6)`,
-                    borderColor: COLORS.border,
-                  }}
-                >
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}
+                className="max-w-2xl mx-auto mb-10">
+                <div className="backdrop-blur-md border rounded-2xl p-4"
+                  style={{ backgroundColor: 'rgba(10,15,30,0.6)', borderColor: COLORS.border }}>
                   <SearchBar onCitySelect={handleCitySelect} />
                 </div>
               </motion.div>
 
-              {/* Stats */}
-              <motion.div
-                variants={STAGGER_CONTAINER}
-                initial="initial"
-                animate="animate"
-                className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
-              >
-                <AnimatedCounter label="Cities" value={10247} icon={<Globe className="w-6 h-6 text-indigo-400" />} />
-                <AnimatedCounter label="Countries" value={195} icon={<Users className="w-6 h-6 text-cyan-400" />} />
-                <AnimatedCounter label="Faiths Covered" value={7} icon={<Clock className="w-6 h-6 text-purple-400" />} />
-                <AnimatedCounter label="Live Updates" value={24} suffix="/7" icon={<TrendingUp className="w-6 h-6 text-emerald-400" />} />
+              <motion.div variants={STAGGER_CONTAINER} initial="initial" animate="animate"
+                className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <AnimatedCounter label="Cities"        value={10247} icon={<Globe      className="w-6 h-6 text-indigo-400" />} />
+                <AnimatedCounter label="Countries"     value={195}   icon={<Users      className="w-6 h-6 text-cyan-400"   />} />
+                <AnimatedCounter label="Faiths"        value={7}     icon={<Clock      className="w-6 h-6 text-purple-400" />} />
+                <AnimatedCounter label="Live Updates"  value={24} suffix="/7" icon={<TrendingUp className="w-6 h-6 text-emerald-400" />} />
               </motion.div>
             </motion.div>
           </div>
 
-          <motion.div
-            className="absolute bottom-10"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
+          <motion.div className="absolute bottom-10" animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}>
             <svg className="w-6 h-6 mx-auto" style={{ color: COLORS.accent }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
@@ -134,227 +84,121 @@ export default function Home() {
         </section>
       </AuroraBackground>
 
-      {/* ── TICKER ── */}
-      <motion.section
-        className="sticky top-16 z-40"
-        style={{ backgroundColor: `rgba(10, 15, 30, 0.95)`, borderBottom: `1px solid ${COLORS.border}`, backdropFilter: 'blur(10px)' }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-      >
-        <TickerBar />
-      </motion.section>
-
       {/* ── GLOBAL INSIGHTS ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: `${COLORS.background}ee` }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Global Insights" />
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-              Four numbers that tell you the state of the world right now. How many cities are live
-              on WorldCityHub, what the next prayer time is in Mecca, where today's gold price
-              stands, and which city is currently the hottest on earth. These figures refresh
-              automatically throughout the day so every time you visit you are seeing the actual
-              current picture, not a cached snapshot from hours ago.
-            </p>
-            <LiveGlobalStats />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="dark" title="Global Insights"
+        desc="Four numbers that tell you the state of the world right now — cities live, next prayer in Mecca, today's gold price, and the hottest city on earth. Refreshed automatically.">
+        <LiveGlobalStats />
+      </Section>
 
       {/* ── FEATURED CITIES ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Featured Cities" />
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-              From Mecca to Mumbai, from London to Lahore, these twelve cities represent the
-              diversity of what WorldCityHub covers. Each card shows the city's current temperature,
-              faith time, and a direct link to its full city page with weather, news, rates, heritage,
-              and more. Click any city to see everything about it updated for today.
-            </p>
-            <FeaturedCitiesGrid />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="darker" title="Featured Cities"
+        desc="Twelve cities, live data. Click any city for full weather, prayer times, rates, news, and heritage.">
+        <FeaturedCitiesGrid />
+      </Section>
 
-      {/* ── PRAYER TIMES AROUND THE WORLD ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: `${COLORS.background}cc` }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Prayer Times Around the World" />
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-              For over a billion Muslims around the world, five prayer times shape the rhythm of
-              every single day. This strip shows the next upcoming prayer for major cities across
-              the globe, from Mecca and Medina to Karachi, Lahore, Dubai, and beyond. Every city
-              on WorldCityHub has its own dedicated prayer times page with a full monthly timetable,
-              Qibla direction, and browser notification reminders.
-            </p>
-            <LivePrayerTimesStrip />
-          </div>
-        </section>
-      </ScrollAnimation>
+      {/* ── PRAYER TIMES ── */}
+      <Section bg="dark" title="Prayer Times Around the World"
+        desc="Next prayer across major Muslim-majority cities, updated live. Click any city for full monthly timetable and Qibla direction.">
+        <LivePrayerTimesStrip />
+      </Section>
 
       {/* ── GLOBAL MARKET SNAPSHOT ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Global Market Snapshot" />
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-              Gold, Bitcoin, and oil move every hour and affect the cost of living in cities across
-              the world. This snapshot shows where the three biggest global market indicators are
-              sitting right now, alongside live currency exchange rates including USD to PKR, EUR,
-              GBP, and the major Gulf currencies. For a city-specific gold rate in local units like
-              tola or per 10g, visit any city's Rates page directly.
-            </p>
-            <GlobalMarketSnapshot />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="darker" title="Live Market Rates"
+        desc="Gold, Bitcoin, oil, and major currency pairs updated continuously. Click 'Full rates page' for city-specific gold in tola and local currency.">
+        <GlobalMarketSnapshot />
+      </Section>
 
       {/* ── WORLD WONDERS ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: `${COLORS.background}cc` }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="World Wonders" />
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-              The world's most remarkable structures and natural sites have drawn travellers,
-              scholars, and pilgrims for centuries. WorldCityHub gives each wonder its own page
-              showing today's weather at the site, visiting information, the city and country it
-              belongs to, and its historical significance. These are not just tourist attractions.
-              They are the places that define the civilisations that built them.
-            </p>
-            <FeaturedWonders />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="dark" title="Seven Wonders of the World"
+        desc="Each wonder has its own page with today's weather, visiting guide, history, photography tips, and nearby attractions.">
+        <FeaturedWonders />
+      </Section>
 
       {/* ── EXPLORE BY CONTINENT ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Explore by Continent" />
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-              The world divides into eight major regions, each with its own climate, culture,
-              economic character, and religious traditions. Asia alone has over 4,500 cities on
-              WorldCityHub. The Middle East brings together the most searched prayer time cities.
-              Europe holds the most UNESCO heritage sites. Click any continent to browse its
-              countries and cities, or use the search bar above to go directly to any city in the
-              world.
-            </p>
-            <ExploreByContinent />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="darker" title="Explore by Continent"
+        desc="All seven continents with city counts. Browse countries and cities by region.">
+        <ExploreByContinent />
+      </Section>
 
-      {/* ── COUNTRIES OF THE WORLD ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: `${COLORS.background}cc` }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Countries of the World" />
-            <FeaturedCountries />
-          </div>
-        </section>
-      </ScrollAnimation>
+      {/* ── COUNTRIES ── */}
+      <Section bg="dark" title="Countries of the World"
+        desc="195 countries, each with its own page covering provinces, cities, economy, culture, and more.">
+        <FeaturedCountries />
+      </Section>
 
       {/* ── EXPLORE BY FAITH ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Explore the World by Faith" subtitle="Cities, sacred times, and cultural practices across every major belief system" />
-            <ExploreByReligion />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="darker" title="Explore the World by Faith"
+        desc="Seven traditions. Prayer times, sacred calendars, and cultural practices across every major belief system.">
+        <ExploreByReligion />
+      </Section>
 
       {/* ── WORLD NEWS ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: `${COLORS.background}cc` }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="World News by Region" />
-            <WorldNewsSection />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="dark" title="World News by Region"
+        desc="Latest news from every region of the world, sourced from international wire services.">
+        <WorldNewsSection />
+      </Section>
 
-      {/* ── WORLD WEATHER EXTREMES ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="World Weather Today" />
-            <WorldWeatherExtremes />
-          </div>
-        </section>
-      </ScrollAnimation>
+      {/* ── WORLD WEATHER + CLOCKS ── */}
+      <Section bg="darker" title="World Weather & Clocks"
+        desc="Where it is hottest, coldest, rainiest, and snowiest right now — plus live analog clocks for four major world time zones.">
+        <WorldWeatherExtremes />
+      </Section>
+
+      {/* ── ACTIVE CONFLICTS ── */}
+      <Section bg="dark" title="Active Conflicts"
+        desc="Factual, educational overview. Sources: UN, ACLED. No sides taken.">
+        <ActiveConflictsWidget />
+      </Section>
 
       {/* ── OCEANS TODAY ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: `${COLORS.background}cc` }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Oceans Today" />
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-              The world's five oceans cover over 70 percent of the earth's surface and directly
-              shape the weather, trade, and daily life of every coastal city on the planet. This
-              section shows current sea surface temperatures, wave conditions, and weather patterns
-              across the Pacific, Atlantic, Indian, Arctic, and Southern Oceans. Click any ocean
-              to see conditions for major seas within it, including the Arabian Sea, the
-              Mediterranean, and the Red Sea.
-            </p>
-            <OceansToday />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="darker" title="Oceans Today"
+        desc="Current conditions across the Pacific, Atlantic, Indian, Arctic and Southern Oceans. Each ocean links to its own full page.">
+        <OceansToday />
+      </Section>
 
       {/* ── ALL FAITHS TODAY ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="All Faiths Today" subtitle="Seven calendar systems. One planet. Today's date across every tradition." />
-            <AllFaithsToday />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="dark" title="All Faiths Today"
+        desc="Seven calendar systems. One planet. Today's date across every major tradition.">
+        <AllFaithsToday />
+      </Section>
 
       {/* ── HERITAGE SPOTLIGHT ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: `${COLORS.background}cc` }}>
-          <div className="max-w-6xl mx-auto">
-            <SectionHeader title="Heritage Spotlight" subtitle="One craft. One city. One story." />
-            <HeritageSpotlight />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="darker" title="Heritage Spotlight"
+        desc="Traditional crafts and cultural treasures from cities around the world.">
+        <HeritageSpotlight />
+      </Section>
 
       {/* ── DID YOU KNOW ── */}
-      <ScrollAnimation>
-        <section className="py-16 px-4" style={{ backgroundColor: COLORS.background }}>
-          <div className="max-w-6xl mx-auto">
-            <DidYouKnow />
-          </div>
-        </section>
-      </ScrollAnimation>
+      <Section bg="dark" title="">
+        <DidYouKnow />
+      </Section>
 
-      {/* ── ABOUT + FOOTER ── */}
+      {/* ── FOOTER ── */}
       <AboutAndFooter />
     </>
   );
 }
 
-function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
+function Section({ bg, title, desc, children }: {
+  bg: 'dark' | 'darker'; title: string; desc?: string; children: React.ReactNode;
+}) {
+  const bgColor = bg === 'dark' ? COLORS.background : `${COLORS.background}cc`;
   return (
-    <div className="mb-6">
-      <motion.h2
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="text-3xl md:text-4xl font-bold text-white"
-      >
-        {title}
-      </motion.h2>
-      {subtitle && (
-        <p className="text-gray-500 text-base mt-2">{subtitle}</p>
-      )}
-    </div>
+    <ScrollAnimation>
+      <section className="py-14 px-4" style={{ backgroundColor: bgColor }}>
+        <div className="max-w-6xl mx-auto">
+          {title && (
+            <motion.h2
+              initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }} viewport={{ once: true }}
+              className="text-2xl md:text-3xl font-bold text-white mb-3">
+              {title}
+            </motion.h2>
+          )}
+          {desc && <p className="text-white/40 text-sm leading-relaxed mb-6 max-w-3xl">{desc}</p>}
+          {children}
+        </div>
+      </section>
+    </ScrollAnimation>
   );
 }

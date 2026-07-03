@@ -1,59 +1,72 @@
+'use client';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
-const featuredCountries = [
-  { name: 'Pakistan',       flag: '🇵🇰', cities: 312,  slug: 'pakistan',       color: '#01411C' },
-  { name: 'Saudi Arabia',   flag: '🇸🇦', cities: 89,   slug: 'saudi-arabia',   color: '#006C35' },
-  { name: 'India',          flag: '🇮🇳', cities: 640,  slug: 'india',          color: '#FF9933' },
-  { name: 'UAE',            flag: '🇦🇪', cities: 42,   slug: 'uae',            color: '#00732F' },
-  { name: 'United Kingdom', flag: '🇬🇧', cities: 185,  slug: 'uk',             color: '#012169' },
-  { name: 'USA',            flag: '🇺🇸', cities: 924,  slug: 'usa',            color: '#B22234' },
-  { name: 'Turkey',         flag: '🇹🇷', cities: 148,  slug: 'turkey',         color: '#E30A17' },
-  { name: 'Egypt',          flag: '🇪🇬', cities: 97,   slug: 'egypt',          color: '#CE1126' },
-  { name: 'Indonesia',      flag: '🇮🇩', cities: 210,  slug: 'indonesia',      color: '#CE1126' },
-  { name: 'Malaysia',       flag: '🇲🇾', cities: 78,   slug: 'malaysia',       color: '#CC0001' },
-  { name: 'China',          flag: '🇨🇳', cities: 370,  slug: 'china',          color: '#DE2910' },
-  { name: 'France',         flag: '🇫🇷', cities: 156,  slug: 'france',         color: '#002395' },
+const COUNTRIES = [
+  { name: 'Pakistan',      flag: '🇵🇰', code: 'PK', cities: 142, color: '#01411C', slug: 'pakistan'       },
+  { name: 'India',         flag: '🇮🇳', code: 'IN', cities: 312, color: '#FF9933', slug: 'india'          },
+  { name: 'Saudi Arabia',  flag: '🇸🇦', code: 'SA', cities: 87,  color: '#006C35', slug: 'saudi-arabia'   },
+  { name: 'UAE',           flag: '🇦🇪', code: 'AE', cities: 38,  color: '#00732F', slug: 'united-arab-emirates' },
+  { name: 'United States', flag: '🇺🇸', code: 'US', cities: 287, color: '#B22234', slug: 'united-states'  },
+  { name: 'United Kingdom',flag: '🇬🇧', code: 'GB', cities: 198, color: '#012169', slug: 'united-kingdom' },
+  { name: 'Turkey',        flag: '🇹🇷', code: 'TR', cities: 94,  color: '#E30A17', slug: 'turkey'         },
+  { name: 'Indonesia',     flag: '🇮🇩', code: 'ID', cities: 112, color: '#CE1126', slug: 'indonesia'      },
+  { name: 'Egypt',         flag: '🇪🇬', code: 'EG', cities: 67,  color: '#CE1126', slug: 'egypt'          },
+  { name: 'Nigeria',       flag: '🇳🇬', code: 'NG', cities: 78,  color: '#008751', slug: 'nigeria'        },
+  { name: 'Brazil',        flag: '🇧🇷', code: 'BR', cities: 203, color: '#009C3B', slug: 'brazil'         },
+  { name: 'Japan',         flag: '🇯🇵', code: 'JP', cities: 167, color: '#BC002D', slug: 'japan'          },
 ];
 
+const PAGE_SIZE = 4;
+
 export default function FeaturedCountries() {
+  const [page, setPage] = useState(0);
+  const totalPages = Math.ceil(COUNTRIES.length / PAGE_SIZE);
+  const visible = COUNTRIES.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPage(p => (p + 1) % totalPages);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [totalPages]);
+
   return (
     <div className="mb-4">
-      {/* Section SEO Paragraph */}
-      <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-        WorldCityHub spans 195 countries and every major territory on earth. Each country page brings
-        together weather across major cities, prayer and faith times, gold and currency rates,
-        national news, heritage products, and a full guide to the country's provinces and cities.
-        Below are twelve of the most visited countries on the platform. Click any country to explore
-        its cities, or browse the full directory to find any nation in the world.
-      </p>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
-        {featuredCountries.map((country) => (
-          <Link
-            key={country.slug}
-            href={`/${country.slug}`}
-            className="group relative rounded-2xl border border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all p-4 flex flex-col items-center text-center gap-2"
-          >
-            <span className="text-4xl leading-none">{country.flag}</span>
-            <span className="text-white font-semibold text-sm leading-tight">{country.name}</span>
-            <span className="text-gray-500 text-xs">{country.cities.toLocaleString()} cities</span>
-            <div
-              className="absolute bottom-0 left-0 right-0 h-0.5 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{ backgroundColor: country.color }}
-            />
+      <div className="flex justify-end mb-4">
+        <Link href="/countries" className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors no-underline">
+          View All 195 Countries →
+        </Link>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+        {visible.map((c) => (
+          <Link key={c.code} href={`/${c.slug}`} className="no-underline group">
+            <div className="relative rounded-2xl overflow-hidden border p-4 h-28 flex flex-col justify-between transition-all group-hover:scale-[1.02]"
+              style={{ background: `linear-gradient(135deg, ${c.color}25, #0a0f1e)`, borderColor: `${c.color}40` }}>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl">{c.flag}</span>
+                <span className="text-xs text-white/40 font-mono">{c.code}</span>
+              </div>
+              <div>
+                <div className="text-white font-bold text-sm">{c.name}</div>
+                <div className="text-white/40 text-xs">{c.cities} cities</div>
+              </div>
+              {/* Dim flag in background */}
+              <div className="absolute inset-0 flex items-center justify-end pr-3 pointer-events-none select-none">
+                <span style={{ fontSize: '56px', opacity: 0.08 }}>{c.flag}</span>
+              </div>
+            </div>
           </Link>
         ))}
       </div>
-
-      <div className="flex justify-center">
-        <Link
-          href="/countries"
-          className="flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white font-medium text-sm transition-all hover:border-white/40"
-        >
-          View all 195 countries
-          <ArrowRight className="w-4 h-4" />
-        </Link>
+      {/* Dot navigation */}
+      <div className="flex items-center justify-center gap-2">
+        {Array.from({ length: totalPages }).map((_, i) => (
+          <button key={i} onClick={() => setPage(i)}
+            className="w-2 h-2 rounded-full transition-all"
+            style={{ backgroundColor: i === page ? '#06b6d4' : 'rgba(255,255,255,0.2)' }}
+          />
+        ))}
       </div>
     </div>
   );

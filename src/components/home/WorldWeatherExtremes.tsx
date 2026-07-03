@@ -1,106 +1,112 @@
-import Link from 'next/link';
-import { Thermometer, Droplets, Wind, ArrowRight } from 'lucide-react';
+'use client';
+import { useEffect, useState } from 'react';
 
-const hottest = [
-  { city: 'Multan', country: 'PK', temp: 44, flag: '🇵🇰', slug: '/pakistan/punjab/multan' },
-  { city: 'Kuwait City', country: 'KW', temp: 43, flag: '🇰🇼', slug: '/kuwait/kuwait/kuwait-city' },
-  { city: 'Riyadh', country: 'SA', temp: 42, flag: '🇸🇦', slug: '/saudi-arabia/riyadh/riyadh' },
+const EXTREMES = [
+  { city: 'Jacobabad, Pakistan', type: 'Hottest', value: '52°C', emoji: '🔥', color: '#ef4444' },
+  { city: 'Oymyakon, Russia',    type: 'Coldest', value: '-67°C', emoji: '🥶', color: '#3b82f6' },
+  { city: 'Mawsynram, India',    type: 'Rainiest', value: '11,871mm/yr', emoji: '🌧️', color: '#06b6d4' },
+  { city: 'Atacama, Chile',      type: 'Driest',  value: '0.1mm/yr', emoji: '🏜️', color: '#f59e0b' },
+  { city: 'Wellington, NZ',      type: 'Windiest', value: '29km/h avg', emoji: '💨', color: '#8b5cf6' },
+  { city: 'Aomori, Japan',       type: 'Snowiest', value: '792cm/yr', emoji: '❄️', color: '#67e8f9' },
 ];
 
-const coldest = [
-  { city: 'Yakutsk', country: 'RU', temp: -8, flag: '🇷🇺', slug: '/russia/sakha/yakutsk' },
-  { city: 'Ulaanbaatar', country: 'MN', temp: -4, flag: '🇲🇳', slug: '/mongolia/ulaanbaatar/ulaanbaatar' },
-  { city: 'Reykjavik', country: 'IS', temp: 5, flag: '🇮🇸', slug: '/iceland/capital/reykjavik' },
+const CLOCK_CITIES = [
+  { name: 'London',   timezone: 'Europe/London',        color: '#3b82f6' },
+  { name: 'Dubai',    timezone: 'Asia/Dubai',           color: '#f59e0b' },
+  { name: 'New York', timezone: 'America/New_York',     color: '#ef4444' },
+  { name: 'Tokyo',    timezone: 'Asia/Tokyo',           color: '#10b981' },
 ];
 
-const rainiest = [
-  { city: 'Mumbai', country: 'IN', rain: '38mm', flag: '🇮🇳', slug: '/india/maharashtra/mumbai' },
-  { city: 'Dhaka', country: 'BD', rain: '32mm', flag: '🇧🇩', slug: '/bangladesh/dhaka/dhaka' },
-  { city: 'Jakarta', country: 'ID', rain: '28mm', flag: '🇮🇩', slug: '/indonesia/jakarta/jakarta' },
-];
+function AnalogClock({ timezone, color, name }: { timezone: string; color: string; name: string }) {
+  const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
+
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      const str = now.toLocaleTimeString('en-US', { timeZone: timezone, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const [h, m, s] = str.split(':').map(Number);
+      setTime({ h, m, s });
+    };
+    update();
+    const id = setInterval(update, 1000);
+    return () => clearInterval(id);
+  }, [timezone]);
+
+  const size = 80;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = size / 2 - 4;
+
+  const hourAngle   = ((time.h % 12) + time.m / 60) * 30 - 90;
+  const minuteAngle = (time.m + time.s / 60) * 6 - 90;
+  const secondAngle = time.s * 6 - 90;
+
+  const toRad = (deg: number) => deg * Math.PI / 180;
+  const handEnd = (angle: number, length: number) => ({
+    x: cx + length * Math.cos(toRad(angle)),
+    y: cy + length * Math.sin(toRad(angle)),
+  });
+
+  const hEnd = handEnd(hourAngle,   r * 0.5);
+  const mEnd = handEnd(minuteAngle, r * 0.7);
+  const sEnd = handEnd(secondAngle, r * 0.85);
+
+  const timeStr = new Date().toLocaleTimeString('en-US', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: true });
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {/* Face */}
+        <circle cx={cx} cy={cy} r={r} fill="rgba(255,255,255,0.04)" stroke={color} strokeWidth="2" />
+        {/* Hour markers */}
+        {[...Array(12)].map((_, i) => {
+          const a = (i * 30 - 90) * Math.PI / 180;
+          const x1 = cx + (r - 4) * Math.cos(a);
+          const y1 = cy + (r - 4) * Math.sin(a);
+          const x2 = cx + r * Math.cos(a);
+          const y2 = cy + r * Math.sin(a);
+          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />;
+        })}
+        {/* Hour hand */}
+        <line x1={cx} y1={cy} x2={hEnd.x} y2={hEnd.y} stroke={color} strokeWidth="3" strokeLinecap="round" />
+        {/* Minute hand */}
+        <line x1={cx} y1={cy} x2={mEnd.x} y2={mEnd.y} stroke="white" strokeWidth="2" strokeLinecap="round" />
+        {/* Second hand */}
+        <line x1={cx} y1={cy} x2={sEnd.x} y2={sEnd.y} stroke="#ef4444" strokeWidth="1" strokeLinecap="round" />
+        {/* Centre dot */}
+        <circle cx={cx} cy={cy} r="3" fill={color} />
+      </svg>
+      <div className="text-white font-semibold text-sm">{name}</div>
+      <div className="text-white/40 text-xs">{timeStr}</div>
+    </div>
+  );
+}
 
 export default function WorldWeatherExtremes() {
   return (
-    <div className="mb-4">
-      {/* SEO Paragraph */}
-      <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
-        Right now, somewhere on earth it is hitting 44 degrees, and somewhere else it is well below
-        freezing. WorldCityHub tracks today's temperature extremes and rainfall across thousands of
-        cities, updated throughout the day. Whether you are tracking a heatwave, planning around
-        monsoon season, or just curious which city is the coldest on earth today, this section gives
-        you a live snapshot of the world's weather in one place.
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        {/* Hottest */}
-        <div className="rounded-2xl bg-gradient-to-br from-red-500/15 to-orange-500/15 border border-red-400/20 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Thermometer className="w-5 h-5 text-red-400" />
-            <span className="text-white font-bold">Hottest Today</span>
+    <div className="mb-4 space-y-6">
+      {/* Weather extremes grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {EXTREMES.map((e) => (
+          <div key={e.type} className="rounded-xl border p-4" style={{ background: `${e.color}10`, borderColor: `${e.color}30` }}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-2xl">{e.emoji}</span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: `${e.color}20`, color: e.color }}>{e.type}</span>
+            </div>
+            <div className="text-white font-bold text-lg">{e.value}</div>
+            <div className="text-white/40 text-xs mt-0.5">{e.city}</div>
           </div>
-          <div className="space-y-3">
-            {hottest.map((c, i) => (
-              <Link key={c.city} href={c.slug} className="flex items-center justify-between group">
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-500 text-xs w-4">{i + 1}</span>
-                  <span className="text-lg leading-none">{c.flag}</span>
-                  <span className="text-white text-sm font-medium group-hover:text-red-300 transition-colors">{c.city}</span>
-                </div>
-                <span className="text-red-400 font-bold text-sm">{c.temp}°C</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Coldest */}
-        <div className="rounded-2xl bg-gradient-to-br from-blue-500/15 to-cyan-500/15 border border-blue-400/20 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Wind className="w-5 h-5 text-blue-400" />
-            <span className="text-white font-bold">Coldest Today</span>
-          </div>
-          <div className="space-y-3">
-            {coldest.map((c, i) => (
-              <Link key={c.city} href={c.slug} className="flex items-center justify-between group">
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-500 text-xs w-4">{i + 1}</span>
-                  <span className="text-lg leading-none">{c.flag}</span>
-                  <span className="text-white text-sm font-medium group-hover:text-blue-300 transition-colors">{c.city}</span>
-                </div>
-                <span className="text-blue-400 font-bold text-sm">{c.temp}°C</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Rainiest */}
-        <div className="rounded-2xl bg-gradient-to-br from-teal-500/15 to-emerald-500/15 border border-teal-400/20 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Droplets className="w-5 h-5 text-teal-400" />
-            <span className="text-white font-bold">Rainiest Today</span>
-          </div>
-          <div className="space-y-3">
-            {rainiest.map((c, i) => (
-              <Link key={c.city} href={c.slug} className="flex items-center justify-between group">
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-500 text-xs w-4">{i + 1}</span>
-                  <span className="text-lg leading-none">{c.flag}</span>
-                  <span className="text-white text-sm font-medium group-hover:text-teal-300 transition-colors">{c.city}</span>
-                </div>
-                <span className="text-teal-400 font-bold text-sm">{c.rain}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div className="flex justify-center">
-        <Link
-          href="/weather"
-          className="flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white font-medium text-sm transition-all hover:border-teal-400/50"
-        >
-          Explore world weather
-          <ArrowRight className="w-4 h-4" />
-        </Link>
+      {/* World clocks */}
+      <div>
+        <div className="text-white/40 text-xs uppercase tracking-wider mb-4">World Clocks — Live</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+          {CLOCK_CITIES.map((c) => (
+            <AnalogClock key={c.name} name={c.name} timezone={c.timezone} color={c.color} />
+          ))}
+        </div>
       </div>
     </div>
   );

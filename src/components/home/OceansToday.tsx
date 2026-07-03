@@ -1,110 +1,39 @@
-import { Waves, Thermometer, Wind } from 'lucide-react';
+'use client';
 import Link from 'next/link';
 
-const oceans = [
-  {
-    name: 'Pacific Ocean',
-    temp: 22,
-    condition: 'Fair',
-    waveHeight: '1.2m',
-    image: 'https://images.pexels.com/photos/1579253/pexels-photo-1579253.jpeg?auto=compress&cs=tinysrgb&w=800',
-    slug: 'pacific-ocean'
-  },
-  {
-    name: 'Atlantic Ocean',
-    temp: 19,
-    condition: 'Moderate',
-    waveHeight: '1.8m',
-    image: 'https://images.pexels.com/photos/1547867/pexels-photo-1547867.jpeg?auto=compress&cs=tinysrgb&w=800',
-    slug: 'atlantic-ocean'
-  },
-  {
-    name: 'Indian Ocean',
-    temp: 26,
-    condition: 'Fair',
-    waveHeight: '0.8m',
-    image: 'https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=800',
-    slug: 'indian-ocean'
-  },
-  {
-    name: 'Arctic Ocean',
-    temp: 2,
-    condition: 'Cold',
-    waveHeight: '2.1m',
-    image: 'https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&w=800',
-    slug: 'arctic-ocean'
-  },
-  {
-    name: 'Southern Ocean',
-    temp: 5,
-    condition: 'Rough',
-    waveHeight: '3.5m',
-    image: 'https://images.pexels.com/photos/2101867/pexels-photo-2101867.jpeg?auto=compress&cs=tinysrgb&w=800',
-    slug: 'southern-ocean'
-  }
+const OCEANS = [
+  { name: 'Pacific Ocean',  emoji: '🌊', temp: '18°C', slug: 'pacific-ocean',  area: '165.25M km²', color: '#0369a1', condition: 'Moderate waves' },
+  { name: 'Atlantic Ocean', emoji: '🌊', temp: '16°C', slug: 'atlantic-ocean', area: '106.46M km²', color: '#1d4ed8', condition: 'Calm' },
+  { name: 'Indian Ocean',   emoji: '🌊', temp: '24°C', slug: 'indian-ocean',   area: '70.56M km²',  color: '#0891b2', condition: 'Monsoon season' },
+  { name: 'Arctic Ocean',   emoji: '🧊', temp: '-2°C', slug: 'arctic-ocean',   area: '14.06M km²',  color: '#7c3aed', condition: 'Ice covered' },
+  { name: 'Southern Ocean', emoji: '🌊', temp: '2°C',  slug: 'southern-ocean', area: '21.96M km²',  color: '#065f46', condition: 'Stormy' },
 ];
-
-const getConditionColor = (condition: string) => {
-  switch (condition) {
-    case 'Fair': return 'text-green-400 bg-green-400/20';
-    case 'Moderate': return 'text-yellow-400 bg-yellow-400/20';
-    case 'Cold': return 'text-blue-400 bg-blue-400/20';
-    case 'Rough': return 'text-red-400 bg-red-400/20';
-    default: return 'text-gray-400 bg-gray-400/20';
-  }
-};
 
 export default function OceansToday() {
   return (
-    <div className="mb-12">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-2">
-          <Waves className="w-5 h-5 text-cyan-400" />
-          <h2 className="text-2xl font-bold text-white">Oceans Today</h2>
-        </div>
-        <span className="text-gray-400 text-sm">Current conditions</span>
+    <div className="mb-4">
+      <div className="flex justify-end mb-4">
+        <Link href="/oceans/pacific-ocean" className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors no-underline">
+          Explore All Oceans →
+        </Link>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        {oceans.map((ocean) => (
-          <Link
-            key={ocean.name}
-            href={`/oceans/${ocean.slug}`}
-            className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-cyan-400/30 transition-all group block"
-          >
-            <div className="relative h-32">
-              <img
-                src={ocean.image}
-                alt={ocean.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-              <div className="absolute bottom-2 left-2">
-                <h3 className="text-white font-semibold text-sm">{ocean.name}</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {OCEANS.map((o) => (
+          <Link key={o.slug} href={`/oceans/${o.slug}`} className="no-underline group">
+            <div className="relative rounded-2xl border p-4 h-36 flex flex-col justify-between overflow-hidden transition-all group-hover:scale-[1.02]"
+              style={{ background: `linear-gradient(160deg, ${o.color}40, #0a0f1e)`, borderColor: `${o.color}40` }}>
+              {/* Background wave emoji */}
+              <div className="absolute inset-0 flex items-center justify-center text-8xl opacity-10 select-none pointer-events-none">{o.emoji}</div>
+              <div className="flex items-center justify-between z-10">
+                <span className="text-2xl">{o.emoji}</span>
+                <span className="text-white font-bold text-lg">{o.temp}</span>
               </div>
-            </div>
-
-            <div className="p-3 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-1 text-gray-400 text-xs">
-                  <Thermometer className="w-3 h-3" />
-                  <span>Water Temp</span>
+              <div className="z-10">
+                <div className="text-white font-semibold text-xs leading-tight">{o.name}</div>
+                <div className="text-white/40 text-xs mt-0.5">{o.area}</div>
+                <div className="text-xs mt-1 px-1.5 py-0.5 rounded-full inline-block" style={{ backgroundColor: `${o.color}30`, color: '#7dd3fc' }}>
+                  {o.condition}
                 </div>
-                <span className="text-cyan-400 font-bold">{ocean.temp}°C</span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-1 text-gray-400 text-xs">
-                  <Wind className="w-3 h-3" />
-                  <span>Waves</span>
-                </div>
-                <span className="text-white text-sm">{ocean.waveHeight}</span>
-              </div>
-
-              <div>
-                <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${getConditionColor(ocean.condition)}`}>
-                  {ocean.condition}
-                </span>
               </div>
             </div>
           </Link>
