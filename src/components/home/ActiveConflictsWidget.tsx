@@ -37,7 +37,6 @@ export default function ActiveConflictsWidget() {
           </Link>
         ))}
       </div>
-      <p className="text-white/25 text-xs">Sources: UN, ACLED. Factual data only. No political positions taken.</p>
     </div>
   );
 }

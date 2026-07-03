@@ -114,14 +114,9 @@ export function AnimatedGradientText({ text, className = '' }: AnimatedGradientT
   return (
     <motion.h1
       className={`bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent bg-300% ${className}`}
-      animate={{
-        backgroundPosition: ['0% center', '100% center', '0% center'],
-      }}
-      transition={{
-        duration: 8,
-        repeat: Infinity,
-        ease: 'linear',
-      }}
+      style={{ hyphens: 'none', wordBreak: 'keep-all', overflowWrap: 'normal' }}
+      animate={{ backgroundPosition: ['0% center', '100% center', '0% center'] }}
+      transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
     >
       {text}
     </motion.h1>
