@@ -6,10 +6,11 @@ import GrowthDashboard from '@/components/shared/GrowthDashboard';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { getSupabase } from '@/lib/supabase';
 import {
   ChevronRight, TrendingUp, TrendingDown, ArrowRight,
   Globe, Users, Coins, Calendar, ShieldAlert, Utensils,
-  Leaf, Trophy, Mountain, Thermometer, Star, Newspaper, Gem, MapPin,
+  Leaf, Trophy, Mountain, Thermometer, Star, Newspaper, Gem, MapPin, Building2,
 } from 'lucide-react';
 import {
   generateCitiesWeatherParagraph, generateCitiesWeatherAfter,
@@ -39,6 +40,7 @@ interface Country {
 }
 interface CityWeather { name: string; slug: string; temp: number; condition: string; icon: string; provinceSlug: string; }
 interface Province { name: string; slug: string; capital: string; population: number; area: number; tagline: string; cities: string[]; }
+interface SupabaseCity { name: string; city_slug: string; province_slug: string; population: number; primary_color: string | null; famous_for: string | null; }
 interface Personality { id: string; name: string; profession: string; category: string; photo: string; birthYear: number; achievements: string; }
 interface Landmark { id: string; name: string; type: string; city: string; image: string; unesco: boolean; era: string; }
 interface Economy { gdp: string; growth: string; inflation: string; unemployment: string; currencyRate: string; exports: string[]; }
@@ -394,6 +396,8 @@ export default function CountryPage() {
   const params = useParams<{ country: string }>();
   const [country, setCountry] = useState<Country | null>(null);
   const [cities, setCities] = useState<CityWeather[]>([]);
+  const [majorCities, setMajorCities] = useState<SupabaseCity[]>([]);
+  const [majorCitiesLoading, setMajorCitiesLoading] = useState(true);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [personalities, setPersonalities] = useState<Personality[]>([]);
   const [activeCategory, setActiveCategory] = useState('All');
@@ -428,6 +432,47 @@ export default function CountryPage() {
     setFoods(FOODS[countryData.code] || []);
     setEmergency(EMERGENCY[countryData.code] || []);
     setLoading(false);
+  }, [params]);
+
+  // Real Supabase-backed major cities for THIS country's URL slug — works for
+  // any of the 195 countries as soon as rows exist in the `cities` table,
+  // independent of the hardcoded COUNTRIES/PROVINCES fallback data above.
+  useEffect(() => {
+    const countrySlug = (params.country as string || '').toLowerCase();
+    if (!countrySlug) return;
+    let cancelled = false;
+    setMajorCitiesLoading(true);
+
+    (async () => {
+      try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+          .from('cities')
+          .select('name, city_slug, province_slug, population, primary_color, famous_for')
+          .eq('country_slug', countrySlug)
+          .eq('is_active', true)
+          .order('population', { ascending: false })
+          .limit(6);
+
+        if (!cancelled) {
+          if (error) {
+            console.warn(`Major cities query error for ${countrySlug}:`, error.message);
+            setMajorCities([]);
+          } else {
+            setMajorCities((data || []) as SupabaseCity[]);
+          }
+        }
+      } catch (err: any) {
+        if (!cancelled) {
+          console.error('Major cities fetch failed:', err?.message);
+          setMajorCities([]);
+        }
+      } finally {
+        if (!cancelled) setMajorCitiesLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, [params]);
 
   if (loading) {
@@ -530,6 +575,39 @@ export default function CountryPage() {
           <p className="text-gray-500 text-sm leading-relaxed mt-5">
             {generateFactsAfter(country.name)}
           </p>
+        </motion.section>
+
+        {/* ── 1b. MAJOR CITIES (live from Supabase — works for any country) ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Building2} title={`Major Cities of ${country.name}`} accent={accent} />
+          {majorCitiesLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-2xl p-4 border animate-pulse h-28"
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }} />
+              ))}
+            </div>
+          ) : majorCities.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+              {majorCities.map(city => (
+                <Link key={city.city_slug}
+                  href={`/${country.slug}/${city.province_slug}/${city.city_slug}`}
+                  className="group rounded-2xl p-4 border text-center hover:border-opacity-60 transition-all"
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                  <div className="text-2xl mb-2">🏙️</div>
+                  <div className="text-white font-semibold text-sm">{city.name}</div>
+                  <div className="font-bold text-sm mt-1" style={{ color: city.primary_color || accent }}>
+                    {formatNumber(city.population)}
+                  </div>
+                  <div className="text-gray-500 text-xs mt-1 line-clamp-1">{city.famous_for || 'Explore city'}</div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm">
+              City data for {country.name} is being added — check back soon.
+            </p>
+          )}
         </motion.section>
 
         {/* ── 2. LIVE DATA STRIP ── */}

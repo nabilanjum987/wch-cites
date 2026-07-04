@@ -6,6 +6,7 @@ import GrowthDashboard from '@/components/shared/GrowthDashboard';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { getSupabase } from '@/lib/supabase';
 import {
   ChevronRight, TrendingUp, TrendingDown, ArrowRight,
   Globe, Users, Coins, Calendar, ShieldAlert, Utensils,
@@ -38,6 +39,7 @@ interface Province {
   lat: number; lng: number;
 }
 interface City { name: string; slug: string; population: number; temp: number; condition: string; icon: string; }
+interface SupabaseCity { name: string; city_slug: string; population: number; primary_color: string | null; famous_for: string | null; }
 interface Division { name: string; slug: string; districts: string[]; }
 interface Industry { name: string; icon: string; description: string; city: string; }
 interface Product { name: string; emoji: string; category: string; origin: string; }
@@ -374,6 +376,8 @@ export default function ProvincePage() {
   const params = useParams<{ country: string; province: string }>();
   const [province, setProvince] = useState<Province | null>(null);
   const [cities, setCities] = useState<City[]>([]);
+  const [liveCities, setLiveCities] = useState<SupabaseCity[]>([]);
+  const [liveCitiesLoading, setLiveCitiesLoading] = useState(true);
   const [divisions, setDivisions] = useState<Division[]>([]);
   const [industries, setIndustries] = useState<Industry[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -404,6 +408,49 @@ export default function ProvincePage() {
     setEvents(EVENTS[prov.slug] || []);
     setOtherProvinces(OTHER_PROVINCES[prov.countrySlug] || []);
     setLoading(false);
+  }, [params]);
+
+  // Real Supabase-backed cities for THIS country/province URL pair — works
+  // for any province in any country as soon as rows exist in `cities`,
+  // independent of the hardcoded PROVINCE_CITIES fallback data above.
+  useEffect(() => {
+    const countrySlug = (params.country as string || '').toLowerCase();
+    const provinceSlug = (params.province as string || '').toLowerCase();
+    if (!countrySlug || !provinceSlug) return;
+    let cancelled = false;
+    setLiveCitiesLoading(true);
+
+    (async () => {
+      try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+          .from('cities')
+          .select('name, city_slug, population, primary_color, famous_for')
+          .eq('country_slug', countrySlug)
+          .eq('province_slug', provinceSlug)
+          .eq('is_active', true)
+          .order('population', { ascending: false })
+          .limit(6);
+
+        if (!cancelled) {
+          if (error) {
+            console.warn(`Live cities query error for ${countrySlug}/${provinceSlug}:`, error.message);
+            setLiveCities([]);
+          } else {
+            setLiveCities((data || []) as SupabaseCity[]);
+          }
+        }
+      } catch (err: any) {
+        if (!cancelled) {
+          console.error('Live cities fetch failed:', err?.message);
+          setLiveCities([]);
+        }
+      } finally {
+        if (!cancelled) setLiveCitiesLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, [params]);
 
   if (loading) {
@@ -510,20 +557,49 @@ export default function ProvincePage() {
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateCitiesParagraph(province.name)}
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
-            {cities.map(city => (
-              <Link key={city.slug}
-                href={`/${province.countrySlug}/${province.slug}/${city.slug}`}
-                className="group rounded-2xl p-4 border text-center hover:border-opacity-60 transition-all"
-                style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
-                <div className="text-3xl mb-2">{city.icon}</div>
-                <div className="text-white font-semibold text-sm">{city.name}</div>
-                <div className="font-bold text-xl mt-1" style={{ color: accent }}>{city.temp}°C</div>
-                <div className="text-gray-500 text-xs mt-0.5">{city.condition}</div>
-                <div className="text-gray-600 text-xs mt-1">{fmt(city.population)}</div>
-              </Link>
-            ))}
-          </div>
+          {liveCitiesLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-2xl p-4 border animate-pulse h-28"
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }} />
+              ))}
+            </div>
+          ) : liveCities.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
+              {liveCities.map(city => (
+                <Link key={city.city_slug}
+                  href={`/${province.countrySlug}/${province.slug}/${city.city_slug}`}
+                  className="group rounded-2xl p-4 border text-center hover:border-opacity-60 transition-all"
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                  <div className="text-2xl mb-2">🏙️</div>
+                  <div className="text-white font-semibold text-sm">{city.name}</div>
+                  <div className="font-bold text-sm mt-1" style={{ color: city.primary_color || accent }}>
+                    {fmt(city.population)}
+                  </div>
+                  <div className="text-gray-600 text-xs mt-1 line-clamp-1">{city.famous_for || 'Explore city'}</div>
+                </Link>
+              ))}
+            </div>
+          ) : cities.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
+              {cities.map(city => (
+                <Link key={city.slug}
+                  href={`/${province.countrySlug}/${province.slug}/${city.slug}`}
+                  className="group rounded-2xl p-4 border text-center hover:border-opacity-60 transition-all"
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                  <div className="text-3xl mb-2">{city.icon}</div>
+                  <div className="text-white font-semibold text-sm">{city.name}</div>
+                  <div className="font-bold text-xl mt-1" style={{ color: accent }}>{city.temp}°C</div>
+                  <div className="text-gray-500 text-xs mt-0.5">{city.condition}</div>
+                  <div className="text-gray-600 text-xs mt-1">{fmt(city.population)}</div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm mb-4">
+              City data for {province.name} is being added — check back soon.
+            </p>
+          )}
           <Link href={`/${province.countrySlug}/${province.slug}/cities`}
             className="inline-flex items-center gap-2 text-sm font-medium" style={{ color: accent }}>
             See all {province.name} cities <ArrowRight className="w-4 h-4" />
