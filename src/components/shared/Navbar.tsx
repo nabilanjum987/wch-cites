@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import SearchBar from './SearchBar';
+
 import { COLORS } from '@/lib/design-system';
 
 export default function Navbar() {
@@ -115,11 +115,6 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
-          {/* Center Search Bar - Hidden on mobile */}
-          <motion.div className="hidden md:flex flex-grow mx-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-            <SearchBar onCitySelect={handleCitySelect} />
-          </motion.div>
-
           {/* Navigation Links - Hidden on mobile */}
           <motion.div
             className="hidden lg:flex items-center gap-2 mr-6"
@@ -226,11 +221,6 @@ export default function Navbar() {
       >
         {mobileMenuOpen && (
           <div className="px-4 py-4 space-y-3" style={{ backgroundColor: `rgba(10, 15, 30, 0.95)` }}>
-            {/* Mobile Search Bar */}
-            <div className="mb-4">
-              <SearchBar onCitySelect={handleCitySelect} />
-            </div>
-
             {/* Mobile Action Buttons */}
             <motion.button
               onClick={handleMyLocation}
