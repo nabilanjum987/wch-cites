@@ -45,11 +45,10 @@ export default function FeaturedCountries() {
               style={{ background: `linear-gradient(135deg, ${c.color}25, #0a0f1e)`, borderColor: `${c.color}40` }}>
               <div className="flex items-center justify-between">
                 <span className="text-3xl">{c.flag}</span>
-                <span className="text-xs text-white/40 font-mono">{c.code}</span>
+                <span className="text-xs text-white/30">{c.cities} cities</span>
               </div>
               <div>
                 <div className="text-white font-bold text-sm">{c.name}</div>
-                <div className="text-white/40 text-xs">{c.cities} cities</div>
               </div>
               {/* Dim flag in background */}
               <div className="absolute inset-0 flex items-center justify-end pr-3 pointer-events-none select-none">
