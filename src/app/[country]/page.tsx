@@ -416,7 +416,13 @@ export default function CountryPage() {
   useEffect(() => {
     const slug = params.country as string;
     const key = slug.toLowerCase();
-    const countryData = COUNTRIES[key] || COUNTRIES['pakistan'];
+    const countryData = COUNTRIES[key] || null;
+
+    if (!countryData) {
+      setCountry(null);
+      setLoading(false);
+      return;
+    }
 
     setCountry(countryData);
     setCities(MAJOR_CITIES[countryData.code] || []);
@@ -484,12 +490,24 @@ export default function CountryPage() {
   }
 
   if (!country) {
+    const slug = (params.country as string) || '';
+    const name = slug
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0f1e' }}>
-        <div className="text-center">
+        <div className="text-center px-6">
           <div className="text-6xl mb-4">🌍</div>
-          <h1 className="text-white text-2xl font-bold mb-2">Country not found</h1>
-          <Link href="/" className="text-indigo-400 hover:text-indigo-300">← Back to homepage</Link>
+          <p className="text-cyan-400 text-sm font-semibold uppercase tracking-wide mb-2">Country Guide</p>
+          <h1 className="text-white text-3xl md:text-4xl font-bold mb-3">{name}</h1>
+          <p className="text-white/60 max-w-md mx-auto mb-6">
+            We&apos;re building out the full country profile for {name} — capital city data,
+            economy, culture and more. Check back soon.
+          </p>
+          <Link href="/countries" className="inline-block px-6 py-3 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-colors">
+            Explore other countries
+          </Link>
         </div>
       </div>
     );

@@ -1,69 +1,66 @@
 'use client';
 import Link from 'next/link';
+import { getAllProducts } from '@/lib/data/products';
 
-const HERITAGE = [
-  {
-    name: 'Lahori Khussa',
-    origin: 'Lahore, Pakistan',
-    flag: '🇵🇰',
-    emoji: '👞',
-    color: '#8B4513',
-    desc: 'Hand-crafted leather slippers with intricate embroidery, made in Lahore\'s old city for over 300 years. Each pair takes 3–7 days of skilled craftsmanship using techniques passed through generations.',
-    slug: 'lahori-khussa',
-    category: 'Traditional Craft',
-  },
-  {
-    name: 'Kashmiri Shawl',
-    origin: 'Kashmir, India',
-    flag: '🇮🇳',
-    emoji: '🧣',
-    color: '#8B0000',
-    desc: 'Handwoven Pashmina wool shawls with intricate Kani weave patterns. A single shawl can take 6–18 months to complete and represents one of the finest textile traditions in the world.',
-    slug: 'kashmiri-shawl',
-    category: 'Textile Heritage',
-  },
-  {
-    name: 'Murano Glass',
-    origin: 'Venice, Italy',
-    flag: '🇮🇹',
-    emoji: '🏺',
-    color: '#1e40af',
-    desc: 'Hand-blown glass art from the island of Murano, Italy — a tradition dating to the 13th century. Venetian glassblowers were once forbidden from leaving the island to protect trade secrets.',
-    slug: 'murano-glass',
-    category: 'Glass Art',
-  },
-];
+// Optional presentation styling per product slug. Falls back to a generic
+// style for any product that doesn't have a custom entry, so new products
+// from new cities automatically show up here with zero extra work.
+const STYLE: Record<string, { emoji: string; color: string; category: string }> = {
+  'lahori-khussa': { emoji: '👞', color: '#8B4513', category: 'Traditional Craft' },
+  'multan-blue-pottery': { emoji: '🏺', color: '#0369a1', category: 'Ceramic Art' },
+};
+
+const DEFAULT_STYLE = { emoji: '🎨', color: '#8B5CF6', category: 'Heritage Product' };
+
+const COUNTRY_FLAGS: Record<string, string> = {
+  Pakistan: '🇵🇰',
+  India: '🇮🇳',
+  Italy: '🇮🇹',
+  Turkey: '🇹🇷',
+};
 
 export default function HeritageSpotlight() {
+  const products = getAllProducts();
+
   return (
     <div className="mb-4">
-      <div className="flex justify-end mb-4">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-white/40 text-xs">Products from cities across WorldCityHub</p>
         <Link href="/products/lahori-khussa" className="text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors no-underline">
           Explore Heritage Products →
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {HERITAGE.map((h) => (
-          <Link key={h.slug} href={`/products/${h.slug}`} className="no-underline group">
-            <div className="rounded-2xl border p-5 h-full flex flex-col gap-3 transition-all group-hover:scale-[1.01]"
-              style={{ background: `linear-gradient(135deg, ${h.color}15, #0a0f1e)`, borderColor: `${h.color}30` }}>
-              <div className="flex items-center justify-between">
-                <span className="text-4xl">{h.emoji}</span>
-                <span className="text-xs px-2 py-0.5 rounded-full border" style={{ borderColor: `${h.color}40`, color: `${h.color}`, backgroundColor: `${h.color}15` }}>
-                  {h.category}
-                </span>
-              </div>
-              <div>
-                <div className="text-white font-bold">{h.name}</div>
-                <div className="flex items-center gap-1 text-white/40 text-xs mt-0.5">
-                  <span>{h.flag}</span>
-                  <span>{h.origin}</span>
+        {products.map((p) => {
+          const style = STYLE[p.slug] ?? DEFAULT_STYLE;
+          const flag = COUNTRY_FLAGS[p.origin.country] ?? '🌍';
+          return (
+            <Link key={p.slug} href={`/products/${p.slug}`} className="no-underline group">
+              <div
+                className="rounded-2xl border p-5 h-full flex flex-col gap-3 transition-all group-hover:scale-[1.01]"
+                style={{ background: `linear-gradient(135deg, ${style.color}15, #0a0f1e)`, borderColor: `${style.color}30` }}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-4xl">{style.emoji}</span>
+                  <span
+                    className="text-xs px-2 py-0.5 rounded-full border"
+                    style={{ borderColor: `${style.color}40`, color: style.color, backgroundColor: `${style.color}15` }}
+                  >
+                    {style.category}
+                  </span>
                 </div>
+                <div>
+                  <div className="text-white font-bold">{p.name}</div>
+                  <div className="flex items-center gap-1 text-white/40 text-xs mt-0.5">
+                    <span>{flag}</span>
+                    <span>{p.origin.city}, {p.origin.country}</span>
+                  </div>
+                </div>
+                <p className="text-white/50 text-xs leading-relaxed flex-1 line-clamp-3">{p.description}</p>
               </div>
-              <p className="text-white/50 text-xs leading-relaxed flex-1">{h.desc}</p>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

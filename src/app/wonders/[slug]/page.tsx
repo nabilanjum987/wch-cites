@@ -199,16 +199,53 @@ const mockWonder: Wonder = {
   ],
 };
 
+const WONDERS: Record<string, Wonder> = {
+  'taj-mahal': mockWonder,
+};
+
+function WonderComingSoon({ slug }: { slug: string }) {
+  const name = slug
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+  return (
+    <div
+      style={{ backgroundColor: '#0a0f1e', minHeight: '100vh' }}
+      className="flex flex-col items-center justify-center text-white px-6 text-center"
+    >
+      <p className="text-amber-400 text-sm font-semibold uppercase tracking-wide mb-3">
+        Wonder Guide
+      </p>
+      <h1 className="text-4xl md:text-5xl font-bold mb-4">{name}</h1>
+      <p className="text-white/60 text-lg mb-8 max-w-md">
+        The full visitor guide for {name} is coming soon.
+      </p>
+      <a
+        href="/wonders/taj-mahal"
+        className="inline-block px-6 py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-semibold transition-colors"
+      >
+        See Taj Mahal guide
+      </a>
+    </div>
+  );
+}
+
 export default function WonderPage() {
   const params = useParams();
   const slug = params.slug as string;
 
   const [wonder, setWonder] = useState<Wonder | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
-      setWonder(mockWonder);
+      const match = WONDERS[slug];
+      if (match) {
+        setWonder(match);
+      } else {
+        setNotFound(true);
+      }
       setLoading(false);
     }, 600);
   }, [slug]);
@@ -217,8 +254,8 @@ export default function WonderPage() {
     return <LoadingSkeleton />;
   }
 
-  if (!wonder) {
-    return <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="flex items-center justify-center text-white">Wonder not found</div>;
+  if (notFound || !wonder) {
+    return <WonderComingSoon slug={slug} />;
   }
 
   return (

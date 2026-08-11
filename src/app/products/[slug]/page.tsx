@@ -13,326 +13,34 @@ import {
   generateSimilarParagraph, generateSimilarAfter,
 } from '@/lib/paragraphs/products';
 
-interface Product {
-  name: string;
-  slug: string;
-  origin: {
-    city: string;
-    country: string;
-    region: string;
-  };
-  image: string;
-  caption: string;
-  age: number;
-  unescoStatus: string | null;
-  annualExports: number;
-  description: string;
-  history: {
-    started: string;
-    founders: string;
-    evolution: string[];
-  };
-  timeline: { year: string; event: string }[];
-  making: {
-    materials: string[];
-    timeToMake: string;
-    skills: string[];
-    steps: { step: number; title: string; description: string }[];
-    videoSearch: string;
-  };
-  productTypes: {
-    category: string;
-    size: string;
-    priceRange: string;
-    buyLink: string;
-    image: string;
-  }[];
-  authenticity: {
-    checklist: { feature: string; authentic: string; fake: string }[];
-    tips: string[];
-  };
-  whereToBuy: {
-    inPerson: {
-      name: string;
-      address: string;
-      city: string;
-      hours: string;
-      mapUrl: string;
-    }[];
-    online: {
-      platform: string;
-      url: string;
-      logo: string;
-      shipsWorldwide: boolean;
-    }[];
-    priceGuide: {
-      small: { min: number; max: number };
-      medium: { min: number; max: number };
-      large: { min: number; max: number };
-    };
-  };
-  artisan: {
-    name: string;
-    photo: string;
-    generation: string;
-    specialty: string;
-    experience: number;
-    quote: string;
-  };
-  similarProducts: {
-    name: string;
-    origin: string;
-    slug: string;
-    image: string;
-  }[];
-}
+import { getProductBySlug, type Product } from '@/lib/data/products';
 
-const mockProduct: Product = {
-  name: 'Multan Blue Pottery',
-  slug: 'multan-blue-pottery',
-  origin: {
-    city: 'Multan',
-    country: 'Pakistan',
-    region: 'Punjab',
-  },
-  image: 'https://images.unsplash.com/photo-1565193566173-7a46c8b6d712?w=1200',
-  caption: 'Traditional handcrafted blue pottery from Multan, featuring intricate Persian-inspired designs',
-  age: 800,
-  unescoStatus: 'Intangible Cultural Heritage of Pakistan (2018)',
-  annualExports: 5200000,
-  description: 'Multan Blue Pottery, also known as Kashigari, is a traditional ceramic art form that has been practiced in Multan for over 800 years. Characterized by its distinctive cobalt blue glaze and intricate geometric patterns, this craft represents a beautiful fusion of Persian, Central Asian, and indigenous artistic traditions.',
-  history: {
-    started: '13th century (1200s)',
-    founders: 'Persian artisans brought by Sufi saints to Multan',
-    evolution: [
-      '13th century: Persian potters introduce the technique with arrival of Sufi saints',
-      '14th-16th century: Development of unique Multani style under Mughal patronage',
-      '17th-18th century: Peak of production with royal commissions',
-      '19th century: Decline during colonial period but preservation through family traditions',
-      '20th century: Revival efforts by government and artisan cooperatives',
-      '21st century: Modern adaptations while maintaining traditional methods',
-    ],
-  },
-  timeline: [
-    { year: '1250', event: 'Persian artisans arrive in Multan with Sufi saints' },
-    { year: '1350', event: 'First distinctive Multani patterns develop' },
-    { year: '1550', event: 'Mughal Emperor commissions royal pottery sets' },
-    { year: '1700', event: 'Golden age of Multan pottery art' },
-    { year: '1850', event: 'British colonial period causes decline' },
-    { year: '1950', event: 'Government establishes artisan training programs' },
-    { year: '2018', event: 'UNESCO recognition as Intangible Cultural Heritage' },
-    { year: '2024', event: 'Modern artisans blend tradition with contemporary designs' },
-  ],
-  making: {
-    materials: [
-      'Local Multani clay (special composition)',
-      'Cobalt oxide for blue pigment',
-      'White quartz powder',
-      'Natural glazing compounds',
-      'Wood-fired kiln',
-    ],
-    timeToMake: '2-4 weeks per piece',
-    skills: [
-      'Clay preparation and shaping',
-      'Wheel throwing or hand molding',
-      'Pattern design and drawing',
-      'Glaze preparation and application',
-      'Temperature-controlled firing',
-    ],
-    steps: [
-      {
-        step: 1,
-        title: 'Clay Preparation',
-        description: 'Local clay is sourced, cleaned, aged for weeks, and kneaded to perfect consistency',
-      },
-      {
-        step: 2,
-        title: 'Shaping',
-        description: 'The clay is thrown on a wheel or hand-molded into the desired form based on design',
-      },
-      {
-        step: 3,
-        title: 'First Firing',
-        description: 'Bisque firing at 900°C creates a durable base for glazing',
-      },
-      {
-        step: 4,
-        title: 'Design Drawing',
-        description: 'Traditional geometric patterns are hand-painted using cobalt blue pigment',
-      },
-      {
-        step: 5,
-        title: 'Glazing',
-        description: 'Clear glaze is applied to protect the design and create glossy finish',
-      },
-      {
-        step: 6,
-        title: 'Final Firing',
-        description: 'Second firing at 1100°C fuses the glaze and reveals the signature blue color',
-      },
-    ],
-    videoSearch: 'Multan blue pottery making process',
-  },
-  productTypes: [
-    {
-      category: 'Tiles',
-      size: 'Small',
-      priceRange: '$10-30',
-      buyLink: 'https://www.etsy.com/search?q=multan+pottery+tile',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-    },
-    {
-      category: 'Bowls',
-      size: 'Medium',
-      priceRange: '$50-150',
-      buyLink: 'https://www.etsy.com/search?q=multan+pottery+bowl',
-      image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=400',
-    },
-    {
-      category: 'Vases',
-      size: 'Large/Premium',
-      priceRange: '$200-500',
-      buyLink: 'https://www.1stdibs.com/search/?q=multan+pottery',
-      image: 'https://images.unsplash.com/photo-1578749556568-20315a468dc3?w=400',
-    },
-  ],
-  authenticity: {
-    checklist: [
-      {
-        feature: 'Texture',
-        authentic: 'Slightly uneven surface from hand-crafting',
-        fake: 'Perfectly smooth, machine-made uniformity',
-      },
-      {
-        feature: 'Weight',
-        authentic: 'Substantial weight, solid feel',
-        fake: 'Lightweight, hollow feel',
-      },
-      {
-        feature: 'Imperfections',
-        authentic: 'Small variations = handmade authenticity',
-        fake: 'Flawless uniformity = mass produced',
-      },
-      {
-        feature: 'Blue Color',
-        authentic: 'Deep, rich cobalt blue, slightly varies',
-        fake: 'Flat, consistent blue, often too bright',
-      },
-      {
-        feature: 'Patterns',
-        authentic: 'Hand-drawn, slight variations between pieces',
-        fake: 'Machine-printed, identical patterns',
-      },
-      {
-        feature: 'Signature',
-        authentic: 'Artisan mark or signature on bottom',
-        fake: 'No maker marks or generic labels',
-      },
-    ],
-    tips: [
-      'Ask for certificate of authenticity from reputable sellers',
-      'Visit artisan workshops in Multan for guaranteed authentic pieces',
-      'Check for artisan signatures or family marks on the piece',
-      'Authentic pieces often have slight color variations in the blue',
-      'Traditional patterns are geometric - avoid floral patterns claiming to be authentic',
-    ],
-  },
-  whereToBuy: {
-    inPerson: [
-      {
-        name: 'Multan Arts Council Gallery',
-        address: 'Lohari Gate, Multan',
-        city: 'Multan, Pakistan',
-        hours: '9 AM - 6 PM, Mon-Sat',
-        mapUrl: 'https://maps.google.com/?q=Multan+Arts+Council',
-      },
-      {
-        name: 'Heritage Craft Center',
-        address: 'Chowk Bazaar, Multan',
-        city: 'Multan, Pakistan',
-        hours: '10 AM - 8 PM, Daily',
-        mapUrl: 'https://maps.google.com/?q=Chowk+Bazaar+Multan',
-      },
-    ],
-    online: [
-      {
-        platform: 'Etsy',
-        url: 'https://www.etsy.com/search?q=multan+blue+pottery',
-        logo: 'etsy',
-        shipsWorldwide: true,
-      },
-      {
-        platform: 'Amazon',
-        url: 'https://www.amazon.com/s?k=multan+pottery',
-        logo: 'amazon',
-        shipsWorldwide: true,
-      },
-      {
-        platform: 'eBay',
-        url: 'https://www.ebay.com/sch/i.html?_nkw=multan+pottery',
-        logo: 'ebay',
-        shipsWorldwide: true,
-      },
-      {
-        platform: '1stDibs',
-        url: 'https://www.1stdibs.com/search/?q=multan+pottery',
-        logo: '1stdibs',
-        shipsWorldwide: true,
-      },
-    ],
-    priceGuide: {
-      small: { min: 10, max: 30 },
-      medium: { min: 50, max: 150 },
-      large: { min: 200, max: 500 },
-    },
-  },
-  artisan: {
-    name: 'Muhammad Ashraf',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-    generation: '5th Generation Artisan',
-    specialty: 'Traditional geometric patterns and tile making',
-    experience: 35,
-    quote: 'My family has been making this pottery for 300 years. Each piece carries the prayers and skill of my ancestors. When you hold our pottery, you hold our history.',
-  },
-  similarProducts: [
-    {
-      name: 'Iznik Pottery',
-      origin: 'Turkey',
-      slug: 'iznik-pottery',
-      image: 'https://images.unsplash.com/photo-1590736969955-71cc9490c3c7?w=400',
-    },
-    {
-      name: 'Delft Blue',
-      origin: 'Netherlands',
-      slug: 'delft-blue-pottery',
-      image: 'https://images.unsplash.com/photo-1565193566173-7a46c8b6d712?w=400',
-    },
-    {
-      name: 'Majolica',
-      origin: 'Spain',
-      slug: 'spanish-majolica',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-    },
-    {
-      name: 'Chinese Blue & White',
-      origin: 'China',
-      slug: 'chinese-blue-white-porcelain',
-      image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=400',
-    },
-    {
-      name: 'Portuguese Azulejos',
-      origin: 'Portugal',
-      slug: 'portuguese-azulejos',
-      image: 'https://images.unsplash.com/photo-1578749556568-20315a468dc3?w=400',
-    },
-    {
-      name: 'Persian Ceramics',
-      origin: 'Iran',
-      slug: 'persian-ceramics',
-      image: 'https://images.unsplash.com/photo-1565193566173-7a46c8b6d712?w=400',
-    },
-  ],
-};
+function ProductComingSoon({ slug }: { slug: string }) {
+  const name = slug
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+  return (
+    <div
+      style={{ backgroundColor: '#0a0f1e', minHeight: '100vh' }}
+      className="flex flex-col items-center justify-center text-white px-6 text-center"
+    >
+      <p className="text-emerald-400 text-sm font-semibold uppercase tracking-wide mb-3">
+        Heritage Product
+      </p>
+      <h1 className="text-4xl md:text-5xl font-bold mb-4">{name}</h1>
+      <p className="text-white/60 text-lg mb-8 max-w-md">
+        The full guide for {name} is coming soon.
+      </p>
+      <a
+        href="/products/lahori-khussa"
+        className="inline-block px-6 py-3 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold transition-colors"
+      >
+        See Lahori Khussa guide
+      </a>
+    </div>
+  );
+}
 
 export default function ProductPage() {
   const params = useParams();
@@ -340,10 +48,16 @@ export default function ProductPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
-      setProduct(mockProduct);
+      const match = getProductBySlug(slug);
+      if (match) {
+        setProduct(match);
+      } else {
+        setNotFound(true);
+      }
       setLoading(false);
     }, 600);
   }, [slug]);
@@ -352,8 +66,8 @@ export default function ProductPage() {
     return <LoadingSkeleton />;
   }
 
-  if (!product) {
-    return <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="flex items-center justify-center text-white">No product found</div>;
+  if (notFound || !product) {
+    return <ProductComingSoon slug={slug} />;
   }
 
   return (
