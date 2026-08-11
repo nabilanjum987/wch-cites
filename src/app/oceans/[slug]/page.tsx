@@ -70,7 +70,7 @@ interface Ocean {
   };
 }
 
-const mockOcean: Ocean = {
+const arabianSea: Ocean = {
   name: 'Arabian Sea',
   slug: 'arabian-sea',
   image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1600',
@@ -92,108 +92,368 @@ const mockOcean: Ocean = {
     fishing: { rating: 'Moderate', score: 65, status: 'Seasonal restrictions apply' },
     boating: { rating: 'Good', score: 80, status: 'Favorable conditions' },
   },
-  history: 'The Arabian Sea has been a crucial maritime route for over 5000 years, connecting ancient civilizations of the Indus Valley, Mesopotamia, Egypt, and the Mediterranean. Named after Arab merchants who dominated trade routes from the 8th to 15th centuries, this body of water facilitated the exchange of spices, textiles, precious metals, and ideas between East and West. The sea witnessed the rise of great trading ports like Calicut, Hormuz, and Aden, and played a pivotal role in the spread of Islam, Buddhism, and Hinduism throughout South Asia and beyond.',
-  geography: 'Located in the northwestern part of the Indian Ocean, the Arabian Sea is bounded by India to the east, Pakistan and Iran to the north, the Arabian Peninsula to the west, and the open Indian Ocean to the south. It covers approximately 3.86 million square kilometers and includes the Gulf of Oman, Gulf of Aden, and Persian Gulf connections. Major rivers including the Indus, Narmada, and Tapti drain into it, creating nutrient-rich coastal zones.',
+  history: 'The Arabian Sea has been a crucial maritime route for over 5000 years, connecting ancient civilizations of the Indus Valley, Mesopotamia, Egypt, and the Mediterranean. Named after Arab merchants who dominated trade routes from the 8th to 15th centuries, this body of water facilitated the exchange of spices, textiles, precious metals, and ideas between East and West.',
+  geography: 'Located in the northwestern part of the Indian Ocean, the Arabian Sea is bounded by India to the east, Pakistan and Iran to the north, the Arabian Peninsula to the west, and the open Indian Ocean to the south. It covers approximately 3.86 million square kilometers.',
   marineLife: {
-    mammals: [
-      'Blue Whale',
-      'Humpback Whale',
-      'Sperm Whale',
-      'Bryde\'s Whale',
-      'Indo-Pacific Humpback Dolphin',
-      'Spinner Dolphin',
-      'Dugong',
-      'Finless Porpoise',
-    ],
-    fish: [
-      'Yellowfin Tuna',
-      'Skipjack Tuna',
-      'King Mackerel',
-      'Mahi-Mahi (Dolphinfish)',
-      'Barracuda',
-      'Giant Trevally',
-      'Reef Shark',
-      'Hammerhead Shark',
-      'Manta Ray',
-      'Marlin',
-      'Snapper',
-      'Groupers',
-    ],
-    endangeredSpecies: [
-      'Blue Whale (Endangered)',
-      'Humpback Whale (Endangered)',
-      'Dugong (Vulnerable)',
-      'Green Sea Turtle (Endangered)',
-      'Hawksbill Turtle (Critically Endangered)',
-      'Whale Shark (Endangered)',
-      'Giant Grouper (Vulnerable)',
-    ],
+    mammals: ['Blue Whale', 'Humpback Whale', 'Sperm Whale', "Bryde's Whale", 'Indo-Pacific Humpback Dolphin', 'Spinner Dolphin', 'Dugong', 'Finless Porpoise'],
+    fish: ['Yellowfin Tuna', 'Skipjack Tuna', 'King Mackerel', 'Mahi-Mahi (Dolphinfish)', 'Barracuda', 'Giant Trevally', 'Reef Shark', 'Hammerhead Shark', 'Manta Ray', 'Marlin', 'Snapper', 'Groupers'],
+    endangeredSpecies: ['Blue Whale (Endangered)', 'Humpback Whale (Endangered)', 'Dugong (Vulnerable)', 'Green Sea Turtle (Endangered)', 'Hawksbill Turtle (Critically Endangered)', 'Whale Shark (Endangered)', 'Giant Grouper (Vulnerable)'],
   },
   shipping: {
-    importance: 'One of the world\'s busiest sea lanes, handling approximately 17% of global oil trade and 50,000+ vessel transits annually. The Arabian Sea connects the oil-rich Persian Gulf with major markets in Europe, Asia, and the Americas. Strategic chokepoints include the Strait of Hormuz (21% of world petroleum consumption passes through) and the Gulf of Aden entry point.',
+    importance: "One of the world's busiest sea lanes, handling approximately 17% of global oil trade and 50,000+ vessel transits annually. Strategic chokepoints include the Strait of Hormuz.",
     majorPorts: [
       { name: 'Jawaharlal Nehru Port', country: 'India', throughput: '5.1M TEU/year' },
       { name: 'Jebel Ali Port', country: 'UAE', throughput: '15.1M TEU/year' },
-      { name: 'Mundra Port', country: 'India', throughput: '4.4M TEU/year' },
       { name: 'Karachi Port', country: 'Pakistan', throughput: '1.4M TEU/year' },
-      { name: 'Mumbai Port', country: 'India', throughput: '58M tonnes/year' },
-      { name: 'Salalah Port', country: 'Oman', throughput: '4.1M TEU/year' },
     ],
-    majorRoutes: [
-      'Strait of Hormuz → Gulf of Oman → Arabian Sea → Indian Ocean',
-      'Persian Gulf → Arabian Sea → Red Sea → Suez Canal → Mediterranean',
-      'Gulf of Aden → Arabian Sea → Malacca Strait → East Asia',
-      'Arabian Sea → Cape of Good Hope → Atlantic Ocean',
-      'Mumbai → Dubai (major container corridor)',
-    ],
+    majorRoutes: ['Strait of Hormuz → Gulf of Oman → Arabian Sea → Indian Ocean', 'Persian Gulf → Arabian Sea → Red Sea → Suez Canal → Mediterranean'],
   },
   monsoonPatterns: {
     seasons: [
-      {
-        name: 'Northeast Monsoon (Winter)',
-        months: 'November - March',
-        description: 'Dry season with offshore winds, calm seas, ideal for shipping and fishing. Air temperature: 25-30°C.',
-      },
-      {
-        name: 'Southwest Monsoon (Summer)',
-        months: 'June - September',
-        description: 'Wet season with strong onshore winds, rough seas, heavy rainfall. Waves can reach 4-6 meters. Monsoon currents reverse direction.',
-      },
-      {
-        name: 'Inter-Monsoon Periods',
-        months: 'April-May, October',
-        description: 'Transitional periods with variable winds, occasional cyclones, mixed conditions. Best for sailing.',
-      },
+      { name: 'Northeast Monsoon (Winter)', months: 'November - March', description: 'Dry season with offshore winds, calm seas, ideal for shipping and fishing.' },
+      { name: 'Southwest Monsoon (Summer)', months: 'June - September', description: 'Wet season with strong onshore winds, rough seas, heavy rainfall.' },
     ],
-    impact: 'The monsoon cycle dictates all maritime activities, fishing seasons, and port operations. Historically, traders timed journeys by monsoon winds - sailing from Arabia to India with the northeast monsoon (Nov-Mar) and returning with the southwest monsoon (Jun-Sep). This pattern shaped commerce and culture for millennia.',
+    impact: 'The monsoon cycle dictates maritime activities, fishing seasons, and port operations across the region.',
   },
   climateChange: {
-    impact: 'The Arabian Sea is experiencing significant climate-related changes including accelerated warming (0.5°C increase in sea surface temperature since 1990), rising sea levels (3.2mm/year), and shifting monsoon patterns leading to unpredictable weather events.',
-    seaLevelRise: 'Global mean sea level rise: 3.2mm/year. Projected additional rise of 0.3-1.0m by 2100, threatening coastal cities including Mumbai, Karachi, and Dubai with increased flooding risk.',
-    temperatureRise: 'Sea surface temperature has increased by 0.5°C since 1990. Warming is intensifying cyclones and triggering more frequent harmful algal blooms, affecting fisheries and marine ecosystems.',
-    effects: [
-      'Intensifying cyclones - increased frequency of Category 4-5 storms',
-      'Coral bleaching events - 40% of coral reefs severely damaged',
-      'Fishery collapse in some areas - shifting fish populations',
-      'Mangrove loss - 15% decline in coastal mangrove coverage',
-      'Increased coastal erosion threatening cities',
-      'Ocean acidification affecting shellfish populations',
-      'Changing monsoon patterns affecting agriculture',
-      'Loss of marine biodiversity hotspots',
-    ],
+    impact: 'The Arabian Sea is experiencing accelerated warming and rising sea levels, intensifying tropical cyclones.',
+    seaLevelRise: 'Global mean sea level rise: 3.2mm/year, threatening coastal cities including Mumbai, Karachi, and Dubai.',
+    temperatureRise: 'Sea surface temperature has increased by 0.5°C since 1990.',
+    effects: ['Intensifying cyclones', 'Coral bleaching events', 'Shifting fish populations', 'Mangrove loss', 'Increased coastal erosion'],
   },
   borderingCities: [
     { name: 'Mumbai', country: 'India', slug: 'mumbai', importance: 'Major port and financial center' },
     { name: 'Karachi', country: 'Pakistan', slug: 'karachi', importance: 'Largest port in Pakistan' },
     { name: 'Dubai', country: 'UAE', slug: 'dubai', importance: 'Global trade hub' },
-    { name: 'Muscat', country: 'Oman', slug: 'muscat', importance: 'Strategic port location' },
-    { name: 'Kochi', country: 'India', slug: 'kochi', importance: 'Major fishing port' },
-    { name: 'Gwadar', country: 'Pakistan', slug: 'gwadar', importance: 'Deep water port (CPEC)' },
   ],
   activities: {
-    diving: 'Explore vibrant coral reefs in Lakshadweep Islands, wreck diving in Goa, or encounter whale sharks off the Gujarat coast.',
-    cruise: 'Luxury cruises from Dubai to Mumbai, island-hopping in the Maldives, or coastal voyages along the Konkan coast.',
+    diving: 'Explore coral reefs in Lakshadweep Islands and encounter whale sharks off the Gujarat coast.',
+    cruise: 'Luxury cruises from Dubai to Mumbai, and coastal voyages along the Konkan coast.',
   },
+};
+
+const pacificOcean: Ocean = {
+  name: 'Pacific Ocean',
+  slug: 'pacific-ocean',
+  image: 'https://images.unsplash.com/photo-1439405326854-014607f694d7?w=1600',
+  area: 165250000,
+  avgDepth: 4280,
+  maxDepth: 10935,
+  marineConditions: {
+    temperature: 18,
+    waveHeight: 2.2,
+    windSpeed: 22,
+    swells: 'Moderate to Rough (2-4m)',
+    visibility: 'Good (10-25m, varies by region)',
+    lastUpdated: new Date().toISOString(),
+  },
+  conditionsRating: {
+    shipping: { rating: 'Excellent', score: 95, status: "World's busiest trade routes" },
+    swimming: { rating: 'Good', score: 78, status: 'Varies widely by coastline and season' },
+    diving: { rating: 'Excellent', score: 92, status: 'Coral Triangle biodiversity hotspot' },
+    fishing: { rating: 'Excellent', score: 88, status: 'Major tuna and salmon fisheries' },
+    boating: { rating: 'Good', score: 75, status: 'Open-ocean swells require experience' },
+  },
+  history: 'The Pacific Ocean was named "Mar Pacifico" (peaceful sea) by Portuguese explorer Ferdinand Magellan in 1521 after experiencing calm waters during his crossing. It has been navigated for millennia by Polynesian, Micronesian, and Melanesian voyagers using wayfinding techniques, and later became the stage for major exploration by Spanish, British, and Dutch fleets, as well as pivotal naval history in the 20th century.',
+  geography: 'The largest and deepest ocean on Earth, the Pacific stretches from the Arctic in the north to the Southern Ocean, bordered by Asia and Australia to the west and the Americas to the east. It covers roughly one-third of the Earth\'s surface and contains the Mariana Trench, the deepest point in any ocean, along with tens of thousands of islands.',
+  marineLife: {
+    mammals: ['Blue Whale', 'Gray Whale', 'Orca (Killer Whale)', 'Humpback Whale', 'Sea Otter', 'California Sea Lion', 'Dugong'],
+    fish: ['Pacific Bluefin Tuna', 'Salmon', 'Mahi-Mahi', 'Yellowfin Tuna', 'Swordfish', 'Great White Shark', 'Whale Shark', 'Clownfish', 'Parrotfish'],
+    endangeredSpecies: ['Blue Whale (Endangered)', 'Vaquita (Critically Endangered)', 'Hawksbill Turtle (Critically Endangered)', 'Steller Sea Lion (Near Threatened)', 'Giant Pacific Octopus (data deficient, declining locally)'],
+  },
+  shipping: {
+    importance: 'The Pacific carries the largest share of global container shipping, linking East Asian manufacturing hubs with North American markets. Trans-Pacific routes are among the most heavily trafficked shipping lanes in the world.',
+    majorPorts: [
+      { name: 'Port of Shanghai', country: 'China', throughput: '47M TEU/year' },
+      { name: 'Port of Singapore', country: 'Singapore', throughput: '37M TEU/year' },
+      { name: 'Port of Los Angeles', country: 'USA', throughput: '9.2M TEU/year' },
+      { name: 'Port of Busan', country: 'South Korea', throughput: '22M TEU/year' },
+    ],
+    majorRoutes: ['Shanghai → Los Angeles (Trans-Pacific)', 'Singapore → Panama Canal → Atlantic', 'Tokyo → San Francisco', 'Sydney → Auckland → South Pacific islands'],
+  },
+  monsoonPatterns: {
+    seasons: [
+      { name: 'El Niño Phase', months: 'Irregular, 2-7 year cycle', description: 'Warmer surface waters in the eastern Pacific, disrupting weather patterns globally and affecting fisheries.' },
+      { name: 'La Niña Phase', months: 'Irregular, 2-7 year cycle', description: 'Cooler surface waters, stronger trade winds, and increased upwelling supporting fish stocks off South America.' },
+      { name: 'Typhoon Season (Western Pacific)', months: 'June - November', description: 'Tropical cyclones form regularly, affecting the Philippines, Japan, and Southeast Asia.' },
+    ],
+    impact: 'The El Niño–Southern Oscillation (ENSO) cycle centered in the Pacific is the single largest driver of year-to-year climate variability on Earth, affecting rainfall, fisheries, and storm patterns worldwide.',
+  },
+  climateChange: {
+    impact: 'The Pacific is warming steadily, driving coral bleaching across the Coral Triangle and Great Barrier Reef, and fueling more intense typhoons in the western basin.',
+    seaLevelRise: 'Low-lying Pacific Island nations such as Tuvalu and Kiribati face existential risk from sea level rise projected at 0.4-1m by 2100.',
+    temperatureRise: 'Sea surface temperatures in parts of the Pacific have risen by over 1°C since the early 20th century.',
+    effects: ['Coral bleaching across the Coral Triangle', 'Threatened low-lying island nations', 'Shifting tuna migration patterns', 'More intense typhoons', 'Ocean acidification affecting shellfish', 'Melting Arctic-adjacent sea ice in the North Pacific'],
+  },
+  borderingCities: [
+    { name: 'Tokyo', country: 'Japan', slug: 'tokyo', importance: 'Major port and global financial center' },
+    { name: 'Los Angeles', country: 'USA', slug: 'los-angeles', importance: 'Largest container port in the Americas' },
+    { name: 'Sydney', country: 'Australia', slug: 'sydney', importance: 'Major Southern Hemisphere port and harbor city' },
+    { name: 'Shanghai', country: 'China', slug: 'shanghai', importance: "World's busiest container port" },
+  ],
+  activities: {
+    diving: 'Dive the Coral Triangle near Indonesia and the Philippines, or explore kelp forests off California.',
+    cruise: 'Trans-Pacific cruises between Asia and the Americas, or island-hopping routes through the South Pacific.',
+  },
+};
+
+const atlanticOcean: Ocean = {
+  name: 'Atlantic Ocean',
+  slug: 'atlantic-ocean',
+  image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600',
+  area: 106460000,
+  avgDepth: 3646,
+  maxDepth: 8486,
+  marineConditions: {
+    temperature: 16,
+    waveHeight: 1.8,
+    windSpeed: 20,
+    swells: 'Moderate (2-3m)',
+    visibility: 'Good (10-20m)',
+    lastUpdated: new Date().toISOString(),
+  },
+  conditionsRating: {
+    shipping: { rating: 'Excellent', score: 93, status: 'Historic and heavily used trade lanes' },
+    swimming: { rating: 'Good', score: 72, status: 'Cooler waters, best in Caribbean and Mediterranean-adjacent zones' },
+    diving: { rating: 'Good', score: 78, status: 'Wrecks, reefs, and Caribbean sites' },
+    fishing: { rating: 'Very Good', score: 82, status: 'Historic cod and tuna fishing grounds' },
+    boating: { rating: 'Good', score: 76, status: 'Well-charted with established marinas' },
+  },
+  history: 'The Atlantic has shaped world history more than any other ocean, serving as the route for the Age of Exploration beginning with Columbus in 1492, the transatlantic slave trade, and mass migration between Europe and the Americas. It takes its name from the Greek god Atlas, and became the primary theater of naval conflict in both World Wars.',
+  geography: 'The second-largest ocean, the Atlantic separates the Americas to the west from Europe and Africa to the east. It is divided into North and South Atlantic by the equator, and features the Mid-Atlantic Ridge, an underwater mountain range formed by the boundary between tectonic plates.',
+  marineLife: {
+    mammals: ['North Atlantic Right Whale', 'Humpback Whale', 'Atlantic Bottlenose Dolphin', 'Harbor Seal', 'Grey Seal', 'Orca'],
+    fish: ['Atlantic Cod', 'Bluefin Tuna', 'Atlantic Salmon', 'Swordfish', 'Herring', 'Mackerel', 'Great White Shark', 'Marlin'],
+    endangeredSpecies: ['North Atlantic Right Whale (Critically Endangered, fewer than 400 remain)', 'Atlantic Bluefin Tuna (Endangered)', 'Loggerhead Turtle (Vulnerable)', 'European Eel (Critically Endangered)'],
+  },
+  shipping: {
+    importance: 'The Atlantic hosts some of the oldest and busiest commercial shipping routes in the world, connecting North America and Europe, and linking to the Mediterranean, West Africa, and South America.',
+    majorPorts: [
+      { name: 'Port of Rotterdam', country: 'Netherlands', throughput: '14.5M TEU/year' },
+      { name: 'Port of New York/New Jersey', country: 'USA', throughput: '8.9M TEU/year' },
+      { name: 'Port of Antwerp', country: 'Belgium', throughput: '13M TEU/year' },
+      { name: 'Port of Santos', country: 'Brazil', throughput: '4.3M TEU/year' },
+    ],
+    majorRoutes: ['Rotterdam → New York (Transatlantic)', 'Lisbon → Rio de Janeiro', 'Southampton → Halifax', 'West Africa → Northern Europe'],
+  },
+  monsoonPatterns: {
+    seasons: [
+      { name: 'Atlantic Hurricane Season', months: 'June - November', description: 'Tropical storms and hurricanes form in the warm waters off West Africa and track toward the Caribbean and North America, peaking in September.' },
+      { name: 'Winter Storm Season (North Atlantic)', months: 'November - March', description: 'Strong low-pressure systems bring rough seas and high winds across northern shipping lanes.' },
+    ],
+    impact: 'Hurricane season significantly affects shipping schedules, Caribbean tourism, and coastal communities along the US Gulf and East Coast each year.',
+  },
+  climateChange: {
+    impact: 'The Atlantic Meridional Overturning Circulation (AMOC), a critical current system, is showing signs of slowing, which could disrupt weather patterns across Europe and North America.',
+    seaLevelRise: 'US East Coast cities are experiencing sea level rise faster than the global average, at up to 4-5mm/year in some areas.',
+    temperatureRise: 'North Atlantic surface waters have warmed measurably over the past century, contributing to more intense hurricanes.',
+    effects: ['Weakening AMOC circulation', 'Stronger, wetter hurricanes', 'Coastal erosion in the US Northeast', 'Declining cod stocks', 'Ocean acidification', 'Coral stress in Caribbean reefs'],
+  },
+  borderingCities: [
+    { name: 'New York', country: 'USA', slug: 'new-york', importance: 'Major financial and shipping hub' },
+    { name: 'London', country: 'UK', slug: 'london', importance: 'Historic maritime and financial center' },
+    { name: 'Lisbon', country: 'Portugal', slug: 'lisbon', importance: 'Historic Age of Exploration port' },
+    { name: 'Rio de Janeiro', country: 'Brazil', slug: 'rio-de-janeiro', importance: 'Major South Atlantic port city' },
+  ],
+  activities: {
+    diving: 'Explore shipwrecks off Bermuda and the Carolinas, or coral reefs in the Caribbean.',
+    cruise: 'Classic transatlantic crossings, Caribbean island-hopping, and Mediterranean-adjacent voyages.',
+  },
+};
+
+const indianOcean: Ocean = {
+  name: 'Indian Ocean',
+  slug: 'indian-ocean',
+  image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1600',
+  area: 70560000,
+  avgDepth: 3741,
+  maxDepth: 7290,
+  marineConditions: {
+    temperature: 24,
+    waveHeight: 1.6,
+    windSpeed: 19,
+    swells: 'Moderate (2-3m), stronger during monsoon',
+    visibility: 'Very Good (15-30m)',
+    lastUpdated: new Date().toISOString(),
+  },
+  conditionsRating: {
+    shipping: { rating: 'Excellent', score: 91, status: 'Critical energy and trade corridor' },
+    swimming: { rating: 'Excellent', score: 88, status: 'Warm year-round waters' },
+    diving: { rating: 'Excellent', score: 90, status: 'Maldives, Red Sea, and East Africa reefs' },
+    fishing: { rating: 'Very Good', score: 80, status: 'Major tuna fishing grounds' },
+    boating: { rating: 'Good', score: 77, status: 'Monsoon timing affects conditions' },
+  },
+  history: 'The Indian Ocean has been a hub of trade and cultural exchange for over 2,000 years, connecting East Africa, the Middle East, India, and Southeast Asia through monsoon-driven maritime trade networks long before European exploration. It carried spices, textiles, and ideas along routes used by Arab, Indian, Chinese, and later Portuguese and British traders.',
+  geography: 'The third-largest ocean, the Indian Ocean is bounded by Africa to the west, Asia to the north, Australia to the east, and the Southern Ocean to the south. It includes major seas and gulfs such as the Arabian Sea, Bay of Bengal, Red Sea, and Persian Gulf.',
+  marineLife: {
+    mammals: ['Blue Whale', 'Sperm Whale', 'Dugong', 'Spinner Dolphin', 'Indo-Pacific Humpback Dolphin'],
+    fish: ['Yellowfin Tuna', 'Skipjack Tuna', 'Whale Shark', 'Manta Ray', 'Clownfish', 'Napoleon Wrasse', 'Marlin'],
+    endangeredSpecies: ['Dugong (Vulnerable)', 'Hawksbill Turtle (Critically Endangered)', 'Whale Shark (Endangered)', 'Green Sea Turtle (Endangered)'],
+  },
+  shipping: {
+    importance: 'A vital energy corridor carrying much of the world\'s oil shipments from the Persian Gulf, and a key link between Europe, Africa, and Asia via the Suez Canal and Cape of Good Hope routes.',
+    majorPorts: [
+      { name: 'Port of Singapore', country: 'Singapore', throughput: '37M TEU/year' },
+      { name: 'Jawaharlal Nehru Port', country: 'India', throughput: '5.1M TEU/year' },
+      { name: 'Port of Colombo', country: 'Sri Lanka', throughput: '7.2M TEU/year' },
+      { name: 'Port of Durban', country: 'South Africa', throughput: '2.9M TEU/year' },
+    ],
+    majorRoutes: ['Persian Gulf → Indian Ocean → Malacca Strait → East Asia', 'Suez Canal → Red Sea → Indian Ocean', 'Cape of Good Hope → Indian Ocean → Australia'],
+  },
+  monsoonPatterns: {
+    seasons: [
+      { name: 'Southwest Monsoon', months: 'June - September', description: 'Strong winds and heavy rainfall across South Asia and East Africa, rougher seas.' },
+      { name: 'Northeast Monsoon', months: 'November - March', description: 'Drier conditions with calmer seas, favorable for shipping and fishing.' },
+    ],
+    impact: 'The Indian Ocean monsoon system is one of the most powerful seasonal wind patterns on Earth, historically dictating trade sailing schedules and still shaping agriculture across the region today.',
+  },
+  climateChange: {
+    impact: 'The Indian Ocean is warming faster than the global average, driving widespread coral bleaching and more intense cyclones in the Bay of Bengal and Arabian Sea.',
+    seaLevelRise: 'Low-lying areas including the Maldives and Bangladesh coast face severe risk, with projected rise of 0.3-1m by 2100.',
+    temperatureRise: 'Surface temperatures have risen by around 1°C over the past century, among the fastest-warming ocean basins.',
+    effects: ['Severe coral bleaching in the Maldives', 'More intense cyclones', 'Threatened island nations', 'Disrupted monsoon reliability', 'Declining fish stocks', 'Mangrove loss along coastlines'],
+  },
+  borderingCities: [
+    { name: 'Mumbai', country: 'India', slug: 'mumbai', importance: 'Major port and financial center' },
+    { name: 'Dubai', country: 'UAE', slug: 'dubai', importance: 'Global trade and logistics hub' },
+    { name: 'Colombo', country: 'Sri Lanka', slug: 'colombo', importance: 'Key transshipment port' },
+    { name: 'Cape Town', country: 'South Africa', slug: 'cape-town', importance: 'Strategic Cape route port' },
+  ],
+  activities: {
+    diving: 'World-class diving in the Maldives, Red Sea, and along the Great African reef systems.',
+    cruise: 'Island-hopping through the Maldives and Seychelles, or coastal voyages along East Africa.',
+  },
+};
+
+const arcticOcean: Ocean = {
+  name: 'Arctic Ocean',
+  slug: 'arctic-ocean',
+  image: 'https://images.unsplash.com/photo-1517783999520-f068d7431a60?w=1600',
+  area: 14060000,
+  avgDepth: 1205,
+  maxDepth: 5550,
+  marineConditions: {
+    temperature: -2,
+    waveHeight: 0.8,
+    windSpeed: 15,
+    swells: 'Light to Moderate, ice-dampened',
+    visibility: 'Excellent under ice-free conditions (20m+)',
+    lastUpdated: new Date().toISOString(),
+  },
+  conditionsRating: {
+    shipping: { rating: 'Moderate', score: 55, status: 'Seasonal Northern Sea Route, ice-dependent' },
+    swimming: { rating: 'Poor', score: 15, status: 'Sub-zero waters, extreme cold risk' },
+    diving: { rating: 'Moderate', score: 50, status: 'Specialist ice diving only' },
+    fishing: { rating: 'Good', score: 68, status: 'Cod and Arctic char fisheries' },
+    boating: { rating: 'Moderate', score: 45, status: 'Ice conditions limit navigation season' },
+  },
+  history: 'The Arctic Ocean was long considered impassable and remained largely unexplored by outsiders until 19th and 20th century expeditions, including those seeking the fabled Northwest and Northeast Passages. Indigenous peoples including the Inuit, Sami, and Chukchi have lived along its coasts and depended on its ice and marine life for thousands of years.',
+  geography: 'The smallest and shallowest of the world\'s oceans, the Arctic Ocean is centered on the North Pole and is largely surrounded by the landmasses of North America, Europe, and Asia. Much of its surface is covered by sea ice, which expands in winter and retreats in summer.',
+  marineLife: {
+    mammals: ['Polar Bear', 'Narwhal', 'Beluga Whale', 'Bowhead Whale', 'Ringed Seal', 'Walrus'],
+    fish: ['Arctic Cod', 'Arctic Char', 'Greenland Halibut', 'Capelin'],
+    endangeredSpecies: ['Polar Bear (Vulnerable, declining due to sea ice loss)', 'Bowhead Whale (regionally endangered)', 'Narwhal (Near Threatened)'],
+  },
+  shipping: {
+    importance: 'The Arctic\'s Northern Sea Route and Northwest Passage are opening up as sea ice retreats, offering shorter shipping links between Europe and Asia, though traffic remains a fraction of southern routes and is highly seasonal.',
+    majorPorts: [
+      { name: 'Port of Murmansk', country: 'Russia', throughput: '1.2M TEU-equivalent/year' },
+      { name: 'Port of Sabetta', country: 'Russia', throughput: 'Major LNG export terminal' },
+    ],
+    majorRoutes: ['Northern Sea Route (Murmansk → Bering Strait)', 'Northwest Passage (Atlantic → Pacific via Canadian Arctic)'],
+  },
+  monsoonPatterns: {
+    seasons: [
+      { name: 'Polar Winter', months: 'October - March', description: 'Continuous darkness in much of the region, maximum sea ice extent, waters largely icebound.' },
+      { name: 'Polar Summer', months: 'April - September', description: 'Continuous daylight, sea ice retreats to minimum extent, brief shipping and research window opens.' },
+    ],
+    impact: 'Unlike lower-latitude oceans, the Arctic is governed by seasonal ice extent rather than monsoon winds — the summer ice-free window determines the entire shipping and research season.',
+  },
+  climateChange: {
+    impact: 'The Arctic is warming nearly four times faster than the global average, making it ground zero for observable climate change, with dramatic and accelerating sea ice loss.',
+    seaLevelRise: 'While floating sea ice melt doesn\'t directly raise sea levels, Arctic warming is accelerating melt of the Greenland ice sheet, a major contributor to global sea level rise.',
+    temperatureRise: 'Arctic average temperatures have risen by more than 2-3°C since the late 19th century, far outpacing the global average.',
+    effects: ['Rapid summer sea ice decline', 'Melting Greenland ice sheet', 'Habitat loss for polar bears and walruses', 'Permafrost thaw releasing methane', 'Opening shipping routes', 'Coastal erosion of Arctic communities'],
+  },
+  borderingCities: [
+    { name: 'Murmansk', country: 'Russia', slug: 'murmansk', importance: 'Largest city north of the Arctic Circle, key Arctic port' },
+    { name: 'Tromsø', country: 'Norway', slug: 'tromso', importance: 'Arctic research and fishing hub' },
+    { name: 'Utqiagvik', country: 'USA', slug: 'utqiagvik', importance: 'Northernmost US city' },
+  ],
+  activities: {
+    diving: 'Specialist ice diving beneath Arctic sea ice for experienced divers only, viewing under-ice ecosystems.',
+    cruise: 'Expedition cruises through the Northwest Passage and around Svalbard, wildlife and ice-viewing focused.',
+  },
+};
+
+const southernOcean: Ocean = {
+  name: 'Southern Ocean',
+  slug: 'southern-ocean',
+  image: 'https://images.unsplash.com/photo-1520962880247-cfaf541c8724?w=1600',
+  area: 21960000,
+  avgDepth: 3270,
+  maxDepth: 7434,
+  marineConditions: {
+    temperature: 2,
+    waveHeight: 3.5,
+    windSpeed: 35,
+    swells: 'Rough to Very Rough (4-6m)',
+    visibility: 'Good in open water (15-25m)',
+    lastUpdated: new Date().toISOString(),
+  },
+  conditionsRating: {
+    shipping: { rating: 'Moderate', score: 50, status: 'Limited traffic, extreme conditions' },
+    swimming: { rating: 'Poor', score: 10, status: 'Near-freezing waters, not recommended' },
+    diving: { rating: 'Moderate', score: 45, status: 'Expedition-level ice diving only' },
+    fishing: { rating: 'Good', score: 65, status: 'Regulated krill and toothfish fisheries' },
+    boating: { rating: 'Poor', score: 30, status: "Among the roughest seas on Earth (the 'Furious Fifties')" },
+  },
+  history: 'Formally recognized as a distinct ocean by the International Hydrographic Organization in 2000, the Southern Ocean encircles Antarctica and was long treated as the southern extensions of the Pacific, Atlantic, and Indian Oceans. Its waters were charted through perilous 19th and 20th century expeditions by explorers such as James Cook, Ernest Shackleton, and Roald Amundsen.',
+  geography: 'The Southern Ocean surrounds Antarctica from the coastline to 60°S latitude, where the cold, nutrient-rich Antarctic waters meet the warmer waters of the Pacific, Atlantic, and Indian Oceans at the Antarctic Convergence. It is defined by the powerful, unbroken Antarctic Circumpolar Current.',
+  marineLife: {
+    mammals: ['Blue Whale', 'Orca (Killer Whale)', 'Leopard Seal', 'Weddell Seal', 'Southern Elephant Seal'],
+    fish: ['Antarctic Toothfish', 'Antarctic Krill', 'Icefish', 'Patagonian Toothfish'],
+    endangeredSpecies: ['Blue Whale (Endangered)', 'Emperor Penguin (Near Threatened, declining)', 'Wandering Albatross (Vulnerable)'],
+  },
+  shipping: {
+    importance: 'Commercial shipping is minimal due to extreme weather; traffic is mostly research vessels, regulated fishing fleets, and Antarctic tourism expedition ships operating within strict international agreements.',
+    majorPorts: [
+      { name: 'Ushuaia', country: 'Argentina', throughput: 'Primary gateway port for Antarctic expeditions' },
+      { name: 'Punta Arenas', country: 'Chile', throughput: 'Secondary Antarctic gateway port' },
+    ],
+    majorRoutes: ['Ushuaia → Drake Passage → Antarctic Peninsula', 'Hobart → Ross Sea (research resupply)'],
+  },
+  monsoonPatterns: {
+    seasons: [
+      { name: 'Austral Summer', months: 'November - March', description: 'Relatively milder conditions, sea ice retreat, main window for research and tourism voyages.' },
+      { name: 'Austral Winter', months: 'April - October', description: 'Extreme cold, extensive sea ice coverage, near-total absence of surface shipping.' },
+    ],
+    impact: 'Rather than a monsoon, the Southern Ocean is dominated by the "Roaring Forties," "Furious Fifties," and "Screaming Sixties" wind belts, among the strongest and most consistent winds on Earth, driving the Antarctic Circumpolar Current.',
+  },
+  climateChange: {
+    impact: 'The Southern Ocean absorbs a disproportionate share of global excess heat and carbon dioxide, making it a critical regulator of global climate, while Antarctic sea ice has shown unusual and rapid recent declines.',
+    seaLevelRise: 'Melting of the West Antarctic Ice Sheet, influenced by warming Southern Ocean waters, is one of the largest long-term threats to global sea levels.',
+    temperatureRise: 'Deep Southern Ocean waters have measurably warmed in recent decades, contributing to ice shelf melt from below.',
+    effects: ['Record-low Antarctic sea ice extent in recent years', 'Ice shelf thinning and collapse risk', 'Ocean acidification affecting krill', 'Shifting penguin colony locations', 'Changing Antarctic Circumpolar Current dynamics'],
+  },
+  borderingCities: [
+    { name: 'Ushuaia', country: 'Argentina', slug: 'ushuaia', importance: "World's southernmost city, primary Antarctic gateway" },
+    { name: 'Hobart', country: 'Australia', slug: 'hobart', importance: 'Major Antarctic research and logistics hub' },
+    { name: 'Punta Arenas', country: 'Chile', slug: 'punta-arenas', importance: 'Southern gateway port for Antarctic operations' },
+  ],
+  activities: {
+    diving: 'Extreme expedition diving beneath Antarctic ice for highly experienced divers, viewing unique cold-water ecosystems.',
+    cruise: 'Antarctic expedition cruises departing from Ushuaia across the Drake Passage to the Antarctic Peninsula.',
+  },
+};
+
+const OCEANS: Record<string, Ocean> = {
+  'pacific-ocean': pacificOcean,
+  'atlantic-ocean': atlanticOcean,
+  'indian-ocean': indianOcean,
+  'arctic-ocean': arcticOcean,
+  'southern-ocean': southernOcean,
+  'arabian-sea': arabianSea,
 };
 
 export default function OceanPage() {
@@ -205,7 +465,7 @@ export default function OceanPage() {
 
   useEffect(() => {
     setTimeout(() => {
-      setOcean(mockOcean);
+      setOcean(OCEANS[slug] ?? null);
       setLoading(false);
     }, 600);
   }, [slug]);

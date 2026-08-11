@@ -6,7 +6,7 @@
 
 import type { Metadata } from 'next';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
-import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { generateCityMeta, generateCitySchema } from '@/lib/seo/cityMeta';
 import {
@@ -77,6 +77,37 @@ function getCityParams(country: string, province: string, city: string): CityPar
   return CITY_DB[key] ?? null;
 }
 
+function toTitleCase(slug: string): string {
+  return slug
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+function ComingSoonCity({ countrySlug, country, city }: { countrySlug: string; country: string; city: string }) {
+  return (
+    <main className="relative min-h-screen bg-[#0a0e1a] text-white flex items-center justify-center px-6 overflow-hidden">
+      <FlagSymbolBackground countrySlug={countrySlug} />
+      <div className="relative z-10 max-w-xl text-center">
+        <p className="text-cyan-400 text-sm font-semibold tracking-wide uppercase mb-3">
+          {country}
+        </p>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">{city}</h1>
+        <p className="text-white/60 text-lg mb-8">
+          We&apos;re building out full city data — weather, prayer times, gold
+          rates, news and more — for {city}. Check back soon.
+        </p>
+        <Link
+          href="/"
+          className="inline-block px-6 py-3 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-colors"
+        >
+          Explore other cities
+        </Link>
+      </div>
+    </main>
+  );
+}
+
 // ─── GENERATE STATIC PARAMS (for known cities at build time) ─────────────────
 export async function generateStaticParams() {
   return Object.keys(CITY_DB).map((key) => {
@@ -93,7 +124,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { country, province, city } = await params;
   const cityParams = getCityParams(country, province, city);
-  if (!cityParams) return { title: 'City Not Found | WorldCityHub' };
+  if (!cityParams) {
+    const cityName = toTitleCase(city);
+    return {
+      title: `${cityName} — Coming Soon | WorldCityHub`,
+      description: `Detailed information for ${cityName} is coming soon to WorldCityHub.`,
+      robots: { index: false, follow: true },
+    };
+  }
 
   // Do NOT call fetchAllCityData here — it fires 14 external API calls for
   // every static page at build time, crashing the Vercel worker on rate limits
@@ -138,7 +176,9 @@ export default async function CityPage({
   const resolvedParams = await params;
   const { country, province, city } = await params;
   const cityParams = getCityParams(country, province, city);
-  if (!cityParams) notFound();
+  if (!cityParams) {
+    return <ComingSoonCity countrySlug={country} country={toTitleCase(country)} city={toTitleCase(city)} />;
+  }
 
   const data = await fetchAllCityData(cityParams);
 

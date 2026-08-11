@@ -226,16 +226,53 @@ const mockConflict: Conflict = {
   ],
 };
 
+const CONFLICTS: Record<string, Conflict> = {
+  'red-sea-crisis': mockConflict,
+};
+
+function ConflictComingSoon({ slug }: { slug: string }) {
+  const name = slug
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+  return (
+    <div
+      style={{ backgroundColor: '#0a0f1e', minHeight: '100vh' }}
+      className="flex flex-col items-center justify-center text-white px-6 text-center"
+    >
+      <p className="text-red-400 text-sm font-semibold uppercase tracking-wide mb-3">
+        Conflict Monitor
+      </p>
+      <h1 className="text-4xl md:text-5xl font-bold mb-4">{name}</h1>
+      <p className="text-white/60 text-lg mb-8 max-w-md">
+        A full briefing for {name} is coming soon.
+      </p>
+      <a
+        href="/conflicts/red-sea-crisis"
+        className="inline-block px-6 py-3 rounded-full bg-red-500 hover:bg-red-400 text-black font-semibold transition-colors"
+      >
+        See Red Sea Crisis briefing
+      </a>
+    </div>
+  );
+}
+
 export default function ConflictPage() {
   const params = useParams();
   const slug = params.slug as string;
 
   const [conflict, setConflict] = useState<Conflict | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
-      setConflict(mockConflict);
+      const match = CONFLICTS[slug];
+      if (match) {
+        setConflict(match);
+      } else {
+        setNotFound(true);
+      }
       setLoading(false);
     }, 600);
   }, [slug]);
@@ -244,8 +281,8 @@ export default function ConflictPage() {
     return <LoadingSkeleton />;
   }
 
-  if (!conflict) {
-    return <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="flex items-center justify-center text-white">Conflict not found</div>;
+  if (notFound || !conflict) {
+    return <ConflictComingSoon slug={slug} />;
   }
 
   const getStatusColor = (status: string) => {
