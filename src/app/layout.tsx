@@ -8,7 +8,10 @@ export const metadata: Metadata = {
   title: 'WorldCityHub - Every City, Live',
   description: 'Live weather, prayer times, gold rates for every city',
   verification: {
-    google: 't1xiFNMYDWqTVy4n8G4rREKo4cwzXk60B_a930ND1QA',
+    // Code shown by Google in THIS property's Verify-ownership dialog
+    // (2026-10-07). Note: it differs from the Cleared/CalcuFintor code —
+    // Google issued a separate code for this property.
+    google: '5pPSofE81SlcAaE1vQ_ZmI4-SL3__BMpzd0hQjkuPYE',
   },
 }
 
