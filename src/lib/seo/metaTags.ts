@@ -21,7 +21,7 @@ export function generateCityMeta(city: City, weatherData?: any): MetaTags {
     keywords: `${city.name}, ${city.name} weather, ${city.name} prayer times, ${city.name} gold rate, ${city.name} news, ${city.name} today, ${city.province}, ${city.name} events`,
     ogTitle: `${city.name} — Live Weather, Prayer Times & Rates`,
     ogDescription: `Complete ${city.name} city information including live weather, prayer times, gold rates, news and cultural insights.`,
-    canonical: `https://worldcityhub.com/pakistan/${city.province.toLowerCase()}/${city.city_slug}`,
+    canonical: `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase()}/${city.city_slug}`,
   };
 }
 
@@ -38,7 +38,7 @@ export function generateWeatherMeta(city: City, weatherData: any): MetaTags {
     keywords: `${city.name} weather today, ${city.name} mausam, ${city.name} temperature today, weather in ${city.name} right now, ${city.name} forecast, ${city.name} air quality`,
     ogTitle: `${city.name} Weather: ${temp}°C ${condition}`,
     ogDescription: `Live weather in ${city.name}: ${temp}°C with ${condition} conditions. Check hourly and 7-day forecast.`,
-    canonical: `https://worldcityhub.com/pakistan/${city.province.toLowerCase()}/${city.city_slug}/weather`,
+    canonical: `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase()}/${city.city_slug}/weather`,
   };
 }
 
@@ -53,7 +53,7 @@ export function generatePrayerMeta(city: City, prayerData: any): MetaTags {
     keywords: `${city.name} prayer times today, ${city.name} namaz timings, Fajr time ${city.name}, aaj namaz ka waqt ${city.name}, Qibla direction, Islamic prayer times Pakistan`,
     ogTitle: `${city.name} Prayer Times & Qibla Direction`,
     ogDescription: `Accurate prayer times in ${city.name} with Qibla direction, Hijri date, and weekly timetable.`,
-    canonical: `https://worldcityhub.com/pakistan/${city.province.toLowerCase()}/${city.city_slug}/prayer-times`,
+    canonical: `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase()}/${city.city_slug}/prayer-times`,
   };
 }
 
@@ -68,7 +68,7 @@ export function generateGoldMeta(city: City, goldData: any): MetaTags {
     keywords: `gold rate ${city.name} today, sona rate ${city.name}, ${city.name} gold price today, 24 karat gold Pakistan, silver price ${city.name}, cryptocurrency rates`,
     ogTitle: `Gold Rate ${city.name}: PKR ${gold24k}/gram`,
     ogDescription: `Today's gold, silver, cryptocurrency, and currency rates in ${city.name} with zakat calculator.`,
-    canonical: `https://worldcityhub.com/pakistan/${city.province.toLowerCase()}/${city.city_slug}/rates`,
+    canonical: `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase()}/${city.city_slug}/rates`,
   };
 }
 
@@ -81,7 +81,7 @@ export function generateNewsMeta(city: City): MetaTags {
     keywords: `${city.name} news today, ${city.name} news, ${city.name} breaking news, news from ${city.name}, ${city.name} today news, ${city.name} latest updates`,
     ogTitle: `${city.name} News — Latest Updates`,
     ogDescription: `Breaking news and latest updates from ${city.name}, Pakistan's metropolitan hub.`,
-    canonical: `https://worldcityhub.com/pakistan/${city.province.toLowerCase()}/${city.city_slug}/news`,
+    canonical: `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase()}/${city.city_slug}/news`,
   };
 }
 
@@ -94,7 +94,7 @@ export function generateSportsMeta(city: City): MetaTags {
     keywords: `${city.name} sports, ${city.name} cricket, PSL, Qalandars, ${city.name} news sports, Pakistan cricket, sports ${city.name}`,
     ogTitle: `${city.name} Sports — Cricket & Updates`,
     ogDescription: `Latest sports news and cricket updates from ${city.name} including PSL Qalandars coverage.`,
-    canonical: `https://worldcityhub.com/pakistan/${city.province.toLowerCase()}/${city.city_slug}/sports`,
+    canonical: `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase()}/${city.city_slug}/sports`,
   };
 }
 
@@ -107,7 +107,7 @@ export function generateEconomyMeta(city: City): MetaTags {
     keywords: `${city.name} economy, ${city.name} business, GDP ${city.name}, inflation Pakistan, economy news, ${city.name} economic indicators`,
     ogTitle: `${city.name} Economy & Business News`,
     ogDescription: `Economic data, business news, and financial insights from ${city.name}.`,
-    canonical: `https://worldcityhub.com/pakistan/${city.province.toLowerCase()}/${city.city_slug}/economy`,
+    canonical: `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase()}/${city.city_slug}/economy`,
   };
 }
 

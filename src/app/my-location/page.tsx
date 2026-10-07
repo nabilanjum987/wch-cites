@@ -403,7 +403,7 @@ function WorldClockSection({ cities }: { cities: TimeZoneCity[] }) {
 }
 
 function ShareLocationSection({ lat, lng }: { lat: number; lng: number }) {
-  const shareUrl = `https://worldcityhub.com/location/${lat.toFixed(6)},${lng.toFixed(6)}`;
+  const shareUrl = `https://worldcityhub.vercel.app/location/${lat.toFixed(6)},${lng.toFixed(6)}`;
   const message = `Check out my location: ${shareUrl}`;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
 

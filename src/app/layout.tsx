@@ -4,8 +4,12 @@ import Navbar from '@/components/shared/Navbar'
 import TickerBar from '@/components/shared/TickerBar'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://worldcityhub.vercel.app'),
   title: 'WorldCityHub - Every City, Live',
   description: 'Live weather, prayer times, gold rates for every city',
+  verification: {
+    google: 't1xiFNMYDWqTVy4n8G4rREKo4cwzXk60B_a930ND1QA',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

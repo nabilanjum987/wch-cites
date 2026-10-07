@@ -9,25 +9,25 @@ export function generateBreadcrumbSchema(
       '@type': 'ListItem',
       'position': 1,
       'name': 'World',
-      'item': 'https://worldcityhub.com',
+      'item': 'https://worldcityhub.vercel.app',
     },
     {
       '@type': 'ListItem',
       'position': 2,
       'name': city.country,
-      'item': `https://worldcityhub.com/pakistan`,
+      'item': `https://worldcityhub.vercel.app/pakistan`,
     },
     {
       '@type': 'ListItem',
       'position': 3,
       'name': city.province,
-      'item': `https://worldcityhub.com/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}`,
+      'item': `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}`,
     },
     {
       '@type': 'ListItem',
       'position': 4,
       'name': city.name,
-      'item': `https://worldcityhub.com/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}/${city.city_slug}`,
+      'item': `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}/${city.city_slug}`,
     },
   ];
 
@@ -36,7 +36,7 @@ export function generateBreadcrumbSchema(
       '@type': 'ListItem',
       'position': 5,
       'name': page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' '),
-      'item': `https://worldcityhub.com/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}/${city.city_slug}/${page}`,
+      'item': `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}/${city.city_slug}/${page}`,
     });
   }
 
@@ -71,13 +71,13 @@ export function generateCitySchema(city: City, weatherData?: any) {
       'longitude': city.lng,
     },
     'timezone': city.timezone,
-    'url': `https://worldcityhub.com/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}/${city.city_slug}`,
+    'url': `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}/${city.city_slug}`,
     'areaServed': city.province,
     'description': `${city.name} is the capital of ${city.province} province in Pakistan, a historic city with rich cultural heritage and modern infrastructure.`,
     'image': [
-      `https://worldcityhub.com/images/${city.city_slug}-badshahi-mosque.jpg`,
-      `https://worldcityhub.com/images/${city.city_slug}-shalimar-gardens.jpg`,
-      `https://worldcityhub.com/images/${city.city_slug}-fort.jpg`,
+      `https://worldcityhub.vercel.app/images/${city.city_slug}-badshahi-mosque.jpg`,
+      `https://worldcityhub.vercel.app/images/${city.city_slug}-shalimar-gardens.jpg`,
+      `https://worldcityhub.vercel.app/images/${city.city_slug}-fort.jpg`,
     ],
   };
 }
@@ -247,8 +247,8 @@ export function generateOrganizationSchema() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     'name': 'WorldCityHub',
-    'url': 'https://worldcityhub.com',
-    'logo': 'https://worldcityhub.com/logo.png',
+    'url': 'https://worldcityhub.vercel.app',
+    'logo': 'https://worldcityhub.vercel.app/logo.png',
     'description': 'Real-time city information platform providing weather, prayer times, gold rates, and news for cities worldwide.',
     'sameAs': [
       'https://twitter.com/worldcityhub',
@@ -268,7 +268,7 @@ export function generateLocalBusinessSchema(city: City) {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     'name': `${city.name} Information Center`,
-    'image': `https://worldcityhub.com/images/${city.city_slug}-hero.jpg`,
+    'image': `https://worldcityhub.vercel.app/images/${city.city_slug}-hero.jpg`,
     'description': `Official information portal for ${city.name}, ${city.province}, Pakistan.`,
     'address': {
       '@type': 'PostalAddress',
@@ -281,7 +281,7 @@ export function generateLocalBusinessSchema(city: City) {
       'latitude': city.lat,
       'longitude': city.lng,
     },
-    'url': `https://worldcityhub.com/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}/${city.city_slug}`,
+    'url': `https://worldcityhub.vercel.app/pakistan/${city.province.toLowerCase().replace(/\s+/g, '-')}/${city.city_slug}`,
   };
 }
 
@@ -291,7 +291,7 @@ export function generateNewsArticleSchema(city: City, article: any) {
     '@type': 'NewsArticle',
     'headline': article.title,
     'description': article.summary,
-    'image': article.image || `https://worldcityhub.com/images/${city.city_slug}-news.jpg`,
+    'image': article.image || `https://worldcityhub.vercel.app/images/${city.city_slug}-news.jpg`,
     'datePublished': article.date || new Date().toISOString(),
     'dateModified': article.updatedDate || new Date().toISOString(),
     'author': {

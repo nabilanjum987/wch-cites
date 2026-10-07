@@ -33,7 +33,7 @@ export function generateCityMeta(props: CityMetaProps) {
 
   const description = `${city} right now: ${tempStr}${weatherDesc ?? 'current weather'}, prayer times (Fajr ${fajr ?? '--'} · Maghrib ${maghrib ?? '--'})${goldStr}${prayerStr}. Live news, events, gold rates & more for ${city}, ${province}, ${country}.`;
 
-  const canonical = `https://worldcityhub.com/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`;
+  const canonical = `https://worldcityhub.vercel.app/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`;
 
   return { title, description, canonical };
 }
@@ -129,25 +129,25 @@ export function generateCitySchema(props: CityMetaProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "WorldCityHub",
-        "item": "https://worldcityhub.com"
+        "item": "https://worldcityhub.vercel.app"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": country,
-        "item": `https://worldcityhub.com/${country.toLowerCase()}`
+        "item": `https://worldcityhub.vercel.app/${country.toLowerCase()}`
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": province,
-        "item": `https://worldcityhub.com/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}`
+        "item": `https://worldcityhub.vercel.app/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}`
       },
       {
         "@type": "ListItem",
         "position": 4,
         "name": city,
-        "item": `https://worldcityhub.com/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`
+        "item": `https://worldcityhub.vercel.app/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`
       }
     ]
   };
@@ -166,7 +166,7 @@ export function generateCitySchema(props: CityMetaProps) {
       }
     },
     "description": `${city} is the capital of ${province}, ${country}. A major cultural, economic, and historical centre with a population of over 13 million.`,
-    "url": `https://worldcityhub.com/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`
+    "url": `https://worldcityhub.vercel.app/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`
   };
 
   return { faqSchema, breadcrumbSchema, citySchema };
