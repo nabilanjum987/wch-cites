@@ -94,78 +94,6 @@ function mapTMEventToCity(ev: Record<string, unknown>, level: LevelTab): CityEve
   };
 }
 
-// ─── mock event generation ───────────────────────────────────────────────────
-
-const MOCK_IMAGES = [
-  'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg',
-  'https://images.pexels.com/photos/2608517/pexels-photo-2608517.jpeg',
-  'https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg',
-  'https://images.pexels.com/photos/976866/pexels-photo-976866.jpeg',
-  'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg',
-  'https://images.pexels.com/photos/1540319/pexels-photo-1540319.jpeg',
-  'https://images.pexels.com/photos/167636/pexels-photo-167636.jpeg',
-  'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg',
-  'https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg',
-  'https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg',
-];
-
-function generateMockEvents(city: string, country: string, cityLat: number, cityLng: number, timeTab: TimeTab): CityEvent[] {
-  const now = new Date();
-  const categories: EventCategory[] = ['sports', 'culture', 'music', 'literature', 'food', 'religious', 'business', 'film', 'outdoor', 'family'];
-  const venues = ['City Arena', 'Grand Hall', 'Cultural Centre', 'Open Air Park', 'Convention Center', 'Main Theatre'];
-  const levels: LevelTab[] = ['local', 'provincial', 'national', 'global'];
-
-  const offsets: Record<TimeTab, number[]> = {
-    today: [0.2, 1, 2, 3, 4, 5],
-    tomorrow: [24, 25, 26, 27],
-    weekend: [48, 52, 60, 65],
-    week: [0.5, 24, 48, 72, 96, 120, 144],
-    month: [0.3, 24, 72, 168, 336, 500, 600],
-    upcoming: [0.1, 12, 48, 96, 240, 720],
-  };
-
-  const names = [
-    `${city} International Music Festival`,
-    `${city} Food & Culture Fair`,
-    `${city} Sports Championship`,
-    `${city} Business Summit`,
-    `${city} Film Screening Night`,
-    `${city} Heritage Walk`,
-    `${city} Open Air Concert`,
-    `${city} Literary Festival`,
-    `${city} Community Family Day`,
-    `${city} Religious Gathering`,
-  ];
-
-  return offsets[timeTab].map((h, i) => {
-    const start = new Date(now.getTime() + h * 3600 * 1000);
-    const end = new Date(start.getTime() + 2 * 3600 * 1000);
-    const cat = categories[i % categories.length];
-    const latOffset = (Math.random() - 0.5) * 0.04;
-    const lngOffset = (Math.random() - 0.5) * 0.04;
-    return {
-      id: `mock-${i}-${city}`,
-      title: names[i % names.length],
-      description: `Join us for an exciting ${cat} event in the heart of ${city}. A wonderful opportunity to connect with the community.`,
-      venue: venues[i % venues.length],
-      address: `${100 + i * 10} Main Street, ${city}`,
-      city,
-      country,
-      category: cat,
-      start_time: start.toISOString(),
-      end_time: end.toISOString(),
-      image_url: MOCK_IMAGES[i % 10],
-      ticket_url: '#',
-      is_free: i % 3 === 0,
-      price_from: i % 3 !== 0 ? 10 + i * 5 : undefined,
-      currency: 'USD',
-      level: levels[i % 4],
-      lat: cityLat + latOffset,
-      lng: cityLng + lngOffset,
-    };
-  });
-}
-
 // ─── main fetch ──────────────────────────────────────────────────────────────
 
 export async function fetchCityEvents(
@@ -178,13 +106,12 @@ export async function fetchCityEvents(
   category: string | null,
   level: LevelTab
 ): Promise<CityEvent[]> {
+  // Truth rule: without a Ticketmaster key there is no real events feed,
+  // so the page shows its honest empty state. The old code fabricated a
+  // full calendar of invented events (names, dates, venues, prices) —
+  // removed. Add NEXT_PUBLIC_TICKETMASTER_KEY in Vercel to enable this.
   if (!TICKETMASTER_KEY) {
-    const mock = generateMockEvents(city, country, cityLat, cityLng, timeTab);
-    return mock.filter((e) => {
-      if (level !== 'local' && e.level !== level) return false;
-      if (category && e.category !== category) return false;
-      return true;
-    });
+    return [];
   }
 
   try {
@@ -196,11 +123,7 @@ export async function fetchCityEvents(
     const rawEvents = (embedded?.events as Array<Record<string, unknown>> | undefined) ?? [];
     return rawEvents.map((e) => mapTMEventToCity(e, level));
   } catch {
-    return generateMockEvents(city, country, cityLat, cityLng, timeTab).filter((e) => {
-      if (level !== 'local' && e.level !== level) return false;
-      if (category && e.category !== category) return false;
-      return true;
-    });
+    return [];
   }
 }
 
@@ -260,30 +183,12 @@ export async function fetchSportsEvents(countryCode: string): Promise<NationalEv
 // ─── recurring events (mock + could be from Supabase later) ─────────────────
 
 export function fetchRecurringEvents(city: string): RecurringEvent[] {
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  const times = ['08:00', '10:00', '14:00', '16:00', '18:00', '20:00', '21:30'];
-  const venues = ['City Arena', 'Grand Hall', 'Cultural Centre', 'Open Air Park', 'Convention Center'];
-  const cats: EventCategory[] = ['sports', 'culture', 'music', 'food', 'religious', 'business', 'outdoor'];
-  const names = [
-    `${city} Morning Run Club`,
-    `${city} Book Circle`,
-    `Sufi Music Night`,
-    `${city} Food Market`,
-    `Friday Prayer Gathering`,
-    `${city} Startup Meetup`,
-    `${city} Heritage Walk`,
-  ];
-
-  return names.map((title, i) => ({
-    id: `recurring-${i}`,
-    title,
-    venue: venues[i % venues.length],
-    day: days[i % days.length],
-    time: times[i % times.length],
-    category: cats[i % cats.length],
-    is_free: i % 2 === 0,
-    website: i % 3 === 0 ? '#' : undefined,
-  }));
+  // This used to invent a weekly calendar (run clubs, book circles, sufi
+  // nights with made-up venues and times) for every city. Until recurring
+  // events come from a real source (the planned Supabase table), the
+  // section stays empty — showing less beats showing fiction.
+  void city;
+  return [];
 }
 
 // ─── submit pending event to Supabase ────────────────────────────────────────
