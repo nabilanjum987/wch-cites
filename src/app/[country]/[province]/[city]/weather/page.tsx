@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import WeatherPageClient from "@/components/weather/WeatherPageClient"
 import { getCityData } from "@/lib/getCityData"
+import { fetchWeatherData, fetchSunMoonData, fetchAQIData } from "@/lib/apis/weather"
 
 interface PageProps {
   params: Promise<{ country: string; province: string; city: string }>
@@ -33,7 +34,16 @@ export default async function WeatherPage({ params }: PageProps) {
     if (!cityData) {
       return <div className="p-8 text-center">City not found</div>
     }
-    
+
+    // Fetch the headline data on the server so the raw HTML contains the
+    // real current weather, sun/moon and air quality — the client still
+    // refreshes everything on mount and loads the remaining sections.
+    const [initialWeather, initialSunMoon, initialAqi] = await Promise.all([
+      fetchWeatherData(cityData.lat, cityData.lng),
+      fetchSunMoonData(cityData.lat, cityData.lng, cityData.timezone),
+      fetchAQIData(cityData.lat, cityData.lng, cityName),
+    ])
+
     return (
       <WeatherPageClient
         cityName={cityName}
@@ -43,6 +53,9 @@ export default async function WeatherPage({ params }: PageProps) {
         lat={cityData.lat}
         lng={cityData.lng}
         timezone={cityData.timezone}
+        initialWeather={initialWeather}
+        initialSunMoon={initialSunMoon}
+        initialAqi={initialAqi}
       />
     )
   } catch (error) {

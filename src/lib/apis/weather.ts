@@ -503,69 +503,116 @@ export function getClimateData(citySlug: string, monthlyAverages: { month: strin
 
 export async function fetchAQIData(lat: number, lng: number, cityName: string): Promise<AQIData | null> {
   try {
-    // Try OpenAQ first (no key needed)
+    // Primary source: Open-Meteo Air Quality API (free, no key) — real
+    // modelled pollutant concentrations and the official US AQI, plus
+    // hourly history for a REAL 7-day trend (daily means).
+    // Truth rule: no default or simulated values anywhere here. The old
+    // version invented pollutant defaults, a Math.random() "history" and
+    // Math.random() pollution-source percentages — all removed. When no
+    // real data is available this returns null and the page shows less.
+    const meteoUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&hourly=pm2_5,pm10,nitrogen_dioxide,ozone,carbon_monoxide,sulphur_dioxide,us_aqi&past_days=7&forecast_days=1&timezone=auto`;
+    const meteoRes = await fetch(meteoUrl, ({ next: { revalidate: 3600 } } as any));
+    if (meteoRes.ok) {
+      const data = await meteoRes.json();
+      const hourly = data?.hourly;
+      if (hourly?.time?.length) {
+        const nowMs = Date.now();
+        let idx = hourly.time.length - 1;
+        while (idx > 0 && new Date(hourly.time[idx]).getTime() > nowMs) idx--;
+        const pick = (arr?: number[]): number | null =>
+          arr && typeof arr[idx] === 'number' ? arr[idx] : null;
+        const pm25 = pick(hourly.pm2_5);
+        const pm10 = pick(hourly.pm10);
+        const no2 = pick(hourly.nitrogen_dioxide);
+        const o3 = pick(hourly.ozone);
+        const coUg = pick(hourly.carbon_monoxide);
+        const co = coUg != null ? coUg / 1000 : null; // µg/m³ -> mg/m³ for the AQI formula
+        const so2 = pick(hourly.sulphur_dioxide);
+        let aqiVal = pick(hourly.us_aqi);
+        if (aqiVal == null) {
+          const parts: number[] = [];
+          if (pm25 != null) parts.push(calculateAQIPM25(pm25));
+          if (pm10 != null) parts.push(calculateAQIPM10(pm10));
+          if (no2 != null) parts.push(calculateAQINO2(no2));
+          if (o3 != null) parts.push(calculateAQIO3(o3));
+          if (co != null) parts.push(calculateAQICO(co));
+          if (so2 != null) parts.push(calculateAQISO2(so2));
+          if (parts.length) aqiVal = Math.max(...parts);
+        }
+        if (aqiVal != null) {
+          const byDay = new Map<string, number[]>();
+          (hourly.time as string[]).forEach((t, i) => {
+            const v = hourly.us_aqi?.[i];
+            if (typeof v === 'number') {
+              const day = t.slice(0, 10);
+              const arr = byDay.get(day) || [];
+              arr.push(v);
+              byDay.set(day, arr);
+            }
+          });
+          const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          const history = [...byDay.entries()].slice(-7).map(([day, vals]) => ({
+            date: dayNames[new Date(`${day}T12:00:00`).getDay()],
+            aqi: Math.round(vals.reduce((a, b) => a + b, 0) / vals.length),
+          }));
+          const lvl = getAQILevel(Math.round(aqiVal));
+          return {
+            aqi: Math.round(aqiVal),
+            level: lvl.label,
+            color: lvl.color,
+            pm25: pm25 ?? 0,
+            pm10: pm10 ?? 0,
+            no2: no2 ?? 0,
+            o3: o3 ?? 0,
+            co: co ?? 0,
+            so2: so2 ?? 0,
+            // No free API publishes a city's pollution-source split, so
+            // this stays null and the sources card stays hidden.
+            sources: null,
+            history,
+          };
+        }
+      }
+    }
+
+    // Fallback: OpenAQ station measurements — real values only, and only
+    // when PM2.5 was actually measured nearby.
     const openaqRes = await fetch(
       `https://api.openaq.org/v2/latest?coordinates=${lat},${lng}&radius=50000&limit=5`,
       ({ next: { revalidate: 3600 } } as any)
     );
-
-    let pm25 = 35;
-    let pm10 = 50;
-    let no2 = 25;
-    let o3 = 40;
-    let co = 0.8;
-    let so2 = 8;
-
     if (openaqRes.ok) {
       const openaqData = await openaqRes.json();
       const measurements = openaqData.results?.[0]?.measurements || [];
-
+      const found: Record<string, number> = {};
       measurements.forEach((m: { parameter: string; value: number }) => {
-        switch (m.parameter) {
-          case 'pm25': pm25 = m.value; break;
-          case 'pm10': pm10 = m.value; break;
-          case 'no2': no2 = m.value; break;
-          case 'o3': o3 = m.value; break;
-          case 'co': co = m.value; break;
-          case 'so2': so2 = m.value; break;
-        }
+        found[m.parameter] = m.value;
       });
+      if (typeof found.pm25 === 'number') {
+        const parts = [calculateAQIPM25(found.pm25)];
+        if (typeof found.pm10 === 'number') parts.push(calculateAQIPM10(found.pm10));
+        if (typeof found.no2 === 'number') parts.push(calculateAQINO2(found.no2));
+        if (typeof found.o3 === 'number') parts.push(calculateAQIO3(found.o3));
+        if (typeof found.co === 'number') parts.push(calculateAQICO(found.co / 1000));
+        if (typeof found.so2 === 'number') parts.push(calculateAQISO2(found.so2));
+        const aqiVal = Math.max(...parts);
+        const lvl = getAQILevel(Math.round(aqiVal));
+        return {
+          aqi: Math.round(aqiVal),
+          level: lvl.label,
+          color: lvl.color,
+          pm25: found.pm25,
+          pm10: found.pm10 ?? 0,
+          no2: found.no2 ?? 0,
+          o3: found.o3 ?? 0,
+          co: typeof found.co === 'number' ? found.co / 1000 : 0,
+          so2: found.so2 ?? 0,
+          sources: null,
+          history: [],
+        };
+      }
     }
-
-    // Calculate AQI (simplified US EPA formula)
-    const aqi = Math.max(
-      calculateAQIPM25(pm25),
-      calculateAQIPM10(pm10),
-      calculateAQINO2(no2),
-      calculateAQIO3(o3),
-      calculateAQICO(co),
-      calculateAQISO2(so2)
-    );
-
-    const aqiLevel = getAQILevel(Math.round(aqi));
-
-    // Historical trend (simulated based on typical patterns)
-    const history = generateHistoricalTrend(Math.round(aqi));
-
-    return {
-      aqi: Math.round(aqi),
-      level: aqiLevel.label,
-      color: aqiLevel.color,
-      pm25,
-      pm10,
-      no2,
-      o3,
-      co,
-      so2,
-      sources: {
-        vehicles: 35 + Math.random() * 15,
-        industry: 20 + Math.random() * 15,
-        agriculture: 10 + Math.random() * 10,
-        dust: 15 + Math.random() * 10,
-        other: 10 + Math.random() * 10,
-      },
-      history,
-    };
+    return null;
   } catch {
     return null;
   }
@@ -616,22 +663,6 @@ function getAQILevel(aqi: number): { label: string; color: string } {
   if (aqi <= 200) return { label: 'Unhealthy', color: '#ff0000' };
   if (aqi <= 300) return { label: 'Very Unhealthy', color: '#8f3f97' };
   return { label: 'Hazardous', color: '#7e0023' };
-}
-
-function generateHistoricalTrend(currentAQI: number): { date: string; aqi: number }[] {
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const today = new Date().getDay();
-  const history: { date: string; aqi: number }[] = [];
-
-  for (let i = 6; i >= 0; i--) {
-    const dayIndex = (today - i + 7) % 7;
-    const variance = Math.random() * 40 - 20;
-    history.push({
-      date: days[dayIndex],
-      aqi: Math.max(10, Math.min(400, currentAQI + variance)),
-    });
-  }
-  return history;
 }
 
 export async function fetchWeatherData(lat: number, lng: number): Promise<WeatherData | null> {

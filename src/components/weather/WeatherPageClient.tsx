@@ -898,6 +898,7 @@ function AQIBreakdownCard({ aqi }: { aqi: AQIData }) {
 }
 
 function AQISourcesCard({ aqi }: { aqi: AQIData }) {
+  if (!aqi.sources) return null;
   const sources: Array<{ label: string; value: number; icon: React.ReactNode; color: string }> = [
     { label: 'Vehicles', value: aqi.sources.vehicles, icon: <Car size={16} />, color: 'text-blue-500' },
     { label: 'Industry', value: aqi.sources.industry, icon: <Factory size={16} />, color: 'text-slate-500' },
@@ -1044,18 +1045,18 @@ function AQIAffiliateCard() {
 
 // ─── Main component ─────────────────────────────────────────────────────
 
-interface WeatherPageProps { cityName: string; country: string; province: string; lat: number; lng: number; timezone: string; citySlug?: string }
+interface WeatherPageProps { cityName: string; country: string; province: string; lat: number; lng: number; timezone: string; citySlug?: string; initialWeather?: WeatherData | null; initialSunMoon?: SunMoonData | null; initialAqi?: AQIData | null }
 
-export default function WeatherPageClient({ cityName, country, province, lat, lng, timezone, citySlug }: WeatherPageProps) {
+export default function WeatherPageClient({ cityName, country, province, lat, lng, timezone, citySlug, initialWeather, initialSunMoon, initialAqi }: WeatherPageProps) {
   const [activeTab, setActiveTab] = useState<Tab>('Today');
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(initialWeather ?? null);
   const [historical, setHistorical] = useState<HistoricalData | null>(null);
   const [climate, setClimate] = useState<ClimateData | null>(null);
-  const [aqi, setAqi] = useState<AQIData | null>(null);
-  const [sunMoon, setSunMoon] = useState<SunMoonData | null>(null);
+  const [aqi, setAqi] = useState<AQIData | null>(initialAqi ?? null);
+  const [sunMoon, setSunMoon] = useState<SunMoonData | null>(initialSunMoon ?? null);
   const [alerts, setAlerts] = useState<WeatherAlert[]>([]);
   const [nearbyWeather, setNearbyWeather] = useState<NearbyCityWeather[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialWeather);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -1248,7 +1249,7 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
                   {generatePollutantsParagraph(cityName)}
                 </p>
                 <AQIBreakdownCard aqi={aqi} />
-                <AQISourcesCard aqi={aqi} />
+                {aqi.sources && <AQISourcesCard aqi={aqi} />}
                 <p className="text-gray-600 leading-relaxed text-sm px-1">
                   {generatePollutantsAfter(cityName)}
                 </p>
@@ -1258,7 +1259,7 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
                 <AQIHealthAdviceCard aqi={aqi} />
                 <AQIBestTimeCard />
                 <AQIPurificationCard />
-                <AQIHistoryCard aqi={aqi} />
+                {aqi.history.length > 0 && <AQIHistoryCard aqi={aqi} />}
                 <p className="text-gray-600 leading-relaxed text-sm px-1">
                   {generateAQIHealthAfter(cityName)}
                 </p>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import SportsPage from './SportsClient';
+import { getCityData } from '@/lib/getCityData';
 
 // Server wrapper: the interactive sports page lives in SportsClient.tsx
 // (a client component). Metadata must be exported from a server
@@ -29,6 +30,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function Page() {
-  return <SportsPage />;
+export default async function Page({ params }: PageProps) {
+  const p = await params;
+  const initialCity = await getCityData(p.country, p.province, p.city);
+  return <SportsPage initialCity={initialCity} />;
 }

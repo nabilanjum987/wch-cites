@@ -282,12 +282,20 @@ function getDomesticLeague(code: string): DomesticLeague | null {
   return COUNTRY_DOMESTIC_LEAGUES[code.toUpperCase()] ?? null;
 }
 
+const SLUG_TO_CODE: Record<string, string> = {
+  pakistan: 'PK', india: 'IN', 'united-kingdom': 'GB', 'united-states': 'US',
+  'united-arab-emirates': 'AE', 'saudi-arabia': 'SA', egypt: 'EG',
+  indonesia: 'ID', turkey: 'TR', bangladesh: 'BD', 'sri-lanka': 'LK',
+  australia: 'AU', canada: 'CA', germany: 'DE', france: 'FR', japan: 'JP',
+  china: 'CN', brazil: 'BR', 'south-africa': 'ZA', 'new-zealand': 'NZ',
+};
+
 async function getCityData(country: string, province: string, city: string): Promise<City | null> {
   return {
     name: city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
     city_slug: city,
     country: country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-    country_code: country.toUpperCase().slice(0, 2),
+    country_code: SLUG_TO_CODE[country] ?? country.toUpperCase().slice(0, 2),
     country_slug: country,
     province: province.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
     province_slug: province,
@@ -297,7 +305,7 @@ async function getCityData(country: string, province: string, city: string): Pro
     timezone: 'UTC',
     major_religion: 'Unknown',
     religion_percent: 0,
-    primary_color: codeToColor(country.toUpperCase().slice(0, 2)),
+    primary_color: codeToColor(SLUG_TO_CODE[country] ?? country.toUpperCase().slice(0, 2)),
     secondary_color: '#FFFFFF',
     famous_for: '',
     famous_products: '',
@@ -818,28 +826,34 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-export default function SportsPage() {
+export default function SportsPage({ initialCity }: { initialCity?: City | null } = {}) {
   const params = useParams<{ country: string; province: string; city: string }>();
 
-  const [city, setCity] = useState<City | null>(null);
-  const [sports, setSports] = useState<SportPriority[]>([]);
-  const [domesticLeague, setDomesticLeague] = useState<DomesticLeague | null>(null);
-  const [activeSport, setActiveSport] = useState<string>('');
+  // The server wrapper passes the real city record (Supabase / project
+  // data with the correct country_code), so the header, sport selector,
+  // domestic league, stadiums and Olympic history render in the raw HTML
+  // instead of a skeleton. Match data still loads async as before.
+  const [city, setCity] = useState<City | null>(initialCity ?? null);
+  const [sports, setSports] = useState<SportPriority[]>(initialCity ? getSportsByCountry(initialCity.country_code) : []);
+  const [domesticLeague, setDomesticLeague] = useState<DomesticLeague | null>(initialCity ? getDomesticLeague(initialCity.country_code) : null);
+  const [activeSport, setActiveSport] = useState<string>(initialCity ? getSportsByCountry(initialCity.country_code)[0]?.id ?? '' : '');
   const [events, setEvents] = useState<SportEvent[]>([]);
   const [nationalTeam, setNationalTeam] = useState<NationalTeam | null>(null);
   const [nextMatches, setNextMatches] = useState<SportEvent[]>([]);
   const [recentResults, setRecentResults] = useState<SportEvent[]>([]);
   const [standings, setStandings] = useState<StandingsTeam[]>([]);
   const [topScorers, setTopScorers] = useState<TopScorer[]>([]);
-  const [stadiums, setStadiums] = useState<Stadium[]>([]);
-  const [olympics, setOlympics] = useState<OlympicMedals[]>([]);
+  const [stadiums, setStadiums] = useState<Stadium[]>(initialCity ? getStadiums(initialCity.country_code) : []);
+  const [olympics, setOlympics] = useState<OlympicMedals[]>(initialCity ? getOlympicHistory(initialCity.country_code) : []);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [news, setNews] = useState<SportsNews[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialCity);
 
   useEffect(() => {
     async function loadInitial() {
-      const data = await getCityData(params.country, params.province, params.city);
+      const data = initialCity && initialCity.city_slug === params.city
+        ? initialCity
+        : await getCityData(params.country, params.province, params.city);
       setCity(data);
       if (data) {
         const list = getSportsByCountry(data.country_code);

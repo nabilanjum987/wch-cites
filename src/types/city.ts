@@ -381,7 +381,7 @@ export interface AQIData {
   o3: number;
   co: number;
   so2: number;
-  sources: { vehicles: number; industry: number; agriculture: number; dust: number; other: number };
+  sources: { vehicles: number; industry: number; agriculture: number; dust: number; other: number } | null;
   history: { date: string; aqi: number }[];
 }
 
