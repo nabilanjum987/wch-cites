@@ -1,0 +1,1180 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
+import GrowthDashboard from '@/components/shared/GrowthDashboard';
+import { useParams } from 'next/navigation';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { getSupabase } from '@/lib/supabase';
+import {
+  ChevronRight, TrendingUp, TrendingDown, ArrowRight,
+  Globe, Users, Coins, Calendar, ShieldAlert, Utensils,
+  Leaf, Trophy, Mountain, Thermometer, Star, Newspaper, Gem, MapPin, Building2,
+} from 'lucide-react';
+import {
+  generateCitiesWeatherParagraph, generateCitiesWeatherAfter,
+  generateFactsParagraph, generateFactsAfter,
+  generateLiveDataParagraph, generateLiveDataAfter,
+  generateProvincesParagraph, generateProvincesAfter,
+  generatePersonalitiesParagraph, generatePersonalitiesAfter,
+  generatePlacesParagraph, generatePlacesAfter,
+  generateEconomyDashboardParagraph, generateEconomyDashboardAfter,
+  generateGrowthDashboardParagraph, generateGrowthDashboardAfter,
+  generateTeamsParagraph, generateTeamsAfter,
+  generateHolidaysParagraph, generateHolidaysAfter,
+  generateEmergencyParagraph, generateEmergencyAfter,
+} from '@/lib/paragraphs/country';
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+interface Country {
+  name: string; code: string; slug: string; flag: string;
+  region: string; continent: string; population: number;
+  area: number; capital: string; currency: string;
+  languages: string[]; government: string;
+  primaryColor: string; secondaryColor: string;
+  heroImage: string; tagline: string;
+  timezone: string; independence: string; climate: string;
+  majorFaith: string; majorFaithPct: number;
+}
+interface CityWeather { name: string; slug: string; temp: number; condition: string; icon: string; provinceSlug: string; }
+interface Province { name: string; slug: string; capital: string; population: number; area: number; tagline: string; cities: string[]; }
+interface SupabaseCity { name: string; city_slug: string; province_slug: string; population: number; primary_color: string | null; famous_for: string | null; }
+interface Personality { id: string; name: string; profession: string; category: string; photo: string; birthYear: number; achievements: string; }
+interface Landmark { id: string; name: string; type: string; city: string; image: string; unesco: boolean; era: string; }
+interface Economy { gdp: string; growth: string; inflation: string; unemployment: string; currencyRate: string; exports: string[]; }
+interface NationalTeam { sport: string; name: string; ranking: string; achievements: string[]; }
+interface Holiday { name: string; date: string; type: string; }
+interface Neighbor { name: string; slug: string; flag: string; border: string; }
+interface RateItem { label: string; value: string; change: string; up: boolean; }
+interface Resource { name: string; icon: string; description: string; rank: string; }
+interface FoodItem { name: string; emoji: string; description: string; origin: string; }
+interface EmergencyItem { label: string; number: string; color: string; }
+
+// ─── Static Data ─────────────────────────────────────────────────────────────
+
+const COUNTRIES: Record<string, Country> = {
+  pakistan: {
+    name: 'Pakistan', code: 'PK', slug: 'pakistan', flag: '🇵🇰',
+    region: 'South Asia', continent: 'Asia',
+    population: 231402117, area: 881913,
+    capital: 'Islamabad', currency: 'Pakistani Rupee (PKR)',
+    languages: ['Urdu', 'English', 'Punjabi', 'Pashto', 'Sindhi', 'Balochi'],
+    government: 'Federal Parliamentary Republic',
+    primaryColor: '#0C7A3D', secondaryColor: '#FFFFFF',
+    heroImage: 'https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    tagline: 'Land of ancient civilisations, towering peaks, and vibrant culture.',
+    timezone: 'PKT (UTC+5)', independence: 'August 14, 1947',
+    climate: 'Varies — Desert to Alpine', majorFaith: 'Islam', majorFaithPct: 96,
+  },
+  india: {
+    name: 'India', code: 'IN', slug: 'india', flag: '🇮🇳',
+    region: 'South Asia', continent: 'Asia',
+    population: 1428627663, area: 3287263,
+    capital: 'New Delhi', currency: 'Indian Rupee (INR)',
+    languages: ['Hindi', 'English', 'Bengali', 'Telugu', 'Marathi', 'Tamil'],
+    government: 'Federal Parliamentary Republic',
+    primaryColor: '#FF9933', secondaryColor: '#138808',
+    heroImage: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    tagline: 'One billion stories. Every faith. Every landscape. Every flavour.',
+    timezone: 'IST (UTC+5:30)', independence: 'August 15, 1947',
+    climate: 'Varies — Tropical to Alpine', majorFaith: 'Hinduism', majorFaithPct: 80,
+  },
+  'united-states': {
+    name: 'United States', code: 'US', slug: 'united-states', flag: '🇺🇸',
+    region: 'North America', continent: 'Americas',
+    population: 331893745, area: 9833520,
+    capital: 'Washington D.C.', currency: 'US Dollar (USD)',
+    languages: ['English', 'Spanish'],
+    government: 'Federal Presidential Republic',
+    primaryColor: '#B22234', secondaryColor: '#3C3B6E',
+    heroImage: 'https://images.pexels.com/photos/290386/pexels-photo-290386.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    tagline: 'A nation built by dreamers from every corner of the world.',
+    timezone: 'EST/PST (UTC-5 to UTC-8)', independence: 'July 4, 1776',
+    climate: 'Varies — Arctic to Tropical', majorFaith: 'Christianity', majorFaithPct: 63,
+  },
+};
+
+const MAJOR_CITIES: Record<string, CityWeather[]> = {
+  PK: [
+    { name: 'Karachi', slug: 'karachi', temp: 32, condition: 'Partly Cloudy', icon: '⛅', provinceSlug: 'sindh' },
+    { name: 'Lahore', slug: 'lahore', temp: 35, condition: 'Hot', icon: '☀️', provinceSlug: 'punjab' },
+    { name: 'Islamabad', slug: 'islamabad', temp: 30, condition: 'Clear', icon: '🌤️', provinceSlug: 'islamabad' },
+    { name: 'Faisalabad', slug: 'faisalabad', temp: 36, condition: 'Hot', icon: '☀️', provinceSlug: 'punjab' },
+    { name: 'Rawalpindi', slug: 'rawalpindi', temp: 31, condition: 'Clear', icon: '🌤️', provinceSlug: 'punjab' },
+    { name: 'Multan', slug: 'multan', temp: 38, condition: 'Very Hot', icon: '🔥', provinceSlug: 'punjab' },
+  ],
+  IN: [
+    { name: 'Mumbai', slug: 'mumbai', temp: 32, condition: 'Humid', icon: '🌤️', provinceSlug: 'maharashtra' },
+    { name: 'Delhi', slug: 'delhi', temp: 38, condition: 'Hot', icon: '☀️', provinceSlug: 'delhi' },
+    { name: 'Bangalore', slug: 'bangalore', temp: 28, condition: 'Pleasant', icon: '⛅', provinceSlug: 'karnataka' },
+    { name: 'Chennai', slug: 'chennai', temp: 34, condition: 'Humid', icon: '🌤️', provinceSlug: 'tamil-nadu' },
+    { name: 'Kolkata', slug: 'kolkata', temp: 35, condition: 'Warm', icon: '⛅', provinceSlug: 'west-bengal' },
+    { name: 'Hyderabad', slug: 'hyderabad', temp: 36, condition: 'Hot', icon: '☀️', provinceSlug: 'telangana' },
+  ],
+  US: [
+    { name: 'New York', slug: 'new-york', temp: 22, condition: 'Clear', icon: '☀️', provinceSlug: 'new-york' },
+    { name: 'Los Angeles', slug: 'los-angeles', temp: 26, condition: 'Sunny', icon: '☀️', provinceSlug: 'california' },
+    { name: 'Chicago', slug: 'chicago', temp: 18, condition: 'Cloudy', icon: '☁️', provinceSlug: 'illinois' },
+    { name: 'Houston', slug: 'houston', temp: 30, condition: 'Warm', icon: '🌤️', provinceSlug: 'texas' },
+    { name: 'Phoenix', slug: 'phoenix', temp: 38, condition: 'Hot', icon: '🔥', provinceSlug: 'arizona' },
+    { name: 'Philadelphia', slug: 'philadelphia', temp: 20, condition: 'Pleasant', icon: '⛅', provinceSlug: 'pennsylvania' },
+  ],
+};
+
+const PROVINCES: Record<string, Province[]> = {
+  PK: [
+    { name: 'Punjab', slug: 'punjab', capital: 'Lahore', population: 110012442, area: 205344, tagline: 'Most populous province', cities: ['Lahore', 'Multan', 'Faisalabad'] },
+    { name: 'Sindh', slug: 'sindh', capital: 'Karachi', population: 47886531, area: 140914, tagline: 'Economic heartbeat', cities: ['Karachi', 'Hyderabad', 'Sukkur'] },
+    { name: 'Khyber Pakhtunkhwa', slug: 'khyber-pakhtunkhwa', capital: 'Peshawar', population: 35625000, area: 74521, tagline: 'Land of mountains', cities: ['Peshawar', 'Abbottabad', 'Swat'] },
+    { name: 'Balochistan', slug: 'balochistan', capital: 'Quetta', population: 12344408, area: 347190, tagline: 'Largest province', cities: ['Quetta', 'Gwadar', 'Turbat'] },
+    { name: 'Gilgit-Baltistan', slug: 'gilgit-baltistan', capital: 'Gilgit', population: 1800000, area: 72497, tagline: 'Roof of the world', cities: ['Gilgit', 'Skardu', 'Hunza'] },
+    { name: 'Azad Kashmir', slug: 'azad-kashmir', capital: 'Muzaffarabad', population: 4045000, area: 13297, tagline: 'Heaven on earth', cities: ['Muzaffarabad', 'Mirpur', 'Rawalakot'] },
+  ],
+  IN: [
+    { name: 'Maharashtra', slug: 'maharashtra', capital: 'Mumbai', population: 112374333, area: 307713, tagline: 'Financial capital state', cities: ['Mumbai', 'Pune', 'Nagpur'] },
+    { name: 'Uttar Pradesh', slug: 'uttar-pradesh', capital: 'Lucknow', population: 199812341, area: 240928, tagline: 'Most populous state', cities: ['Lucknow', 'Agra', 'Varanasi'] },
+    { name: 'Karnataka', slug: 'karnataka', capital: 'Bangalore', population: 61095248, area: 191791, tagline: 'Silicon Valley of India', cities: ['Bangalore', 'Mysore', 'Hubli'] },
+    { name: 'Tamil Nadu', slug: 'tamil-nadu', capital: 'Chennai', population: 72147030, area: 130058, tagline: 'Temple heartland', cities: ['Chennai', 'Coimbatore', 'Madurai'] },
+    { name: 'Gujarat', slug: 'gujarat', capital: 'Ahmedabad', population: 60439692, area: 196244, tagline: 'Vibrant trade state', cities: ['Ahmedabad', 'Surat', 'Vadodara'] },
+    { name: 'Rajasthan', slug: 'rajasthan', capital: 'Jaipur', population: 68548437, area: 342239, tagline: 'Land of kings', cities: ['Jaipur', 'Jodhpur', 'Udaipur'] },
+  ],
+  US: [
+    { name: 'California', slug: 'california', capital: 'Sacramento', population: 39538223, area: 423967, tagline: 'Golden state', cities: ['Los Angeles', 'San Francisco', 'San Diego'] },
+    { name: 'Texas', slug: 'texas', capital: 'Austin', population: 29145505, area: 695662, tagline: 'Lone star state', cities: ['Houston', 'Dallas', 'Austin'] },
+    { name: 'Florida', slug: 'florida', capital: 'Tallahassee', population: 21538187, area: 170312, tagline: 'Sunshine state', cities: ['Miami', 'Orlando', 'Tampa'] },
+    { name: 'New York', slug: 'new-york', capital: 'Albany', population: 20201249, area: 141297, tagline: 'Empire state', cities: ['New York City', 'Buffalo', 'Albany'] },
+    { name: 'Illinois', slug: 'illinois', capital: 'Springfield', population: 12812508, area: 149997, tagline: 'Prairie state', cities: ['Chicago', 'Springfield', 'Rockford'] },
+    { name: 'Pennsylvania', slug: 'pennsylvania', capital: 'Harrisburg', population: 13002700, area: 119280, tagline: 'Keystone state', cities: ['Philadelphia', 'Pittsburgh', 'Allentown'] },
+  ],
+};
+
+const PERSONALITIES: Record<string, Personality[]> = {
+  PK: [
+    { id: '1', name: 'Quaid-e-Azam Jinnah', profession: 'Father of the Nation', category: 'Leaders', photo: '', birthYear: 1876, achievements: 'Founded Pakistan on August 14, 1947' },
+    { id: '2', name: 'Allama Iqbal', profession: 'Poet of the East', category: 'Leaders', photo: '', birthYear: 1877, achievements: 'Philosophical father of Pakistan, national poet' },
+    { id: '3', name: 'Imran Khan', profession: 'Cricketer & Politician', category: 'Sports', photo: '', birthYear: 1952, achievements: 'World Cup captain 1992, Prime Minister' },
+    { id: '4', name: 'Wasim Akram', profession: 'Cricketer', category: 'Sports', photo: '', birthYear: 1966, achievements: 'Greatest fast bowler, 916 international wickets' },
+    { id: '5', name: 'Nusrat Fateh Ali Khan', profession: 'Musician', category: 'Arts', photo: '', birthYear: 1948, achievements: 'King of Qawwali, global cultural ambassador' },
+    { id: '6', name: 'Dr Abdus Salam', profession: 'Physicist', category: 'Science', photo: '', birthYear: 1926, achievements: 'Nobel Prize in Physics 1979' },
+    { id: '7', name: 'Malala Yousafzai', profession: 'Activist', category: 'Leaders', photo: '', birthYear: 1997, achievements: 'Nobel Peace Prize, youngest laureate ever' },
+    { id: '8', name: 'Abdul Sattar Edhi', profession: 'Philanthropist', category: 'Leaders', photo: '', birthYear: 1928, achievements: "Founded world's largest volunteer ambulance network" },
+  ],
+  IN: [
+    { id: '1', name: 'Mahatma Gandhi', profession: 'Freedom Fighter', category: 'Leaders', photo: '', birthYear: 1869, achievements: 'Father of the Indian nation' },
+    { id: '2', name: 'Sachin Tendulkar', profession: 'Cricketer', category: 'Sports', photo: '', birthYear: 1973, achievements: '100 international centuries, God of Cricket' },
+    { id: '3', name: 'A.R. Rahman', profession: 'Musician', category: 'Arts', photo: '', birthYear: 1967, achievements: '2x Academy Award winner' },
+    { id: '4', name: 'Dr APJ Abdul Kalam', profession: 'Scientist & President', category: 'Science', photo: '', birthYear: 1931, achievements: 'Missile Man of India, 11th President' },
+  ],
+  US: [
+    { id: '1', name: 'Abraham Lincoln', profession: 'President', category: 'Leaders', photo: '', birthYear: 1809, achievements: '16th President, abolished slavery' },
+    { id: '2', name: 'Michael Jordan', profession: 'Athlete', category: 'Sports', photo: '', birthYear: 1963, achievements: '6x NBA Champion' },
+    { id: '3', name: 'Steve Jobs', profession: 'Entrepreneur', category: 'Science', photo: '', birthYear: 1955, achievements: 'Co-founded Apple, changed personal computing' },
+    { id: '4', name: 'Oprah Winfrey', profession: 'Media Personality', category: 'Arts', photo: '', birthYear: 1954, achievements: 'First Black female billionaire, media mogul' },
+  ],
+};
+
+const LANDMARKS: Record<string, Landmark[]> = {
+  PK: [
+    { id: '1', name: 'Badshahi Mosque', type: 'Religious', city: 'Lahore', image: 'https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Mughal 1673' },
+    { id: '2', name: 'Mohenjo-daro', type: 'Archaeological', city: 'Sindh', image: 'https://images.pexels.com/photos/2846217/pexels-photo-2846217.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: '3000 BCE' },
+    { id: '3', name: 'K2', type: 'Mountain', city: 'Gilgit-Baltistan', image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Natural Wonder' },
+    { id: '4', name: 'Shalimar Gardens', type: 'Gardens', city: 'Lahore', image: 'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1641' },
+    { id: '5', name: 'Lahore Fort', type: 'Fort', city: 'Lahore', image: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1566' },
+    { id: '6', name: 'Faisal Mosque', type: 'Religious', city: 'Islamabad', image: 'https://images.pexels.com/photos/208371/pexels-photo-208371.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Modern 1986' },
+  ],
+  IN: [
+    { id: '1', name: 'Taj Mahal', type: 'Monument', city: 'Agra', image: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1643' },
+    { id: '2', name: 'Red Fort', type: 'Fort', city: 'Delhi', image: 'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1648' },
+    { id: '3', name: 'Gateway of India', type: 'Arch', city: 'Mumbai', image: 'https://images.pexels.com/photos/208371/pexels-photo-208371.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Colonial 1924' },
+    { id: '4', name: 'Hawa Mahal', type: 'Palace', city: 'Jaipur', image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Rajput 1799' },
+  ],
+  US: [
+    { id: '1', name: 'Statue of Liberty', type: 'Monument', city: 'New York', image: 'https://images.pexels.com/photos/290386/pexels-photo-290386.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Modern 1886' },
+    { id: '2', name: 'Grand Canyon', type: 'Natural', city: 'Arizona', image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Natural Wonder' },
+    { id: '3', name: 'Golden Gate Bridge', type: 'Bridge', city: 'San Francisco', image: 'https://images.pexels.com/photos/1537086/pexels-photo-1537086.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Modern 1937' },
+    { id: '4', name: 'Mount Rushmore', type: 'Monument', city: 'South Dakota', image: 'https://images.pexels.com/photos/208371/pexels-photo-208371.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Modern 1941' },
+  ],
+};
+
+const ECONOMIES: Record<string, Economy> = {
+  PK: { gdp: '$376B', growth: '5.7%', inflation: '28.2%', unemployment: '6.2%', currencyRate: '1 USD = 278 PKR', exports: ['Textiles → USA, Europe, UAE', 'Rice → Middle East, Africa', 'Sports goods → Global', 'Surgical instruments → Germany, USA', 'Leather → Italy, UK'] },
+  IN: { gdp: '$3.73T', growth: '7.2%', inflation: '5.4%', unemployment: '4.8%', currencyRate: '1 USD = 83 INR', exports: ['IT Services → Global', 'Pharmaceuticals → USA, Africa', 'Gems & Jewellery → USA, UAE', 'Engineering goods → USA, Europe'] },
+  US: { gdp: '$25.5T', growth: '2.1%', inflation: '3.2%', unemployment: '3.8%', currencyRate: 'Base Currency (USD)', exports: ['Technology → Global', 'Aircraft → Global', 'Pharmaceuticals → Global', 'Financial services → Global'] },
+};
+
+const NATIONAL_TEAMS: Record<string, NationalTeam[]> = {
+  PK: [
+    { sport: 'Cricket', name: 'Pakistan Cricket Team', ranking: 'World #4', achievements: ['T20 World Cup 2009', 'Champions Trophy 2017', 'Asia Cup 2022'] },
+    { sport: 'Hockey', name: 'Pakistan Hockey Team', ranking: 'World #16', achievements: ['4x World Cup Winner', '3x Olympic Gold', '4x Asian Games Gold'] },
+    { sport: 'Squash', name: 'Pakistan Squash', ranking: 'Historically #1', achievements: ['Jahangir Khan 555 consecutive wins', 'Jansher Khan 8x World Champion'] },
+  ],
+  IN: [
+    { sport: 'Cricket', name: 'India Cricket Team', ranking: 'World #1', achievements: ['2x ODI World Cup', '2x Champions Trophy', 'T20 World Cup 2007'] },
+    { sport: 'Hockey', name: 'India Hockey Team', ranking: 'World #4', achievements: ['8x Olympic Gold', 'Asian Cup 2023'] },
+    { sport: 'Badminton', name: 'India Badminton', ranking: 'Top 10', achievements: ['Olympic Medals', 'Thomas Cup 2022'] },
+  ],
+  US: [
+    { sport: 'Basketball', name: 'USA Basketball', ranking: 'World #1', achievements: ['17x Olympic Gold', '5x FIBA World Cup'] },
+    { sport: 'Soccer', name: 'USMNT', ranking: 'World #13', achievements: ['CONCACAF Gold Cup 2021', 'World Cup R16 2022'] },
+    { sport: 'Swimming', name: 'USA Swimming', ranking: 'World #1', achievements: ['Most Olympic medals in swimming'] },
+  ],
+};
+
+const HOLIDAYS: Record<string, Holiday[]> = {
+  PK: [
+    { name: 'Pakistan Day', date: 'March 23', type: 'National' },
+    { name: 'Independence Day', date: 'August 14', type: 'National' },
+    { name: 'Defence Day', date: 'September 6', type: 'National' },
+    { name: 'Iqbal Day', date: 'November 9', type: 'National' },
+    { name: 'Quaid-e-Azam Day', date: 'December 25', type: 'National' },
+    { name: 'Eid ul Fitr', date: 'Varies (Islamic)', type: 'Religious' },
+    { name: 'Eid ul Adha', date: 'Varies (Islamic)', type: 'Religious' },
+    { name: 'Ashura', date: 'Varies (Islamic)', type: 'Religious' },
+  ],
+  IN: [
+    { name: 'Republic Day', date: 'January 26', type: 'National' },
+    { name: 'Independence Day', date: 'August 15', type: 'National' },
+    { name: 'Gandhi Jayanti', date: 'October 2', type: 'National' },
+    { name: 'Holi', date: 'March (varies)', type: 'Religious' },
+    { name: 'Diwali', date: 'October (varies)', type: 'Religious' },
+  ],
+  US: [
+    { name: 'Independence Day', date: 'July 4', type: 'National' },
+    { name: 'Thanksgiving', date: 'November (varies)', type: 'National' },
+    { name: 'Memorial Day', date: 'May (varies)', type: 'National' },
+    { name: 'Veterans Day', date: 'November 11', type: 'National' },
+  ],
+};
+
+const NEIGHBORS: Record<string, Neighbor[]> = {
+  PK: [
+    { name: 'India', slug: 'india', flag: '🇮🇳', border: '3,323 km' },
+    { name: 'Afghanistan', slug: 'afghanistan', flag: '🇦🇫', border: '2,670 km' },
+    { name: 'Iran', slug: 'iran', flag: '🇮🇷', border: '909 km' },
+    { name: 'China', slug: 'china', flag: '🇨🇳', border: '599 km' },
+  ],
+  IN: [
+    { name: 'China', slug: 'china', flag: '🇨🇳', border: '3,488 km' },
+    { name: 'Bangladesh', slug: 'bangladesh', flag: '🇧🇩', border: '4,096 km' },
+    { name: 'Pakistan', slug: 'pakistan', flag: '🇵🇰', border: '3,323 km' },
+    { name: 'Nepal', slug: 'nepal', flag: '🇳🇵', border: '1,751 km' },
+  ],
+  US: [
+    { name: 'Canada', slug: 'canada', flag: '🇨🇦', border: '8,891 km' },
+    { name: 'Mexico', slug: 'mexico', flag: '🇲🇽', border: '3,155 km' },
+  ],
+};
+
+const RATES: Record<string, RateItem[]> = {
+  PK: [
+    { label: 'Gold 24K (per gram)', value: 'PKR 21,500', change: '+0.4%', up: true },
+    { label: 'Gold 22K (per gram)', value: 'PKR 19,700', change: '+0.3%', up: true },
+    { label: 'Silver (per gram)', value: 'PKR 240', change: '-0.1%', up: false },
+    { label: 'USD/PKR', value: '278.50', change: '+0.2%', up: true },
+    { label: 'EUR/PKR', value: '301.20', change: '+0.1%', up: true },
+    { label: 'GBP/PKR', value: '351.80', change: '-0.3%', up: false },
+    { label: 'SAR/PKR', value: '74.20', change: '0.0%', up: true },
+    { label: 'AED/PKR', value: '75.80', change: '+0.1%', up: true },
+    { label: 'Petrol (per litre)', value: 'PKR 248', change: '0.0%', up: true },
+    { label: 'Diesel (per litre)', value: 'PKR 255', change: '0.0%', up: true },
+  ],
+  IN: [
+    { label: 'Gold 24K (per gram)', value: '₹6,200', change: '+0.3%', up: true },
+    { label: 'USD/INR', value: '83.20', change: '-0.1%', up: false },
+    { label: 'EUR/INR', value: '90.10', change: '+0.2%', up: true },
+    { label: 'Petrol (per litre)', value: '₹96', change: '0.0%', up: true },
+  ],
+  US: [
+    { label: 'Gold 24K (per troy oz)', value: '$2,350', change: '+0.5%', up: true },
+    { label: 'Silver (per troy oz)', value: '$29.40', change: '+0.3%', up: true },
+    { label: 'Oil WTI (per barrel)', value: '$82.30', change: '-0.8%', up: false },
+    { label: 'Gas (per gallon)', value: '$3.45', change: '+0.2%', up: true },
+  ],
+};
+
+const RESOURCES: Record<string, Resource[]> = {
+  PK: [
+    { name: 'Natural Gas', icon: '🔥', description: 'Top 20 global reserves. Provides significant domestic energy supply.', rank: 'World top 20' },
+    { name: 'Coal', icon: '⚫', description: 'Thar Coal Field — one of the largest lignite reserves in the world.', rank: '2nd largest in Asia' },
+    { name: 'Copper & Gold', icon: '🟡', description: 'Reko Diq in Balochistan — one of the largest undeveloped copper-gold deposits on earth.', rank: 'World top 5 deposit' },
+    { name: 'Gemstones', icon: '💎', description: 'Emeralds, rubies, topaz, and tourmaline from the mountains of KPK and Gilgit-Baltistan.', rank: 'Globally renowned' },
+    { name: 'Salt', icon: '🪨', description: 'Khewra Salt Mine — world\'s second largest and oldest salt mine, mined since the 1200s.', rank: 'World 2nd largest mine' },
+    { name: 'Water', icon: '🌊', description: 'Indus River system — one of the great river systems of the world, feeding Pakistan\'s agriculture.', rank: 'Top 10 river systems' },
+  ],
+  IN: [
+    { name: 'Coal', icon: '⚫', description: 'Fourth largest coal reserves in the world.', rank: 'World 4th' },
+    { name: 'Iron Ore', icon: '🪨', description: 'Major iron ore deposits in Jharkhand and Odisha.', rank: 'World top 5' },
+    { name: 'IT & Software', icon: '💻', description: 'Bangalore is the world\'s second largest tech hub after Silicon Valley.', rank: 'World 2nd tech hub' },
+    { name: 'Diamonds', icon: '💎', description: 'Historic diamond mining — Golconda diamonds were world-famous.', rank: 'Historically significant' },
+  ],
+  US: [
+    { name: 'Oil & Gas', icon: '🛢️', description: "World's largest oil producer since 2018 through the shale revolution.", rank: 'World #1 producer' },
+    { name: 'Coal', icon: '⚫', description: 'Second largest coal reserves globally.', rank: 'World 2nd largest' },
+    { name: 'Agriculture', icon: '🌾', description: "World's largest agricultural exporter — wheat, corn, soybeans, cotton.", rank: 'World #1 exporter' },
+    { name: 'Technology', icon: '💻', description: 'Silicon Valley drives global technology innovation and venture capital.', rank: 'World leader' },
+  ],
+};
+
+const FOODS: Record<string, FoodItem[]> = {
+  PK: [
+    { name: 'Biryani', emoji: '🍛', description: 'The national obsession — fragrant basmati, tender meat, and spices layered to perfection.', origin: 'Mughal era' },
+    { name: 'Nihari', emoji: '🥘', description: 'Slow-cooked beef shank simmered overnight. A Lahori Sunday morning ritual.', origin: 'Old Delhi, adopted by Lahore' },
+    { name: 'Chapli Kebab', emoji: '🥩', description: "Peshawar's gift to the world — flat spiced minced meat patty grilled over open flame.", origin: 'Peshawar, KPK' },
+    { name: 'Halwa Puri', emoji: '🫓', description: 'Fried bread with sweet semolina halwa and spiced chana — the classic Pakistani breakfast.', origin: 'Punjab' },
+    { name: 'Karahi', emoji: '🍲', description: "Pakistan's most loved dish — chicken or mutton cooked fast in a wok with tomatoes and ginger.", origin: 'Nationwide' },
+    { name: 'Lassi', emoji: '🥛', description: 'Punjab in a glass. Thick churned yoghurt, sweet or salted, served chilled.', origin: 'Punjab' },
+  ],
+  IN: [
+    { name: 'Butter Chicken', emoji: '🍛', description: 'Tender chicken in a rich tomato-cream sauce. Born in Delhi, loved everywhere.', origin: 'Delhi' },
+    { name: 'Masala Dosa', emoji: '🫓', description: "Crispy fermented rice crepe filled with spiced potato. South India's favourite.", origin: 'Karnataka' },
+    { name: 'Biryani', emoji: '🍚', description: 'Every region has its own version — Hyderabadi, Lucknowi, Kolkata. All magnificent.', origin: 'Mughal era' },
+    { name: 'Samosa', emoji: '🥟', description: 'Deep fried pastry filled with spiced potatoes and peas. Street food perfection.', origin: 'North India' },
+  ],
+  US: [
+    { name: 'Hamburger', emoji: '🍔', description: "America's most iconic food export — beef patty in a bun, now eaten on every continent.", origin: 'German-American' },
+    { name: 'BBQ Ribs', emoji: '🍖', description: 'Slow-smoked pork or beef ribs with regional sauces from Texas to Tennessee.', origin: 'Southern USA' },
+    { name: 'Apple Pie', emoji: '🥧', description: 'As American as it gets — a cultural symbol as much as a dessert.', origin: 'Colonial America' },
+    { name: 'Clam Chowder', emoji: '🍲', description: 'Creamy soup of clams, potatoes, and onions. A New England institution.', origin: 'New England' },
+  ],
+};
+
+const EMERGENCY: Record<string, EmergencyItem[]> = {
+  PK: [
+    { label: 'Police', number: '15', color: '#1d4ed8' },
+    { label: 'Ambulance', number: '1122', color: '#dc2626' },
+    { label: 'Fire', number: '16', color: '#ea580c' },
+    { label: 'Rescue', number: '1122', color: '#16a34a' },
+    { label: 'Emergency', number: '115', color: '#7c3aed' },
+    { label: 'Women Helpline', number: '1043', color: '#db2777' },
+    { label: 'Child Helpline', number: '1121', color: '#0891b2' },
+    { label: 'Disaster', number: '1700', color: '#b45309' },
+    { label: 'Edhi Foundation', number: '115', color: '#059669' },
+  ],
+  IN: [
+    { label: 'Police', number: '100', color: '#1d4ed8' },
+    { label: 'Ambulance', number: '108', color: '#dc2626' },
+    { label: 'Fire', number: '101', color: '#ea580c' },
+    { label: 'Women Helpline', number: '1091', color: '#db2777' },
+    { label: 'Child Helpline', number: '1098', color: '#0891b2' },
+  ],
+  US: [
+    { label: 'Emergency (all)', number: '911', color: '#dc2626' },
+    { label: 'Non-emergency', number: '311', color: '#1d4ed8' },
+    { label: 'Poison Control', number: '1-800-222-1222', color: '#7c3aed' },
+    { label: 'Suicide Hotline', number: '988', color: '#059669' },
+  ],
+};
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function formatNumber(n: number): string {
+  if (n >= 1e9) return `${(n / 1e9).toFixed(1)}B`;
+  if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `${(n / 1e3).toFixed(1)}K`;
+  return n.toString();
+}
+
+const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
+
+// ─── Section Header ───────────────────────────────────────────────────────────
+
+function SectionHeader({ icon: Icon, title, accent }: { icon: any; title: string; accent: string }) {
+  return (
+    <div className="flex items-center gap-3 mb-5">
+      <span className="w-1.5 h-7 rounded-full flex-shrink-0" style={{ backgroundColor: accent }} />
+      <Icon className="w-5 h-5 flex-shrink-0" style={{ color: accent }} />
+      <h2 className="text-xl font-bold text-white">{title}</h2>
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
+export default function CountryPage() {
+  const params = useParams<{ country: string }>();
+  // Template data below is local and synchronous — initialize state from
+  // it so the server render contains the full page (real content for
+  // crawlers and first paint) instead of a "Loading..." shell. The effect
+  // further down still re-runs on client-side navigation.
+  const initialCountry = COUNTRIES[((params.country as string) || '').toLowerCase()] || null;
+  const initialCode = initialCountry?.code;
+  const [country, setCountry] = useState<Country | null>(initialCountry);
+  const [cities, setCities] = useState<CityWeather[]>(initialCode ? MAJOR_CITIES[initialCode] || [] : []);
+  const [majorCities, setMajorCities] = useState<SupabaseCity[]>([]);
+  const [majorCitiesLoading, setMajorCitiesLoading] = useState(true);
+  const [provinces, setProvinces] = useState<Province[]>(initialCode ? PROVINCES[initialCode] || [] : []);
+  const [personalities, setPersonalities] = useState<Personality[]>(initialCode ? PERSONALITIES[initialCode] || [] : []);
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [landmarks, setLandmarks] = useState<Landmark[]>(initialCode ? LANDMARKS[initialCode] || [] : []);
+  const [economy, setEconomy] = useState<Economy | null>(initialCode ? ECONOMIES[initialCode] || null : null);
+  const [teams, setTeams] = useState<NationalTeam[]>(initialCode ? NATIONAL_TEAMS[initialCode] || [] : []);
+  const [holidays, setHolidays] = useState<Holiday[]>(initialCode ? HOLIDAYS[initialCode] || [] : []);
+  const [activeHolidayType, setActiveHolidayType] = useState('All');
+  const [neighbors, setNeighbors] = useState<Neighbor[]>(initialCode ? NEIGHBORS[initialCode] || [] : []);
+  const [rates, setRates] = useState<RateItem[]>(initialCode ? RATES[initialCode] || [] : []);
+  const [resources, setResources] = useState<Resource[]>(initialCode ? RESOURCES[initialCode] || [] : []);
+  const [foods, setFoods] = useState<FoodItem[]>(initialCode ? FOODS[initialCode] || [] : []);
+  const [emergency, setEmergency] = useState<EmergencyItem[]>(initialCode ? EMERGENCY[initialCode] || [] : []);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const slug = params.country as string;
+    const key = slug.toLowerCase();
+    const countryData = COUNTRIES[key] || null;
+
+    if (!countryData) {
+      setCountry(null);
+      setLoading(false);
+      return;
+    }
+
+    setCountry(countryData);
+    setCities(MAJOR_CITIES[countryData.code] || []);
+    setProvinces(PROVINCES[countryData.code] || []);
+    setPersonalities(PERSONALITIES[countryData.code] || []);
+    setLandmarks(LANDMARKS[countryData.code] || []);
+    setEconomy(ECONOMIES[countryData.code] || null);
+    setTeams(NATIONAL_TEAMS[countryData.code] || []);
+    setHolidays(HOLIDAYS[countryData.code] || []);
+    setNeighbors(NEIGHBORS[countryData.code] || []);
+    setRates(RATES[countryData.code] || []);
+    setResources(RESOURCES[countryData.code] || []);
+    setFoods(FOODS[countryData.code] || []);
+    setEmergency(EMERGENCY[countryData.code] || []);
+    setLoading(false);
+  }, [params]);
+
+  // Real Supabase-backed major cities for THIS country's URL slug — works for
+  // any of the 195 countries as soon as rows exist in the `cities` table,
+  // independent of the hardcoded COUNTRIES/PROVINCES fallback data above.
+  useEffect(() => {
+    const countrySlug = (params.country as string || '').toLowerCase();
+    if (!countrySlug) return;
+    let cancelled = false;
+    setMajorCitiesLoading(true);
+
+    (async () => {
+      try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+          .from('cities')
+          .select('name, city_slug:slug, province_slug, population, primary_color, famous_for:tagline')
+          .eq('country_slug', countrySlug)
+          .order('population', { ascending: false })
+          .limit(6);
+
+        if (!cancelled) {
+          if (error) {
+            console.warn(`Major cities query error for ${countrySlug}:`, error.message);
+            setMajorCities([]);
+          } else {
+            setMajorCities((data || []) as SupabaseCity[]);
+          }
+        }
+      } catch (err: any) {
+        if (!cancelled) {
+          console.error('Major cities fetch failed:', err?.message);
+          setMajorCities([]);
+        }
+      } finally {
+        if (!cancelled) setMajorCitiesLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [params]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0f1e' }}>
+        <div className="animate-pulse text-white text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!country) {
+    const slug = (params.country as string) || '';
+    const name = slug
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0f1e' }}>
+        <div className="text-center px-6">
+          <div className="text-6xl mb-4">🌍</div>
+          <p className="text-cyan-400 text-sm font-semibold uppercase tracking-wide mb-2">Country Guide</p>
+          <h1 className="text-white text-3xl md:text-4xl font-bold mb-3">{name}</h1>
+          <p className="text-white/60 max-w-md mx-auto mb-6">
+            We&apos;re building out the full country profile for {name} — capital city data,
+            economy, culture and more. Check back soon.
+          </p>
+          <Link href="/countries" className="inline-block px-6 py-3 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-colors">
+            Explore other countries
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const accent = country.primaryColor;
+  const bg = '#0a0f1e';
+  const cardBg = 'rgba(255,255,255,0.04)';
+  const cardBorder = `${accent}30`;
+
+  const personalityCategories = ['All', ...Array.from(new Set(personalities.map(p => p.category)))];
+  const filteredPersonalities = activeCategory === 'All' ? personalities : personalities.filter(p => p.category === activeCategory);
+  const holidayTypes = ['All', ...Array.from(new Set(holidays.map(h => h.type)))];
+  const filteredHolidays = activeHolidayType === 'All' ? holidays : holidays.filter(h => h.type === activeHolidayType);
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: bg }}>
+
+      {/* Aurora background orbs + Flag symbols */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <motion.div className="absolute top-20 right-1/4 w-96 h-96 rounded-full filter blur-3xl opacity-10"
+          style={{ backgroundColor: accent }}
+          animate={{ y: [0, -40, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.div className="absolute bottom-40 left-1/4 w-72 h-72 rounded-full filter blur-3xl opacity-5"
+          style={{ backgroundColor: accent }}
+          animate={{ y: [0, 40, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 5 }} />
+        <FlagSymbolBackground countrySlug={params?.country as string ?? 'pakistan'} />
+      </div>
+
+      {/* Breadcrumb */}
+      <div className="relative z-10 px-4 pt-4 pb-2 max-w-6xl mx-auto">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/" className="hover:text-gray-300 transition-colors">World</Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-white">{country.name}</span>
+        </div>
+      </div>
+      {/* Hero */}
+      <div className="relative z-10 h-72 md:h-96 overflow-hidden">
+        <img src={country.heroImage} alt={country.name} className="w-full h-full object-cover" />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${bg} 30%, transparent 70%)` }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(100deg, ${accent}22, transparent 60%)` }} />
+        <div className="absolute bottom-6 left-6 md:left-8">
+          <div className="flex items-center gap-4">
+            <span className="text-7xl">{country.flag}</span>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-black" style={{ color: accent }}>{country.name}</h1>
+              <p className="text-gray-300 text-base mt-1">{country.tagline}</p>
+              <p className="text-gray-500 text-sm">{country.region} · {country.continent}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 pb-20 space-y-14 pt-8">
+
+        {/* ── 1. COUNTRY FACTS ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Globe} title="Country Facts" accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            {generateFactsParagraph(country.name, country.capital)}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            {[
+              { label: 'Population', value: formatNumber(country.population), icon: '👥' },
+              { label: 'Area', value: `${formatNumber(country.area)} km²`, icon: '🗺️' },
+              { label: 'Capital', value: country.capital, icon: '🏛️' },
+              { label: 'Currency', value: country.currency.split('(')[0].trim(), icon: '💵' },
+              { label: 'Languages', value: country.languages.slice(0, 2).join(', '), icon: '🗣️' },
+              { label: 'Major Faith', value: `${country.majorFaith} ${country.majorFaithPct}%`, icon: '🕌' },
+              { label: 'Timezone', value: country.timezone, icon: '🕐' },
+              { label: 'Independence', value: country.independence, icon: '📅' },
+              { label: 'Government', value: country.government, icon: '👑' },
+              { label: 'Climate', value: country.climate, icon: '🌡️' },
+            ].map(item => (
+              <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                <div className="text-lg mb-1">{item.icon}</div>
+                <div className="text-gray-500 text-xs mb-1">{item.label}</div>
+                <div className="text-white text-sm font-semibold leading-tight">{item.value}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-gray-500 text-sm leading-relaxed mt-5">
+            {generateFactsAfter(country.name)}
+          </p>
+        </motion.section>
+
+        {/* ── 1b. MAJOR CITIES (live from Supabase — works for any country) ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Building2} title={`Major Cities of ${country.name}`} accent={accent} />
+          {majorCitiesLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-2xl p-4 border animate-pulse h-28"
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }} />
+              ))}
+            </div>
+          ) : majorCities.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+              {majorCities.map(city => (
+                <Link key={city.city_slug}
+                  href={`/${country.slug}/${city.province_slug}/${city.city_slug}`}
+                  className="group rounded-2xl p-4 border text-center hover:border-opacity-60 transition-all"
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                  <div className="text-2xl mb-2">🏙️</div>
+                  <div className="text-white font-semibold text-sm">{city.name}</div>
+                  <div className="font-bold text-sm mt-1" style={{ color: city.primary_color || accent }}>
+                    {formatNumber(city.population)}
+                  </div>
+                  <div className="text-gray-500 text-xs mt-1 line-clamp-1">{city.famous_for || 'Explore city'}</div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm">
+              City data for {country.name} is being added — check back soon.
+            </p>
+          )}
+        </motion.section>
+
+        {/* ── 2. LIVE DATA STRIP ── */}
+        {economy && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+              {generateLiveDataParagraph(country.name)}
+            </p>
+            <div className="rounded-2xl p-5 border flex flex-wrap items-center justify-between gap-6"
+              style={{ backgroundColor: 'rgba(0,0,0,0.4)', borderColor: `${accent}30` }}>
+              {[
+                { label: 'Currency', value: economy.currencyRate },
+                { label: 'GDP', value: economy.gdp },
+                { label: 'Inflation', value: economy.inflation },
+                { label: 'Growth Rate', value: economy.growth },
+              ].map(item => (
+                <div key={item.label} className="text-center">
+                  <div className="text-gray-500 text-xs mb-1">{item.label}</div>
+                  <div className="text-white font-bold text-sm">{item.value}</div>
+                </div>
+              ))}
+              <div className="text-center">
+                <div className="text-gray-500 text-xs mb-1">Next Prayer (Capital)</div>
+                <div className="font-bold text-sm" style={{ color: accent }}>Maghrib 6:45 PM</div>
+              </div>
+            </div>
+            <p className="text-gray-500 text-sm leading-relaxed mt-4">
+              {generateLiveDataAfter(country.name)}
+            </p>
+          </motion.section>
+        )}
+
+        {/* ── 3. WEATHER ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Thermometer} title={`${country.name} Weather Today`} accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            {generateCitiesWeatherParagraph(country.name)}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+            {cities.map(city => (
+              <Link key={city.slug}
+                href={`/${country.slug}/${city.provinceSlug}/${city.slug}/weather`}
+                className="group rounded-2xl p-4 border text-center hover:border-opacity-60 transition-all"
+                style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                <div className="text-3xl mb-2">{city.icon}</div>
+                <div className="text-white font-semibold text-sm">{city.name}</div>
+                <div className="font-bold text-xl mt-1" style={{ color: accent }}>{city.temp}°C</div>
+                <div className="text-gray-500 text-xs mt-1">{city.condition}</div>
+              </Link>
+            ))}
+          </div>
+          <p className="text-gray-500 text-sm leading-relaxed mt-5">
+            {generateCitiesWeatherAfter(country.name)}
+          </p>
+        </motion.section>
+
+        {/* ── 4. FAITH & SPIRITUAL ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Star} title="Faith & Spiritual" accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            {country.majorFaith} is the dominant faith in {country.name} at {country.majorFaithPct}% of the population,
+            but the country is home to communities from multiple faith traditions, each observing their own calendar,
+            prayer times, and sacred sites. The section below shows today's multi-faith calendar dates
+            and the next prayer time for the most widely observed faith in {country.name}.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="rounded-2xl p-5 border" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+              <div className="text-white font-semibold text-sm mb-4">Religious Population</div>
+              {[
+                { faith: country.majorFaith, pct: country.majorFaithPct },
+                { faith: 'Christianity', pct: country.code === 'PK' ? 2 : country.code === 'IN' ? 2.3 : 63 },
+                { faith: 'Other', pct: country.code === 'PK' ? 2 : 17.7 },
+              ].map(r => (
+                <div key={r.faith} className="mb-3">
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-gray-300">{r.faith}</span>
+                    <span style={{ color: accent }}>{r.pct}%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-white/10">
+                    <div className="h-1.5 rounded-full" style={{ width: `${r.pct}%`, backgroundColor: accent }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="md:col-span-2 grid grid-cols-2 gap-3">
+              {[
+                { faith: 'Islamic (Hijri)', date: '24 Dhul Hijjah 1446', event: 'Days of Tashreeq', icon: '☪️' },
+                { faith: 'Christian', date: '23 June 2026', event: 'Ordinary Time', icon: '✝️' },
+                { faith: 'Hindu (Panchang)', date: 'Ashadha Shukla Pratipada', event: 'Ashadhi Ekadashi approaching', icon: '🕉️' },
+                { faith: 'Jewish (Hebrew)', date: '17 Tammuz 5786', event: 'Fast of 17th Tammuz', icon: '✡️' },
+              ].map(f => (
+                <div key={f.faith} className="rounded-xl p-4 border" style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl">{f.icon}</span>
+                    <span className="text-gray-400 text-xs">{f.faith}</span>
+                  </div>
+                  <div className="text-white text-sm font-medium">{f.date}</div>
+                  <div className="text-gray-500 text-xs mt-1">{f.event}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── 5. MARKET RATES ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Coins} title={`${country.name} Market Rates Today`} accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            Gold, silver, currency exchange rates, and fuel prices for {country.name} as of today.
+            These figures are the most searched daily reference points for traders, travellers,
+            businesses, and households across the country. For a full 30-day history and trend
+            charts, visit the dedicated Rates page.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-4">
+            {rates.map(r => (
+              <div key={r.label} className="rounded-xl p-4 border flex items-center justify-between"
+                style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                <div>
+                  <div className="text-gray-400 text-xs">{r.label}</div>
+                  <div className="text-white font-bold text-sm mt-0.5">{r.value}</div>
+                </div>
+                <div className={`flex items-center gap-1 text-xs font-semibold ${r.up ? 'text-emerald-400' : 'text-red-400'}`}>
+                  {r.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  {r.change}
+                </div>
+              </div>
+            ))}
+          </div>
+          <Link href={`/${country.slug}/rates`} className="inline-flex items-center gap-2 text-sm font-medium" style={{ color: accent }}>
+            Full rates & 30-day history <ArrowRight className="w-4 h-4" />
+          </Link>
+        </motion.section>
+
+        {/* ── 6. NEWS ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Newspaper} title={`${country.name} Today`} accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            A snapshot of today's most important headlines from {country.name} and global coverage
+            about the country. The national section covers politics, economy, sports, and culture
+            happening inside {country.name} right now. The global section shows what international
+            media is reporting about {country.name} today.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="rounded-2xl p-5 border" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+              <div className="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: accent }}>🌍 Global news about {country.name}</div>
+              <div className="space-y-3">
+                {['IMF programme review — decision expected this month',
+                  `${country.name} diplomatic developments in the region`,
+                  `International economic outlook for ${country.name} 2025`].map((h, i) => (
+                  <div key={i} className="flex gap-3 pb-3 border-b border-white/5 last:border-0 last:pb-0">
+                    <span className="text-gray-600 text-xs mt-0.5 w-3">{i + 1}</span>
+                    <p className="text-gray-300 text-sm leading-snug">{h}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-2xl p-5 border" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+              <div className="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: accent }}>🏳️ National news</div>
+              <div className="space-y-3">
+                {['PM chairs economic committee meeting',
+                  country.code === 'PK' ? 'PSL 2025 playoffs schedule announced' : 'National sports league latest',
+                  'New infrastructure projects approved across major cities'].map((h, i) => (
+                  <div key={i} className="flex gap-3 pb-3 border-b border-white/5 last:border-0 last:pb-0">
+                    <span className="text-gray-600 text-xs mt-0.5 w-3">{i + 1}</span>
+                    <p className="text-gray-300 text-sm leading-snug">{h}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── 7. PROVINCES ── */}
+        {provinces.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={MapPin as any} title={`Explore ${country.name} by Province`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              {generateProvincesParagraph(country.name)}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {provinces.map(prov => (
+                <Link key={prov.slug} href={`/${country.slug}/${prov.slug}`}
+                  className="group rounded-2xl p-5 border hover:border-opacity-60 transition-all"
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <div className="text-white font-bold">{prov.name}</div>
+                      <div className="text-xs mt-0.5" style={{ color: accent }}>{prov.tagline}</div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-gray-300 mt-1 transition-colors" />
+                  </div>
+                  <div className="text-gray-500 text-xs">Capital: <span className="text-gray-300">{prov.capital}</span></div>
+                  <div className="text-gray-500 text-xs mt-1">Pop: <span className="text-gray-300">{formatNumber(prov.population)}</span> · Area: <span className="text-gray-300">{formatNumber(prov.area)} km²</span></div>
+                  <div className="text-gray-600 text-xs mt-2">{prov.cities.join(' · ')}</div>
+                </Link>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm leading-relaxed mt-5">
+              {generateProvincesAfter(country.name)}
+            </p>
+          </motion.section>
+        )}
+
+        {/* ── 8. ECONOMY DASHBOARD ── */}
+        {economy && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={TrendingUp} title={`${country.name} Economy`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              {generateEconomyDashboardParagraph(country.name)}
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+              {[
+                { label: 'GDP', value: economy.gdp, color: '#34d399' },
+                { label: 'Growth Rate', value: economy.growth, color: '#60a5fa' },
+                { label: 'Inflation', value: economy.inflation, color: '#f87171' },
+                { label: 'Unemployment', value: economy.unemployment, color: '#fb923c' },
+              ].map(stat => (
+                <div key={stat.label} className="rounded-2xl p-5 border text-center"
+                  style={{ backgroundColor: cardBg, borderColor: `${stat.color}30` }}>
+                  <div className="text-2xl font-bold mb-1" style={{ color: stat.color }}>{stat.value}</div>
+                  <div className="text-gray-500 text-xs">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+            {economy.exports && (
+              <div className="rounded-2xl p-5 border mb-4" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                <div className="text-white font-semibold text-sm mb-3">What {country.name} sells to the world</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {economy.exports.map((exp, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm text-gray-400">
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: accent }} />
+                      {exp}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <p className="text-gray-500 text-sm leading-relaxed">
+              {generateEconomyDashboardAfter(country.name)}
+            </p>
+          </motion.section>
+        )}
+
+        {/* ── 9b. GROWTH DASHBOARD ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={TrendingUp} title={`${country.name} 10-Year Growth`} accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            {generateGrowthDashboardParagraph(country.name)}
+          </p>
+          <GrowthDashboard countryCode={country.code} accentColor={accent} />
+          <p className="text-gray-500 text-sm leading-relaxed mt-5">
+            {generateGrowthDashboardAfter(country.name)}
+          </p>
+        </motion.section>
+
+        {/* ── 9. PERSONALITIES ── */}
+        {personalities.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={Users} title={`${country.name}'s Finest`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              {generatePersonalitiesParagraph(country.name)}
+            </p>
+            <div className="flex gap-2 flex-wrap mb-5">
+              {personalityCategories.map(cat => (
+                <button key={cat} onClick={() => setActiveCategory(cat)}
+                  className="px-4 py-1.5 rounded-lg text-sm font-medium transition-all border"
+                  style={activeCategory === cat
+                    ? { backgroundColor: accent, color: '#fff', borderColor: accent }
+                    : { backgroundColor: `${accent}15`, color: accent, borderColor: `${accent}40` }}>
+                  {cat}
+                </button>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {filteredPersonalities.map(p => (
+                <div key={p.id} className="rounded-2xl p-5 border text-center"
+                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                  <div className="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center text-2xl"
+                    style={{ backgroundColor: `${accent}20`, border: `2px solid ${accent}40` }}>👤</div>
+                  <div className="text-white font-semibold text-sm leading-tight">{p.name}</div>
+                  <div className="text-xs mt-1" style={{ color: accent }}>{p.profession}</div>
+                  <div className="text-gray-500 text-xs mt-2 leading-snug">{p.achievements}</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm leading-relaxed mt-5">
+              {generatePersonalitiesAfter(country.name)}
+            </p>
+          </motion.section>
+        )}
+
+        {/* ── 10. FAMOUS PLACES ── */}
+        {landmarks.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={Mountain} title={`${country.name} Must See`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              {generatePlacesParagraph(country.name)}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {landmarks.map(lm => (
+                <div key={lm.id} className="group rounded-2xl overflow-hidden border hover:border-opacity-60 transition-all"
+                  style={{ borderColor: cardBorder }}>
+                  <div className="relative h-40 overflow-hidden">
+                    <img src={lm.image} alt={lm.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,15,30,0.85), transparent)' }} />
+                    {lm.unesco && <div className="absolute top-3 left-3 bg-amber-500/90 text-black text-xs font-bold px-2 py-0.5 rounded-full">UNESCO</div>}
+                    <div className="absolute bottom-3 left-3">
+                      <div className="text-white font-bold text-sm">{lm.name}</div>
+                      <div className="text-gray-300 text-xs">{lm.city} · {lm.era}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm leading-relaxed mt-5">
+              {generatePlacesAfter(country.name)}
+            </p>
+          </motion.section>
+        )}
+
+        {/* ── 11. HERITAGE PRODUCTS ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Gem} title={`${country.name} Heritage Products`} accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            The crafts and products made in {country.name} carry centuries of knowledge and skill.
+            These are not mass-produced items but handcrafted works that reflect the region,
+            the community, and the generation that made them. From intricate embroidery and pottery
+            to sports goods and surgical instruments, {country.name}'s heritage products are sold
+            in markets across the world and represent a living tradition as much as an economic activity.
+          </p>
+          <div className="flex gap-3 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none' }}>
+            {(country.code === 'PK' ? [
+              { name: 'Truck Art', emoji: '🎨', origin: 'Nationwide' },
+              { name: 'Ajrak Sindhi', emoji: '🧣', origin: 'Sindh' },
+              { name: 'Multani Pottery', emoji: '🏺', origin: 'Multan' },
+              { name: 'Kashmiri Shawl', emoji: '🧤', origin: 'AJK' },
+              { name: 'Peshawari Chappal', emoji: '👡', origin: 'Peshawar' },
+              { name: 'Balochi Embroidery', emoji: '🪡', origin: 'Balochistan' },
+              { name: 'Khussa Shoes', emoji: '👞', origin: 'Lahore' },
+              { name: 'Sports Goods', emoji: '⚽', origin: 'Sialkot' },
+            ] : country.code === 'IN' ? [
+              { name: 'Pashmina', emoji: '🧣', origin: 'Kashmir' },
+              { name: 'Banarasi Silk', emoji: '🥻', origin: 'Varanasi' },
+              { name: 'Madhubani Art', emoji: '🎨', origin: 'Bihar' },
+              { name: 'Blue Pottery', emoji: '🏺', origin: 'Jaipur' },
+              { name: 'Kanjivaram Silk', emoji: '🥻', origin: 'Tamil Nadu' },
+            ] : [
+              { name: 'Navajo Textiles', emoji: '🧶', origin: 'Southwest' },
+              { name: 'Pueblo Pottery', emoji: '🏺', origin: 'New Mexico' },
+              { name: 'Cherokee Baskets', emoji: '🧺', origin: 'Southeast' },
+              { name: 'Alaskan Ivory', emoji: '🦴', origin: 'Alaska' },
+            ]).map(prod => (
+              <div key={prod.name} className="flex-shrink-0 min-w-[130px] rounded-2xl p-4 border text-center"
+                style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                <div className="text-4xl mb-2">{prod.emoji}</div>
+                <div className="text-white text-sm font-medium">{prod.name}</div>
+                <div className="text-gray-500 text-xs mt-1">{prod.origin}</div>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* ── 12. NATURAL RESOURCES ── */}
+        {resources.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={Leaf} title={`${country.name} Natural Resources`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              {country.name} holds substantial natural wealth that has shaped its history and continues
+              to drive its economic potential. From mineral deposits and energy resources to river
+              systems and agricultural land, these resources represent both the foundation of the
+              current economy and the basis for long-term development.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {resources.map(res => (
+                <div key={res.name} className="rounded-2xl p-5 border"
+                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                  <div className="text-3xl mb-3">{res.icon}</div>
+                  <div className="text-white font-semibold text-sm mb-1">{res.name}</div>
+                  <div className="text-xs mb-2 font-medium" style={{ color: accent }}>{res.rank}</div>
+                  <div className="text-gray-400 text-xs leading-relaxed">{res.description}</div>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {/* ── 13. NATIONAL TEAMS ── */}
+        {teams.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={Trophy} title={`${country.name} in Sport`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              {generateTeamsParagraph(country.name)}
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {teams.map(team => (
+                <div key={team.sport} className="rounded-2xl p-5 border"
+                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="text-white font-bold text-sm">{team.name}</div>
+                    <div className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                      style={{ backgroundColor: `${accent}20`, color: accent }}>{team.ranking}</div>
+                  </div>
+                  <ul className="space-y-1.5">
+                    {team.achievements.map(ach => (
+                      <li key={ach} className="flex items-start gap-2 text-xs text-gray-400">
+                        <span className="text-yellow-400 mt-0.5">🏆</span>{ach}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm leading-relaxed mt-5">
+              {generateTeamsAfter(country.name)}
+            </p>
+          </motion.section>
+        )}
+
+        {/* ── 14. FAMOUS FOODS ── */}
+        {foods.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={Utensils} title={`${country.name} Famous Foods`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              The food of {country.name} is as varied as its geography and as layered as its history.
+              Each region has developed its own flavours, cooking techniques, and signature dishes
+              over centuries, shaped by trade routes, migration, climate, and agriculture.
+              These are the dishes {country.name} is known for across the world.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {foods.map(food => (
+                <div key={food.name} className="rounded-2xl p-5 border"
+                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                  <div className="text-4xl mb-3">{food.emoji}</div>
+                  <div className="text-white font-semibold mb-1">{food.name}</div>
+                  <div className="text-gray-500 text-xs mb-2">{food.origin}</div>
+                  <div className="text-gray-400 text-xs leading-relaxed">{food.description}</div>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {/* ── 15. HOLIDAYS ── */}
+        {holidays.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={Calendar} title={`${country.name} Holidays & Events`} accent={accent} />
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">
+              {generateHolidaysParagraph(country.name)}
+            </p>
+            <div className="flex gap-2 flex-wrap mb-5">
+              {holidayTypes.map(t => (
+                <button key={t} onClick={() => setActiveHolidayType(t)}
+                  className="px-4 py-1.5 rounded-lg text-sm font-medium transition-all border"
+                  style={activeHolidayType === t
+                    ? { backgroundColor: accent, color: '#fff', borderColor: accent }
+                    : { backgroundColor: `${accent}15`, color: accent, borderColor: `${accent}40` }}>
+                  {t}
+                </button>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {filteredHolidays.map(h => (
+                <div key={h.name} className="rounded-xl p-4 border flex items-center justify-between"
+                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                  <div>
+                    <div className="text-white text-sm font-medium">{h.name}</div>
+                    <div className="text-gray-500 text-xs mt-0.5">{h.date}</div>
+                  </div>
+                  <span className="text-xs px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: `${accent}20`, color: accent }}>{h.type}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm leading-relaxed mt-5">
+              {generateHolidaysAfter(country.name)}
+            </p>
+          </motion.section>
+        )}
+
+        {/* ── 16. EMERGENCY CONTACTS ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={ShieldAlert} title={`${country.name} Emergency Contacts`} accent={accent} />
+          <p className="text-gray-400 text-sm leading-relaxed mb-5">
+            {generateEmergencyParagraph(country.name)}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {emergency.map(e => (
+              <div key={e.label} className="rounded-2xl p-4 text-center border"
+                style={{ backgroundColor: `${e.color}15`, borderColor: `${e.color}40` }}>
+                <div className="text-2xl font-black mb-1" style={{ color: e.color }}>{e.number}</div>
+                <div className="text-gray-300 text-xs">{e.label}</div>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* ── 17. NEIGHBOURS ── */}
+        {neighbors.length > 0 && (
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <SectionHeader icon={Globe} title={`${country.name} Neighbouring Countries`} accent={accent} />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+              {neighbors.map(n => (
+                <Link key={n.slug} href={`/${n.slug}`}
+                  className="group rounded-2xl p-5 border text-center hover:border-opacity-60 transition-all"
+                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                  <div className="text-4xl mb-2">{n.flag}</div>
+                  <div className="text-white font-semibold text-sm group-hover:underline">{n.name}</div>
+                  <div className="text-gray-500 text-xs mt-1">Border: {n.border}</div>
+                </Link>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm leading-relaxed">
+              {generateEmergencyAfter(country.name)}
+            </p>
+          </motion.section>
+        )}
+
+        {/* ── 18. EXPLORE LINKS ── */}
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <SectionHeader icon={Globe} title={`Explore ${country.name} in Detail`} accent={accent} />
+          <div className="flex flex-wrap gap-2">
+            {[
+              { label: 'Provinces', href: `/${country.slug}` },
+              { label: 'Weather', href: `/${country.slug}/${provinces[0]?.slug || 'province'}/islamabad/weather` },
+              { label: 'Prayer Times', href: `/${country.slug}/${provinces[0]?.slug || 'province'}/islamabad/prayer-times` },
+              { label: 'Rates', href: `/${country.slug}/rates` },
+              { label: 'News', href: `/${country.slug}/news` },
+              { label: 'Famous People', href: `/${country.slug}/personalities` },
+              { label: 'Famous Places', href: `/${country.slug}/places` },
+              { label: 'Economy', href: `/${country.slug}/economy` },
+              { label: 'Heritage Products', href: `/${country.slug}/heritage-products` },
+              { label: 'Events', href: `/${country.slug}/events` },
+              { label: 'Compare', href: `/compare?a=${country.slug}` },
+            ].map(link => (
+              <Link key={link.label} href={link.href}
+                className="px-4 py-2 rounded-xl text-sm font-medium border transition-all hover:text-white"
+                style={{ backgroundColor: `${accent}10`, borderColor: `${accent}35`, color: accent }}>
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </motion.section>
+
+      </div>
+    </div>
+  );
+}
