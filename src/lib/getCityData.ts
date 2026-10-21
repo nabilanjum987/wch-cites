@@ -149,6 +149,20 @@ const MOCK_CITIES: Record<string, City> = {
   },
 };
 
+// The live `cities` table (see supabase/schema.sql) uses `slug` and has no
+// `is_active` column. Map a raw row onto the app-level City shape, keeping
+// the hardcoded mock object as a base so fields the table does not carry
+// (emergency numbers, famous products) still have their previous values.
+function mapDbCityRow(row: Record<string, unknown>, fallback: City | null): City {
+  const out: Record<string, unknown> = { ...(fallback ?? {}), ...row };
+  out.city_slug = (row.slug as string) ?? (out.city_slug as string) ?? '';
+  if (!out.famous_for && row.tagline) out.famous_for = row.tagline;
+  if (!out.major_religion && row.major_faith) out.major_religion = row.major_faith;
+  if (!out.religion_percent && row.major_faith_pct) out.religion_percent = row.major_faith_pct;
+  out.is_active = true;
+  return out as unknown as City;
+}
+
 export async function getCityData(
   country: string,
   province: string,
@@ -162,8 +176,7 @@ export async function getCityData(
         .select('*')
         .eq('country_slug', country)
         .eq('province_slug', province)
-        .eq('city_slug', city)
-        .eq('is_active', true)
+        .eq('slug', city)
         .single();
 
       if (error) {
@@ -176,7 +189,7 @@ export async function getCityData(
         return getMockCityData(country, province, city);
       }
 
-      return data as City;
+      return mapDbCityRow(data as Record<string, unknown>, getMockCityData(country, province, city));
     } catch (dbError: any) {
       console.error('Database connection error:', dbError?.message);
       return getMockCityData(country, province, city);
@@ -231,15 +244,14 @@ export async function getCitiesData(
     const { data, error } = await supabase
       .from('cities')
       .select('*')
-      .in('city_slug', citySlugs)
-      .eq('is_active', true);
+      .in('slug', citySlugs);
 
     if (error) {
       console.error('Error fetching cities:', error.message);
       return [];
     }
 
-    return (data || []) as City[];
+    return (data || []).map((r) => mapDbCityRow(r as Record<string, unknown>, null));
   } catch (error: any) {
     console.error('Error in getCitiesData:', error?.message);
     return [];

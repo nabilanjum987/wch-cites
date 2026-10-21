@@ -28,9 +28,7 @@ export default function LiveGlobalStats() {
       const supabase = getSupabase();
       const { count } = await supabase
         .from('cities')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_active', true);
-
+        .select('*', { count: 'exact', head: true });
       setStats(prev => ({
         ...prev,
         cityCount: count || 10247

@@ -66,8 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const supabase = getSupabase()
     const { data: cities } = await supabase
       .from('cities')
-      .select('country_slug, province_slug, city_slug')
-      .eq('is_active', true)
+      .select('country_slug, province_slug, city_slug:slug')
 
     if (cities) {
       for (const city of cities) {

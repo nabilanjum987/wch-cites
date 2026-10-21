@@ -118,7 +118,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
         .select('*')
         .eq('country_slug', country)
         .eq('province_slug', province)
-        .eq('city_slug', city)
+        .eq('slug', city)
         .maybeSingle();
     if (data) setCityData(data as City);
     } catch (err) {

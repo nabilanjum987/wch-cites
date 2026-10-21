@@ -425,10 +425,9 @@ export default function ProvincePage() {
         const supabase = getSupabase();
         const { data, error } = await supabase
           .from('cities')
-          .select('name, city_slug, population, primary_color, famous_for')
+          .select('name, city_slug:slug, population, primary_color, famous_for:tagline')
           .eq('country_slug', countrySlug)
           .eq('province_slug', provinceSlug)
-          .eq('is_active', true)
           .order('population', { ascending: false })
           .limit(6);
 

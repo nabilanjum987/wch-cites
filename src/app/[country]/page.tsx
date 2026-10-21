@@ -454,9 +454,8 @@ export default function CountryPage() {
         const supabase = getSupabase();
         const { data, error } = await supabase
           .from('cities')
-          .select('name, city_slug, province_slug, population, primary_color, famous_for')
+          .select('name, city_slug:slug, province_slug, population, primary_color, famous_for:tagline')
           .eq('country_slug', countrySlug)
-          .eq('is_active', true)
           .order('population', { ascending: false })
           .limit(6);
 
