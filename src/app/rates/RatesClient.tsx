@@ -199,14 +199,20 @@ function ZakatCalculator({ nisabValue, nisabGrams, symbol, perGram }: ZakatCalcu
   );
 }
 
-export default function WorldRatesPage() {
-  const [rates, setRates] = useState<GoldRates | null>(null);
+export default function WorldRatesPage({ initialRates, initialCrypto, initialPairs }: {
+  // Real data fetched on the server (CoinGecko + Frankfurter) so the
+  // raw HTML carries live rates instead of a loading skeleton.
+  initialRates?: GoldRates | null;
+  initialCrypto?: { cryptos: CryptoData[]; market: CryptoMarket } | null;
+  initialPairs?: CurrencyPair[];
+} = {}) {
+  const [rates, setRates] = useState<GoldRates | null>(initialRates ?? null);
   const [oilPrices, setOilPrices] = useState<OilPrice[]>([]);
-  const [cryptoData, setCryptoData] = useState<{ cryptos: CryptoData[]; market: CryptoMarket } | null>(null);
-  const [currencyPairs, setCurrencyPairs] = useState<CurrencyPair[]>([]);
+  const [cryptoData, setCryptoData] = useState<{ cryptos: CryptoData[]; market: CryptoMarket } | null>(initialCrypto ?? null);
+  const [currencyPairs, setCurrencyPairs] = useState<CurrencyPair[]>(initialPairs ?? []);
   const [stockIndices, setStockIndices] = useState<StockIndex[]>([]);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialRates);
   const [activeUnit, setActiveUnit] = useState<'per_gram' | 'per_tola' | 'per_10g' | 'per_oz'>('per_gram');
   const [refreshing, setRefreshing] = useState(false);
 
