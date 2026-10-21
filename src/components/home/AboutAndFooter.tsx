@@ -50,14 +50,14 @@ export default function AboutAndFooter() {
                 products, famous people, and cultural events all in one place.
               </p>
               <p className="text-gray-400 text-base leading-relaxed">
-                We cover 10,247 cities across 195 countries, with data updated throughout the day.
+                We are building live city pages across 195 countries, with data updated throughout the day.
                 Whether you are a traveller, a member of a diaspora community, a student, or
                 just someone curious about the world, WorldCityHub is built for you.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { value: '10,247', label: 'Cities Covered' },
+                { value: '20', label: 'Page Templates' },
                 { value: '195', label: 'Countries' },
                 { value: '20+', label: 'Data Points Per City' },
                 { value: '24/7', label: 'Live Updates' },

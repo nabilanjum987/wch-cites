@@ -54,7 +54,7 @@ export default function Home() {
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
                 className="text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed"
                 style={{ color: COLORS.textSecondary }}>
-                Live weather, prayer times, gold rates, local news and cultural heritage for 10,247 cities across 195 countries — in one place, updated every day.
+                Live weather, prayer times, gold rates, local news and cultural heritage for cities across 195 countries — in one place, updated every day.
               </motion.p>
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}
                 className="max-w-2xl mx-auto mb-10">
@@ -125,7 +125,7 @@ export default function Home() {
 
       {/* ── EXPLORE BY CONTINENT ── */}
       <Section bg="dark" title="Explore by Continent"
-        desc="Seven continents. 195 countries. 10,247 cities. Asia alone holds more than half the world's population and nearly five thousand of our city pages. Every continent leads to its countries, every country to its provinces, every province to its cities — a complete geographical tree from the largest landmass to the smallest city street.">
+        desc="Seven continents. 195 countries. Thousands of cities. Asia alone holds more than half the world's population. Every continent leads to its countries, every country to its provinces, every province to its cities — a complete geographical tree from the largest landmass to the smallest city street.">
         <ExploreByContinent />
       </Section>
 
