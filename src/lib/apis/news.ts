@@ -1,6 +1,9 @@
 // ── WorldCityHub — News API ───────────────────────────────────────────────────
 // Fetches news articles from NewsData.io (free tier) with Urdu/Arabic support.
-// Falls back to static mock data when the API key is absent or quota is hit.
+// Truth rule: when the API key is absent or a fetch fails, these functions
+// return an EMPTY list so pages show less — they never invent headlines.
+// (The old mock-article fallback fabricated plausible local headlines and
+// has been removed everywhere.)
 
 import type {
   NewsArticle,
@@ -28,32 +31,6 @@ export function timeAgo(dateStr: string | Date): string {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
-function mockArticle(i: number, city: string, category: string): NewsArticle {
-  const titles = [
-    `${city} city council approves new infrastructure plan`,
-    `Weather update: ${city} braces for seasonal changes`,
-    `Economy boost expected in ${city} this quarter`,
-    `Cultural festival draws thousands to ${city}`,
-    `${city} health authorities issue seasonal advisory`,
-    `New business district planned for ${city} outskirts`,
-    `Transport improvements announced for ${city}`,
-    `${city} education authority launches new initiative`,
-  ];
-  return {
-    id: `mock-${i}-${Date.now()}`,
-    title: titles[i % titles.length],
-    description: `Latest news from ${city}. Stay updated with local and national developments impacting your community.`,
-    url: '#',
-    source: { name: 'WorldCityHub' },
-    publishedAt: new Date(Date.now() - i * 3_600_000).toISOString(),
-    category,
-    language: 'en',
-    country: '',
-    isBreaking: i === 0,
-    sentiment: 'neutral',
-  };
-}
-
 // ── Public API ────────────────────────────────────────────────────────────────
 
 export async function fetchNews(
@@ -62,7 +39,7 @@ export async function fetchNews(
   category: NewsCategory = 'all',
   _limit = 20,
 ): Promise<NewsArticle[]> {
-  if (!API_KEY) return Array.from({ length: 8 }, (_, i) => mockArticle(i, city, category));
+  if (!API_KEY) return [];
 
   try {
     const q = encodeURIComponent(`${city} ${country}`);
@@ -87,12 +64,12 @@ export async function fetchNews(
       sentiment:     'neutral',
     }));
   } catch {
-    return Array.from({ length: 8 }, (_, i) => mockArticle(i, city, category));
+    return [];
   }
 }
 
 export async function fetchUrduNews(city: string, _limit = 10): Promise<NewsArticle[]> {
-  if (!API_KEY) return Array.from({ length: 6 }, (_, i) => mockArticle(i, city, 'all'));
+  if (!API_KEY) return [];
 
   try {
     const url = `${BASE}/news?apikey=${API_KEY}&q=${encodeURIComponent(city)}&language=ur`;
@@ -132,7 +109,7 @@ export async function searchNews(
   query: string,
   _limit = 10,
 ): Promise<NewsArticle[]> {
-  if (!API_KEY) return Array.from({ length: 5 }, (_, i) => mockArticle(i, city, 'all'));
+  if (!API_KEY) return [];
 
   try {
     const q = encodeURIComponent(`${query} ${city}`);
@@ -151,6 +128,35 @@ export async function searchNews(
       category: 'all',
       language: 'en',
       country,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// World top headlines for the global /news page — real aggregation only,
+// refreshed at most every 15 minutes (the locked news spec), no mock data.
+export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
+  if (!API_KEY) return [];
+  try {
+    const url = `${BASE}/news?apikey=<redacted>&language=en&category=top&size=${limit}`;
+    const res = await fetch(url, ({ next: { revalidate: 900 } } as any));
+    const json = await res.json();
+    if (!json.results) return [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return json.results.map((a: any): NewsArticle => ({
+      id:            a.article_id ?? a.link ?? a.title,
+      title:         a.title ?? '',
+      description:   a.description ?? '',
+      url:           a.link ?? '#',
+      image:         a.image_url ?? undefined,
+      source:        { name: a.source_id ?? 'Unknown' },
+      publishedAt:   a.pubDate ?? new Date().toISOString(),
+      category:      a.category?.[0] ?? 'top',
+      language:      a.language ?? 'en',
+      country:       a.country?.[0] ?? '',
+      isBreaking:    false,
+      sentiment:     'neutral',
     }));
   } catch {
     return [];
