@@ -1,20 +1,13 @@
-'use client';
-import { useState } from 'react';
-import { Newspaper, ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { fetchWorldNews, timeAgo, regionForCountry } from '@/lib/apis/news';
 
-const regions = ['All', 'Asia', 'Middle East', 'Europe', 'Americas', 'Africa', 'Oceania'];
-
-const newsItems = [
-  { region: 'Middle East', headline: 'Oil prices hold steady as OPEC+ maintains current production targets heading into Q3', source: 'Reuters', time: '2h ago', slug: 'middle-east' },
-  { region: 'Asia', headline: 'Pakistan rupee strengthens against dollar for the third consecutive week amid IMF review', source: 'Dawn', time: '3h ago', slug: 'asia' },
-  { region: 'Europe', headline: 'European Central Bank signals cautious approach to further interest rate adjustments', source: 'BBC', time: '4h ago', slug: 'europe' },
-  { region: 'Americas', headline: 'US Federal Reserve holds rates steady, monitors inflation data before next decision', source: 'CNN', time: '5h ago', slug: 'americas' },
-  { region: 'Asia', headline: 'India records fastest GDP growth among G20 nations in latest World Bank quarterly report', source: 'The Hindu', time: '6h ago', slug: 'asia' },
-  { region: 'Africa', headline: 'Egypt accelerates infrastructure development in new administrative capital project', source: 'Al Jazeera', time: '7h ago', slug: 'africa' },
-  { region: 'Middle East', headline: 'Saudi Arabia opens new heritage tourism routes connecting ancient Nabataean sites', source: 'Arab News', time: '8h ago', slug: 'middle-east' },
-  { region: 'Europe', headline: 'London marks record tourism numbers as summer travel season hits peak demand', source: 'Guardian', time: '9h ago', slug: 'europe' },
-];
+// Homepage world-news section — SERVER component rendering REAL
+// aggregated headlines (NewsData.io top stories, 15-minute cache).
+// The previous version hard-coded eight invented headlines with fake
+// timestamps attributed to real publishers (Reuters, Dawn, BBC...) —
+// removed under the same fix as the /news page. When the feed is
+// unavailable the section shows an honest note instead of fiction.
 
 const regionColors: Record<string, string> = {
   'Middle East': 'text-amber-400 bg-amber-400/10',
@@ -25,12 +18,15 @@ const regionColors: Record<string, string> = {
   'Oceania':     'text-teal-400 bg-teal-400/10',
 };
 
-export default function WorldNewsSection() {
-  const [activeRegion, setActiveRegion] = useState('All');
-
-  const filtered = activeRegion === 'All'
-    ? newsItems
-    : newsItems.filter((n) => n.region === activeRegion);
+export default async function WorldNewsSection() {
+  const articles = await fetchWorldNews(6);
+  const items = articles.map((a) => ({
+    region: regionForCountry(a.country || ''),
+    headline: a.title,
+    source: typeof a.source === 'string' ? a.source : a.source.name,
+    time: timeAgo(a.publishedAt),
+    url: a.url,
+  }));
 
   return (
     <div className="mb-4">
@@ -38,51 +34,44 @@ export default function WorldNewsSection() {
       <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
         Stay on top of what is happening across the world right now. WorldCityHub pulls together
         news from Asia, the Middle East, Europe, the Americas, Africa, and Oceania, covering
-        politics, economy, culture, and society. Every headline links back to the city or country
-        it affects, so you can go from reading a news story straight into that city's full profile,
-        weather, and local data. This is news with context, not just a feed.
+        politics, economy, culture, and society. Every headline links to the original publisher,
+        and the full news page lets you browse the latest stories by region.
       </p>
 
-      {/* Region tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {regions.map((r) => (
-          <button
-            key={r}
-            onClick={() => setActiveRegion(r)}
-            className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              activeRegion === r
-                ? 'bg-indigo-500 text-white'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
-            }`}
-          >
-            {r}
-          </button>
-        ))}
-      </div>
-
-      {/* News grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-        {filtered.slice(0, 6).map((item, i) => (
-          <div
-            key={i}
-            className="flex gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/8 transition-all group"
-          >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${regionColors[item.region] || 'text-gray-400 bg-gray-400/10'}`}>
-                  {item.region}
-                </span>
-                <span className="text-gray-500 text-xs">{item.time}</span>
+      {items.length === 0 ? (
+        <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-center mb-6">
+          <p className="text-white/60 text-sm">
+            Live headlines are unavailable right now — we never fill this space with placeholder
+            stories. City news pages carry the latest local coverage.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+          {items.map((item, i) => (
+            <a
+              key={i}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/8 transition-all group no-underline"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${regionColors[item.region] || 'text-gray-400 bg-gray-400/10'}`}>
+                    {item.region}
+                  </span>
+                  <span className="text-gray-500 text-xs">{item.time}</span>
+                </div>
+                <p className="text-white text-sm font-medium leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors">
+                  {item.headline}
+                </p>
+                <p className="text-gray-500 text-xs mt-2">{item.source}</p>
               </div>
-              <p className="text-white text-sm font-medium leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors">
-                {item.headline}
-              </p>
-              <p className="text-gray-500 text-xs mt-2">{item.source}</p>
-            </div>
-            <ExternalLink className="w-4 h-4 text-gray-600 flex-shrink-0 mt-1 group-hover:text-indigo-400 transition-colors" />
-          </div>
-        ))}
-      </div>
+              <ExternalLink className="w-4 h-4 text-gray-600 flex-shrink-0 mt-1 group-hover:text-indigo-400 transition-colors" />
+            </a>
+          ))}
+        </div>
+      )}
 
       <div className="flex justify-center">
         <Link
@@ -93,11 +82,6 @@ export default function WorldNewsSection() {
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
-
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
     </div>
   );
 }

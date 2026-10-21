@@ -62,29 +62,25 @@ export interface CryptoMarket {
 const TROY_OZ_TO_GRAM = 31.1035;
 const GRAM_TO_TOLA = 11.664;
 
-function generateHistory(currentPrice: number): { date: string; price: number }[] {
-  const history: { date: string; price: number }[] = [];
-  const today = new Date();
-  let price = currentPrice * 0.97;
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split('T')[0];
-    price = price * (1 + (Math.random() - 0.48) * 0.012);
-    history.push({ date: dateStr, price: Math.round(price * 100) / 100 });
-  }
-  history[history.length - 1].price = currentPrice;
-  return history;
-}
-
+// Gold history + YTD are computed from the REAL CoinGecko market chart
+// for PAX Gold (tokenized gold tracking spot). The previous version
+// generated a Math.random() price history, random open/high/low and a
+// random daily change, and priced everything off a hardcoded $2,320
+// fallback when its defunct metals API failed — all fabrication, removed.
 function calcYTD(history: { date: string; price: number }[], current: number): number {
   if (history.length === 0) return 0;
-  const jan1Price = history[0].price * 0.96;
-  return Math.round(((current - jan1Price) / jan1Price) * 10000) / 100;
+  const year = new Date().getFullYear();
+  const jan = history.find((h) => h.date >= `${year}-01-01`) ?? history[0];
+  if (!jan.price) return 0;
+  return Math.round(((current - jan.price) / jan.price) * 10000) / 100;
 }
 
 function buildRates(
   priceUsdPerOz: number,
+  changePct24h: number,
+  high24hUsd: number,
+  low24hUsd: number,
+  historyUsdPerOz: { date: string; price: number }[],
   currencyRate: number,
   currencyCode: string,
   currencySymbol: string
@@ -96,28 +92,24 @@ function buildRates(
   const k21 = convert(pricePerGramUSD * (21 / 24));
   const k20 = convert(pricePerGramUSD * (20 / 24));
   const k18 = convert(pricePerGramUSD * (18 / 24));
-  const historyUSD = generateHistory(priceUsdPerOz);
-  const historyConverted = historyUSD.map((h) => ({
+  const historyConverted = historyUsdPerOz.map((h) => ({
     date: h.date,
     price: convert(h.price / TROY_OZ_TO_GRAM),
   }));
-  const ytd = calcYTD(historyConverted, k24);
+  const ytd = calcYTD(historyUsdPerOz, priceUsdPerOz);
   const zakatNisabGrams = 87.48;
   const zakatNisabValue = convert(zakatNisabGrams * pricePerGramUSD);
-  const openUSD = priceUsdPerOz * (1 - (Math.random() - 0.5) * 0.005);
-  const highUSD = priceUsdPerOz * (1 + Math.random() * 0.008);
-  const lowUSD = priceUsdPerOz * (1 - Math.random() * 0.008);
-  const changePct = Math.round((Math.random() - 0.45) * 200) / 100;
+  const openUsd = changePct24h > -100 ? priceUsdPerOz / (1 + changePct24h / 100) : priceUsdPerOz;
   return {
     per_oz: convert(priceUsdPerOz),
     per_gram: k24,
     per_tola: Math.round(k24 * GRAM_TO_TOLA * 100) / 100,
     per_10g: Math.round(k24 * 10 * 100) / 100,
     by_karat: { k24, k22, k21, k20, k18 },
-    open: convert(openUSD / TROY_OZ_TO_GRAM),
-    high: convert(highUSD / TROY_OZ_TO_GRAM),
-    low: convert(lowUSD / TROY_OZ_TO_GRAM),
-    change_percent: changePct,
+    open: convert(openUsd / TROY_OZ_TO_GRAM),
+    high: convert((high24hUsd || priceUsdPerOz) / TROY_OZ_TO_GRAM),
+    low: convert((low24hUsd || priceUsdPerOz) / TROY_OZ_TO_GRAM),
+    change_percent: Math.round(changePct24h * 100) / 100,
     ytd_change_percent: ytd,
     zakat_nisab_grams: zakatNisabGrams,
     zakat_nisab_value: zakatNisabValue,
@@ -132,30 +124,46 @@ export async function fetchGoldRates(
   currencyRate = 1,
   currencyCode = 'USD',
   currencySymbol = '$'
-): Promise<GoldRates> {
+): Promise<GoldRates | null> {
   try {
-    const res = await fetch('https://api.metals.live/v1/spot/gold');
-    if (!res.ok) throw new Error('API failed');
-    const data = await res.json();
-    const priceUSD = data[0]?.price ?? 2320;
-    return buildRates(priceUSD, currencyRate, currencyCode, currencySymbol);
+    const [marketsRes, chartRes] = await Promise.allSettled([
+      fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pax-gold'),
+      fetch('https://api.coingecko.com/api/v3/coins/pax-gold/market_chart?vs_currency=usd&days=365'),
+    ]);
+    if (marketsRes.status !== 'fulfilled' || !marketsRes.value.ok) return null;
+    const markets = await marketsRes.value.json();
+    const m = markets?.[0];
+    if (!m?.current_price) return null;
+    let history: { date: string; price: number }[] = [];
+    if (chartRes.status === 'fulfilled' && chartRes.value.ok) {
+      const chart = await chartRes.value.json();
+      const byDay = new Map<string, number>();
+      for (const [ts, price] of (chart?.prices ?? []) as [number, number][]) {
+        byDay.set(new Date(ts).toISOString().split('T')[0], price);
+      }
+      history = [...byDay.entries()].map(([date, price]) => ({ date, price }));
+    }
+    return buildRates(
+      m.current_price,
+      m.price_change_percentage_24h ?? 0,
+      m.high_24h ?? m.current_price,
+      m.low_24h ?? m.current_price,
+      history,
+      currencyRate,
+      currencyCode,
+      currencySymbol
+    );
   } catch {
-    return buildRates(2320, currencyRate, currencyCode, currencySymbol);
+    return null;
   }
 }
 
 export async function fetchOilPrices(): Promise<OilPrice[]> {
-  const basePrices = [
-    { name: 'WTI Crude', price_usd: 78.50, change_24h: 1.2, unit: '/ barrel' },
-    { name: 'Brent Crude', price_usd: 82.30, change_24h: 0.8, unit: '/ barrel' },
-    { name: 'Natural Gas', price_usd: 2.65, change_24h: -2.1, unit: '/ MMBtu' },
-    { name: 'Coal', price_usd: 135.00, change_24h: -0.5, unit: '/ ton' },
-  ];
-  basePrices.forEach((p) => {
-    p.price_usd = Math.round((p.price_usd * (1 + (Math.random() - 0.5) * 0.02)) * 100) / 100;
-    p.change_24h = Math.round((p.change_24h + (Math.random() - 0.5) * 0.5) * 100) / 100;
-  });
-  return basePrices;
+  // No free, keyless, reliable oil price feed exists. The old version
+  // returned invented base prices jittered with Math.random() and
+  // presented them as live — removed. The oil section stays hidden
+  // until a real feed is connected.
+  return [];
 }
 
 export async function fetchFuelPrices(
@@ -163,41 +171,28 @@ export async function fetchFuelPrices(
   currencyCode: string,
   countrySlug: string
 ): Promise<FuelPrice[]> {
-  const fuelBaseUSD = {
-    'pakistan': { petrol: 3.21, diesel: 3.18, kerosene: 2.95, lpg: 1.85 },
-    'india': { petrol: 3.35, diesel: 3.28, kerosene: 2.40, lpg: 1.72 },
-    'saudi-arabia': { petrol: 0.62, diesel: 0.45, kerosene: 0.38, lpg: 0.55 },
-    'uae': { petrol: 0.85, diesel: 0.92, kerosene: 0.78, lpg: 0.68 },
-    'default': { petrol: 3.50, diesel: 3.40, kerosene: 3.10, lpg: 2.00 },
-  };
-  const prices = fuelBaseUSD[countrySlug as keyof typeof fuelBaseUSD] || fuelBaseUSD['default'];
-  const fuelNames = [
-    { name: 'Petrol RON92', key: 'petrol' as const },
-    { name: 'Diesel', key: 'diesel' as const },
-    { name: 'Kerosene', key: 'kerosene' as const },
-    { name: 'LPG', key: 'lpg' as const, unit: '/ kg' },
-  ];
-  return fuelNames.map((f) => ({
-    name: f.name,
-    price_local: Math.round((prices[f.key] || prices[f.key as keyof typeof prices]) * currencyRate * 100) / 100,
-    price_usd: prices[f.key] || prices[f.key as keyof typeof prices],
-    currency: currencyCode,
-    currency_symbol: currencyCode === 'USD' ? '$' : currencyCode,
-    last_updated: new Date().toISOString(),
-  }));
+  // The old version returned static invented per-country fuel prices
+  // stamped with today's date as if freshly updated — removed. No free
+  // fuel-price API exists; the section stays hidden until a real source
+  // (e.g. OGRA postings for Pakistan) is connected.
+  void currencyRate; void currencyCode; void countrySlug;
+  return [];
 }
 
 export async function fetchCryptoData(
   currencyRate: number,
   currencyCode: string,
   currencySymbol: string
-): Promise<{ cryptos: CryptoData[]; market: CryptoMarket }> {
+): Promise<{ cryptos: CryptoData[]; market: CryptoMarket } | null> {
   try {
-    const res = await fetch(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10'
-    );
-    if (!res.ok) throw new Error('CoinGecko failed');
-    const data = await res.json();
+    const [coinsRes, fngRes] = await Promise.allSettled([
+      fetch(
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10'
+      ),
+      fetch('https://api.alternative.me/fng/?limit=1'),
+    ]);
+    if (coinsRes.status !== 'fulfilled' || !coinsRes.value.ok) return null;
+    const data = await coinsRes.value.json();
     const cryptos: CryptoData[] = data.slice(0, 10).map((coin: { id: string; symbol: string; name: string; current_price: number; price_change_percentage_24h: number; market_cap: number }) => ({
       id: coin.id,
       symbol: coin.symbol.toUpperCase(),
@@ -213,9 +208,20 @@ export async function fetchCryptoData(
     const totalMarketCap = data.reduce((sum: number, c: { market_cap: number }) => sum + c.market_cap, 0);
     const btcCap = data.find((c: { id: string }) => c.id === 'bitcoin')?.market_cap || 0;
     const btcDominance = Math.round((btcCap / totalMarketCap) * 100 * 10) / 10;
-    const fearGreed = Math.round(40 + Math.random() * 30);
-    const labels = ['Extreme Fear', 'Fear', 'Neutral', 'Greed', 'Extreme Greed'];
-    const fearGreedLabel = labels[Math.floor(fearGreed / 20)];
+    // Fear & Greed is Alternative.me's real published index. The old code
+    // invented it with Math.random(), and invented an entire default
+    // price table when CoinGecko failed — both removed (failure = null,
+    // and an unavailable index renders as an empty label the UI hides).
+    let fearGreed = 0;
+    let fearGreedLabel = '';
+    if (fngRes.status === 'fulfilled' && fngRes.value.ok) {
+      const fng = await fngRes.value.json();
+      const f = fng?.data?.[0];
+      if (f?.value) {
+        fearGreed = Number(f.value);
+        fearGreedLabel = f.value_classification ?? '';
+      }
+    }
     const market: CryptoMarket = {
       total_market_cap: totalMarketCap,
       btc_dominance: btcDominance,
@@ -224,7 +230,7 @@ export async function fetchCryptoData(
     };
     return { cryptos, market };
   } catch {
-    return getDefaultCrypto(currencyRate, currencyCode, currencySymbol);
+    return null;
   }
 }
 
@@ -233,41 +239,6 @@ function formatMarketCap(cap: number): string {
   if (cap >= 1e9) return `$${(cap / 1e9).toFixed(2)}B`;
   if (cap >= 1e6) return `$${(cap / 1e6).toFixed(2)}M`;
   return `$${cap.toFixed(0)}`;
-}
-
-function getDefaultCrypto(
-  currencyRate: number,
-  currencyCode: string,
-  currencySymbol: string
-): { cryptos: CryptoData[]; market: CryptoMarket } {
-  const defaults = [
-    { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', price_usd: 67500, change_24h: 2.1, market_cap: 1320000000000 },
-    { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', price_usd: 3450, change_24h: 1.5, market_cap: 415000000000 },
-    { id: 'binancecoin', symbol: 'BNB', name: 'BNB', price_usd: 580, change_24h: -0.8, market_cap: 89000000000 },
-    { id: 'solana', symbol: 'SOL', name: 'Solana', price_usd: 145, change_24h: 3.2, market_cap: 63000000000 },
-    { id: 'ripple', symbol: 'XRP', name: 'XRP', price_usd: 0.52, change_24h: -1.2, market_cap: 28000000000 },
-    { id: 'cardano', symbol: 'ADA', name: 'Cardano', price_usd: 0.45, change_24h: 0.5, market_cap: 16000000000 },
-    { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin', price_usd: 0.12, change_24h: 4.5, market_cap: 17000000000 },
-    { id: 'avalanche', symbol: 'AVAX', name: 'Avalanche', price_usd: 35, change_24h: 2.8, market_cap: 13000000000 },
-    { id: 'polygon', symbol: 'MATIC', name: 'Polygon', price_usd: 0.58, change_24h: -0.3, market_cap: 5400000000 },
-    { id: 'tether', symbol: 'USDT', name: 'Tether', price_usd: 1.0, change_24h: 0.0, market_cap: 110000000000 },
-  ];
-  const cryptos: CryptoData[] = defaults.map((c) => ({
-    ...c,
-    price_local: Math.round(c.price_usd * currencyRate * 100) / 100,
-    market_cap_formatted: formatMarketCap(c.market_cap),
-    currency: currencyCode,
-    currency_symbol: currencySymbol,
-  }));
-  const totalMarketCap = defaults.reduce((sum, c) => sum + c.market_cap, 0);
-  const btcDominance = Math.round((defaults[0].market_cap / totalMarketCap) * 100 * 10) / 10;
-  const market: CryptoMarket = {
-    total_market_cap: totalMarketCap,
-    btc_dominance: btcDominance,
-    fear_greed_index: 55,
-    fear_greed_label: 'Greed',
-  };
-  return { cryptos, market };
 }
 
 export function generateOilAffectParagraph(country: string): string {
@@ -298,57 +269,90 @@ export interface CurrencyHistory {
   rate: number;
 }
 
-export function fetchCurrencyPairs(): CurrencyPair[] {
-  const baseRates: Record<string, { rate: number; name: string; flag: string }> = {
-    EUR: { rate: 0.92, name: 'Euro', flag: 'EU' },
-    GBP: { rate: 0.79, name: 'British Pound', flag: 'GB' },
-    PKR: { rate: 278.5, name: 'Pakistani Rupee', flag: 'PK' },
-    AED: { rate: 3.67, name: 'UAE Dirham', flag: 'AE' },
-    SAR: { rate: 3.75, name: 'Saudi Riyal', flag: 'SA' },
-    INR: { rate: 83.2, name: 'Indian Rupee', flag: 'IN' },
-    CNY: { rate: 7.24, name: 'Chinese Yuan', flag: 'CN' },
-    JPY: { rate: 149.5, name: 'Japanese Yen', flag: 'JP' },
-    CAD: { rate: 1.36, name: 'Canadian Dollar', flag: 'CA' },
-    AUD: { rate: 1.53, name: 'Australian Dollar', flag: 'AU' },
-    CHF: { rate: 0.88, name: 'Swiss Franc', flag: 'CH' },
-    KWD: { rate: 0.31, name: 'Kuwaiti Dinar', flag: 'KW' },
-    QAR: { rate: 3.64, name: 'Qatari Riyal', flag: 'QA' },
-    BDT: { rate: 110.0, name: 'Bangladeshi Taka', flag: 'BD' },
-    TRY: { rate: 32.5, name: 'Turkish Lira', flag: 'TR' },
-  };
-  return Object.entries(baseRates).map(([code, data]) => {
-    const interbankSpread = code === 'PKR' ? 1.5 : 0.2;
-    const openMarketSpread = code === 'PKR' ? 3.0 : 0.5;
-    return {
-      code,
-      name: data.name,
-      rate: data.rate,
-      interbank_rate: Math.round(data.rate * 10000) / 10000,
-      open_market_rate: Math.round(data.rate * (1 + openMarketSpread / 100) * 10000) / 10000,
-      change_24h: Math.round((Math.random() - 0.48) * 100) / 100,
-      flag: data.flag,
-    };
-  });
+const PAIR_META: Record<string, { name: string; flag: string }> = {
+  EUR: { name: 'Euro', flag: 'EU' },
+  GBP: { name: 'British Pound', flag: 'GB' },
+  PKR: { name: 'Pakistani Rupee', flag: 'PK' },
+  AED: { name: 'UAE Dirham', flag: 'AE' },
+  SAR: { name: 'Saudi Riyal', flag: 'SA' },
+  INR: { name: 'Indian Rupee', flag: 'IN' },
+  CNY: { name: 'Chinese Yuan', flag: 'CN' },
+  JPY: { name: 'Japanese Yen', flag: 'JP' },
+  CAD: { name: 'Canadian Dollar', flag: 'CA' },
+  AUD: { name: 'Australian Dollar', flag: 'AU' },
+  CHF: { name: 'Swiss Franc', flag: 'CH' },
+  KWD: { name: 'Kuwaiti Dinar', flag: 'KW' },
+  QAR: { name: 'Qatari Riyal', flag: 'QA' },
+  BDT: { name: 'Bangladeshi Taka', flag: 'BD' },
+  TRY: { name: 'Turkish Lira', flag: 'TR' },
+};
+
+// Real exchange rates from Frankfurter (European Central Bank data,
+// free, no key). The old version returned a static rate table with a
+// Math.random() daily change and a modeled "open market" spread
+// presented as real — removed. Interbank and open-market are the same
+// published rate until a real open-market feed exists.
+export async function fetchCurrencyPairs(): Promise<CurrencyPair[]> {
+  try {
+    const codes = Object.keys(PAIR_META).join(',');
+    const end = new Date();
+    const startD = new Date(end);
+    startD.setDate(startD.getDate() - 7);
+    const fmt = (d: Date) => d.toISOString().split('T')[0];
+    const res = await fetch(
+      `https://api.frankfurter.app/${fmt(startD)}..${fmt(end)}?from=USD&to=${codes}`
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    const days = Object.keys(json?.rates ?? {}).sort();
+    if (!days.length) return [];
+    const latest = json.rates[days[days.length - 1]];
+    const prev = days.length > 1 ? json.rates[days[days.length - 2]] : null;
+    return Object.entries(PAIR_META).flatMap(([code, meta]) => {
+      const rate = latest?.[code];
+      if (typeof rate !== 'number') return [];
+      const prevRate = prev?.[code];
+      const change = typeof prevRate === 'number' && prevRate > 0
+        ? Math.round(((rate - prevRate) / prevRate) * 10000) / 100
+        : 0;
+      return [{
+        code,
+        name: meta.name,
+        rate,
+        interbank_rate: rate,
+        open_market_rate: rate,
+        change_24h: change,
+        flag: meta.flag,
+      }];
+    });
+  } catch {
+    return [];
+  }
 }
 
-export function fetchCurrencyHistory(code: string, years: number = 1): CurrencyHistory[] {
-  const history: CurrencyHistory[] = [];
-  const days = years * 365;
-  const today = new Date();
-  const startRate = code === 'PKR' ? 160 : 1;
-  const currentRate = code === 'PKR' ? 278.5 : 1;
-  const dailyChange = (currentRate - startRate) / days;
-  let rate = startRate;
-  for (let i = days; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    history.push({
-      date: d.toISOString().split('T')[0],
-      rate: Math.round(rate * 10000) / 10000,
+export async function fetchCurrencyHistory(code: string, years: number = 1): Promise<CurrencyHistory[]> {
+  // Real historical rates from Frankfurter (ECB). The old version
+  // generated a Math.random() walk and presented it as the currency's
+  // actual history — removed.
+  try {
+    if (code === 'USD') return [];
+    const end = new Date();
+    const startD = new Date(end);
+    startD.setDate(startD.getDate() - Math.round(years * 365));
+    const fmt = (d: Date) => d.toISOString().split('T')[0];
+    const res = await fetch(
+      `https://api.frankfurter.app/${fmt(startD)}..${fmt(end)}?from=USD&to=${code}`
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    const days = Object.keys(json?.rates ?? {}).sort();
+    return days.flatMap((date) => {
+      const rate = json.rates[date]?.[code];
+      return typeof rate === 'number' ? [{ date, rate }] : [];
     });
-    rate += dailyChange + (Math.random() - 0.48) * 0.5;
+  } catch {
+    return [];
   }
-  return history.filter((_, idx) => idx % 7 === 0 || idx === history.length - 1);
 }
 
 export function calculateCurrencyLoss(history: CurrencyHistory[]): { percentLost: number; yearsAgo: number } {
@@ -396,43 +400,15 @@ export interface StockMover {
 }
 
 export function fetchStockIndices(): StockIndex[] {
-  return [
-    { symbol: 'KSE-100', name: 'Karachi 100', value: 68500 + Math.random() * 1000, change: Math.random() * 500 - 200, changePercent: 0, ytdPercent: 12.5, country: 'pakistan' },
-    { symbol: 'KSE-30', name: 'Karachi 30', value: 22500 + Math.random() * 500, change: Math.random() * 150 - 60, changePercent: 0, ytdPercent: 15.2, country: 'pakistan' },
-    { symbol: 'KMI-30', name: 'KSE Meezan 30', value: 78000 + Math.random() * 1500, change: Math.random() * 300 - 100, changePercent: 0, ytdPercent: 18.0, country: 'pakistan' },
-    { symbol: 'SPX', name: 'S&P 500', value: 5250 + Math.random() * 50, change: Math.random() * 25 - 10, changePercent: 0, ytdPercent: 11.2, country: 'usa' },
-    { symbol: 'DJI', name: 'Dow Jones', value: 38500 + Math.random() * 200, change: Math.random() * 100 - 40, changePercent: 0, ytdPercent: 8.5, country: 'usa' },
-    { symbol: 'IXIC', name: 'NASDAQ', value: 16500 + Math.random() * 200, change: Math.random() * 80 - 30, changePercent: 0, ytdPercent: 15.8, country: 'usa' },
-    { symbol: 'UKX', name: 'FTSE 100', value: 8150 + Math.random() * 50, change: Math.random() * 25 - 10, changePercent: 0, ytdPercent: 6.2, country: 'uk' },
-    { symbol: 'DAX', name: 'DAX', value: 18200 + Math.random() * 100, change: Math.random() * 50 - 20, changePercent: 0, ytdPercent: 9.1, country: 'germany' },
-    { symbol: 'NKY', name: 'Nikkei 225', value: 38500 + Math.random() * 300, change: Math.random() * 150 - 60, changePercent: 0, ytdPercent: 18.5, country: 'japan' },
-    { symbol: 'SHCOMP', name: 'Shanghai', value: 3150 + Math.random() * 50, change: Math.random() * 20 - 8, changePercent: 0, ytdPercent: 2.3, country: 'china' },
-    { symbol: 'SENSEX', name: 'BSE SENSEX', value: 73500 + Math.random() * 500, change: Math.random() * 200 - 80, changePercent: 0, ytdPercent: 14.2, country: 'india' },
-  ].map(idx => ({
-    ...idx,
-    changePercent: Math.round((idx.change / idx.value) * 10000) / 100,
-    value: Math.round(idx.value * 100) / 100,
-    change: Math.round(idx.change * 100) / 100,
-  }));
+  // The old version returned static index values (KSE-100 etc.) jittered
+  // with Math.random() as if live — removed. No free keyless PSX/global
+  // index feed is connected yet, so the section stays hidden.
+  return [];
 }
 
 export function fetchStockMovers(): { gainers: StockMover[]; losers: StockMover[] } {
-  return {
-    gainers: [
-      { symbol: 'ENGRO', name: 'Engro Corp', changePercent: 5.2, volume: '2.1M' },
-      { symbol: 'MARI', name: 'Mari Petroleum', changePercent: 4.8, volume: '1.5M' },
-      { symbol: 'FFC', name: 'Fauji Fertilizer', changePercent: 3.9, volume: '3.2M' },
-      { symbol: 'UBL', name: 'United Bank', changePercent: 3.5, volume: '1.8M' },
-      { symbol: 'OGDC', name: 'Oil & Gas Dev', changePercent: 3.1, volume: '2.5M' },
-    ],
-    losers: [
-      { symbol: 'KAPCO', name: 'Kot Addu Power', changePercent: -4.2, volume: '1.1M' },
-      { symbol: 'PAEL', name: 'Pak Elektron', changePercent: -3.8, volume: '0.9M' },
-      { symbol: 'NBP', name: 'National Bank', changePercent: -3.2, volume: '2.0M' },
-      { symbol: 'HBL', name: 'Habib Bank', changePercent: -2.8, volume: '1.6M' },
-      { symbol: 'LUCK', name: 'Lucky Cement', changePercent: -2.1, volume: '0.7M' },
-    ],
-  };
+  // Was an invented gainers/losers table — removed (see fetchStockIndices).
+  return { gainers: [], losers: [] };
 }
 
 // ========== INTEREST RATES ==========
@@ -492,21 +468,11 @@ export function calculateSavings(principal: number, annualRate: number): Savings
 }
 
 export function generateInterestRateHistory(): { date: string; rate: number }[] {
-  const history: { date: string; rate: number }[] = [];
-  const baseRates = [20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 24.0, 23.0, 22.5, 22.0, 22.0];
-  const today = new Date();
-  baseRates.forEach((rate, i) => {
-    const d = new Date(today);
-    d.setMonth(d.getMonth() - (baseRates.length - 1 - i) * 2);
-    history.push({
-      date: d.toISOString().split('T')[0],
-      rate,
-    });
-  });
-  return history;
+  // Was a synthetic monthly series generated around the static rate —
+  // removed. A real policy-rate history needs a real source (central
+  // bank postings); until then the chart stays hidden.
+  return [];
 }
-
-// ========== COMMODITIES ==========
 
 export interface Commodity {
   name: string;
@@ -520,38 +486,13 @@ export interface Commodity {
 }
 
 export function fetchCommodities(): Commodity[] {
-  const baseCommodities: Commodity[] = [
-    // Metals
-    { name: 'Gold', category: 'metals', price_usd: 2320, unit: '/oz', change_24h: 0.8, ytd_change: 12.5 },
-    { name: 'Silver', category: 'metals', price_usd: 28.50, unit: '/oz', change_24h: 1.2, ytd_change: 18.2 },
-    { name: 'Platinum', category: 'metals', price_usd: 985, unit: '/oz', change_24h: -0.5, ytd_change: -5.2 },
-    { name: 'Copper', category: 'metals', price_usd: 4.25, unit: '/lb', change_24h: 0.3, ytd_change: 8.5 },
-    { name: 'Aluminum', category: 'metals', price_usd: 2550, unit: '/ton', change_24h: -1.2, ytd_change: -3.8 },
-    { name: 'Nickel', category: 'metals', price_usd: 16800, unit: '/ton', change_24h: 2.1, ytd_change: 15.2 },
-    { name: 'Iron Ore', category: 'metals', price_usd: 118, unit: '/ton', change_24h: -0.8, ytd_change: -12.5 },
-    { name: 'Steel', category: 'metals', price_usd: 425, unit: '/ton', change_24h: 0.2, ytd_change: -8.2 },
-    // Energy
-    { name: 'WTI Crude', category: 'energy', price_usd: 78.50, unit: '/bbl', change_24h: 1.2, ytd_change: 8.5 },
-    { name: 'Brent Crude', category: 'energy', price_usd: 82.30, unit: '/bbl', change_24h: 0.9, ytd_change: 7.2 },
-    { name: 'Natural Gas', category: 'energy', price_usd: 2.65, unit: '/MMBtu', change_24h: -2.1, ytd_change: -25.8 },
-    { name: 'Coal', category: 'energy', price_usd: 135, unit: '/ton', change_24h: -0.5, ytd_change: -18.2 },
-    { name: 'Uranium', category: 'energy', price_usd: 85, unit: '/lb', change_24h: 1.5, ytd_change: 45.2 },
-    // Agriculture - Pakistan relevant
-    { name: 'Wheat', category: 'agriculture', price_usd: 6.25, unit: '/bushel', change_24h: 0.8, ytd_change: -12.5, pakistanRelevant: true, relevanceNote: 'Major import' },
-    { name: 'Rice', category: 'agriculture', price_usd: 16.80, unit: '/cwt', change_24h: 1.5, ytd_change: 8.2, pakistanRelevant: true, relevanceNote: 'Top export' },
-    { name: 'Sugar', category: 'agriculture', price_usd: 0.28, unit: '/lb', change_24h: -0.5, ytd_change: -5.8 },
-    { name: 'Cotton', category: 'agriculture', price_usd: 0.85, unit: '/lb', change_24h: 2.1, ytd_change: 15.2, pakistanRelevant: true, relevanceNote: 'Key export' },
-    { name: 'Corn', category: 'agriculture', price_usd: 4.65, unit: '/bushel', change_24h: -1.2, ytd_change: -22.5 },
-    { name: 'Soybeans', category: 'agriculture', price_usd: 11.80, unit: '/bushel', change_24h: 0.5, ytd_change: -15.8 },
-    { name: 'Coffee', category: 'agriculture', price_usd: 185, unit: '/lb', change_24h: 1.8, ytd_change: 28.5 },
-    { name: 'Cocoa', category: 'agriculture', price_usd: 8500, unit: '/ton', change_24h: 2.5, ytd_change: 85.2 },
-  ];
-  return baseCommodities.map(c => ({
-    ...c,
-    price_usd: Math.round(c.price_usd * (1 + (Math.random() - 0.5) * 0.02) * 100) / 100,
-    change_24h: Math.round((c.change_24h + (Math.random() - 0.5) * 0.3) * 100) / 100,
-  }));
+  // Was a fully static invented price table (gold $2,320, Brent $82.30,
+  // wheat, cocoa...) with jitter — removed. Gold and crypto on this page
+  // are real (CoinGecko); the broader commodities board stays hidden
+  // until a real feed is connected.
+  return [];
 }
+
 
 // ========== FINANCIAL STRESS METER ==========
 

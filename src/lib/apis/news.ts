@@ -163,6 +163,20 @@ export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
   }
 }
 
+// Country name (as NewsData returns it) -> world region, shared by the
+// /news page and the homepage news section.
+const REGION_BY_COUNTRY: Record<string, string> = {};
+for (const c of ['Pakistan', 'India', 'Bangladesh', 'Sri Lanka', 'China', 'Japan', 'Indonesia', 'Malaysia', 'Singapore', 'Philippines', 'Thailand', 'Vietnam', 'Nepal', 'Myanmar']) REGION_BY_COUNTRY[c.toLowerCase()] = 'Asia';
+for (const c of ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Kuwait', 'Oman', 'Iraq', 'Iran', 'Israel', 'Jordan', 'Lebanon', 'Bahrain', 'Yemen']) REGION_BY_COUNTRY[c.toLowerCase()] = 'Middle East';
+for (const c of ['United Kingdom', 'Germany', 'France', 'Italy', 'Spain', 'Netherlands', 'Sweden', 'Norway', 'Poland', 'Ukraine', 'Russia', 'Switzerland', 'Belgium', 'Austria', 'Greece', 'Portugal', 'Denmark', 'Finland', 'Ireland', 'Czech Republic', 'Romania', 'Hungary']) REGION_BY_COUNTRY[c.toLowerCase()] = 'Europe';
+for (const c of ['United States of America', 'Canada', 'Mexico', 'Brazil', 'Argentina', 'Chile', 'Colombia', 'Peru', 'Venezuela']) REGION_BY_COUNTRY[c.toLowerCase()] = 'Americas';
+for (const c of ['Egypt', 'Nigeria', 'South Africa', 'Kenya', 'Ethiopia', 'Morocco', 'Algeria', 'Ghana', 'Tanzania', 'Sudan']) REGION_BY_COUNTRY[c.toLowerCase()] = 'Africa';
+for (const c of ['Australia', 'New Zealand', 'Fiji', 'Papua New Guinea']) REGION_BY_COUNTRY[c.toLowerCase()] = 'Oceania';
+
+export function regionForCountry(country: string): string {
+  return REGION_BY_COUNTRY[(country || '').toLowerCase()] || 'All';
+}
+
 export async function fetchYouTubeVideos(countrySlug: string): Promise<VideoItem[]> {
   return Array.from({ length: 6 }, (_, i) => ({
     id:          `vid-${i}`,

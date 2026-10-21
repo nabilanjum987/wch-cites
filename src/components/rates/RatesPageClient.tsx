@@ -424,20 +424,25 @@ function RemittanceCalculator({ currency, currencyPairs }: RemittanceCalculatorP
 
 interface CountryRatesPageProps {
   countrySlug?: string;
+  // Real gold + crypto data fetched on the server (CoinGecko) so the
+  // page's raw HTML carries live rates instead of a loading skeleton.
+  // The mount effect still refreshes everything as before.
+  initialRates?: GoldRates | null;
+  initialCrypto?: { cryptos: CryptoData[]; market: CryptoMarket } | null;
 }
 
-export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRatesPageProps) {
-  const [rates, setRates] = useState<GoldRates | null>(null);
+export default function CountryRatesPage({ countrySlug = 'pakistan', initialRates, initialCrypto }: CountryRatesPageProps) {
+  const [rates, setRates] = useState<GoldRates | null>(initialRates ?? null);
   const [oilPrices, setOilPrices] = useState<OilPrice[]>([]);
   const [fuelPrices, setFuelPrices] = useState<FuelPrice[]>([]);
-  const [cryptoData, setCryptoData] = useState<{ cryptos: CryptoData[]; market: CryptoMarket } | null>(null);
+  const [cryptoData, setCryptoData] = useState<{ cryptos: CryptoData[]; market: CryptoMarket } | null>(initialCrypto ?? null);
   const [currencyPairs, setCurrencyPairs] = useState<CurrencyPair[]>([]);
   const [currencyHistory, setCurrencyHistory] = useState<CurrencyHistory[]>([]);
   const [stockIndices, setStockIndices] = useState<StockIndex[]>([]);
   const [stockMovers, setStockMovers] = useState<{ gainers: StockMover[]; losers: StockMover[] } | null>(null);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [financialNews, setFinancialNews] = useState<NewsArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialRates);
   const [activeUnit, setActiveUnit] = useState<'per_gram' | 'per_tola' | 'per_10g' | 'per_oz'>('per_gram');
   const [refreshing, setRefreshing] = useState(false);
   const [stressData] = useState(FINANCIAL_STRESS_DATA[countrySlug] || FINANCIAL_STRESS_DATA['pakistan']);
@@ -465,8 +470,8 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
           fetchOilPrices(),
           fetchFuelPrices(currency.rate_to_usd, currency.code, countrySlug),
           fetchCryptoData(currency.rate_to_usd, currency.code, currency.symbol),
-          Promise.resolve(fetchCurrencyPairs()),
-          Promise.resolve(fetchCurrencyHistory(currency.code, 1)),
+          fetchCurrencyPairs(),
+          fetchCurrencyHistory(currency.code, 1),
           Promise.resolve(fetchStockIndices()),
           Promise.resolve(fetchStockMovers()),
           Promise.resolve(fetchCommodities()),
@@ -1019,7 +1024,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan' }: CountryRa
                     cryptoData.market.fear_greed_index >= 40 ? 'bg-yellow-100 text-yellow-400' :
                     'bg-red-500/100/15 text-red-400'
                   }`}>
-                    {cryptoData.market.fear_greed_index} - {cryptoData.market.fear_greed_label}
+                    {cryptoData.market.fear_greed_label ? `${cryptoData.market.fear_greed_index} - ${cryptoData.market.fear_greed_label}` : 'Fear & Greed unavailable'}
                   </div>
                 </div>
               </div>

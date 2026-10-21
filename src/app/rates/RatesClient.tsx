@@ -217,7 +217,7 @@ export default function WorldRatesPage() {
         fetchGoldRates(1, 'USD', '$'),
         fetchOilPrices(),
         fetchCryptoData(1, 'USD', '$'),
-        Promise.resolve(fetchCurrencyPairs()),
+        fetchCurrencyPairs(),
         Promise.resolve(fetchStockIndices()),
         Promise.resolve(fetchCommodities()),
       ]);
@@ -625,7 +625,7 @@ export default function WorldRatesPage() {
                     cryptoData.market.fear_greed_index >= 40 ? 'bg-yellow-100 text-yellow-700' :
                     'bg-red-100 text-red-700'
                   }`}>
-                    {cryptoData.market.fear_greed_index} - {cryptoData.market.fear_greed_label}
+                    {cryptoData.market.fear_greed_label ? `${cryptoData.market.fear_greed_index} - ${cryptoData.market.fear_greed_label}` : 'Fear & Greed unavailable'}
                   </div>
                 </div>
               </div>

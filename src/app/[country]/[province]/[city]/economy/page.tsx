@@ -12,8 +12,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cityName = cityData?.name ?? city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   const countryName = cityData?.country ?? country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   return {
-    title: `${cityName} Economy — GDP, Inflation, Jobs & Financial Intelligence | WorldCityHub`,
-    description: `${cityName}, ${countryName} economic data: GDP, inflation, unemployment, misery index, financial stress meter, purchasing power, debt, trade and opportunity index.`,
+    title: `${cityName} Economy — GDP, Inflation & Jobs | WorldCityHub`,
+    description: `${cityName} economy data: GDP, inflation, jobs, purchasing power, trade and financial intelligence for ${cityName}, ${countryName}.`,
     alternates: { canonical: `https://worldcityhub.vercel.app/${country}/${province}/${city}/economy` },
   };
 }

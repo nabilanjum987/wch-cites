@@ -54,11 +54,13 @@ export async function generateMetadata({
     return {
       title: 'Explore Countries by Continent | WorldCityHub',
       description: 'Browse countries and cities across all seven continents on WorldCityHub.',
+      alternates: { canonical: 'https://worldcityhub.vercel.app/countries' },
     };
   }
   return {
     title: `Countries in ${meta.name} | WorldCityHub`,
     description: `Explore countries and cities in ${meta.name} on WorldCityHub. ${meta.desc}.`,
+    alternates: { canonical: `https://worldcityhub.vercel.app/countries?continent=${meta.slug}` },
   };
 }
 

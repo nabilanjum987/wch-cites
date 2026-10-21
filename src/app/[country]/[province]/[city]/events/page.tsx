@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cityName = cityData?.name ?? city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   const countryName = cityData?.country ?? country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   return {
-    title: `${cityName} Events — Things to Do, Concerts, Sports & More | WorldCityHub`,
+    title: `${cityName} Events — Things to Do & What's On | WorldCityHub`,
     description: `Discover events in ${cityName}, ${countryName}. Sports, music, culture, food festivals, religious events, conferences and more — local to global.`,
     alternates: { canonical: `https://worldcityhub.vercel.app/${country}/${province}/${city}/events` },
   };
