@@ -1,10 +1,25 @@
-'use client';
-
+import type { Metadata } from "next"
 import WeatherPageClient from "@/components/weather/WeatherPageClient"
 import { getCityData } from "@/lib/getCityData"
 
 interface PageProps {
   params: Promise<{ country: string; province: string; city: string }>
+}
+
+const titleCase = (s: string) => s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const p = await params
+  const city = titleCase(p.city), province = titleCase(p.province), country = titleCase(p.country)
+  const title = `${city} Weather Today & 7-Day Forecast | WorldCityHub`
+  const description = `${city} weather today: live conditions, hourly & 7-day forecast, sunrise and sunset, air quality and what to wear — ${city}, ${province}, ${country}.`
+  const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/weather`
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, siteName: 'WorldCityHub', type: 'website' },
+  }
 }
 
 export default async function WeatherPage({ params }: PageProps) {

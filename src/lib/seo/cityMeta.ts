@@ -23,15 +23,24 @@ interface CityMetaProps {
 
 export function generateCityMeta(props: CityMetaProps) {
   const { city, country, province, temp, weatherDesc, fajr, maghrib, goldPerGram } = props;
-  const { month, year } = now();
 
-  const tempStr = temp ? `${Math.round(temp)}°C · ` : '';
-  const goldStr = goldPerGram ? ` · Gold PKR ${Math.round(goldPerGram).toLocaleString()}/g` : '';
-  const prayerStr = fajr ? ` · Fajr ${fajr}` : '';
+  // QA gate: title ≤60 chars, real city name (never the lowercase slug),
+  // and a description built only from data that actually exists — a
+  // missing value must shorten the sentence, never print a placeholder.
+  const title = `${city} Today — Weather, Prayer Times & News | WorldCityHub`;
 
-  const title = `${city} Today — Live Weather, Prayer Times & News ${month} ${year} | WorldCityHub`;
+  const segments: string[] = [
+    temp ? `${Math.round(temp)}°C ${weatherDesc ?? 'weather right now'}` : 'live weather',
+  ];
+  const prayerBits = [fajr ? `Fajr ${fajr}` : null, maghrib ? `Maghrib ${maghrib}` : null].filter(Boolean);
+  segments.push(prayerBits.length ? `prayer times (${prayerBits.join(' · ')})` : 'prayer times');
+  if (goldPerGram) segments.push(`gold PKR ${Math.round(goldPerGram).toLocaleString()}/g`);
+  segments.push('local news & events');
 
-  const description = `${city} right now: ${tempStr}${weatherDesc ?? 'current weather'}, prayer times (Fajr ${fajr ?? '--'} · Maghrib ${maghrib ?? '--'})${goldStr}${prayerStr}. Live news, events, gold rates & more for ${city}, ${province}, ${country}.`;
+  let description = `${city} right now: ${segments.join(', ')} — ${city}, ${province}, ${country}, updated daily.`;
+  if (description.length > 155) {
+    description = description.slice(0, 152).trimEnd() + '…';
+  }
 
   const canonical = `https://worldcityhub.vercel.app/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`;
 

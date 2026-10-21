@@ -138,9 +138,9 @@ export async function generateMetadata({
   // and timeouts. Metadata is generated from static slug data only; live
   // enrichment (temp, prayer times, gold) is loaded client-side at runtime.
   const meta = generateCityMeta({
-    city,
-    country,
-    province,
+    city: cityParams.city,
+    country: cityParams.country,
+    province: cityParams.province,
     temp: null,
     weatherDesc: null,
     fajr: null,

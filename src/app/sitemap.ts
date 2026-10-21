@@ -1,6 +1,11 @@
 import { MetadataRoute } from 'next'
 import { getSupabase } from '@/lib/supabase'
 
+// The sitemap merges live Supabase cities, so it must be generated per
+// request — a static build-time sitemap kept serving stale city URLs
+// after the underlying data changed.
+export const dynamic = 'force-dynamic'
+
 const baseUrl = 'https://worldcityhub.vercel.app'
 
 // Cities with full, real content today. Every other city route renders a
