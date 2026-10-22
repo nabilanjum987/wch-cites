@@ -100,7 +100,7 @@ export function generateGoldParagraph(
 ): string {
   const { month, year } = now();
   const rateStr = goldPerGram
-    ? `PKR ${goldPerGram.toLocaleString()} per gram for 24-karat gold`
+    ? `PKR ${Math.round(goldPerGram).toLocaleString()} per gram for 24-karat gold`
     : "the current live rate shown in the widget above";
   return `Gold rates in ${city} today in ${month} ${year} stand at ${rateStr} — reflecting the national Pakistan gold market which moves in line with international bullion prices and local USD/PKR exchange movements. For families in ${city} buying gold jewellery for a wedding, a woman checking the value of her existing holdings, or an investor tracking precious metals, this live rate is the most reliable reference point available. ${city}'s gold bazaars use this national rate as their base price, adding a small making charge on top for crafted jewellery pieces. The 22-karat and 18-karat rates shown above are calculated proportionally from the 24-karat benchmark and update automatically when the spot price moves.`;
 }
@@ -147,9 +147,9 @@ export function generateEconomyParagraph(
 ): string {
   const { month, year } = now();
   const gdpStr = gdpPerCapita
-    ? `a GDP per capita of approximately $${gdpPerCapita.toLocaleString()}`
+    ? `a GDP per capita of approximately $${Math.round(gdpPerCapita).toLocaleString()}`
     : "a GDP that places it among the top economic centres in the region";
-  const infStr = inflation ? `an annual inflation rate of ${inflation}%` : "current inflation pressures";
+  const infStr = inflation ? `an annual inflation rate of ${(Math.round(inflation * 100) / 100)}%` : "current inflation pressures";
   return `${city}'s economy in ${month} ${year} reflects ${country}'s broader macroeconomic conditions — including ${gdpStr} and ${infStr}. As one of ${country}'s largest economic hubs, ${city} contributes a disproportionately large share of national GDP through its textile and garment sector, leather goods industry, IT services, food processing, and financial services. The city is home to a major concentration of manufacturing units, export-processing zones, and logistics infrastructure. For residents, economic conditions translate directly into daily realities: the cost of groceries, rents across neighbourhoods, job availability by sector, and the exchange rate that determines how much arrives from family members working abroad.`;
 }
 

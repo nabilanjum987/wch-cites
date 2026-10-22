@@ -1,5 +1,6 @@
 import { City } from '@/types/city';
 import { getSupabase } from './supabase';
+import { countrySlugToIso2 } from './apis/worldbank';
 
 // Fallback mock data for development
 const MOCK_CITIES: Record<string, City> = {
@@ -213,7 +214,10 @@ function getMockCityData(country: string, province: string, city: string): City 
     name: city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
     city_slug: city,
     country: country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-    country_code: country.toUpperCase().slice(0, 2),
+    // PC1 root-cause fix: never derive an ISO2 code by truncating the
+    // slug — "pakistan".slice(0,2) is "PA", which is Panama. Use the
+    // canonical slug -> ISO2 map (pakistan -> PK).
+    country_code: countrySlugToIso2(country),
     country_slug: country,
     province: province.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
     province_slug: province,

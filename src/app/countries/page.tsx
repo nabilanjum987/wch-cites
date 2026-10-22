@@ -1,5 +1,30 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { CAPITALS } from '@/lib/capitals-table';
+import CapitalsTable, { type CapitalRowWithTemp } from '@/components/countries/CapitalsTable';
+
+// Current temperature for every capital in ONE Open-Meteo
+// multi-location request (free, keyless), cached 30 minutes. A failed
+// request yields nulls — the table then shows a dash, never a guess.
+async function fetchCapitalTemps(): Promise<(number | null)[]> {
+  try {
+    const lats = CAPITALS.map((c) => c.lat).join(',');
+    const lngs = CAPITALS.map((c) => c.lng).join(',');
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lngs}&current=temperature_2m`,
+      { next: { revalidate: 1800 } },
+    );
+    if (!res.ok) return CAPITALS.map(() => null);
+    const json = await res.json();
+    const arr = Array.isArray(json) ? json : [json];
+    return CAPITALS.map((_, i) => {
+      const t = arr[i]?.current?.temperature_2m;
+      return typeof t === 'number' ? t : null;
+    });
+  } catch {
+    return CAPITALS.map(() => null);
+  }
+}
 
 interface ContinentMeta {
   name: string;
@@ -31,10 +56,10 @@ const CONTINENTS: ContinentMeta[] = [
 const COUNTRIES_BY_CONTINENT: Record<string, CountryEntry[]> = {
   asia: [
     { name: 'Pakistan', slug: 'pakistan', flag: '🇵🇰', live: true },
-    { name: 'India', slug: 'india', flag: '🇮🇳', live: true },
+    { name: 'India', slug: 'india', flag: '🇮🇳', live: false },
   ],
   'north-america': [
-    { name: 'United States', slug: 'united-states', flag: '🇺🇸', live: true },
+    { name: 'United States', slug: 'united-states', flag: '🇺🇸', live: false },
   ],
   africa: [],
   europe: [],
@@ -71,6 +96,8 @@ export default async function CountriesPage({
 }) {
   const { continent } = await searchParams;
   const activeContinent = CONTINENTS.find((c) => c.slug === continent);
+  const capitalTemps = !activeContinent ? await fetchCapitalTemps() : [];
+  const capitalRows: CapitalRowWithTemp[] = CAPITALS.map((c, i) => ({ ...c, tempC: capitalTemps[i] ?? null }));
 
   // ── Overview mode: no continent selected, show all 7 ──────────────────────
   if (!activeContinent) {
@@ -96,13 +123,31 @@ export default async function CountriesPage({
                     <div className="text-white font-bold">{c.name}</div>
                     <div className="text-white/40 text-xs mt-1">{c.desc}</div>
                     <div className="text-white/30 text-xs mt-2">
-                      {(COUNTRIES_BY_CONTINENT[c.slug] ?? []).length} countries live
+                      {(COUNTRIES_BY_CONTINENT[c.slug] ?? []).filter((x) => x.live).length > 0
+                        ? `${(COUNTRIES_BY_CONTINENT[c.slug] ?? []).filter((x) => x.live).length} full country guide live`
+                        : 'Country guides in preparation'}
                     </div>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
+
+          {/* ── WORLD CAPITALS TABLE (link map §9A — the full table lives
+              here in the /countries hub, not on a separate page) ── */}
+          <section className="mt-16">
+            <h2 className="text-3xl font-bold mb-3">World Capitals</h2>
+            <p className="text-white/60 max-w-2xl mb-6">
+              Every sovereign state&apos;s capital — its local time right now and its current
+              temperature, updated live. Full country guides are live for Pakistan today;
+              the remaining country pages are being completed one by one, and each row
+              links to that country&apos;s page.
+            </p>
+            <CapitalsTable rows={capitalRows} />
+            <p className="text-white/35 text-xs mt-4">
+              Capital data: GeoNames. Temperatures: Open-Meteo, refreshed every 30 minutes.
+            </p>
+          </section>
         </div>
       </main>
     );
@@ -133,6 +178,11 @@ export default async function CountriesPage({
               >
                 <span className="text-2xl">{c.flag}</span>
                 <span className="font-semibold">{c.name}</span>
+                {c.live && (
+                  <span className="ml-auto rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-semibold text-emerald-300">
+                    Full guide live
+                  </span>
+                )}
               </Link>
             ))}
           </div>

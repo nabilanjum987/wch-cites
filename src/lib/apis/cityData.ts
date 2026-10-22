@@ -63,17 +63,43 @@ export async function fetchPrayerTimes(lat: number, lon: number) {
 }
 
 // ─── 4. GOLD & METAL RATES ───────────────────────────────────────────────────
+// Primary: goldapi.io (needs NEXT_PUBLIC_METAL_KEY). PC1 fix: when the
+// keyed API does not answer, fall back to CoinGecko's PAX Gold spot
+// (keyless — the same source the /rates pages and the homepage tickers
+// use) so the server-rendered city page carries a REAL gold figure in
+// its raw HTML instead of the "Gold rates loading..." placeholder.
+const TROY_OZ_GRAMS = 31.1035;
 export async function fetchGoldRates(currency = 'PKR') {
   try {
     const res = await fetch(
       `https://www.goldapi.io/api/XAU/${currency}`,
       {
         headers: { 'x-access-token': process.env.NEXT_PUBLIC_METAL_KEY || '' },
-        next: { revalidate: 86400 }
+        next: { revalidate: 3600 }
       }
     );
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data.price_gram_24k === 'number') return data;
+    }
+  } catch { /* fall through to the keyless source */ }
+  try {
+    const res = await fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd,pkr',
+      { next: { revalidate: 3600 } }
+    );
     if (!res.ok) return null;
-    return res.json();
+    const cg = await res.json();
+    const pax = cg?.['pax-gold'];
+    if (!pax) return null;
+    const perOz = currency === 'USD' ? pax.usd : pax.pkr;
+    if (typeof perOz !== 'number') return null;
+    return {
+      price: perOz,
+      price_gram_24k: perOz / TROY_OZ_GRAMS,
+      currency,
+      source: 'coingecko-pax-gold',
+    };
   } catch { return null; }
 }
 
@@ -151,23 +177,20 @@ export async function fetchFamousPlaces(city: string) {
 }
 
 // ─── 11. ECONOMY (World Bank) ─────────────────────────────────────────────────
+// PC1 fix: the city-main snapshot reads from the SAME canonical cached
+// dataset as the economy page (getCountryEconomy). The old per-indicator
+// `mrv=1` fetches used a different selection rule and a 30-day cache, so
+// the snapshot and the economy page could show different vintages of
+// the same country's figures. Return shape is unchanged for the page.
 export async function fetchEconomy(countryCode: string) {
   try {
-    const indicators = ['NY.GDP.PCAP.CD', 'FP.CPI.TOTL.ZG', 'SL.UEM.TOTL.ZS'];
-    const results: Record<string, unknown> = {};
-    await Promise.all(
-      indicators.map(async (ind) => {
-        const res = await fetch(
-          `https://api.worldbank.org/v2/country/${countryCode}/indicator/${ind}?format=json&mrv=1`,
-          { next: { revalidate: 2592000 } }
-        );
-        if (res.ok) {
-          const data = await res.json();
-          results[ind] = data[1]?.[0]?.value ?? null;
-        }
-      })
-    );
-    return results;
+    const { getCountryEconomy } = await import('./worldbank');
+    const eco = await getCountryEconomy(countryCode);
+    return {
+      'NY.GDP.PCAP.CD': eco.values.gdpPerCapita?.value ?? null,
+      'FP.CPI.TOTL.ZG': eco.values.inflation?.value ?? null,
+      'SL.UEM.TOTL.ZS': eco.values.unemployment?.value ?? null,
+    } as Record<string, unknown>;
   } catch { return null; }
 }
 

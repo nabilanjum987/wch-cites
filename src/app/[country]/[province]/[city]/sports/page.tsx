@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = titleCase(p.city);
   const province = titleCase(p.province);
   const country = titleCase(p.country);
-  const title = `${city} Sports — Teams, Fixtures & Results | WorldCityHub`;
+  const title = `${city} Sports — Fixtures & Results | WorldCityHub`;
   const description = `${city} sports: local teams, fixtures, results, stadiums and star athletes from ${city}, ${province}, ${country} — updated daily.`;
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/sports`;
   return {

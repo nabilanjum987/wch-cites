@@ -203,7 +203,7 @@ function ZakatCalculator({ nisabValue, nisabGrams, symbol, perGram }: ZakatCalcu
 }
 
 export default function WorldRatesPage({ initialRates, initialCrypto, initialPairs }: {
-  // Real data fetched on the server (CoinGecko + Frankfurter) so the
+  // Real data fetched on the server (CoinGecko + ExchangeRate-API) so the
   // raw HTML carries live rates instead of a loading skeleton.
   initialRates?: GoldRates | null;
   initialCrypto?: { cryptos: CryptoData[]; market: CryptoMarket } | null;
@@ -386,7 +386,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
           </div>
         ) : rates ? (
           <>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div id="gold" className="grid grid-cols-1 lg:grid-cols-3 gap-8 scroll-mt-28">
             {/* Left column */}
             <div className="lg:col-span-2 space-y-8">
               {/* Karat Price Table */}
@@ -646,7 +646,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
 
           {/* SECTION 3 — CRYPTOCURRENCY */}
           {cryptoData && (
-            <div className="mt-10">
+            <div id="crypto" className="mt-10 scroll-mt-28">
               <div className="flex items-center justify-between mb-5">
                 <div className="section-title">
                   <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -716,7 +716,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
 
           {/* SECTION 4 — CURRENCY EXCHANGE */}
           {currencyPairs.length > 0 && (
-            <div className="mt-10">
+            <div id="forex" className="mt-10 scroll-mt-28">
               <div className="section-title">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
                   <DollarSign className="w-5 h-5 text-emerald-600" />
@@ -736,7 +736,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                     </thead>
                     <tbody>
                       {currencyPairs.map((pair) => {
-                        const isUp = pair.change_24h >= 0;
+                        const isUp = (pair.change_24h ?? 0) >= 0;
                         return (
                           <tr key={pair.code} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
                             <td className="py-4 px-5">
@@ -752,9 +752,13 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                               {pair.open_market_rate.toLocaleString()}
                             </td>
                             <td className="py-4 px-5 text-right">
-                              <span className={`font-bold ${isUp ? 'text-emerald-600' : 'text-red-600'}`}>
-                                {isUp ? '+' : ''}{pair.change_24h}%
-                              </span>
+                              {pair.change_24h != null ? (
+                                <span className={`font-bold ${isUp ? 'text-emerald-600' : 'text-red-600'}`}>
+                                  {isUp ? '+' : ''}{pair.change_24h}%
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">—</span>
+                              )}
                             </td>
                           </tr>
                         );
@@ -768,7 +772,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
 
           {/* SECTION 5 — STOCK MARKET */}
           {stockIndices.length > 0 && (
-            <div className="mt-10">
+            <div id="indices" className="mt-10 scroll-mt-28">
               <div className="section-title">
                 <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
                   <BarChart3 className="w-5 h-5 text-indigo-600" />

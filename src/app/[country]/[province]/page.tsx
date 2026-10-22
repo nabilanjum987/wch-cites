@@ -17,8 +17,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const p = await params;
   const province = titleCase(p.province);
   const country = titleCase(p.country);
-  const title = `${province}, ${country} — Cities, Weather & Culture | WorldCityHub`;
-  const description = `${province} in ${country}: cities and districts with live weather, famous places, local products, food and culture — the complete ${province} guide.`;
+  const title = `${province}, ${country} Guide | WorldCityHub`;
+  const description = `${province}, ${country}: cities, live weather, famous places, food and culture — the complete guide.`;
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}`;
   return {
     title,

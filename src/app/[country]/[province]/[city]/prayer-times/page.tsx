@@ -16,8 +16,8 @@ const titleCase = (s: string) =>
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const p = await params;
   const city = titleCase(p.city);
-  const title = `${city} Prayer Times & Spiritual Guide | WorldCityHub`;
-  const description = `${city} prayer times today for all faiths: Islamic prayer times with live countdown, church, temple, gurdwara & synagogue times, multi-faith calendar.`;
+  const title = `${city} Prayer Times & Faiths Guide | WorldCityHub`;
+  const description = `${city} prayer times for all faiths: live countdown, mosque, church, temple, gurdwara and synagogue times, multi-faith calendar.`;
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/prayer-times`;
   return {
     title,
