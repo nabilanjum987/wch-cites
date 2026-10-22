@@ -1,12 +1,14 @@
 'use client';
 
-// Wonders panel (§6). Deep links are on HOLD (link map §6 / Law L1):
-// the wonder detail pages are still shells, so the cards render
-// WITHOUT links until the Golden Wonder template passes the QA gate.
-// The panel's one live figure is real: the weather right now at the
-// Taj Mahal's coordinates in Agra (Open-Meteo), fetched live.
+// Wonders panel (§6). SWITCH-ON 2026-10-22 (link map §6 / Laws L1+L6):
+// the Golden Wonder passed and /wonders/taj-mahal is published, so the
+// Taj Mahal card deep-links to it and the hub link to /wonders is on.
+// The other wonders' pages are not published yet — their cards still
+// render WITHOUT links. The panel's live figure is real: the weather
+// right now at the Taj Mahal's coordinates in Agra (Open-Meteo).
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 
 const WONDERS = [
   { name: 'Great Wall of China',    country: 'China',  emoji: '🏯', color: '#CC0000', desc: '21,196 km of wall built over centuries' },
@@ -15,7 +17,7 @@ const WONDERS = [
   { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', color: '#D9A028', desc: '15th-century Inca citadel in the Andes' },
   { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Ancient Mayan pyramid city' },
   { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Iconic amphitheatre from 80 AD' },
-  { name: 'Taj Mahal',              country: 'India',  emoji: '🕌', color: '#FF9933', desc: 'White marble mausoleum in Agra' },
+  { name: 'Taj Mahal',              country: 'India',  emoji: '🕌', color: '#FF9933', desc: 'White marble mausoleum in Agra', href: '/wonders/taj-mahal' },
 ];
 
 export default function FeaturedWonders() {
@@ -59,8 +61,8 @@ export default function FeaturedWonders() {
       )}
       <div className="overflow-hidden rounded-2xl">
         <div ref={trackRef} className="flex gap-4" style={{ width: 'max-content' }}>
-          {doubled.map((w, i) => (
-            <div key={i} className="flex-shrink-0 w-52">
+          {doubled.map((w, i) => {
+            const card = (
               <div className="relative h-44 rounded-2xl overflow-hidden border"
                 style={{ borderColor: `${w.color}40`, background: `linear-gradient(135deg, ${w.color}20, #0a0f1e)` }}>
                 <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-15 select-none pointer-events-none">{w.emoji}</div>
@@ -73,12 +75,18 @@ export default function FeaturedWonders() {
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+            return (
+              <div key={i} className="flex-shrink-0 w-52">
+                {'href' in w && w.href ? <Link href={w.href} className="block">{card}</Link> : card}
+              </div>
+            );
+          })}
         </div>
       </div>
       <p className="text-white/40 text-sm mt-4">
-        Each wonder is getting its own full page — live visiting conditions, history and photography guides. Pages open one by one as each passes review →
+        The Taj Mahal&rsquo;s full page is live now — live visiting conditions, history and photography guides. The other wonders open one by one as each passes review.{' '}
+        <Link href="/wonders" className="text-white/70 underline underline-offset-4 hover:text-white">Explore all wonders →</Link>
       </p>
     </div>
   );

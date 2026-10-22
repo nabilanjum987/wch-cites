@@ -217,7 +217,29 @@ export async function getWebsiteTickerItems(): Promise<SiteItem[]> {
     const arrow = chg >= 0 ? '▲' : '▼';
     items.push({ text: `Gold today · Rs ${pkr0.format(tola)}/tola ${arrow} ${Math.abs(chg).toFixed(1)}%`, href: '/rates' });
   }
-  // 4) A public holiday in Pakistan today.
+  // 4) Wonders + Oceans — the published golden pages (link map L3/L6
+  // switch-on, 2026-10-22). Figure-bearing when the source responds
+  // (Taj temperature via Open-Meteo forecast; Arabian Sea wave height
+  // via Open-Meteo Marine at the sea's representative point 16°N 64°E),
+  // otherwise the plain published-page item, like the compares below.
+  // No other wonder/ocean items exist until their pages publish (L3).
+  const tajPlain = { text: 'Wonder · Taj Mahal — the full page is live', href: '/wonders/taj-mahal' };
+  try {
+    const taj = await jget('https://api.open-meteo.com/v1/forecast?latitude=27.175&longitude=78.0419&current=temperature_2m', 600);
+    const tt = taj?.current?.temperature_2m;
+    items.push(typeof tt === 'number'
+      ? { text: `Taj Mahal right now · ${Math.round(tt)}°C in Agra`, href: '/wonders/taj-mahal' }
+      : tajPlain);
+  } catch { items.push(tajPlain); }
+  const seaPlain = { text: 'Ocean · Arabian Sea — the full page is live', href: '/oceans/arabian-sea' };
+  try {
+    const sea = await jget('https://marine-api.open-meteo.com/v1/marine?latitude=16&longitude=64&current=wave_height', 600);
+    const wh = sea?.current?.wave_height;
+    items.push(typeof wh === 'number'
+      ? { text: `Arabian Sea today · waves ${wh.toFixed(1)} m`, href: '/oceans/arabian-sea' }
+      : seaPlain);
+  } catch { items.push(seaPlain); }
+  // 5) A public holiday in Pakistan today.
   try {
     const year = new Date().getUTCFullYear();
     const holidays = await jget(`https://date.nager.at/api/v3/PublicHolidays/${year}/PK`, 3600);
@@ -226,7 +248,7 @@ export async function getWebsiteTickerItems(): Promise<SiteItem[]> {
     const hit = Array.isArray(holidays) ? holidays.find((h: any) => h.date === iso) : null;
     if (hit) items.push({ text: `Today in Pakistan · ${hit.name}`, href: `${cityPath(PUBLISHED_CITIES[0])}/events` });
   } catch { /* item omitted */ }
-  // 5) Trending compares — the published pairs only.
+  // 6) Trending compares — the published pairs only.
   items.push({ text: 'Compare · Lahore vs Karachi', href: '/compare/lahore-vs-karachi' });
   items.push({ text: 'Compare · Karachi vs Islamabad', href: '/compare/karachi-vs-islamabad' });
   return items.slice(0, 10);

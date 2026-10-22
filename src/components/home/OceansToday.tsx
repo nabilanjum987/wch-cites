@@ -1,11 +1,12 @@
 'use client';
 
-// Oceans panel (§8). Links are on HOLD (link map §8 / Law L1): the
-// ocean detail pages are still shells, so cards render WITHOUT links
-// until the Golden Ocean template passes the QA gate. The previous
-// version presented invented "live" temperatures and conditions
-// ("18°C · Moderate waves") as fact — removed; what remains are the
-// oceans' real published surface areas.
+// Oceans panel (§8). SWITCH-ON 2026-10-22 (link map §8 / Laws L1+L6):
+// the Golden Ocean passed and /oceans/arabian-sea is published, so the
+// featured Arabian Sea strip below deep-links to it and the hub link
+// to /oceans is on. The five oceans' own detail pages are not
+// published yet — their cards still render WITHOUT links. Areas are
+// the oceans' real published surface areas (the Arabian Sea's
+// 3,862,000 km² is its golden page's Wikidata/Wikipedia figure).
 
 const OCEANS = [
   { name: 'Pacific Ocean',  emoji: '🌊', area: '165.25M km²', color: '#0369a1', note: 'Larger than all land on earth combined' },
@@ -14,6 +15,8 @@ const OCEANS = [
   { name: 'Southern Ocean', emoji: '🌊', area: '21.96M km²',  color: '#065f46', note: 'The circumpolar current circles Antarctica unbroken' },
   { name: 'Arctic Ocean',   emoji: '🧊', area: '14.06M km²',  color: '#7c3aed', note: 'The smallest and shallowest — mostly sea ice in winter' },
 ];
+
+import Link from 'next/link';
 
 export default function OceansToday() {
   return (
@@ -34,8 +37,19 @@ export default function OceansToday() {
           </div>
         ))}
       </div>
+      <Link href="/oceans/arabian-sea" className="block mt-3 rounded-2xl border p-4 hover:border-sky-400/50 transition-colors"
+        style={{ background: 'linear-gradient(160deg, #07598540, #0a0f1e)', borderColor: '#07598540' }}>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-white font-semibold text-sm">Featured sea · Arabian Sea</div>
+            <div className="text-white/50 text-xs mt-0.5">3,862,000 km² of the Indian Ocean — live waves, monsoon pattern and Karachi coastal weather</div>
+          </div>
+          <div className="text-white/60 text-sm whitespace-nowrap">Explore →</div>
+        </div>
+      </Link>
       <p className="text-white/40 text-sm mt-4">
-        Full ocean pages — live conditions, marine life and the cities on their shores — open as each passes review →
+        Full ocean pages — live conditions, marine life and the cities on their shores — open as each passes review.{' '}
+        <Link href="/oceans" className="text-white/70 underline underline-offset-4 hover:text-white">Explore Oceans &amp; Seas →</Link>
       </p>
     </div>
   );
