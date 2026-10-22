@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { fetchWorldNews, timeAgo, regionForCountry } from '@/lib/apis/news';
 
 // Homepage world-news section — SERVER component rendering REAL
-// aggregated headlines (NewsData.io top stories, 15-minute cache).
+// aggregated headlines (GNews.io top stories).
 // The previous version hard-coded eight invented headlines with fake
 // timestamps attributed to real publishers (Reuters, Dawn, BBC...) —
 // removed under the same fix as the /news page. When the feed is

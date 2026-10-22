@@ -5,7 +5,7 @@ import { fetchWorldNews, timeAgo, regionForCountry } from '@/lib/apis/news';
 // Server wrapper for the global news page. The old page hard-coded twelve
 // invented headlines with fake timestamps attributed to real publishers —
 // a direct violation of the locked news spec (aggregate only, real
-// sources, refresh every 15 minutes). It now renders real NewsData.io top
+// sources, refresh every 15 minutes). It now renders real GNews.io top
 // headlines fetched on the server, or an honest unavailable state.
 
 export const metadata: Metadata = {

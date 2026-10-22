@@ -1,5 +1,9 @@
 // ── WorldCityHub — News API ───────────────────────────────────────────────────
-// Fetches news articles from NewsData.io (free tier) with Urdu/Arabic support.
+// Fetches news articles from GNews.io (free tier) with Urdu support.
+// Provider history: this module originally used NewsData.io, but the
+// project owner's key is for GNews (already set in Vercel and powering
+// the city pages' news strip via lib/apis/cityData.ts), so all news
+// fetching was consolidated onto GNews in Batch 2i (2026-10-21).
 // Truth rule: when the API key is absent or a fetch fails, these functions
 // return an EMPTY list so pages show less — they never invent headlines.
 // (The old mock-article fallback fabricated plausible local headlines and
@@ -16,8 +20,8 @@ import type {
 
 export type { NewsArticle, VideoItem, NewsCategory, LocationLevel, TrendingTopic };
 
-const API_KEY = process.env.NEXT_PUBLIC_NEWSDATA_API_KEY ?? '';
-const BASE    = 'https://newsdata.io/api/1';
+const API_KEY = process.env.NEXT_PUBLIC_GNEWS_KEY ?? '';
+const BASE    = 'https://gnews.io/api/v4';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -31,67 +35,71 @@ export function timeAgo(dateStr: string | Date): string {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
+// ── GNews helpers ─────────────────────────────────────────────────────────────
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapGNewsArticle(a: any, category: string, country: string, language: string): NewsArticle {
+  return {
+    id:            a.url ?? a.title ?? '',
+    title:         a.title ?? '',
+    description:   a.description ?? '',
+    url:           a.url ?? '#',
+    image:         a.image ?? undefined,
+    source:        { name: a.source?.name ?? 'Unknown' },
+    publishedAt:   a.publishedAt ?? new Date().toISOString(),
+    category,
+    language,
+    country,
+    isBreaking:    false,
+    sentiment:     'neutral',
+  };
+}
+
+async function gnewsSearch(
+  query: string,
+  language: string,
+  max: number,
+  category: string,
+  country: string,
+  revalidate = 900,
+): Promise<NewsArticle[]> {
+  if (!API_KEY) return [];
+  try {
+    const params = new URLSearchParams({
+      q: query,
+      lang: language,
+      max: String(Math.min(max, 10)),
+      sortby: 'publishedAt',
+    });
+    params.set('apikey', API_KEY);
+    const url = `${BASE}/search?${params.toString()}`;
+    const res = await fetch(url, ({ next: { revalidate } } as any));
+    if (!res.ok) return [];
+    const json = await res.json();
+    if (!json.articles) return [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return json.articles.map((a: any) => mapGNewsArticle(a, category, country, language));
+  } catch {
+    return [];
+  }
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 export async function fetchNews(
   city: string,
   country: string,
   category: NewsCategory = 'all',
-  _limit = 20,
+  limit = 20,
 ): Promise<NewsArticle[]> {
-  if (!API_KEY) return [];
-
-  try {
-    const q = encodeURIComponent(`${city} ${country}`);
-    const cat = category === 'all' ? '' : `&category=${category}`;
-    const url = `${BASE}/news?apikey=${API_KEY}&q=${q}&language=en${cat}`;
-    const res = await fetch(url);
-    const json = await res.json();
-    if (!json.results) return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return json.results.map((a: any): NewsArticle => ({
-      id:            a.article_id ?? String(Math.random()),
-      title:         a.title ?? '',
-      description:   a.description ?? '',
-      url:           a.link ?? '#',
-      image:         a.image_url ?? undefined,
-      source:        { name: a.source_id ?? 'Unknown' },
-      publishedAt:   a.pubDate ?? new Date().toISOString(),
-      category:      a.category?.[0] ?? 'all',
-      language:      a.language ?? 'en',
-      country:       a.country?.[0] ?? country,
-      isBreaking:    false,
-      sentiment:     'neutral',
-    }));
-  } catch {
-    return [];
-  }
+  const catWord = category === 'all' ? '' : category === 'tech' ? ' technology' : ` ${category}`;
+  return gnewsSearch(`${city} ${country}${catWord}`, 'en', limit, category, country);
 }
 
-export async function fetchUrduNews(city: string, _limit = 10): Promise<NewsArticle[]> {
-  if (!API_KEY) return [];
-
-  try {
-    const url = `${BASE}/news?apikey=${API_KEY}&q=${encodeURIComponent(city)}&language=ur`;
-    const res  = await fetch(url);
-    const json = await res.json();
-    if (!json.results) return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return json.results.map((a: any): NewsArticle => ({
-      id: a.article_id ?? String(Math.random()),
-      title: a.title ?? '',
-      description: a.description ?? '',
-      url: a.link ?? '#',
-      image: a.image_url ?? undefined,
-      source: { name: a.source_id ?? 'Unknown' },
-      publishedAt: a.pubDate ?? new Date().toISOString(),
-      category: 'all',
-      language: 'ur',
-      country: 'PK',
-    }));
-  } catch {
-    return [];
-  }
+export async function fetchUrduNews(city: string, limit = 10): Promise<NewsArticle[]> {
+  // GNews indexes Urdu-language sources; lang=ur returns real Urdu news.
+  const articles = await gnewsSearch(city, 'ur', limit, 'all', 'PK');
+  return articles.map((a) => ({ ...a, language: 'ur' }));
 }
 
 export async function fetchNewsByDate(
@@ -107,64 +115,59 @@ export async function searchNews(
   city: string,
   country: string,
   query: string,
-  _limit = 10,
+  limit = 10,
 ): Promise<NewsArticle[]> {
-  if (!API_KEY) return [];
-
-  try {
-    const q = encodeURIComponent(`${query} ${city}`);
-    const url = `${BASE}/news?apikey=${API_KEY}&q=${q}&language=en`;
-    const res  = await fetch(url);
-    const json = await res.json();
-    if (!json.results) return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return json.results.map((a: any): NewsArticle => ({
-      id: a.article_id ?? String(Math.random()),
-      title: a.title ?? '',
-      description: a.description ?? '',
-      url: a.link ?? '#',
-      source: { name: a.source_id ?? 'Unknown' },
-      publishedAt: a.pubDate ?? new Date().toISOString(),
-      category: 'all',
-      language: 'en',
-      country,
-    }));
-  } catch {
-    return [];
-  }
+  void country;
+  return gnewsSearch(`${query} ${city}`, 'en', limit, 'all', country);
 }
 
-// World top headlines for the global /news page — real aggregation only,
-// refreshed at most every 15 minutes (the locked news spec), no mock data.
+// World headlines for the global /news page and the homepage section —
+// real GNews top-headlines only. Quota note: the free GNews plan allows
+// ~100 requests/day, so the world set is four feeds (world, Pakistan,
+// US, UAE) cached for 3 hours (~32 requests/day), leaving room for the
+// city pages' own fetches. Articles carry the queried country so the
+// region tabs on /news can group them.
 export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
   if (!API_KEY) return [];
-  try {
-    const url = `${BASE}/news?apikey=<redacted>&language=en&category=top&size=${limit}`;
-    const res = await fetch(url, ({ next: { revalidate: 900 } } as any));
-    const json = await res.json();
-    if (!json.results) return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return json.results.map((a: any): NewsArticle => ({
-      id:            a.article_id ?? a.link ?? a.title,
-      title:         a.title ?? '',
-      description:   a.description ?? '',
-      url:           a.link ?? '#',
-      image:         a.image_url ?? undefined,
-      source:        { name: a.source_id ?? 'Unknown' },
-      publishedAt:   a.pubDate ?? new Date().toISOString(),
-      category:      a.category?.[0] ?? 'top',
-      language:      a.language ?? 'en',
-      country:       a.country?.[0] ?? '',
-      isBreaking:    false,
-      sentiment:     'neutral',
-    }));
-  } catch {
-    return [];
+  const feeds: { query: string; countryName: string }[] = [
+    { query: 'category=world', countryName: '' },
+    { query: 'country=pk', countryName: 'Pakistan' },
+    { query: 'country=us', countryName: 'United States of America' },
+    { query: 'country=ae', countryName: 'United Arab Emirates' },
+  ];
+  const results = await Promise.allSettled(
+    feeds.map(async ({ query, countryName }) => {
+      const params = new URLSearchParams({ lang: 'en', max: '6' });
+      for (const pair of query.split('&')) {
+        const [k, v] = pair.split('=');
+        params.set(k, v);
+      }
+      params.set('apikey', API_KEY);
+      const url = `${BASE}/top-headlines?${params.toString()}`;
+      const res = await fetch(url, ({ next: { revalidate: 10800 } } as any));
+      if (!res.ok) return [] as NewsArticle[];
+      const json = await res.json();
+      if (!json.articles) return [] as NewsArticle[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return json.articles.map((a: any) => mapGNewsArticle(a, 'top', countryName, 'en'));
+    }),
+  );
+  const seen = new Set<string>();
+  const all: NewsArticle[] = [];
+  for (const r of results) {
+    if (r.status !== 'fulfilled') continue;
+    for (const a of r.value) {
+      if (!a.url || seen.has(a.url)) continue;
+      seen.add(a.url);
+      all.push(a);
+    }
   }
+  all.sort((x, y) => +new Date(y.publishedAt) - +new Date(x.publishedAt));
+  return all.slice(0, limit);
 }
 
-// Country name (as NewsData returns it) -> world region, shared by the
-// /news page and the homepage news section.
+// Country name (as returned on our articles) -> world region, shared by
+// the /news page and the homepage news section.
 const REGION_BY_COUNTRY: Record<string, string> = {};
 for (const c of ['Pakistan', 'India', 'Bangladesh', 'Sri Lanka', 'China', 'Japan', 'Indonesia', 'Malaysia', 'Singapore', 'Philippines', 'Thailand', 'Vietnam', 'Nepal', 'Myanmar']) REGION_BY_COUNTRY[c.toLowerCase()] = 'Asia';
 for (const c of ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Kuwait', 'Oman', 'Iraq', 'Iran', 'Israel', 'Jordan', 'Lebanon', 'Bahrain', 'Yemen']) REGION_BY_COUNTRY[c.toLowerCase()] = 'Middle East';
