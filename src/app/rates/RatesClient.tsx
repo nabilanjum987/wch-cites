@@ -327,8 +327,8 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                 One page for the numbers people check every day: the live gold price in every karat, oil and
                 the wider commodity board, the top cryptocurrencies, exchange rates for the currencies
                 Pakistan trades and remits in, world stock indices and the World Bank&apos;s country
-                indicators. Every figure is fetched from a named public source — the full list is on our{' '}
-                <a href="/sources" className="text-amber-300 underline">data sources</a> page — and when a
+                indicators. Every figure is fetched from a named public source — every figure is fetched from a named source —{' '}
+                <a href="/sources" className="text-amber-300 underline">the full list is published here</a> — and when a
                 feed is down, its section says so honestly instead of showing yesterday&apos;s number as
                 today&apos;s.
               </p>

@@ -185,8 +185,8 @@ export default async function CountriesPage({
             <p className="text-white/60 max-w-2xl leading-relaxed">
               Coverage grows in verified batches rather than by flooding the index with thin pages, so a
               country that is not live yet still appears in the capitals table above with its live time and
-              weather. If your country is missing, you can tell us what to build first through the{' '}
-              <Link href="/improve" className="text-cyan-300 underline">improvement form</Link>.
+              weather. If your country is missing, you can{' '}
+              <Link href="/improve" className="text-cyan-300 underline">tell us what to build first</Link>.
             </p>
           </section>
         </div>
