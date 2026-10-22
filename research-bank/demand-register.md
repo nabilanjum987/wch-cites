@@ -63,7 +63,7 @@ PK market, Google Trends 90-day means (S2, geo = PK):
 
 Generic PK prayer terms are the largest measured block in the entire bank:
 `fajr time` 56.6 · `namaz time` 53.9 · `prayer times` 20.6 (S2). The phrase bank
-holds 841 prayer-cluster phrases (the FAQ bank count from R5's audit), including
+holds 841 prayer-cluster phrases (the FAQ bank count from R5's audit ⚠ VERIFY — verification-depth pass, 2026-10-22: this count could not be reproduced from `phrase_bank.csv`; recounts give 716 phrases filed under prayer seeds and 717–721 by text match under any reasonable term set. The 841 figure is R5's audit count under an unstated definition — treat as UNVERIFIED until R5's definition is produced), including
 the fiqh dimension people actually type — e.g. "namaz time karachi hanafi",
 "namaz time karachi shia today", "namaz time faisalabad shia" (S1) — which is
 direct evidence for the method-toggle feature. Ramadan terms (`sehri time`,

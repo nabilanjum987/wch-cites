@@ -83,7 +83,7 @@ on unmerged PR branches and are noted as such).
 | Wikidata | Wikimedia Foundation | Entities/facts backbone: capitals, wonders, oceans, personalities, QID-verified datasets | CC0 | Keyless; fair-use rates | none | Wikipedia | ACTIVE (data-side, via banked packages) |
 | Wikipedia / Wikimedia APIs + Commons | Wikimedia Foundation | Overviews, summaries (REST + action API), licensed images | CC BY-SA text; per-file image licences (image bank verifies per asset) | Keyless | none | omit | ACTIVE |
 | UNHCR Population API | UNHCR | Conflicts displacement figures | Open API | n/a | none | ReliefWeb (outbound links in tree) | ACTIVE with **TRAP: a wrong/absent parameter silently returns GLOBAL totals** — caught in testing, never shipped; parameter discipline mandatory |
-| OpenAQ | OpenAQ | AQI station fallback (weather.ts) | Open data | UNVERIFIED | none | Open-Meteo CAMS | ACTIVE in code on the **v2 endpoint**; OpenAQ's v2→v3 migration status **UNVERIFIED** this pass |
+| OpenAQ | OpenAQ | AQI station fallback (weather.ts) | Open data | UNVERIFIED | none | Open-Meteo CAMS | ACTIVE in code on the **v2 endpoint** — but v2 is **DEAD: HTTP 410 Gone** (probed 2026-10-22, verification-depth pass); v3 requires an API key (HTTP 401 unauthenticated, probed same day), and no key is held — the code path cannot return data until migrated + keyed |
 | WAQI (aqicn) | World Air Quality Index | — (would power station AQI) | Token required | — | **absent** (owner-key item) | Open-Meteo + OpenAQ | NOT WIRED — zero references in tree |
 | hadithapi.com | hadithapi | Faith content (islamic.ts) — observed in code | UNVERIFIED | UNVERIFIED | UNVERIFIED | curated faith content | ACTIVE in code (observed; not in day log) |
 | bible-api.com | bible-api.com | Faith content (faiths.ts) — observed in code | Free API, terms UNVERIFIED | UNVERIFIED | none observed | curated faith content | ACTIVE in code (observed; not in day log) |
@@ -114,7 +114,7 @@ on unmerged PR branches and are noted as such).
 4. **NewsData inert:** confirmed by grep (zero functional references — one historical comment
    in `news.ts` records its Batch-2i replacement by GNews; two other grep hits are an unrelated
    local variable), not just by report.
-5. **OpenAQ v2 endpoint** in production code path — migration status UNVERIFIED (new note).
+5. **OpenAQ v2 endpoint** in production code path — migration status resolved by the 2026-10-22 verification-depth pass: **v2 returns HTTP 410 Gone; v3 is key-gated (401 without a key)**. The fallback as wired is therefore inoperative, not merely unverified.
 6. **hadithapi.com / bible-api.com** observed in code but absent from the day log's source
    narrative — now registered with UNVERIFIED terms/key status.
 
