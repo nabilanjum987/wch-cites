@@ -141,14 +141,18 @@ export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
     { query: 'country=gb', countryName: 'United Kingdom', endpoint: 'top-headlines' },
     { query: 'q=Pakistan', countryName: 'Pakistan', endpoint: 'search' },
   ];
-  // Feeds are fetched SEQUENTIALLY, not in parallel: with four parallel
-  // requests the free plan answered only one and rejected the rest
-  // (verified live 2026-10-21 — each deploy render showed exactly one
-  // feed's six cards). Sequential + the 3h cache keeps us at ~32
-  // requests/day and every feed lands.
+  // Feeds are fetched SEQUENTIALLY and SPACED ~1.1s apart: the free
+  // plan rate-limits rapid requests — parallel bursts AND back-to-back
+  // sequential calls each yielded exactly one feed's cards in live
+  // tests (2026-10-21). Spacing + the 3h cache keeps us at ~32
+  // requests/day and every feed lands; the pause only costs time on a
+  // cold cache (~3 extra seconds on one render every 3 hours).
   const results: NewsArticle[][] = [];
+  let isFirstFeed = true;
   for (const { query, countryName, endpoint } of feeds) {
     try {
+      if (!isFirstFeed) await new Promise((r) => setTimeout(r, 1100));
+      isFirstFeed = false;
       const params = new URLSearchParams({ lang: 'en', max: '6' });
       for (const pair of query.split('&')) {
         const [k, v] = pair.split('=');
