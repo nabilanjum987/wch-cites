@@ -1,0 +1,96 @@
+{
+ "subject": "Abbottabad",
+ "type": "city",
+ "package": "Batch 2 PK cities",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified (batch 2, 2026-10-22). The subject's data package belongs to the batch-2 streams and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Abbottabad View.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Abbottabad_View.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abbottabad_View.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "Fraz.khalid1",
+   "licence": "CC0",
+   "attribution": "\"Abbottabad View\" by Fraz.khalid1 — CC0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Abbottabad View",
+   "focal_point": null,
+   "width": 3072,
+   "height": 2304,
+   "sha1": "0b518ab7b2c50b47f4dc58016e06abcd27adf945",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Abbottabad Board.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Abbottabad_Board.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abbottabad_Board.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "IamAnisurrahman",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Abbottabad Board\" by IamAnisurrahman — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Abbottabad Board",
+   "focal_point": null,
+   "width": 8384,
+   "height": 6288,
+   "sha1": "8614c1f1d3ae4c103143b264d05c1fc33669c9c0",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "BISE Abbottabad.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/BISE_Abbottabad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:BISE_Abbottabad.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "IamAnisurrahman",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"BISE Abbottabad\" by IamAnisurrahman — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "BISE Abbottabad",
+   "focal_point": null,
+   "width": 8384,
+   "height": 6288,
+   "sha1": "d8d3657458798a3fff29257c43d76bab861605a7",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Abbottabad Tehsil.png",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Abbottabad_Tehsil.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abbottabad_Tehsil.png",
+   "source": "Wikimedia Commons",
+   "creator": "RightQuark",
+   "licence": "CC0",
+   "attribution": "\"Abbottabad Tehsil\" by RightQuark — CC0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Abbottabad Tehsil",
+   "focal_point": null,
+   "width": 1731,
+   "height": 1788,
+   "sha1": "0026d93e375369af9da9346f8ad55819226ed607",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Abbottabad District.png",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Abbottabad_District.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abbottabad_District.png",
+   "source": "Wikimedia Commons",
+   "creator": "RightQuark",
+   "licence": "CC0",
+   "attribution": "\"Abbottabad District\" by RightQuark — CC0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Abbottabad District",
+   "focal_point": null,
+   "width": 1731,
+   "height": 1788,
+   "sha1": "7b4c3e4b650bb85db3d39a4ad69538afc8f9568e",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Abbottabad 1907.JPG",
+   "reason": "resolution too low (639px wide)"
+  }
+ ]
+}

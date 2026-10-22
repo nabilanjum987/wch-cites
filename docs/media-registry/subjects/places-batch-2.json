@@ -1,0 +1,10 @@
+{
+ "subject": "Places — batch 2",
+ "type": "place",
+ "package": "Batch 2 (extension)",
+ "coverage": "pending",
+ "coverage_note": "No canonical subject list for this batch exists in the round files available to Agent R4 (Round 2 file defines batch 1 only). No subjects were guessed and no images harvested. Register the batch's subjects here when the owning stream issues its list, and harvest to the T1 standard.",
+ "harvested": null,
+ "records": [],
+ "rejected": []
+}

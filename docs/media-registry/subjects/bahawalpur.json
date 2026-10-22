@@ -1,0 +1,104 @@
+{
+ "subject": "Bahawalpur",
+ "type": "city",
+ "package": "Batch 2 PK cities",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified (batch 2, 2026-10-22). The subject's data package belongs to the batch-2 streams and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Display of knives in the Noor Mahal Bahawalpur.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Display_of_knives_in_the_Noor_Mahal_Bahawalpur.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Display_of_knives_in_the_Noor_Mahal_Bahawalpur.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Mr Khubaib Sani",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Display of knives in the Noor Mahal Bahawalpur\" by Mr Khubaib Sani — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Display of knives in the Noor Mahal Bahawalpur",
+   "focal_point": null,
+   "width": 4160,
+   "height": 3120,
+   "sha1": "6c736d239ff62db8a44c9ea6cc7e19202d5bb4e5",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "View of Noor Mahal Bahawalpur.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/92/View_of_Noor_Mahal_Bahawalpur.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:View_of_Noor_Mahal_Bahawalpur.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Asif Nawaz",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"View of Noor Mahal Bahawalpur\" by Asif Nawaz — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "View of Noor Mahal Bahawalpur",
+   "focal_point": null,
+   "width": 4912,
+   "height": 3264,
+   "sha1": "f65ec5e06cb8bbb1077c974d0b00963c657cf599",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Noor Mahal at Bahawalpur.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Noor_Mahal_at_Bahawalpur.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Noor_Mahal_at_Bahawalpur.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Abdullahvance",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Noor Mahal at Bahawalpur\" by Abdullahvance — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Noor Mahal at Bahawalpur",
+   "focal_point": null,
+   "width": 5184,
+   "height": 3456,
+   "sha1": "311c645b18b5ffd9ff7409b2eae05f4e7ab7fb99",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Noor mahal bahawalpur.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/0/03/Noor_mahal_bahawalpur.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Noor_mahal_bahawalpur.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Effbt",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Noor mahal bahawalpur\" by Effbt — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Noor mahal bahawalpur",
+   "focal_point": null,
+   "width": 1200,
+   "height": 900,
+   "sha1": "4809fefd4093d758e74c86dc42b7aa0b2c2bffb0",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Noor Mahal Bahawalpur.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Noor_Mahal_Bahawalpur.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Noor_Mahal_Bahawalpur.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Frazz Khalid",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Noor Mahal Bahawalpur\" by Frazz Khalid — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Noor Mahal Bahawalpur",
+   "focal_point": null,
+   "width": 3072,
+   "height": 2304,
+   "sha1": "16973a33b085c74d8e3e7f133d3e9548fa33246f",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Noor Mahal Bahawalpur Pakistan.jpg",
+   "reason": "resolution too low (800px wide)"
+  },
+  {
+   "title": "Noor Mahal, Bahawalpur, Punjab, Pakistan (2).jpg",
+   "reason": "resolution too low (720px wide)"
+  },
+  {
+   "title": "Beautiful Noor Mahal palace.jpg",
+   "reason": "resolution too low (583px wide)"
+  }
+ ]
+}
