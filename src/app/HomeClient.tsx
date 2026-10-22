@@ -14,6 +14,7 @@ import DidYouKnow from '@/components/home/DidYouKnow';
 import FeaturedCountries from '@/components/home/FeaturedCountries';
 import WorldWeatherExtremes from '@/components/home/WorldWeatherExtremes';
 import HeroClocks from '@/components/home/HeroClocks';
+import WorldCapitals from '@/components/home/WorldCapitals';
 import AllFaithsToday from '@/components/home/AllFaithsToday';
 import HeritageSpotlight from '@/components/home/HeritageSpotlight';
 import AboutAndFooter from '@/components/home/AboutAndFooter';
@@ -27,7 +28,7 @@ import {
 } from '@/components/shared/AnimatedComponents';
 import { COLORS } from '@/lib/design-system';
 
-export default function Home({ newsSlot, ticker2Slot, myCitySlot }: { newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode; myCitySlot?: React.ReactNode }) {
+export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlot }: { newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode; myCitySlot?: React.ReactNode; todaysWorldSlot?: React.ReactNode }) {
   const handleCitySelect = (city: { country_slug: string; province_slug: string; city_slug: string }) => {
     if (city) window.location.href = `/${city.country_slug}/${city.province_slug}/${city.city_slug}`;
   };
@@ -87,16 +88,52 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot }: { newsSlot?:
           My City panel (§4). */}
       {ticker2Slot}
 
+      {/* ── §5 TODAY'S WORLD — server slot (Q5) ── */}
+      <Section bg="dark" title="Today's World"
+        desc="One planet, one day. Right now the sun is about to rise somewhere, one city is baking and another is freezing — and somewhere a whole country has the day off. These lines are computed live from weather stations across a sixteen-city world sample, and they change every day.">
+        {todaysWorldSlot}
+      </Section>
+
+      {/* ── §6 WONDERS (Q5 — deep links HOLD per L1) ── */}
+      <Section bg="darker" title="Seven Wonders of the World"
+        desc="Forty-five centuries of human ambition compressed into seven structures. A wall that took 1,000 years to build. A tomb that took 22 years and 20,000 workers. A colosseum that held 80,000 spectators in 80 AD. Each wonder on WorldCityHub is getting its own page with visiting conditions, photography guides and architectural detail.">
+        <FeaturedWonders />
+      </Section>
+
+      {/* ── §7 CONTINENTS (Q5) ── */}
+      <Section bg="dark" title="Explore by Continent"
+        desc="Seven continents. 195 countries. Thousands of cities. Asia alone holds more than half the world's population. Every continent leads to its countries, every country to its provinces, every province to its cities — a complete geographical tree from the largest landmass to the smallest city street.">
+        <ExploreByContinent />
+      </Section>
+
+      {/* ── §8 OCEANS (Q5 — deep links HOLD per L1) ── */}
+      <Section bg="darker" title="Five Oceans — One World Ocean"
+        desc="The Pacific alone covers more area than every landmass on earth combined. The Indian Ocean's monsoon season determines whether hundreds of millions of South Asians have enough water to grow food. The Arctic is melting at a rate that will redraw coastlines within this century. Each ocean is getting its own page with live surface conditions, marine life, seasonal patterns, and the cities that live by what happens offshore.">
+        <OceansToday />
+      </Section>
+
+      {/* ── §9 COUNTRIES (Q5) ── */}
+      <Section bg="dark" title="Countries of the World"
+        desc="Each sovereign nation gets a dedicated page covering its provinces, major cities, economy dashboard, cultural heritage, national teams, neighbouring countries, and faith landscape. The country page is where you understand a nation before you visit, invest, relocate, or simply want to know more than the headline.">
+        <FeaturedCountries />
+      </Section>
+
+      {/* ── §9A WORLD CAPITALS (Q5 — Sayyed's amendment) ── */}
+      <Section bg="darker" title="World Capitals"
+        desc="Capitals are where a country keeps its government, its oldest streets and usually its biggest airport — and 'capital of…' is one of the most-asked questions on the web. Here the capitals are alive: each one shows its flag, its local time right now and its current temperature, and links through to its country page.">
+        <WorldCapitals />
+      </Section>
+
+      {/* ── §10 CITIES (Q5 — published cities only) ── */}
+      <Section bg="dark" title="Cities of the World — Live"
+        desc="Every published city on WorldCityHub carries live weather, prayer times, gold and currency rates, local news and events — the same figures you see on these cards, updated through the day. Click any city to go deep.">
+        <FeaturedCitiesGrid />
+      </Section>
+
       {/* ── GLOBAL INSIGHTS ── */}
       <Section bg="dark" title="Global Pulse"
         desc="Four numbers that define the world at this exact moment. Cities live on WorldCityHub. The next prayer call in Mecca. Gold trading right now in London. The city recording the highest temperature on earth today. These refresh continuously — every visit is a fresh reading.">
         <LiveGlobalStats />
-      </Section>
-
-      {/* ── FEATURED CITIES ── */}
-      <Section bg="darker" title="Cities of the World — Live"
-        desc="Twelve cities from six continents, showing real-time weather and the next major prayer or worship time. Each card is a doorway to that city's full page — complete with rates, news, economy, events, heritage and local culture. Click any city to go deep.">
-        <FeaturedCitiesGrid />
       </Section>
 
       {/* ── PRAYER TIMES ── */}
@@ -118,24 +155,6 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot }: { newsSlot?:
         <GlobalMarketSnapshot />
       </Section>
       </div>
-
-      {/* ── WORLD WONDERS ── */}
-      <Section bg="darker" title="Seven Wonders of the World"
-        desc="Forty-five centuries of human ambition compressed into seven structures. A wall that took 1,000 years to build. A tomb that took 22 years and 20,000 workers. A colosseum that held 80,000 spectators in 80 AD. Each wonder on WorldCityHub has its own page with today's visiting conditions, photography guide, architectural details, and nearby places worth combining in one trip.">
-        <FeaturedWonders />
-      </Section>
-
-      {/* ── EXPLORE BY CONTINENT ── */}
-      <Section bg="dark" title="Explore by Continent"
-        desc="Seven continents. 195 countries. Thousands of cities. Asia alone holds more than half the world's population. Every continent leads to its countries, every country to its provinces, every province to its cities — a complete geographical tree from the largest landmass to the smallest city street.">
-        <ExploreByContinent />
-      </Section>
-
-      {/* ── COUNTRIES ── */}
-      <Section bg="darker" title="Countries of the World"
-        desc="Each of the 195 sovereign nations has a dedicated page covering its provinces, major cities, economy dashboard, cultural heritage, national teams, neighbouring countries, and faith landscape. The country page is where you understand a nation before you visit, invest, relocate, or simply want to know more than the headline.">
-        <FeaturedCountries />
-      </Section>
 
       {/* ── COMPARE ── */}
       <Section bg="dark" title="Compare Cities and Countries"
@@ -165,12 +184,6 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot }: { newsSlot?:
       <Section bg="dark" title="Active Conflicts"
         desc="32 armed conflicts are ongoing across the world as you read this. Over 100 million people have been displaced from their homes. These numbers come from United Nations displacement tracking and ACLED conflict monitoring — updated as situations develop. Each region links through to a dedicated page with affected cities, economic impact, and humanitarian data.">
         <ActiveConflictsWidget />
-      </Section>
-
-      {/* ── OCEANS TODAY ── */}
-      <Section bg="darker" title="Five Oceans — Live Conditions"
-        desc="The Pacific alone covers more area than every landmass on earth combined. The Indian Ocean's monsoon season determines whether hundreds of millions of South Asians have enough water to grow food. The Arctic is melting at a rate that will redraw coastlines within this century. Each ocean has its own page with live surface conditions, marine life, seasonal patterns, and bordering cities that live and die by what happens offshore.">
-        <OceansToday />
       </Section>
 
       {/* ── ALL FAITHS TODAY ── */}
