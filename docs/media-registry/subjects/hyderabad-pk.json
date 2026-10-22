@@ -1,0 +1,100 @@
+{
+ "subject": "Hyderabad (Sindh)",
+ "type": "city",
+ "package": "Round 2 R4 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Hyderabad Fort (Pacco Qillo) 05.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Hyderabad_Fort_%28Pacco_Qillo%29_05.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hyderabad_Fort_(Pacco_Qillo)_05.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "MUrad Ali Shah Bukerai",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Hyderabad Fort (Pacco Qillo) 05\" by MUrad Ali Shah Bukerai — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Hyderabad Fort (Pacco Qillo) 05",
+   "focal_point": null,
+   "width": 2592,
+   "height": 1944,
+   "sha1": "b53674a1ce11850694bc57240103b91bcd5b9dab",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Hyderabad Fort (Pacco Qillo) 03.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Hyderabad_Fort_%28Pacco_Qillo%29_03.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hyderabad_Fort_(Pacco_Qillo)_03.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "MUrad Ali Shah Bukerai",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Hyderabad Fort (Pacco Qillo) 03\" by MUrad Ali Shah Bukerai — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Hyderabad Fort (Pacco Qillo) 03",
+   "focal_point": null,
+   "width": 2592,
+   "height": 1944,
+   "sha1": "8eb7bfead3d1eee8e3cab4936f4df4cff4fb7121",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Hyderabad Fort (Pacco Qillo) 02.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Hyderabad_Fort_%28Pacco_Qillo%29_02.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hyderabad_Fort_(Pacco_Qillo)_02.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "MUrad Ali Shah Bukerai",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Hyderabad Fort (Pacco Qillo) 02\" by MUrad Ali Shah Bukerai — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Hyderabad Fort (Pacco Qillo) 02",
+   "focal_point": null,
+   "width": 2592,
+   "height": 1944,
+   "sha1": "0bccfd2561118b686dd94a9f2b8c0e2ffd82b798",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Hyderabad Fort (Pacco Qillo) 04.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Hyderabad_Fort_%28Pacco_Qillo%29_04.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hyderabad_Fort_(Pacco_Qillo)_04.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "MUrad Ali Shah Bukerai",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Hyderabad Fort (Pacco Qillo) 04\" by MUrad Ali Shah Bukerai — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Hyderabad Fort (Pacco Qillo) 04",
+   "focal_point": null,
+   "width": 1944,
+   "height": 2592,
+   "sha1": "d5ad8f6c00d20ad817f6cdc221482d43cc9ab229",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Hyderabad Fort (Pacco Qillo) 01.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Hyderabad_Fort_%28Pacco_Qillo%29_01.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hyderabad_Fort_(Pacco_Qillo)_01.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "MUrad Ali Shah Bukerai",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Hyderabad Fort (Pacco Qillo) 01\" by MUrad Ali Shah Bukerai — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Hyderabad Fort (Pacco Qillo) 01",
+   "focal_point": null,
+   "width": 2592,
+   "height": 1944,
+   "sha1": "e6fe1361157c855fde282184ade902ba2e7e3931",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "PK Hyderabad asv2020-02 img23 Strong Fort.jpg",
+   "reason": "licence not freely reusable: 'FAL'"
+  },
+  {
+   "title": "PK Hyderabad asv2020-02 img22 Strong Fort.jpg",
+   "reason": "licence not freely reusable: 'FAL'"
+  }
+ ]
+}

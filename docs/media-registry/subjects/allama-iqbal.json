@@ -1,0 +1,29 @@
+{
+ "subject": "Allama Iqbal",
+ "type": "personality",
+ "package": "Round 1 (published, PR #8)",
+ "coverage": "partial",
+ "coverage_note": "The profile image is in use on the live site but its licence/credit were never recorded (flagged in the Round 1 day log). Recorded here as UNVERIFIED — not cleared for reuse until the licence is established.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Allama Iqbal.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/65/Allama_Iqbal.jpg",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Allama_Iqbal.jpg",
+   "source": "Wikimedia Commons (as referenced by src/lib/data/personalities-seed.ts)",
+   "creator": null,
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "role": "hero",
+   "alt": "Portrait of Allama Iqbal",
+   "focal_point": null,
+   "width": null,
+   "height": null,
+   "sha1": null,
+   "status": "UNVERIFIED",
+   "note": "Licence/creator not recorded in the seed data; verification pass required before any new use."
+  }
+ ],
+ "rejected": []
+}
