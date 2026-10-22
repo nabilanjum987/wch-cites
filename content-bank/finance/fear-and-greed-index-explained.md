@@ -31,7 +31,7 @@ The index most live tickers actually display — including crypto dashboards —
 - **Dominance — 10%:** Bitcoin's share of total crypto market value (rising dominance reads as fear — money retreating to the safest crypto asset).
 - **Trends — 10%:** Google search behaviour for Bitcoin-related terms.
 
-Its bands are close to CNN's but not identical: 0–24 extreme fear, 25–44 fear, 45–55 neutral, 56–75 greed, 76–100 extreme greed.
+Its bands are close to CNN's but not identical: 0–25 extreme fear, 26–46 fear, 47–54 neutral, 55–75 greed, 76–100 extreme greed. *(Band boundaries corrected 2026-10-22 in the verification-depth pass: the publisher's own API history — every classified reading since 2018 — places the boundaries at 25/26, 46/47, 54/55 and 75/76, not at CNN's cut points.)*
 
 ## How to read a reading
 

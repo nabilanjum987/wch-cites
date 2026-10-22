@@ -4,7 +4,7 @@
 
 ## The short answer
 
-The gold rate quoted by a jeweller in Karachi, Lahore or Peshawar was not decided in that shop, or even in that city. Every morning, the **All Pakistan Sarafa Gems and Jewellers Association (APGJSA)** — the trade body of the sarafa (bullion and jewellery) markets — announces the rate for the day, built from the international gold price and the rupee's interbank exchange rate, and sarafa markets across the country open on that announcement. That is why the number on the news ticker is (small local differences aside) the same number everywhere in Pakistan.
+The gold rate quoted by a jeweller in Karachi, Lahore or Peshawar was not decided in that shop, or even in that city. Every morning, the **All-Pakistan Gems and Jewellers Sarafa Association (APGJSA)** — the trade body of the sarafa (bullion and jewellery) markets — announces the rate for the day, built from the international gold price and the rupee's interbank exchange rate, and sarafa markets across the country open on that announcement. That is why the number on the news ticker is (small local differences aside) the same number everywhere in Pakistan.
 
 ## The chain, step by step
 
@@ -35,7 +35,7 @@ And in the other direction: jewellers typically **buy back below the board rate*
 Because the formula has two moving parts — the dollar gold price and the rupee — the sarafa rate is really a product of *both* markets. This site's ticker shows them side by side for exactly that reason: gold per tola, USD/PKR interbank, and the international ounce, updating independently. When the tola figure moves, the honest first question is: which input moved?
 
 ## Sources
-- All Pakistan Sarafa Gems and Jewellers Association (APGJSA) daily rate announcements, as published in the Pakistani financial press — the rate sheet states interbank exchange rates as its conversion basis and 24K/999 as its benchmark (checked via press publication of the 21 October 2026 sheet)
+- All-Pakistan Gems and Jewellers Sarafa Association (APGJSA) daily rate announcements, as published in the Pakistani financial press — the rate sheet states interbank exchange rates as its conversion basis and 24K/999 as its benchmark (checked via press publication of the 21 October 2026 sheet). The association's name also appears in the word order "All Pakistan Sarafa Gems and Jewellers Association" paired with the acronym APSGJA (e.g. sarafagold.com, apsgja.org); the financial press's expansion of APGJSA is the form used here (name form confirmed in the 2026-10-22 verification-depth pass)
 - The published pricing formula and its worked example (tola 11.6638 g ÷ troy ounce 31.1035 g; local premium over converted parity): sarafagold.com rate explainer, checked 2026-10-22
 - Mechanism explainers cross-checked: goldtolarate.com, "How Is Gold Price Calculated in Pakistan?" (spot → conversion → premium → purity steps); TechX Pakistan, on the market's adopted interbank-based formula and its stated aim of a uniform national rate
 
