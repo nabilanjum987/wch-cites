@@ -10,7 +10,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp, TrendingDown, RefreshCw, Globe, Calculator, Info, Droplet, Coins, DollarSign, TrendingUp as TrendUp, TrendingDown as TrendDown, BarChart3, Percent, ArrowUpRight, ArrowDownRight, Banknote, PiggyBank, Home, Wheat, Flame, Factory, Newspaper, AlertTriangle } from 'lucide-react';
-import { fetchGoldRates, fetchOilPrices, fetchCryptoData, fetchCurrencyPairs, fetchStockIndices, fetchCommodities, FINANCIAL_STRESS_DATA, MISERY_INDEX_DATA, INTEREST_RATES, calculateLoan, calculateSavings, type GoldRates, type OilPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type StockIndex, type Commodity, type FinancialStressData, type MiseryIndex } from '../../lib/apis/rates';
+import { fetchGoldRates, fetchOilPrices, fetchCryptoData, fetchCurrencyPairs, fetchStockIndices, fetchCommodities, calculateLoan, calculateSavings, type GoldRates, type OilPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type StockIndex, type Commodity, type FinancialStressData, type MiseryIndex } from '../../lib/apis/rates';
+import { fetchWorldBankLatest, buildMiseryIndex, computeStressScore, stressLevel, MISERY_META, type WBValues } from '../../lib/apis/worldbank';
 
 const KARATS = [
   { label: '24K', key: 'k24' as const, purity: '99.9%' },
@@ -96,10 +97,12 @@ function FinancialStressMeter({ data }: FinancialStressMeterProps) {
           <p className="data-label">Unemployment</p>
           <p className="data-value mt-1">{unemployment}%</p>
         </div>
-        <div>
-          <p className="data-label">Debt/GDP</p>
-          <p className="data-value mt-1">{debtToGdp}%</p>
-        </div>
+        {debtToGdp > 0 && (
+          <div>
+            <p className="data-label">Debt/GDP</p>
+            <p className="data-value mt-1">{debtToGdp}%</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -207,6 +210,38 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
   initialPairs?: CurrencyPair[];
 } = {}) {
   const [rates, setRates] = useState<GoldRates | null>(initialRates ?? null);
+  // World Bank real data (Batch 3b) — replaces the static INTEREST_RATES /
+  // FINANCIAL_STRESS_DATA / MISERY_INDEX_DATA tables (undated snapshots
+  // presented as current). Sections hide until real data arrives.
+  const [wbMap, setWbMap] = useState<Record<string, WBValues> | null>(null);
+  useEffect(() => {
+    let on = true;
+    fetchWorldBankLatest(MISERY_META.map(m => m.iso2))
+      .then(m => { if (on) setWbMap(m); })
+      .catch(() => {});
+    return () => { on = false; };
+  }, []);
+  const wbMisery = wbMap ? buildMiseryIndex(wbMap) : [];
+  const wbStress: FinancialStressData[] = wbMap ? MISERY_META.flatMap(m => {
+    const v = wbMap[m.iso2];
+    if (!v?.inflation || !v?.unemployment) return [];
+    const score = computeStressScore(v.inflation.value, v.unemployment.value);
+    return [{
+      country: m.name,
+      inflation: Math.round(v.inflation.value * 10) / 10,
+      unemployment: Math.round(v.unemployment.value * 10) / 10,
+      debtToGdp: v.debtPctGdp ? Math.round(v.debtPctGdp.value * 10) / 10 : 0,
+      score,
+      level: stressLevel(score),
+    }];
+  }) : [];
+  const wbRates = wbMap ? MISERY_META.flatMap(m => {
+    const v = wbMap[m.iso2]?.realRate;
+    // Only reasonably current real rates (older series, e.g. Pakistan's
+    // stops at 2020, would mislead as "current" rates).
+    if (!v || v.year < 2023) return [];
+    return [{ slug: m.slug, country: m.name, rate: Math.round(v.value * 100) / 100, year: v.year }];
+  }) : [];
   const [oilPrices, setOilPrices] = useState<OilPrice[]>([]);
   const [cryptoData, setCryptoData] = useState<{ cryptos: CryptoData[]; market: CryptoMarket } | null>(initialCrypto ?? null);
   const [currencyPairs, setCurrencyPairs] = useState<CurrencyPair[]>(initialPairs ?? []);
@@ -777,29 +812,27 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
           <div className="mt-8">
             <div className="flex items-center gap-2 mb-4">
               <Percent className="w-5 h-5 text-gray-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Central Bank Interest Rates</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Interest Rates — World Bank Real Rates</h2>
             </div>
+            {wbRates.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.values(INTEREST_RATES).slice(0, 6).map((ir) => (
-                <div key={ir.countrySlug} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              {wbRates.slice(0, 6).map((ir) => (
+                <div key={ir.slug} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-700">{ir.country}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      ir.changeDirection === 'hike' ? 'bg-red-100 text-red-700' :
-                      ir.changeDirection === 'cut' ? 'bg-green-100 text-green-700' :
-                      'bg-gray-100 text-gray-600'
-                    }`}>
-                      {ir.changeDirection.toUpperCase()}
-                    </span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-600">{ir.year}</span>
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-bold text-gray-900">{ir.rate}%</span>
-                    <span className="text-xs text-gray-500">{ir.name}</span>
+                    <span className="text-xs text-gray-500">Real interest rate</span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-2">Last change: {ir.lastChange}</p>
+                  <p className="text-xs text-gray-400 mt-2">Lending rate adjusted for inflation — World Bank {ir.year}. Policy rates are not published as a free data feed, so this comparable real rate is shown instead.</p>
                 </div>
               ))}
             </div>
+            ) : (
+              <p className="text-sm text-gray-500">Loading World Bank interest-rate data…</p>
+            )}
           </div>
 
           {/* SECTION 7 — COMMODITIES TABLE */}
@@ -895,12 +928,13 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
               <AlertTriangle className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">Financial Stress Comparison</h2>
             </div>
+            {wbStress.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FinancialStressMeter data={FINANCIAL_STRESS_DATA['pakistan']} />
+              <FinancialStressMeter data={wbStress.find(d => d.country === 'Pakistan') ?? wbStress[0]} />
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h3 className="text-sm font-semibold text-gray-700 mb-4">Country Comparison</h3>
                 <div className="space-y-3">
-                  {Object.values(FINANCIAL_STRESS_DATA).slice(0, 6).sort((a, b) => b.score - a.score).map((data) => {
+                  {[...wbStress].sort((a, b) => b.score - a.score).slice(0, 6).map((data) => {
                     const levelColor = { low: 'bg-green-100 text-green-700', medium: 'bg-yellow-100 text-yellow-700', high: 'bg-orange-100 text-orange-700', critical: 'bg-red-100 text-red-700' };
                     return (
                       <div key={data.country} className="flex items-center justify-between">
@@ -915,9 +949,12 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                     );
                   })}
                 </div>
-                <p className="text-xs text-gray-400 mt-3">Score = Inflation% + Unemployment% + (Debt/GDP% / 2)</p>
+                <p className="text-xs text-gray-400 mt-3">Score computed by WorldCityHub from World Bank inflation & unemployment (inflation × 1.6 + unemployment × 3.2, capped at 100).</p>
               </div>
             </div>
+            ) : (
+              <p className="text-sm text-gray-500">Loading World Bank data…</p>
+            )}
           </div>
 
           {/* SECTION 9 — MISERY INDEX */}
@@ -939,7 +976,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                     </tr>
                   </thead>
                   <tbody>
-                    {MISERY_INDEX_DATA.map((item, idx) => (
+                    {wbMisery.map((item, idx) => (
                       <tr key={item.countrySlug} className={`border-b border-gray-50 last:border-0 ${item.countrySlug === 'pakistan' ? 'bg-amber-50' : ''}`}>
                         <td className="py-3 px-4">
                           <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${idx < 3 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'}`}>
@@ -960,7 +997,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                 </table>
               </div>
             </div>
-            <p className="text-xs text-gray-400 mt-2">Misery Index = Inflation Rate + Unemployment Rate</p>
+            <p className="text-xs text-gray-400 mt-2">Misery Index = Inflation Rate + Unemployment Rate — latest World Bank values for each country.</p>
           </div>
           </>
         ) : (

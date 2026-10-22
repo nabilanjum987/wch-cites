@@ -434,17 +434,10 @@ export interface SavingsCalculation {
   monthlyReturn: number;
 }
 
-export const INTEREST_RATES: Record<string, InterestRate> = {
-  pakistan: { country: 'Pakistan', countrySlug: 'pakistan', rate: 22.0, name: 'SBP Policy Rate', lastChange: 'Jun 2024', changeDirection: 'hold', nextMeeting: 'Jul 2024' },
-  india: { country: 'India', countrySlug: 'india', rate: 6.5, name: 'RBI Repo Rate', lastChange: 'Feb 2024', changeDirection: 'hold', nextMeeting: 'Jun 2024' },
-  usa: { country: 'USA', countrySlug: 'usa', rate: 5.5, name: 'Fed Funds Rate', lastChange: 'Jul 2023', changeDirection: 'hold', nextMeeting: 'Jun 2024' },
-  uk: { country: 'UK', countrySlug: 'uk', rate: 5.25, name: 'Bank Rate', lastChange: 'Aug 2023', changeDirection: 'hold', nextMeeting: 'Jun 2024' },
-  'saudi-arabia': { country: 'Saudi Arabia', countrySlug: 'saudi-arabia', rate: 5.5, name: 'SAMA Repo Rate', lastChange: 'Jul 2023', changeDirection: 'hold', nextMeeting: 'N/A' },
-  uae: { country: 'UAE', countrySlug: 'uae', rate: 5.15, name: 'CBUAE Base Rate', lastChange: 'Mar 2024', changeDirection: 'hold', nextMeeting: 'N/A' },
-  turkey: { country: 'Turkey', countrySlug: 'turkey', rate: 50.0, name: 'CBRT Policy Rate', lastChange: 'May 2024', changeDirection: 'hike', nextMeeting: 'Jun 2024' },
-  japan: { country: 'Japan', countrySlug: 'japan', rate: 0.1, name: 'BOJ Policy Rate', lastChange: 'Mar 2024', changeDirection: 'hike', nextMeeting: 'Jun 2024' },
-  china: { country: 'China', countrySlug: 'china', rate: 3.45, name: 'PBOC 1-Yr LPR', lastChange: 'Aug 2023', changeDirection: 'cut', nextMeeting: 'N/A' },
-};
+// INTEREST_RATES table removed (Batch 3b): undated static policy rates
+// ("SBP 22%, next meeting Jul 2024") presented as current. Pages now show
+// the World Bank real interest rate (src/lib/apis/worldbank.ts) when
+// reasonably current, and no policy rate otherwise.
 
 export function calculateLoan(principal: number, annualRate: number, years: number): LoanCalculation {
   const monthlyRate = annualRate / 100 / 12;
@@ -505,18 +498,10 @@ export interface FinancialStressData {
   level: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export const FINANCIAL_STRESS_DATA: Record<string, FinancialStressData> = {
-  pakistan: { country: 'Pakistan', inflation: 28.3, unemployment: 8.5, debtToGdp: 72.1, score: 72, level: 'high' },
-  india: { country: 'India', inflation: 5.1, unemployment: 5.4, debtToGdp: 58.2, score: 35, level: 'medium' },
-  bangladesh: { country: 'Bangladesh', inflation: 9.8, unemployment: 5.2, debtToGdp: 42.5, score: 42, level: 'medium' },
-  uae: { country: 'UAE', inflation: 2.5, unemployment: 2.8, debtToGdp: 32.1, score: 18, level: 'low' },
-  turkey: { country: 'Turkey', inflation: 68.5, unemployment: 9.2, debtToGdp: 35.5, score: 85, level: 'critical' },
-  germany: { country: 'Germany', inflation: 2.8, unemployment: 5.8, debtToGdp: 62.5, score: 32, level: 'medium' },
-  usa: { country: 'USA', inflation: 3.4, unemployment: 3.8, debtToGdp: 122.1, score: 55, level: 'medium' },
-  uk: { country: 'UK', inflation: 4.2, unemployment: 4.2, debtToGdp: 98.5, score: 48, level: 'medium' },
-  japan: { country: 'Japan', inflation: 2.5, unemployment: 2.6, debtToGdp: 264.0, score: 58, level: 'medium' },
-  china: { country: 'China', inflation: 0.3, unemployment: 5.1, debtToGdp: 82.5, score: 38, level: 'medium' },
-};
+// FINANCIAL_STRESS_DATA table removed (Batch 3b): static snapshot
+// scores/inputs presented as current. Stress is now computed from real
+// World Bank inflation & unemployment (computeStressScore in
+// src/lib/apis/worldbank.ts).
 
 export function getStressLevel(score: number): 'low' | 'medium' | 'high' | 'critical' {
   if (score < 30) return 'low';
@@ -541,18 +526,9 @@ export interface MiseryIndex {
   rank: number;
 }
 
-export const MISERY_INDEX_DATA: MiseryIndex[] = [
-  { country: 'Turkey', countrySlug: 'turkey', inflation: 68.5, unemployment: 9.2, miseryIndex: 77.7, rank: 1 },
-  { country: 'Pakistan', countrySlug: 'pakistan', inflation: 28.3, unemployment: 8.5, miseryIndex: 36.8, rank: 2 },
-  { country: 'Bangladesh', countrySlug: 'bangladesh', inflation: 9.8, unemployment: 5.2, miseryIndex: 15.0, rank: 3 },
-  { country: 'UK', countrySlug: 'uk', inflation: 4.2, unemployment: 4.2, miseryIndex: 8.4, rank: 4 },
-  { country: 'India', countrySlug: 'india', inflation: 5.1, unemployment: 5.4, miseryIndex: 10.5, rank: 5 },
-  { country: 'USA', countrySlug: 'usa', inflation: 3.4, unemployment: 3.8, miseryIndex: 7.2, rank: 6 },
-  { country: 'Germany', countrySlug: 'germany', inflation: 2.8, unemployment: 5.8, miseryIndex: 8.6, rank: 7 },
-  { country: 'UAE', countrySlug: 'uae', inflation: 2.5, unemployment: 2.8, miseryIndex: 5.3, rank: 8 },
-  { country: 'Japan', countrySlug: 'japan', inflation: 2.5, unemployment: 2.6, miseryIndex: 5.1, rank: 9 },
-  { country: 'China', countrySlug: 'china', inflation: 0.3, unemployment: 5.1, miseryIndex: 5.4, rank: 10 },
-].sort((a, b) => b.miseryIndex - a.miseryIndex);
+// MISERY_INDEX_DATA table removed (Batch 3b): static snapshot presented
+// as current. The misery index is now computed live from World Bank
+// inflation + unemployment (buildMiseryIndex in src/lib/apis/worldbank.ts).
 
 export function calculateMiseryImpact(miseryIndex: number, budget: number, inflation: number): {
   yearlyLoss: number;

@@ -37,7 +37,8 @@ import {
   Wallet,
   Clock,
 } from 'lucide-react';
-import { fetchGoldRates, fetchOilPrices, fetchFuelPrices, fetchCryptoData, fetchCurrencyPairs, fetchCurrencyHistory, fetchStockIndices, fetchStockMovers, fetchCommodities, FINANCIAL_STRESS_DATA, MISERY_INDEX_DATA, calculateCurrencyLoss, calculateRemittance, calculateLoan, calculateSavings, calculatePurchasingPower, calculateMiseryImpact, INTEREST_RATES, generateInterestRateHistory, generateOilAffectParagraph, fetchFinancialNews, type GoldRates, type OilPrice, type FuelPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type CurrencyHistory, type StockIndex, type StockMover, type Commodity, type FinancialStressData, type MiseryIndex, type NewsArticle } from '../../lib/apis/rates';
+import { fetchGoldRates, fetchOilPrices, fetchFuelPrices, fetchCryptoData, fetchCurrencyPairs, fetchCurrencyHistory, fetchStockIndices, fetchStockMovers, fetchCommodities, calculateCurrencyLoss, calculateRemittance, calculateLoan, calculateSavings, calculatePurchasingPower, calculateMiseryImpact, generateOilAffectParagraph, fetchFinancialNews, type GoldRates, type OilPrice, type FuelPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type CurrencyHistory, type StockIndex, type StockMover, type Commodity, type FinancialStressData, type MiseryIndex, type InterestRate, type NewsArticle } from '../../lib/apis/rates';
+import { fetchWorldBankLatest, buildMiseryIndex, computeStressScore, stressLevel, countrySlugToIso2, MISERY_META, type MiseryRow } from '../../lib/apis/worldbank';
 import {
   COUNTRY_CURRENCIES,
   FLAG_COLORS,
@@ -307,7 +308,7 @@ function FinancialStressMeter({ data }: FinancialStressMeterProps) {
       <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
         <div><p className="text-gray-500">Inflation</p><p className="font-bold">{inflation}%</p></div>
         <div><p className="text-gray-500">Unemp.</p><p className="font-bold">{unemployment}%</p></div>
-        <div><p className="text-gray-500">Debt</p><p className="font-bold">{debtToGdp}%</p></div>
+        {debtToGdp > 0 && <div><p className="text-gray-500">Debt</p><p className="font-bold">{debtToGdp}%</p></div>}
       </div>
     </div>
   );
@@ -445,8 +446,10 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
   const [loading, setLoading] = useState(!initialRates);
   const [activeUnit, setActiveUnit] = useState<'per_gram' | 'per_tola' | 'per_10g' | 'per_oz'>('per_gram');
   const [refreshing, setRefreshing] = useState(false);
-  const [stressData] = useState(FINANCIAL_STRESS_DATA[countrySlug] || FINANCIAL_STRESS_DATA['pakistan']);
-  const [miseryData] = useState(MISERY_INDEX_DATA.find(m => m.countrySlug === countrySlug) || MISERY_INDEX_DATA[0]);
+  const [stressData, setStressData] = useState<FinancialStressData | null>(null);
+  const [miseryData, setMiseryData] = useState<MiseryIndex | null>(null);
+  const [miseryList, setMiseryList] = useState<MiseryRow[]>([]);
+  const [interestRate, setInterestRate] = useState<InterestRate | null>(null);
 
   const currency: CurrencyInfo = COUNTRY_CURRENCIES[countrySlug] ?? {
     code: 'USD',
@@ -459,7 +462,51 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
 
   const headerColor = FLAG_COLORS[countrySlug] ?? '#1e3a5f';
   const countryName = toTitleCase(countrySlug);
-  const interestRate = INTEREST_RATES[countrySlug];
+
+  // World Bank real data (Batch 3b) — stress / misery / real interest
+  // rate for this country. The static INTEREST_RATES / FINANCIAL_STRESS /
+  // MISERY tables were undated snapshots presented as current (e.g. an
+  // "SBP Policy Rate 22%, next meeting Jul 2024" card); sections now hide
+  // until real data arrives, and the rate shown is the World Bank's real
+  // (inflation-adjusted) rate, only when reasonably current.
+  useEffect(() => {
+    let on = true;
+    const iso2 = countrySlugToIso2(countrySlug);
+    fetchWorldBankLatest(Array.from(new Set([iso2, ...MISERY_META.map(m => m.iso2)])))
+      .then(map => {
+        if (!on) return;
+        const v = map[iso2];
+        if (v?.inflation && v?.unemployment) {
+          const score = computeStressScore(v.inflation.value, v.unemployment.value);
+          setStressData({
+            country: countryName,
+            inflation: Math.round(v.inflation.value * 10) / 10,
+            unemployment: Math.round(v.unemployment.value * 10) / 10,
+            debtToGdp: v.debtPctGdp ? Math.round(v.debtPctGdp.value * 10) / 10 : 0,
+            score,
+            level: stressLevel(score),
+          });
+        }
+        const rows = buildMiseryIndex(map);
+        setMiseryList(rows);
+        const own = rows.find(r => r.countrySlug === countrySlug || r.countrySlug === countrySlug.replace(/-/g, ''));
+        if (own) setMiseryData(own);
+        if (v?.realRate && v.realRate.year >= 2023) {
+          setInterestRate({
+            country: countryName,
+            countrySlug,
+            rate: Math.round(v.realRate.value * 100) / 100,
+            name: `Real interest rate (World Bank ${v.realRate.year})`,
+            lastChange: '',
+            changeDirection: 'hold',
+            nextMeeting: '',
+          });
+        }
+      })
+      .catch(() => {});
+    return () => { on = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countrySlug]);
 
   const loadRates = useCallback(
     async (showRefreshing = false) => {
@@ -1291,17 +1338,11 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
                 <div className="bg-transparent rounded-2xl  border border-white/8 p-6">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm font-medium text-gray-400">{interestRate.name}</span>
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      interestRate.changeDirection === 'hike' ? 'bg-red-500/100/15 text-red-400' :
-                      interestRate.changeDirection === 'cut' ? 'bg-green-500/100/15 text-green-400' :
-                      'bg-transparent/5 text-gray-400'
-                    }`}>
-                      {interestRate.changeDirection.toUpperCase()}
-                    </span>
                   </div>
                   <p className="text-4xl font-bold text-white mb-2">{interestRate.rate}%</p>
-                  <p className="text-xs text-gray-500">Last change: {interestRate.lastChange}</p>
-                  <p className="text-xs text-gray-500">Next meeting: {interestRate.nextMeeting}</p>
+                  <p className="text-xs text-gray-500">Lending rate adjusted for inflation (World Bank). Central-bank policy rates are not available as a free data feed, so no policy rate is shown.</p>
+                  {interestRate.lastChange && <p className="text-xs text-gray-500">Last change: {interestRate.lastChange}</p>}
+                  {interestRate.nextMeeting && <p className="text-xs text-gray-500">Next meeting: {interestRate.nextMeeting}</p>}
                 </div>
                 <div className="bg-transparent rounded-2xl  border border-white/8 p-6">
                   <div className="flex items-center gap-2 mb-4">
@@ -1442,15 +1483,15 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
               {generateStressParagraph(countryName, miseryData?.miseryIndex ?? null)}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FinancialStressMeter data={stressData} />
+              {stressData ? <FinancialStressMeter data={stressData} /> : <p className="text-sm text-gray-400">Loading World Bank stress data…</p>}
               <div className="bg-transparent rounded-2xl  border border-white/8 p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingDown className="w-5 h-5 text-red-400" />
-                  <h3 className="text-sm font-semibold text-white">Misery Index: {miseryData.miseryIndex}</h3>
+                  <h3 className="text-sm font-semibold text-white">Misery Index: {miseryData?.miseryIndex ?? '—'}</h3>
                 </div>
                 <p className="text-xs text-gray-500 mb-4">Misery Index = Inflation + Unemployment</p>
                 <div className="space-y-3">
-                  {MISERY_INDEX_DATA.slice(0, 5).map((item, idx) => (
+                  {miseryList.slice(0, 5).map((item, idx) => (
                     <div key={item.countrySlug} className={`flex items-center justify-between text-sm ${item.countrySlug === countrySlug ? 'bg-amber-500/100/10 -mx-2 px-2 py-1 rounded' : ''}`}>
                       <span className="font-medium text-gray-300">#{idx + 1} {item.country}</span>
                       <span className={`font-bold ${item.miseryIndex >= 30 ? 'text-red-400' : item.miseryIndex >= 15 ? 'text-orange-400' : 'text-green-400'}`}>

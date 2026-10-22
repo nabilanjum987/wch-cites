@@ -11,11 +11,10 @@ import {
 } from 'lucide-react';
 import type { City } from '@/types/city';
 import GrowthDashboard from '@/components/shared/GrowthDashboard';
-import { countrySlugToIso2 } from '@/lib/apis/worldbank';
+import { countrySlugToIso2, computeStressScore, stressLevel, type WBValues, type MiseryRow } from '@/lib/apis/worldbank';
 import {
-  FINANCIAL_STRESS_DATA, MISERY_INDEX_DATA, INTEREST_RATES,
-  calculatePurchasingPower, calculateMiseryImpact,
-  type FinancialStressData, type MiseryIndex
+  calculatePurchasingPower,
+  type MiseryIndex
 } from '@/lib/apis/rates';
 import {
   generateStressMeterParagraph, generateStressMeterAfter,
@@ -31,73 +30,81 @@ import {
   generateOpportunityParagraph, generateOpportunityAfter,
 } from '@/lib/paragraphs/economy';
 
-// ── Country economy data ──────────────────────────────────────────────────────
+// ── Country economy view (World Bank, Batch 3b) ─────────────────────────────
+// Every figure comes from the World Bank via the server page (wb prop),
+// each with its data year in `years`. A figure the World Bank does not
+// publish (or has not updated recently) is null and its card/section is
+// hidden. This replaces the static COUNTRY_ECONOMY snapshot table, which
+// showed undated stale values as current facts (Pakistan inflation
+// "28.3%", policy rate "22%", population "231M") plus an invented
+// DEFAULT_ECONOMY row served for every other country.
 
-interface EconomyData {
-  gdpBillions: number;
-  gdpGrowth: number;
-  gdpPerCapita: number;
-  inflation: number;
-  unemployment: number;
-  debtToGdp: number;
-  hdi: number;
-  gini: number;
-  fdi: number;
-  tradeBalance: number;
-  population: number;
-  laborForce: number;
-  povertyRate: number;
-  literacyRate: number;
-  lifeExpectancy: number;
+interface EcoView {
+  gdpBillions: number | null;
+  gdpGrowth: number | null;
+  gdpPerCapita: number | null;
+  inflation: number | null;
+  unemployment: number | null;
+  debtToGdp: number | null;
+  gini: number | null;
+  fdiBillions: number | null;
+  tradeBalanceBillions: number | null;
+  populationM: number | null;
+  laborForceM: number | null;
+  povertyRate: number | null;
+  literacyRate: number | null;
+  lifeExpectancy: number | null;
+  realRate: number | null;
+  remittancesBillions: number | null;
   currency: string;
   currencySymbol: string;
-  interestRate: number;
-  remittanceGdp: number;
+  years: Partial<Record<string, number>>;
 }
 
-const COUNTRY_ECONOMY: Record<string, EconomyData> = {
-  pakistan: {
-    gdpBillions: 338, gdpGrowth: 2.4, gdpPerCapita: 1505,
-    inflation: 28.3, unemployment: 8.5, debtToGdp: 72.1,
-    hdi: 0.540, gini: 31.6, fdi: 1.9, tradeBalance: -27.5,
-    population: 231, laborForce: 72, povertyRate: 21.9, literacyRate: 58,
-    lifeExpectancy: 67.1, currency: 'PKR', currencySymbol: '₨',
-    interestRate: 22, remittanceGdp: 8.9,
-  },
-  india: {
-    gdpBillions: 3750, gdpGrowth: 6.3, gdpPerCapita: 2601,
-    inflation: 5.1, unemployment: 5.4, debtToGdp: 58.2,
-    hdi: 0.633, gini: 35.7, fdi: 71, tradeBalance: -88,
-    population: 1441, laborForce: 559, povertyRate: 10.2, literacyRate: 74.4,
-    lifeExpectancy: 70.8, currency: 'INR', currencySymbol: '₹',
-    interestRate: 6.5, remittanceGdp: 3.1,
-  },
-  'united-kingdom': {
-    gdpBillions: 3079, gdpGrowth: 0.4, gdpPerCapita: 45295,
-    inflation: 4.2, unemployment: 4.2, debtToGdp: 98.5,
-    hdi: 0.929, gini: 35.1, fdi: 58, tradeBalance: -45,
-    population: 68, laborForce: 33, povertyRate: 18.6, literacyRate: 99,
-    lifeExpectancy: 81.2, currency: 'GBP', currencySymbol: '£',
-    interestRate: 5.25, remittanceGdp: 0.4,
-  },
-  'united-states': {
-    gdpBillions: 27360, gdpGrowth: 2.8, gdpPerCapita: 81695,
-    inflation: 3.4, unemployment: 3.8, debtToGdp: 122.1,
-    hdi: 0.921, gini: 41.4, fdi: 285, tradeBalance: -773,
-    population: 335, laborForce: 168, povertyRate: 11.6, literacyRate: 99,
-    lifeExpectancy: 77.5, currency: 'USD', currencySymbol: '$',
-    interestRate: 5.5, remittanceGdp: 0.1,
-  },
+const ISO2_CURRENCY: Record<string, { code: string; symbol: string }> = {
+  PK: { code: 'PKR', symbol: '₨' }, IN: { code: 'INR', symbol: '₹' },
+  GB: { code: 'GBP', symbol: '£' }, US: { code: 'USD', symbol: '$' },
+  AE: { code: 'AED', symbol: 'د.إ' }, SA: { code: 'SAR', symbol: '﷼' },
+  TR: { code: 'TRY', symbol: '₺' }, BD: { code: 'BDT', symbol: '৳' },
+  DE: { code: 'EUR', symbol: '€' }, JP: { code: 'JPY', symbol: '¥' },
+  CN: { code: 'CNY', symbol: '¥' },
 };
 
-const DEFAULT_ECONOMY: EconomyData = {
-  gdpBillions: 500, gdpGrowth: 3.2, gdpPerCapita: 8000,
-  inflation: 5.0, unemployment: 5.0, debtToGdp: 60,
-  hdi: 0.700, gini: 38, fdi: 10, tradeBalance: -5,
-  population: 50, laborForce: 25, povertyRate: 12, literacyRate: 85,
-  lifeExpectancy: 73, currency: 'USD', currencySymbol: '$',
-  interestRate: 5, remittanceGdp: 1.5,
-};
+function buildEco(wb: WBValues | null, country: string, cityData: City | null): EcoView {
+  const iso2 = cityData?.country_code ?? countrySlugToIso2(country);
+  const cur = ISO2_CURRENCY[iso2] ?? { code: 'USD', symbol: '$' };
+  const val = (k: keyof WBValues) => wb?.[k]?.value ?? null;
+  const yrs: Partial<Record<string, number>> = {};
+  if (wb) (Object.keys(wb) as (keyof WBValues)[]).forEach(k => { if (wb[k]) yrs[k as string] = wb[k]!.year; });
+  const r1 = (x: number | null) => x == null ? null : Math.round(x * 10) / 10;
+  const gdpUsd = val('gdpUsd');
+  const pop = val('population');
+  const labor = val('laborForce');
+  const fdi = val('fdiUsd');
+  const trade = val('tradeBalanceUsd');
+  const remit = val('remittancesUsd');
+  return {
+    gdpBillions: gdpUsd == null ? null : Math.round(gdpUsd / 1e9),
+    gdpGrowth: r1(val('gdpGrowth')),
+    gdpPerCapita: val('gdpPerCapita') == null ? null : Math.round(val('gdpPerCapita')!),
+    inflation: r1(val('inflation')),
+    unemployment: r1(val('unemployment')),
+    debtToGdp: r1(val('debtPctGdp')),
+    gini: r1(val('gini')),
+    fdiBillions: fdi == null ? null : Math.round(fdi / 1e8) / 10,
+    tradeBalanceBillions: trade == null ? null : Math.round(trade / 1e8) / 10,
+    populationM: pop == null ? null : Math.round(pop / 1e5) / 10,
+    laborForceM: labor == null ? null : Math.round(labor / 1e5) / 10,
+    povertyRate: r1(val('poverty')),
+    literacyRate: r1(val('literacy')),
+    lifeExpectancy: r1(val('lifeExpectancy')),
+    realRate: r1(val('realRate')),
+    remittancesBillions: remit == null ? null : Math.round(remit / 1e8) / 10,
+    currency: cur.code,
+    currencySymbol: cur.symbol,
+    years: yrs,
+  };
+}
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -293,22 +300,33 @@ interface Props {
   province: string;
   citySlug: string;
   cityData: City | null;
+  wb: WBValues | null;
+  miseryData: MiseryRow[] | null;
 }
 
-export default function EconomyPageClient({ country, province, citySlug, cityData }: Props) {
+export default function EconomyPageClient({ country, province, citySlug, cityData, wb, miseryData }: Props) {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const cityName = cityData?.name ?? citySlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   const countryName = cityData?.country ?? country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   const primaryColor = cityData?.primary_color ?? '#01411C';
 
-  const eco = COUNTRY_ECONOMY[country] ?? COUNTRY_ECONOMY[country.replace(/-/g, '')] ?? DEFAULT_ECONOMY;
-  const stress = FINANCIAL_STRESS_DATA[country] ?? FINANCIAL_STRESS_DATA[country.replace(/-/g, '')] ?? { score: 50, level: 'medium', inflation: eco.inflation, unemployment: eco.unemployment, debtToGdp: eco.debtToGdp, country: countryName };
-  const misery = MISERY_INDEX_DATA.find(m => m.countrySlug === country || m.countrySlug === country.replace(/-/g, '')) ?? MISERY_INDEX_DATA[0];
-  const interest = INTEREST_RATES[country] ?? INTEREST_RATES[country.replace(/-/g, '')] ?? { rate: eco.interestRate, country: countryName, currency: eco.currency };
+  const eco = buildEco(wb, country, cityData);
+  const stressScore = eco.inflation != null && eco.unemployment != null
+    ? computeStressScore(eco.inflation, eco.unemployment)
+    : null;
+  const stress = stressScore != null
+    ? { score: stressScore, level: stressLevel(stressScore), inflation: eco.inflation!, unemployment: eco.unemployment!, debtToGdp: eco.debtToGdp }
+    : null;
+  // World Bank's real interest rate series is years stale for many
+  // countries (Pakistan stops at 2020) — only show it when reasonably
+  // current, and never label it a central-bank/policy rate.
+  const showRealRate = eco.realRate != null && (eco.years.realRate ?? 0) >= 2023;
 
-  const gdpPerCapitaDaily = eco.gdpPerCapita / 365;
-  const debtPerCitizen = Math.round((eco.gdpBillions * eco.debtToGdp / 100 * 1000) / (eco.population * 1000));
+  const gdpPerCapitaDaily = eco.gdpPerCapita != null ? eco.gdpPerCapita / 365 : null;
+  const debtPerCitizen = eco.gdpBillions != null && eco.debtToGdp != null && eco.populationM
+    ? Math.round((eco.gdpBillions * 1e9 * eco.debtToGdp / 100) / (eco.populationM * 1e6))
+    : null;
 
   const toggle = (s: string) => setExpandedSection(prev => prev === s ? null : s);
 
@@ -318,17 +336,18 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       icon: Users,
       color: '#3B82F6',
       title: 'Population & Demographics',
-      summary: `${eco.population}M people • ${eco.literacyRate}% literacy • ${eco.lifeExpectancy}yr life expectancy`,
+      enabled: eco.populationM != null,
+      summary: [eco.populationM != null ? `${eco.populationM}M people` : null, eco.literacyRate != null ? `${eco.literacyRate}% literacy` : null, eco.lifeExpectancy != null ? `${eco.lifeExpectancy}yr life expectancy` : null].filter(Boolean).join(' • '),
       content: (
         <div className="mt-4 space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
             {generatePopulationParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={Users} label="Population" value={`${eco.population}M`} sub="Total population" color="#3B82F6" />
-            <StatCard icon={Activity} label="Labor Force" value={`${eco.laborForce}M`} sub="Active workers" color="#3B82F6" />
-            <StatCard icon={Award} label="Literacy Rate" value={`${eco.literacyRate}%`} sub="Population literate" color="#3B82F6" trend="up" />
-            <StatCard icon={Activity} label="Life Expectancy" value={`${eco.lifeExpectancy} yrs`} sub="Average at birth" color="#3B82F6" />
+            <StatCard icon={Users} label="Population" value={`${eco.populationM}M`} sub={`World Bank ${eco.years.population ?? ''}`} color="#3B82F6" />
+            {eco.laborForceM != null && <StatCard icon={Activity} label="Labor Force" value={`${eco.laborForceM}M`} sub={`Active workers, ${eco.years.laborForce ?? ''}`} color="#3B82F6" />}
+            {eco.literacyRate != null && <StatCard icon={Award} label="Literacy Rate" value={`${eco.literacyRate}%`} sub={`Population literate, ${eco.years.literacy ?? ''}`} color="#3B82F6" trend="up" />}
+            {eco.lifeExpectancy != null && <StatCard icon={Activity} label="Life Expectancy" value={`${eco.lifeExpectancy} yrs`} sub={`Average at birth, ${eco.years.lifeExpectancy ?? ''}`} color="#3B82F6" />}
           </div>
           <p className="text-sm text-gray-400 leading-relaxed">
             {generatePopulationAfter(countryName)}
@@ -341,22 +360,23 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       icon: BarChart3,
       color: primaryColor,
       title: 'Economic Core',
-      summary: `GDP $${eco.gdpBillions}B • Growth ${eco.gdpGrowth}% • Per capita $${eco.gdpPerCapita.toLocaleString()}`,
+      enabled: eco.gdpBillions != null,
+      summary: [eco.gdpBillions != null ? `GDP $${eco.gdpBillions}B` : null, eco.gdpGrowth != null ? `Growth ${eco.gdpGrowth}%` : null, eco.gdpPerCapita != null ? `Per capita $${eco.gdpPerCapita.toLocaleString()}` : null].filter(Boolean).join(' • '),
       content: (
         <div className="mt-4 space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
             {generateEconomicCoreParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard icon={DollarSign} label="Total GDP" value={`$${eco.gdpBillions}B`} sub="USD billions" color={primaryColor} />
-            <StatCard icon={TrendingUp} label="GDP Growth" value={`${eco.gdpGrowth}%`} sub="Annual rate" color={primaryColor} trend={eco.gdpGrowth > 3 ? 'up' : eco.gdpGrowth > 0 ? 'neutral' : 'down'} />
-            <StatCard icon={DollarSign} label="GDP Per Capita" value={`$${eco.gdpPerCapita.toLocaleString()}`} sub={`$${gdpPerCapitaDaily.toFixed(2)}/day`} color={primaryColor} />
+            <StatCard icon={DollarSign} label="Total GDP" value={`$${eco.gdpBillions}B`} sub={`World Bank ${eco.years.gdpUsd ?? ''}`} color={primaryColor} />
+            {eco.gdpGrowth != null && <StatCard icon={TrendingUp} label="GDP Growth" value={`${eco.gdpGrowth}%`} sub={`Annual rate, ${eco.years.gdpGrowth ?? ''}`} color={primaryColor} trend={eco.gdpGrowth > 3 ? 'up' : eco.gdpGrowth > 0 ? 'neutral' : 'down'} />}
+            {eco.gdpPerCapita != null && <StatCard icon={DollarSign} label="GDP Per Capita" value={`$${eco.gdpPerCapita.toLocaleString()}`} sub={`$${(gdpPerCapitaDaily ?? 0).toFixed(2)}/day`} color={primaryColor} />}
           </div>
           <div className="bg-transparent/4 rounded-xl p-4">
             <p className="text-sm font-medium text-gray-300 mb-2">What does GDP per capita mean for you?</p>
             <p className="text-sm text-gray-400">
-              On average, each person in {countryName} contributes <strong>${gdpPerCapitaDaily.toFixed(2)}</strong> to the economy per day.
-              Compare that to the USA ($223/day) or Germany ($170/day). {eco.gdpGrowth > 4 ? '📈 Growth is strong.' : eco.gdpGrowth > 1 ? '📊 Growth is moderate.' : '⚠️ Growth needs attention.'}
+              On average, each person in {countryName} contributes <strong>${(gdpPerCapitaDaily ?? 0).toFixed(2)}</strong> to the economy per day.
+              {(eco.gdpGrowth ?? 0) > 4 ? '📈 Growth is strong.' : (eco.gdpGrowth ?? 0) > 1 ? '📊 Growth is moderate.' : '⚠️ Growth needs attention.'}
             </p>
           </div>
           <p className="text-sm text-gray-400 leading-relaxed">
@@ -370,18 +390,19 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       icon: TrendingUp,
       color: '#F97316',
       title: 'Inflation & Prices',
-      summary: `${eco.inflation}% annual inflation • Interest rate ${eco.interestRate}%`,
+      enabled: eco.inflation != null,
+      summary: [`${eco.inflation}% annual inflation (${eco.years.inflation ?? ''})`, showRealRate ? `Real interest rate ${eco.realRate}% (${eco.years.realRate})` : null].filter(Boolean).join(' • '),
       content: (
         <div className="mt-4 space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
             {generateInflationParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={TrendingUp} label="Inflation Rate" value={`${eco.inflation}%`} sub="Annual CPI change" color="#F97316" trend={eco.inflation > 10 ? 'down' : 'up'} />
-            <StatCard icon={Zap} label="Interest Rate" value={`${eco.interestRate}%`} sub="Central bank rate" color="#F97316" />
+            <StatCard icon={TrendingUp} label="Inflation Rate" value={`${eco.inflation}%`} sub={`Annual CPI change, World Bank ${eco.years.inflation ?? ''}`} color="#F97316" trend={(eco.inflation ?? 0) > 10 ? 'down' : 'up'} />
+            {showRealRate && <StatCard icon={Zap} label="Real Interest Rate" value={`${eco.realRate}%`} sub={`World Bank ${eco.years.realRate} (inflation-adjusted lending rate)`} color="#F97316" />}
           </div>
           <PurchasingPowerCalc
-            inflation={eco.inflation}
+            inflation={eco.inflation ?? 0}
             currency={eco.currency}
             symbol={eco.currencySymbol}
             primaryColor={primaryColor}
@@ -389,10 +410,10 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
           <div className="bg-orange-500/100/10 border border-orange-100 rounded-xl p-4">
             <p className="text-sm font-medium text-orange-300 mb-1">Plain Language: What does {eco.inflation}% inflation mean?</p>
             <p className="text-sm text-orange-400">
-              If you bought groceries for {eco.currencySymbol}1,000 last year, the same basket costs approximately <strong>{eco.currencySymbol}{Math.round(1000 * (1 + eco.inflation / 100)).toLocaleString()}</strong> today.
+              If you bought groceries for {eco.currencySymbol}1,000 last year, the same basket costs approximately <strong>{eco.currencySymbol}{Math.round(1000 * (1 + (eco.inflation ?? 0) / 100)).toLocaleString()}</strong> today.
               Your money loses <strong>{eco.inflation}%</strong> of its purchasing power every year.
-              {eco.inflation > 20 ? ' This is very high — savings in cash are being eroded rapidly.' :
-               eco.inflation > 8 ? ' This is above global average and affects household budgets noticeably.' :
+              {(eco.inflation ?? 0) > 20 ? ' This is very high — savings in cash are being eroded rapidly.' :
+               (eco.inflation ?? 0) > 8 ? ' This is above global average and affects household budgets noticeably.' :
                ' This is within a manageable range.'}
             </p>
           </div>
@@ -407,21 +428,22 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       icon: Briefcase,
       color: '#8B5CF6',
       title: 'Employment & Labour',
-      summary: `${eco.unemployment}% unemployment • ${eco.povertyRate}% poverty rate`,
+      enabled: eco.unemployment != null,
+      summary: [`${eco.unemployment}% unemployment (${eco.years.unemployment ?? ''})`, eco.povertyRate != null ? `${eco.povertyRate}% poverty rate` : null].filter(Boolean).join(' • '),
       content: (
         <div className="mt-4 space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
             {generateEmploymentParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={Briefcase} label="Unemployment" value={`${eco.unemployment}%`} sub="Of labor force" color="#8B5CF6" trend={eco.unemployment > 8 ? 'down' : 'up'} />
-            <StatCard icon={Users} label="Poverty Rate" value={`${eco.povertyRate}%`} sub="Below poverty line" color="#8B5CF6" trend={eco.povertyRate > 20 ? 'down' : 'neutral'} />
+            <StatCard icon={Briefcase} label="Unemployment" value={`${eco.unemployment}%`} sub={`Of labor force, World Bank ${eco.years.unemployment ?? ''}`} color="#8B5CF6" trend={(eco.unemployment ?? 0) > 8 ? 'down' : 'up'} />
+            {eco.povertyRate != null && <StatCard icon={Users} label="Poverty Rate" value={`${eco.povertyRate}%`} sub={`Below the international poverty line, ${eco.years.poverty ?? ''}`} color="#8B5CF6" trend={eco.povertyRate > 20 ? 'down' : 'neutral'} />}
           </div>
           <div className="bg-purple-500/100/10 border border-purple-100 rounded-xl p-4">
             <p className="text-sm text-purple-300">
-              <strong>{eco.unemployment}%</strong> unemployment means roughly <strong>{Math.round(eco.laborForce * eco.unemployment / 100)}M people</strong> in {countryName} are actively seeking work.
-              {eco.unemployment > 10 ? ' High unemployment strains social services and reduces consumer spending.' :
-               eco.unemployment > 5 ? ' Moderate levels suggest the economy is growing but not at full capacity.' :
+              <strong>{eco.unemployment}%</strong> unemployment{eco.laborForceM != null ? <> means roughly <strong>{Math.round(eco.laborForceM * (eco.unemployment ?? 0) / 100)}M people</strong> in {countryName} are actively seeking work.</> : <> in {countryName}.</>}
+              {(eco.unemployment ?? 0) > 10 ? ' High unemployment strains social services and reduces consumer spending.' :
+               (eco.unemployment ?? 0) > 5 ? ' Moderate levels suggest the economy is growing but not at full capacity.' :
                ' Near full employment suggests a healthy, active economy.'}
             </p>
           </div>
@@ -436,23 +458,24 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       icon: AlertTriangle,
       color: '#EF4444',
       title: 'National Debt & Fiscal Health',
-      summary: `${eco.debtToGdp}% debt-to-GDP • ${eco.currencySymbol}${debtPerCitizen.toLocaleString()} per citizen`,
+      enabled: eco.debtToGdp != null && debtPerCitizen != null,
+      summary: `${eco.debtToGdp}% debt-to-GDP (${eco.years.debtPctGdp ?? ''}) • ${eco.currencySymbol}${(debtPerCitizen ?? 0).toLocaleString()} per citizen`,
       content: (
         <div className="mt-4 space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
             {generateDebtParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={AlertTriangle} label="Debt-to-GDP" value={`${eco.debtToGdp}%`} sub="National debt ratio" color="#EF4444" trend={eco.debtToGdp > 90 ? 'down' : 'neutral'} />
-            <StatCard icon={Users} label="Debt Per Citizen" value={`$${debtPerCitizen.toLocaleString()}`} sub="Each person owes" color="#EF4444" />
+            <StatCard icon={AlertTriangle} label="Debt-to-GDP" value={`${eco.debtToGdp}%`} sub={`Central government debt, World Bank ${eco.years.debtPctGdp ?? ''}`} color="#EF4444" trend={(eco.debtToGdp ?? 0) > 90 ? 'down' : 'neutral'} />
+            <StatCard icon={Users} label="Debt Per Citizen" value={`$${(debtPerCitizen ?? 0).toLocaleString()}`} sub="Each person owes" color="#EF4444" />
           </div>
           <div className="bg-red-500/100/10 border border-red-100 rounded-xl p-4">
             <p className="text-sm font-medium text-red-300 mb-1">What does this mean?</p>
             <p className="text-sm text-red-400">
               {countryName}'s national debt is <strong>{eco.debtToGdp}%</strong> of its entire annual GDP.
-              Each citizen effectively owes <strong>${debtPerCitizen.toLocaleString()}</strong> as their share of this debt.
-              {eco.debtToGdp > 100 ? ' A debt-to-GDP ratio above 100% is considered very high — it limits government spending on public services.' :
-               eco.debtToGdp > 60 ? ' Above 60% is the EU\'s warning threshold. Servicing this debt consumes a significant portion of the annual budget.' :
+              Each citizen effectively owes <strong>${(debtPerCitizen ?? 0).toLocaleString()}</strong> as their share of this debt.
+              {(eco.debtToGdp ?? 0) > 100 ? ' A debt-to-GDP ratio above 100% is considered very high — it limits government spending on public services.' :
+               (eco.debtToGdp ?? 0) > 60 ? ' Above 60% is the EU\'s warning threshold. Servicing this debt consumes a significant portion of the annual budget.' :
                ' This is within manageable levels by global standards.'}
             </p>
           </div>
@@ -467,20 +490,20 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       icon: Award,
       color: '#10B981',
       title: 'Human Development & Quality of Life',
-      summary: `HDI ${eco.hdi} • Gini ${eco.gini} inequality coefficient`,
+      enabled: eco.gini != null || eco.literacyRate != null || eco.lifeExpectancy != null,
+      summary: [eco.gini != null ? `Gini ${eco.gini} inequality coefficient` : null, eco.literacyRate != null ? `${eco.literacyRate}% literacy` : null, eco.lifeExpectancy != null ? `${eco.lifeExpectancy}yr life expectancy` : null].filter(Boolean).join(' • '),
       content: (
         <div className="mt-4 space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
             {generateHdiParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={Award} label="HDI Score" value={eco.hdi.toFixed(3)} sub={eco.hdi > 0.8 ? 'Very High' : eco.hdi > 0.7 ? 'High' : eco.hdi > 0.55 ? 'Medium' : 'Low'} color="#10B981" trend={eco.hdi > 0.7 ? 'up' : 'neutral'} />
-            <StatCard icon={BarChart3} label="Gini Coefficient" value={eco.gini.toFixed(1)} sub={eco.gini > 40 ? 'High Inequality' : eco.gini > 30 ? 'Moderate' : 'Low Inequality'} color="#10B981" />
+            {eco.gini != null && <StatCard icon={BarChart3} label="Gini Coefficient" value={eco.gini.toFixed(1)} sub={`${eco.gini > 40 ? 'High Inequality' : eco.gini > 30 ? 'Moderate' : 'Low Inequality'} — World Bank ${eco.years.gini ?? ''}`} color="#10B981" />}
+            {eco.literacyRate != null && <StatCard icon={Award} label="Literacy Rate" value={`${eco.literacyRate}%`} sub={`World Bank ${eco.years.literacy ?? ''}`} color="#10B981" trend="up" />}
           </div>
           <div className="space-y-2 bg-transparent rounded-xl border border-white/8 p-4">
-            <IndicatorBar label="Human Development Index" value={eco.hdi} max={1} color="#10B981" format={v => v.toFixed(3)} />
-            <IndicatorBar label="Literacy Rate" value={eco.literacyRate} max={100} color="#3B82F6" format={v => `${v}%`} />
-            <IndicatorBar label="Life Expectancy (out of 90)" value={eco.lifeExpectancy} max={90} color="#8B5CF6" format={v => `${v} yrs`} />
+            {eco.literacyRate != null && <IndicatorBar label="Literacy Rate" value={eco.literacyRate} max={100} color="#3B82F6" format={v => `${v}%`} />}
+            {eco.lifeExpectancy != null && <IndicatorBar label="Life Expectancy (out of 90)" value={eco.lifeExpectancy} max={90} color="#8B5CF6" format={v => `${v} yrs`} />}
           </div>
           <p className="text-sm text-gray-400 leading-relaxed">
             {generateHdiAfter(countryName)}
@@ -493,6 +516,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       icon: TrendingUp,
       color: '#10B981',
       title: '10-Year Growth Trends',
+      enabled: true,
       summary: 'GDP, population & exports — World Bank data',
       content: (
         <div className="mt-4 space-y-4">
@@ -511,25 +535,26 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       icon: Globe,
       color: '#0891B2',
       title: 'Trade & Foreign Investment',
-      summary: `Trade balance $${eco.tradeBalance}B • FDI $${eco.fdi}B`,
+      enabled: eco.tradeBalanceBillions != null || eco.fdiBillions != null || eco.remittancesBillions != null,
+      summary: [eco.tradeBalanceBillions != null ? `Trade balance $${eco.tradeBalanceBillions}B` : null, eco.fdiBillions != null ? `FDI $${eco.fdiBillions}B` : null, eco.remittancesBillions != null ? `Remittances $${eco.remittancesBillions}B` : null].filter(Boolean).join(' • '),
       content: (
         <div className="mt-4 space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
             {generateTradeParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={Globe} label="Trade Balance" value={`$${Math.abs(eco.tradeBalance)}B`} sub={eco.tradeBalance < 0 ? 'Trade deficit' : 'Trade surplus'} color="#0891B2" trend={eco.tradeBalance >= 0 ? 'up' : 'down'} />
-            <StatCard icon={Building2} label="Foreign Direct Investment" value={`$${eco.fdi}B`} sub="Annual FDI inflow" color="#0891B2" trend={eco.fdi > 20 ? 'up' : 'neutral'} />
-            {eco.remittanceGdp > 0 && (
-              <StatCard icon={DollarSign} label="Remittances (% GDP)" value={`${eco.remittanceGdp}%`} sub="Diaspora money sent home" color="#0891B2" />
+            {eco.tradeBalanceBillions != null && <StatCard icon={Globe} label="Trade Balance" value={`$${Math.abs(eco.tradeBalanceBillions)}B`} sub={`${eco.tradeBalanceBillions < 0 ? 'Trade deficit' : 'Trade surplus'}, ${eco.years.tradeBalanceUsd ?? ''}`} color="#0891B2" trend={eco.tradeBalanceBillions >= 0 ? 'up' : 'down'} />}
+            {eco.fdiBillions != null && <StatCard icon={Building2} label="Foreign Direct Investment" value={`$${eco.fdiBillions}B`} sub={`Annual FDI inflow, ${eco.years.fdiUsd ?? ''}`} color="#0891B2" trend={eco.fdiBillions > 20 ? 'up' : 'neutral'} />}
+            {eco.remittancesBillions != null && (
+              <StatCard icon={DollarSign} label="Remittances" value={`$${eco.remittancesBillions}B`} sub={`Received from abroad, World Bank ${eco.years.remittancesUsd ?? ''}`} color="#0891B2" />
             )}
           </div>
-          {eco.tradeBalance < 0 && (
+          {eco.tradeBalanceBillions != null && eco.tradeBalanceBillions < 0 && (
             <div className="bg-cyan-50 border border-cyan-100 rounded-xl p-4">
               <p className="text-sm text-cyan-800">
-                {countryName} imports <strong>${Math.abs(eco.tradeBalance)}B more</strong> than it exports annually.
+                {countryName} imports <strong>${Math.abs(eco.tradeBalanceBillions)}B more</strong> than it exports annually.
                 This trade deficit puts pressure on foreign exchange reserves and the local currency.
-                {eco.remittanceGdp > 3 ? ` However, remittances of ${eco.remittanceGdp}% of GDP help partially offset this.` : ''}
+                {eco.remittancesBillions != null ? ` However, remittances of $${eco.remittancesBillions}B a year help partially offset this.` : ''}
               </p>
             </div>
           )}
@@ -540,6 +565,8 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       ),
     },
   ];
+
+  const visibleSections = sections.filter(sec => sec.enabled !== false);
 
   return (
     <div className="min-h-screen bg-transparent/4">
@@ -570,12 +597,19 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <p className="text-sm text-gray-300 leading-relaxed mb-4">
               {generateStressMeterParagraph(countryName, cityName)}
             </p>
-            <StressMeter score={stress.score} level={stress.level} primaryColor={primaryColor} />
-            <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-gray-500">
-              <div><div className="font-bold text-white">{stress.inflation}%</div><div>Inflation</div></div>
-              <div><div className="font-bold text-white">{stress.unemployment}%</div><div>Unemployment</div></div>
-              <div><div className="font-bold text-white">{stress.debtToGdp}%</div><div>Debt/GDP</div></div>
-            </div>
+            {stress ? (
+              <>
+                <StressMeter score={stress.score} level={stress.level} primaryColor={primaryColor} />
+                <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-gray-500">
+                  <div><div className="font-bold text-white">{stress.inflation}%</div><div>Inflation ({eco.years.inflation ?? ''})</div></div>
+                  <div><div className="font-bold text-white">{stress.unemployment}%</div><div>Unemployment ({eco.years.unemployment ?? ''})</div></div>
+                  {stress.debtToGdp != null && <div><div className="font-bold text-white">{stress.debtToGdp}%</div><div>Debt/GDP</div></div>}
+                </div>
+                <p className="text-[11px] text-gray-500 mt-2">Score computed by WorldCityHub from World Bank inflation & unemployment data.</p>
+              </>
+            ) : (
+              <p className="text-sm text-gray-400">Stress score unavailable — current World Bank inflation/unemployment data for {countryName} could not be loaded.</p>
+            )}
             <p className="text-sm text-gray-400 leading-relaxed mt-4">
               {generateStressMeterAfter(countryName, cityName)}
             </p>
@@ -589,25 +623,36 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <p className="text-sm text-gray-300 leading-relaxed mb-4">
               {generateMiseryParagraph(countryName)}
             </p>
-            <MiseryTable data={MISERY_INDEX_DATA} countrySlug={country} primaryColor={primaryColor} />
-            <p className="text-xs text-gray-400 mt-3">Misery Index = Inflation + Unemployment. Higher = more economic pain.</p>
+            {miseryData ? (
+              <MiseryTable data={miseryData} countrySlug={country} primaryColor={primaryColor} />
+            ) : (
+              <p className="text-sm text-gray-400">Comparison unavailable — World Bank data for the comparison countries could not be loaded.</p>
+            )}
+            <p className="text-xs text-gray-400 mt-3">Misery Index = Inflation + Unemployment, from the latest World Bank values for each country. Higher = more economic pain.</p>
             <p className="text-sm text-gray-400 leading-relaxed mt-4">
               {generateMiseryAfter(countryName)}
             </p>
           </div>
         </div>
 
+        {!wb && (
+          <div className="flex items-start gap-2 bg-amber-500/10 border border-amber-100 rounded-xl p-4">
+            <Info size={15} className="text-amber-500 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-amber-400">Live economic indicators from the World Bank are unavailable for {countryName} right now. Figures will appear here when the data service responds — nothing is estimated or filled in.</p>
+          </div>
+        )}
+
         {/* Quick stats bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard icon={DollarSign} label="GDP" value={`$${eco.gdpBillions}B`} color={primaryColor} />
-          <StatCard icon={TrendingUp} label="Growth" value={`${eco.gdpGrowth}%`} color="#10B981" trend={eco.gdpGrowth > 3 ? 'up' : 'neutral'} />
-          <StatCard icon={Activity} label="Inflation" value={`${eco.inflation}%`} color="#F97316" trend={eco.inflation > 10 ? 'down' : 'up'} />
-          <StatCard icon={Briefcase} label="Unemployment" value={`${eco.unemployment}%`} color="#8B5CF6" trend={eco.unemployment > 8 ? 'down' : 'up'} />
+          {eco.gdpBillions != null && <StatCard icon={DollarSign} label="GDP" value={`$${eco.gdpBillions}B`} sub={`World Bank ${eco.years.gdpUsd ?? ''}`} color={primaryColor} />}
+          {eco.gdpGrowth != null && <StatCard icon={TrendingUp} label="Growth" value={`${eco.gdpGrowth}%`} sub={`${eco.years.gdpGrowth ?? ''}`} color="#10B981" trend={eco.gdpGrowth > 3 ? 'up' : 'neutral'} />}
+          {eco.inflation != null && <StatCard icon={Activity} label="Inflation" value={`${eco.inflation}%`} sub={`${eco.years.inflation ?? ''}`} color="#F97316" trend={eco.inflation > 10 ? 'down' : 'up'} />}
+          {eco.unemployment != null && <StatCard icon={Briefcase} label="Unemployment" value={`${eco.unemployment}%`} sub={`${eco.years.unemployment ?? ''}`} color="#8B5CF6" trend={eco.unemployment > 8 ? 'down' : 'up'} />}
         </div>
 
         {/* Accordion sections */}
         <div className="space-y-3">
-          {sections.map(section => (
+          {visibleSections.map(section => (
             <div key={section.id} className="bg-transparent rounded-2xl border border-white/8 overflow-hidden">
               <button
                 onClick={() => toggle(section.id)}
@@ -635,6 +680,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
         </div>
 
         {/* Opportunity Index */}
+        {stress && eco.gdpGrowth != null && (
         <div className="bg-transparent rounded-2xl border border-white/8 p-6">
           <div className="flex items-center gap-2 mb-4">
             <Target size={18} style={{ color: primaryColor }} />
@@ -649,19 +695,19 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                 label: 'Business Environment',
                 score: Math.max(10, Math.min(100, 100 - stress.score * 0.6 + eco.gdpGrowth * 3)),
                 color: '#3B82F6',
-                insight: eco.gdpGrowth > 4 ? 'Growing market, good entry point' : eco.gdpGrowth > 1 ? 'Stable but cautious investment climate' : 'Challenging business conditions',
+                insight: (eco.gdpGrowth ?? 0) > 4 ? 'Growing market, good entry point' : (eco.gdpGrowth ?? 0) > 1 ? 'Stable but cautious investment climate' : 'Challenging business conditions',
               },
               {
                 label: 'Real Estate Potential',
-                score: Math.max(10, Math.min(100, 70 - eco.inflation * 0.8 + eco.gdpGrowth * 5)),
+                score: Math.max(10, Math.min(100, 70 - (eco.inflation ?? 0) * 0.8 + (eco.gdpGrowth ?? 0) * 5)),
                 color: '#10B981',
-                insight: eco.inflation > 15 ? 'High inflation erodes returns' : eco.gdpGrowth > 4 ? 'Strong demand growth expected' : 'Moderate appreciation potential',
+                insight: (eco.inflation ?? 0) > 15 ? 'High inflation erodes returns' : (eco.gdpGrowth ?? 0) > 4 ? 'Strong demand growth expected' : 'Moderate appreciation potential',
               },
               {
                 label: 'Export Opportunity',
-                score: Math.max(10, Math.min(100, 60 + (eco.tradeBalance < 0 ? 15 : -10) + eco.fdi * 0.5)),
+                score: Math.max(10, Math.min(100, 60 + ((eco.tradeBalanceBillions ?? 0) < 0 ? 15 : -10) + (eco.fdiBillions ?? 0) * 0.5)),
                 color: '#8B5CF6',
-                insight: eco.tradeBalance < -20 ? 'High import dependency = export gap opportunity' : eco.fdi > 50 ? 'Foreign confidence is high' : 'Emerging export potential',
+                insight: (eco.tradeBalanceBillions ?? 0) < -20 ? 'High import dependency = export gap opportunity' : (eco.fdiBillions ?? 0) > 50 ? 'Foreign confidence is high' : 'Emerging export potential',
               },
             ].map(item => (
               <div key={item.label} className="bg-transparent/4 rounded-xl p-4">
@@ -676,10 +722,12 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
               </div>
             ))}
           </div>
+          <p className="text-[11px] text-gray-500 mt-3">Scores computed by WorldCityHub from World Bank indicators — an editorial guide, not an official statistic.</p>
           <p className="text-sm text-gray-400 leading-relaxed mt-4">
             {generateOpportunityAfter(cityName, countryName)}
           </p>
         </div>
+        )}
 
         {/* Footer note */}
         <div className="flex items-start gap-2 bg-blue-500/100/10 border border-blue-100 rounded-xl p-4">

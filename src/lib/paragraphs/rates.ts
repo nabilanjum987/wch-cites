@@ -103,9 +103,13 @@ export function generateStocksAfter(country: string): string {
 // ─── 8. INTEREST RATES ──────────────────────────────────────────────────────
 
 export function generateInterestParagraph(country: string, rate: number | null): string {
-  const { month, year } = now();
-  const rateStr = rate !== null ? `${rate}%` : "the current benchmark rate";
-  return `${country}'s central bank policy rate currently stands at ${rateStr}, the single figure that anchors the cost of borrowing and the return on saving across the entire economy. Above, the home loan and savings calculators translate this abstract policy number into a concrete, relatable outcome — what a real loan would cost in monthly payments, or what a real savings deposit would earn over a year, both calculated directly from today's rate. Through ${month} ${year}, this policy rate also feeds directly into the misery index and purchasing power figures further down this page, since interest rates and inflation are two sides of the same monetary policy story in ${country}.`;
+  // Rewritten (Batch 3b): the old text asserted a "central bank policy
+  // rate" with today's date — but the rate shown on the page is the World
+  // Bank's real (inflation-adjusted) interest rate, the comparable
+  // cross-country measure available from a free source. No policy-rate,
+  // meeting or decision claims are made.
+  const rateStr = rate !== null ? `${rate}%` : 'the latest available figure';
+  return `Interest rates anchor the cost of borrowing and the return on saving across ${country}'s economy. The figure shown on this page is the World Bank's real interest rate for ${country} — the lending rate adjusted for inflation — currently ${rateStr}. It is the most comparable cross-country interest measure published by a free public source; central-bank policy rates are not distributed as a free data feed, so this page does not present one. The home loan and savings calculators below translate the real rate into concrete outcomes: what a loan would cost in monthly payments, or what a savings deposit would earn over a year. Together with the inflation and misery figures further down this page, it completes the monetary picture for ${country}.`;
 }
 
 export function generateInterestAfter(country: string): string {
