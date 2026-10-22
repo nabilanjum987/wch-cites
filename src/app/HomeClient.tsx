@@ -29,7 +29,7 @@ import {
 import { COLORS, STAGGER_CONTAINER } from '@/lib/design-system';
 import { Globe, Users, Clock, TrendingUp } from 'lucide-react';
 
-export default function Home({ newsSlot }: { newsSlot?: React.ReactNode }) {
+export default function Home({ newsSlot, ticker2Slot }: { newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode }) {
   const handleCitySelect = (city: { country_slug: string; province_slug: string; city_slug: string }) => {
     if (city) window.location.href = `/${city.country_slug}/${city.province_slug}/${city.city_slug}`;
   };
@@ -86,6 +86,13 @@ export default function Home({ newsSlot }: { newsSlot?: React.ReactNode }) {
         <WorldClockStrip />
       </Section>
 
+      {/* ── TICKER 2 — WEBSITE LIVE (WP2 Slice 1) ──
+          Placement LOCKED by the frozen spec: directly under the
+          My City panel (§4), whose position is here, immediately
+          after the World Time hero. When the My City slice lands it
+          is inserted between the clocks and this ticker. */}
+      {ticker2Slot}
+
       {/* ── GLOBAL INSIGHTS ── */}
       <Section bg="dark" title="Global Pulse"
         desc="Four numbers that define the world at this exact moment. Cities live on WorldCityHub. The next prayer call in Mecca. Gold trading right now in London. The city recording the highest temperature on earth today. These refresh continuously — every visit is a fresh reading.">
@@ -110,11 +117,13 @@ export default function Home({ newsSlot }: { newsSlot?: React.ReactNode }) {
         <HoroscopeSection />
       </Section>
 
-      {/* ── LIVE MARKET RATES ── */}
+      {/* ── LIVE MARKET RATES (§12 FINANCE — anchor per link map) ── */}
+      <div id="finance">
       <Section bg="dark" title="Live Market Rates"
         desc="Gold at London fix. Bitcoin's 24-hour move. Brent crude after OPEC's last decision. Eight major currency pairs against the dollar. The Fear and Greed Index telling you what the market is feeling right now — not what it felt yesterday. Every figure links through to the full rates page where you can convert to local currency, calculate Zakat, and track 30-day price history.">
         <GlobalMarketSnapshot />
       </Section>
+      </div>
 
       {/* ── WORLD WONDERS ── */}
       <Section bg="darker" title="Seven Wonders of the World"
