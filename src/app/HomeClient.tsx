@@ -13,7 +13,7 @@ import GlobalMarketSnapshot from '@/components/home/GlobalMarketSnapshot';
 import DidYouKnow from '@/components/home/DidYouKnow';
 import FeaturedCountries from '@/components/home/FeaturedCountries';
 import WorldWeatherExtremes from '@/components/home/WorldWeatherExtremes';
-import WorldClockStrip from '@/components/home/WorldClockStrip';
+import HeroClocks from '@/components/home/HeroClocks';
 import AllFaithsToday from '@/components/home/AllFaithsToday';
 import HeritageSpotlight from '@/components/home/HeritageSpotlight';
 import AboutAndFooter from '@/components/home/AboutAndFooter';
@@ -23,11 +23,9 @@ import CompareSection from '@/components/home/CompareSection';
 import {
   AuroraBackground,
   AnimatedGradientText,
-  AnimatedCounter,
   ScrollAnimation,
 } from '@/components/shared/AnimatedComponents';
-import { COLORS, STAGGER_CONTAINER } from '@/lib/design-system';
-import { Globe, Users, Clock, TrendingUp } from 'lucide-react';
+import { COLORS } from '@/lib/design-system';
 
 export default function Home({ newsSlot, ticker2Slot }: { newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode }) {
   const handleCitySelect = (city: { country_slug: string; province_slug: string; city_slug: string }) => {
@@ -36,9 +34,9 @@ export default function Home({ newsSlot, ticker2Slot }: { newsSlot?: React.React
 
   return (
     <>
-      {/* ── HERO ── */}
+      {/* ── HERO — WORLD TIME RIGHT NOW (§3) ── */}
       <AuroraBackground>
-        <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+        <section className="relative flex items-center justify-center px-4 py-24 overflow-hidden">
           <motion.div className="absolute top-20 right-1/4 w-72 h-72 bg-indigo-500/20 rounded-full filter blur-3xl"
             animate={{ y: [0, -50, 0] }} transition={{ duration: 8, repeat: Infinity }} />
           <motion.div className="absolute bottom-20 left-1/4 w-72 h-72 bg-cyan-500/20 rounded-full filter blur-3xl"
@@ -62,12 +60,12 @@ export default function Home({ newsSlot, ticker2Slot }: { newsSlot?: React.React
                   <SearchBar onCitySelect={handleCitySelect} />
                 </div>
               </motion.div>
-              <motion.div variants={STAGGER_CONTAINER} initial="initial" animate="animate"
-                className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <AnimatedCounter label="Cities"       value={10247} icon={<Globe      className="w-6 h-6 text-indigo-400" />} />
-                <AnimatedCounter label="Countries"    value={195}   icon={<Users      className="w-6 h-6 text-cyan-400"   />} />
-                <AnimatedCounter label="Faiths"       value={7}     icon={<Clock      className="w-6 h-6 text-purple-400" />} />
-                <AnimatedCounter label="Live Updates" value={24} suffix="/7" icon={<TrendingUp className="w-6 h-6 text-emerald-400" />} />
+              {/* The hard-coded hero counters ("Cities 10247" etc.)
+                  are REMOVED: they were invented figures. The hero is
+                  now the spec's World Time — six flag-coloured clocks
+                  plus the visitor's opt-in big clock (HeroClocks). */}
+              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.7 }}>
+                <HeroClocks />
               </motion.div>
             </motion.div>
           </div>
@@ -80,17 +78,10 @@ export default function Home({ newsSlot, ticker2Slot }: { newsSlot?: React.React
         </section>
       </AuroraBackground>
 
-      {/* ── WORLD CLOCKS — directly below hero ── */}
-      <Section bg="darker" title="World Time Right Now"
-        desc="Six cities. Six time zones. One planet turning. The clocks update every second — a live reminder that somewhere on earth it is already tomorrow.">
-        <WorldClockStrip />
-      </Section>
-
       {/* ── TICKER 2 — WEBSITE LIVE (WP2 Slice 1) ──
           Placement LOCKED by the frozen spec: directly under the
-          My City panel (§4), whose position is here, immediately
-          after the World Time hero. When the My City slice lands it
-          is inserted between the clocks and this ticker. */}
+          My City panel (§4). The My City panel is inserted between
+          the hero and this ticker by the next slice (Q4). */}
       {ticker2Slot}
 
       {/* ── GLOBAL INSIGHTS ── */}
