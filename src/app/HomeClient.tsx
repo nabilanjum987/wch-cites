@@ -1,26 +1,24 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import SearchBar from '@/components/shared/SearchBar';
-import LiveGlobalStats from '@/components/home/LiveGlobalStats';
 import FeaturedCitiesGrid from '@/components/home/FeaturedCitiesGrid';
 import ExploreByContinent from '@/components/home/ExploreByContinent';
 import ExploreByReligion from '@/components/home/ExploreByReligion';
 import FeaturedWonders from '@/components/home/FeaturedWonders';
-import LivePrayerTimesStrip from '@/components/home/LivePrayerTimesStrip';
 import OceansToday from '@/components/home/OceansToday';
 import GlobalMarketSnapshot from '@/components/home/GlobalMarketSnapshot';
-import DidYouKnow from '@/components/home/DidYouKnow';
 import FeaturedCountries from '@/components/home/FeaturedCountries';
-import WorldWeatherExtremes from '@/components/home/WorldWeatherExtremes';
 import HeroClocks from '@/components/home/HeroClocks';
 import WorldCapitals from '@/components/home/WorldCapitals';
 import AllFaithsToday from '@/components/home/AllFaithsToday';
 import HeritageSpotlight from '@/components/home/HeritageSpotlight';
 import AboutAndFooter from '@/components/home/AboutAndFooter';
-import ActiveConflictsWidget from '@/components/home/ActiveConflictsWidget';
 import HoroscopeSection from '@/components/home/HoroscopeSection';
 import CompareSection from '@/components/home/CompareSection';
+import PersonalitiesPanel from '@/components/home/PersonalitiesPanel';
+import PlacesPanel from '@/components/home/PlacesPanel';
 import {
   AuroraBackground,
   AnimatedGradientText,
@@ -28,7 +26,10 @@ import {
 } from '@/components/shared/AnimatedComponents';
 import { COLORS } from '@/lib/design-system';
 
-export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlot }: { newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode; myCitySlot?: React.ReactNode; todaysWorldSlot?: React.ReactNode }) {
+export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlot, financeSlot, eventsSlot, economySlot, sportsSlot, conflictsSlot }: {
+  newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode; myCitySlot?: React.ReactNode; todaysWorldSlot?: React.ReactNode;
+  financeSlot?: React.ReactNode; eventsSlot?: React.ReactNode; economySlot?: React.ReactNode; sportsSlot?: React.ReactNode; conflictsSlot?: React.ReactNode;
+}) {
   const handleCitySelect = (city: { country_slug: string; province_slug: string; city_slug: string }) => {
     if (city) window.location.href = `/${city.country_slug}/${city.province_slug}/${city.city_slug}`;
   };
@@ -130,80 +131,101 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
         <FeaturedCitiesGrid />
       </Section>
 
-      {/* ── GLOBAL INSIGHTS ── */}
-      <Section bg="dark" title="Global Pulse"
-        desc="Four numbers that define the world at this exact moment. Cities live on WorldCityHub. The next prayer call in Mecca. Gold trading right now in London. The city recording the highest temperature on earth today. These refresh continuously — every visit is a fresh reading.">
-        <LiveGlobalStats />
+      {/* ═══ PANELS II (Q6) — frozen order §11–§24 ═══
+          Removed in this pass (not in the frozen 24): "Global Pulse"
+          (LiveGlobalStats — carried invented summary figures), the
+          old Prayer Times strip (hard-coded prayer strings + links to
+          unpublished cities), "Weather Extremes" (its live extremes
+          live on in §5), and DidYouKnow. */}
+
+      {/* ── §11 FAITHS / PRAYER HUB (anchor for the nav, link map §2) ── */}
+      <div id="faiths">
+      <Section bg="darker" title="The World by Faith"
+        desc="Religion shapes how 8 billion people measure time, name their days, build their cities, and mark the passages of life. WorldCityHub covers all seven major traditions — prayer schedules for Muslims, mass times for Christians, puja timings for Hindus, Shabbat for Jews, meditation sessions for Buddhists, Nitnem for Sikhs. Below: today's date across all seven calendars, and today's prayer times for every published city.">
+        <ExploreByReligion />
+        <AllFaithsToday />
+      </Section>
+      </div>
+
+      {/* ── §12 FINANCE — anchor per link map; figures INSIDE the panel ── */}
+      <div id="finance">
+      <Section bg="dark" title="Live Market Rates"
+        desc="Gold at London fix. Bitcoin's 24-hour move. Brent crude after OPEC's last decision. Eight major currency pairs against the dollar. The Fear and Greed Index telling you what the market is feeling right now — not what it felt yesterday. Every figure links through to the full rates page where you can convert to local currency, calculate Zakat, and track 30-day price history.">
+        <GlobalMarketSnapshot />
+        {financeSlot}
+      </Section>
+      </div>
+
+      {/* ── §13 EVENTS — server slot ── */}
+      <Section bg="darker" title="Events and Holidays"
+        desc="What is on, and who has the day off. Public holidays are the skeleton of a city's week — they decide its traffic, its markets and its mood before a single event is announced. These are the real holidays falling today and over the next seven days, plus the events pages of every published city.">
+        {eventsSlot}
       </Section>
 
-      {/* ── PRAYER TIMES ── */}
-      <Section bg="dark" title="Prayer Times Across the World"
-        desc="From Fajr in Karachi before sunrise to Isha in Istanbul after dark — 1.9 billion Muslims pray five times a day, their schedules shifting daily with the sun's position. These are today's live times for major cities. Click any city for the full monthly timetable, Qibla direction, and Ramadan schedule.">
-        <LivePrayerTimesStrip />
+      {/* ── §14 NEWS — category tabs, server slot ── */}
+      <Section bg="dark" title="Live Updates — News by Category"
+        desc="Events that matter, sorted the way you actually follow them — your country, your money, your health, your team. Pick a category; the headlines are the latest the wire services have published, and every one opens on the full news page with its source.">
+        {newsSlot}
       </Section>
 
-      {/* ── HOROSCOPE ── */}
+      {/* ── §15 HOROSCOPE ── */}
       <Section bg="darker" title="Stars, Signs and Sacred Calendars"
         desc="Seven traditions. One sky. Whether you follow Western astrology, the Chinese zodiac, Vedic Jyotish, the Islamic Hijri calendar, the Hebrew Mazalot, Buddhist Era dating or the Sikh Nanakshahi calendar — today's date, your sign, and this year's cosmic character are all here. The universe does not speak one language.">
         <HoroscopeSection />
       </Section>
 
-      {/* ── LIVE MARKET RATES (§12 FINANCE — anchor per link map) ── */}
-      <div id="finance">
-      <Section bg="dark" title="Live Market Rates"
-        desc="Gold at London fix. Bitcoin's 24-hour move. Brent crude after OPEC's last decision. Eight major currency pairs against the dollar. The Fear and Greed Index telling you what the market is feeling right now — not what it felt yesterday. Every figure links through to the full rates page where you can convert to local currency, calculate Zakat, and track 30-day price history.">
-        <GlobalMarketSnapshot />
-      </Section>
-      </div>
-
-      {/* ── COMPARE ── */}
-      <Section bg="dark" title="Compare Cities and Countries"
-        desc="Which city has lower cost of living — Lahore or Istanbul? Which country has faster GDP growth — Pakistan or Egypt? The comparison tool puts any two cities or countries side by side across weather, economy, culture, and lifestyle. Pick your two and see the full breakdown.">
-        <CompareSection />
+      {/* ── §16 PERSONALITIES — published profiles only ── */}
+      <Section bg="dark" title="Personalities"
+        desc="Cities are remembered by their people. These are the full published profiles on WorldCityHub today — the lives, the work and the arguments, written to be read, not skimmed. More profiles join as each one is verified and completed.">
+        <PersonalitiesPanel />
       </Section>
 
-      {/* ── EXPLORE BY FAITH ── */}
-      <Section bg="darker" title="The World by Faith"
-        desc="Religion shapes how 8 billion people measure time, name their days, build their cities, and mark the passages of life. WorldCityHub covers all seven major traditions — prayer schedules for Muslims, mass times for Christians, puja timings for Hindus, Shabbat for Jews, meditation sessions for Buddhists, Nitnem for Sikhs. Every city page shows what is happening spiritually there today.">
-        <ExploreByReligion />
+      {/* ── §17 PLACES — links HOLD ── */}
+      <Section bg="darker" title="Places Worth Knowing"
+        desc="Some places hold a whole civilisation in one courtyard. A mosque built for an emperor, a capital's tent of marble, a city abandoned for four thousand years. Each card shows the weather at that exact spot right now; full place pages are in preparation.">
+        <PlacesPanel />
       </Section>
 
-      {/* ── WORLD NEWS ── */}
-      <Section bg="dark" title="World News by Region"
-        desc="Events that matter, organized by where they happen rather than who is reporting them. Six regions. Thirty stories. Updated continuously from wire services covering every part of the globe — including regions that rarely make the front page of Western newspapers but are home to billions of people living through real events every day.">
-        {newsSlot}
-      </Section>
-
-      {/* ── WORLD WEATHER EXTREMES ── */}
-      <Section bg="darker" title="Weather Extremes"
-        desc="Live temperatures from two of Earth's most extreme inhabited places — Jacobabad and Oymyakon — alongside the climate records that make these places famous: Mawsynram's rainfall, the Atacama's aridity, Wellington's wind and Aomori's snow.">
-        <WorldWeatherExtremes />
-      </Section>
-
-      {/* ── ACTIVE CONFLICTS ── */}
-      <Section bg="dark" title="Active Conflicts"
-        desc="32 armed conflicts are ongoing across the world as you read this. Over 100 million people have been displaced from their homes. These numbers come from United Nations displacement tracking and ACLED conflict monitoring — updated as situations develop. Each region links through to a dedicated page with affected cities, economic impact, and humanitarian data.">
-        <ActiveConflictsWidget />
-      </Section>
-
-      {/* ── ALL FAITHS TODAY ── */}
-      <Section bg="dark" title="Today Across All Calendars"
-        desc="Seven different ways of measuring the same day. The Islamic Hijri, the Gregorian civil calendar, the Hebrew lunisolar system, the Hindu Panchang, the Buddhist Era, the Sikh Nanakshahi, and the Chinese lunar calendar all mark today differently. For the billions of people who live by non-Gregorian systems, today's date in their own tradition matters more than the number on a wall calendar.">
-        <AllFaithsToday />
-      </Section>
-
-      {/* ── HERITAGE SPOTLIGHT ── */}
-      <Section bg="darker" title="Heritage and Famous People"
-        desc="A Lahori Khussa takes seven days of hand-stitching by a craftsman who learned the technique from his father, who learned it from his. A Kashmiri Pashmina shawl takes six months on a handloom. Murano glass has been blown on the same Venetian island since the 13th century. These are the objects and the people that cities are remembered by long after the news cycle has moved on.">
+      {/* ── §18 HERITAGE PRODUCTS — content only, links HOLD ── */}
+      <Section bg="dark" title="Heritage Products"
+        desc="A Lahori Khussa takes seven days of hand-stitching by a craftsman who learned the technique from his father, who learned it from his. A Kashmiri Pashmina shawl takes six months on a handloom. Murano glass has been blown on the same Venetian island since the 13th century. These are the objects cities are remembered by long after the news cycle has moved on.">
         <HeritageSpotlight />
       </Section>
 
-      {/* ── DID YOU KNOW ── */}
-      <Section bg="dark" title="">
-        <DidYouKnow />
+      {/* ── §19 ECONOMY — server slot ── */}
+      <Section bg="darker" title="Economy — Pakistan"
+        desc="Five numbers describe an economy before any headline does: how big it is, how fast it is growing, what inflation is doing to its kitchens, how many of its people are out of work, and how many people it feeds. These are Pakistan's, straight from the World Bank, each with its data year.">
+        {economySlot}
       </Section>
 
-      {/* ── FOOTER ── */}
+      {/* ── §20 SPORTS — server slot ── */}
+      <Section bg="dark" title="Sports"
+        desc="Pakistan plays, and the whole country stops. Cricket first, hockey and football behind it — these are the national teams' next scheduled fixtures from the live sports feed, and the door into sport city by city.">
+        {sportsSlot}
+      </Section>
+
+      {/* ── §21 CONFLICTS — server slot; hub link only ── */}
+      <Section bg="darker" title="Conflicts and Displacement"
+        desc="Behind every conflict headline is a count of people who cannot go home. These are the United Nations' own displacement figures — refugees, the internally displaced, asylum seekers and the stateless — kept current on the conflicts hub with whitelisted sources and a standing peace-efforts record.">
+        {conflictsSlot}
+      </Section>
+
+      {/* ── §22 COMPARE ── */}
+      <Section bg="dark" title="Compare Cities"
+        desc="Two cities, one screen, no arguments left unsettled. Live weather, air quality and prayer times side by side, with a verdict drawn only from measured figures. Start with the classic — Lahore against Karachi — or pick your own pairing from the published cities.">
+        <CompareSection />
+      </Section>
+
+      {/* ── §23 MY LOCATION ── */}
+      <Section bg="darker" title="Your City, Your Page"
+        desc="Everything on this homepage becomes personal on the My Location page: your nearest published city, its weather, its prayers, its rates — computed on your device, never saved anywhere. One tap is the last invitation.">
+        <Link href="/my-location"
+          className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 px-6 py-3 text-sm font-semibold text-white transition-colors no-underline">
+          Open My Location →
+        </Link>
+      </Section>
+
+      {/* ── §24 FOOTER ── */}
       <AboutAndFooter />
     </>
   );

@@ -1,23 +1,36 @@
 'use client';
+
+// Faiths hub panel (§11) — faith cards (content only; the old version
+// linked most cards to /horoscope, which is not a faith page) plus the
+// panel's working doors: today's prayer-times pages for the three
+// published cities (link map §11 — READY). Follower counts are the
+// widely published global estimates, shown as reference, not live data.
+
 import Link from 'next/link';
 
 const FAITHS = [
-  { name: 'Islam',       emoji: '☪️',  followers: '1.9B', color: '#01411C', link: '/pakistan/punjab/lahore/prayer-times', desc: 'Prayer times, Quran, Hajj guidance' },
-  { name: 'Christianity',emoji: '✝️',  followers: '2.4B', color: '#1e3a8a', link: '/horoscope',                           desc: 'Churches, masses, Christian calendar' },
-  { name: 'Hinduism',    emoji: '🕉️',  followers: '1.2B', color: '#FF6B00', link: '/horoscope',                           desc: 'Temples, puja times, festivals' },
-  { name: 'Buddhism',    emoji: '☸️',  followers: '535M', color: '#8B5CF6', link: '/horoscope',                           desc: 'Meditation, temples, Buddhist calendar' },
-  { name: 'Judaism',     emoji: '✡️',  followers: '15M',  color: '#2563EB', link: '/horoscope',                           desc: 'Synagogues, Shabbat, Hebrew calendar' },
-  { name: 'Sikhism',     emoji: '🪯',  followers: '25M',  color: '#F59E0B', link: '/horoscope',                           desc: 'Gurdwaras, Nitnem, Sikh calendar' },
-  { name: 'Others',      emoji: '🌀',  followers: '1.2B', color: '#6B7280', link: '/horoscope',                           desc: 'Indigenous, folk & other traditions' },
+  { name: 'Islam',       emoji: '☪️',  followers: '≈1.9B followers', color: '#01411C', desc: 'Prayer times, Quran, Hajj guidance' },
+  { name: 'Christianity',emoji: '✝️',  followers: '≈2.4B followers', color: '#1e3a8a', desc: 'Churches, masses, Christian calendar' },
+  { name: 'Hinduism',    emoji: '🕉️',  followers: '≈1.2B followers', color: '#FF6B00', desc: 'Temples, puja times, festivals' },
+  { name: 'Buddhism',    emoji: '☸️',  followers: '≈535M followers', color: '#8B5CF6', desc: 'Meditation, temples, Buddhist calendar' },
+  { name: 'Judaism',     emoji: '✡️',  followers: '≈15M followers',  color: '#2563EB', desc: 'Synagogues, Shabbat, Hebrew calendar' },
+  { name: 'Sikhism',     emoji: '🪯',  followers: '≈25M followers',  color: '#F59E0B', desc: 'Gurdwaras, Nitnem, Sikh calendar' },
+  { name: 'Others',      emoji: '🌀',  followers: '≈1.2B followers', color: '#6B7280', desc: 'Indigenous, folk and other traditions' },
+];
+
+const PRAYER_LINKS = [
+  { label: 'Lahore prayer times', href: '/pakistan/punjab/lahore/prayer-times' },
+  { label: 'Karachi prayer times', href: '/pakistan/sindh/karachi/prayer-times' },
+  { label: 'Islamabad prayer times', href: '/pakistan/islamabad-capital-territory/islamabad/prayer-times' },
 ];
 
 export default function ExploreByReligion() {
   return (
     <div className="mb-4">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-5">
         {FAITHS.map((f) => (
-          <Link key={f.name} href={f.link} className="no-underline group">
-            <div className="rounded-2xl border p-4 h-28 flex flex-col justify-between transition-all group-hover:scale-[1.02]"
+          <div key={f.name}>
+            <div className="rounded-2xl border p-4 h-28 flex flex-col justify-between"
               style={{ background: `linear-gradient(135deg, ${f.color}20, #0a0f1e)`, borderColor: `${f.color}30` }}>
               <div className="flex items-center justify-between">
                 <span className="text-3xl">{f.emoji}</span>
@@ -28,6 +41,14 @@ export default function ExploreByReligion() {
                 <div className="text-white/40 text-xs mt-0.5 line-clamp-1">{f.desc}</div>
               </div>
             </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {PRAYER_LINKS.map((l) => (
+          <Link key={l.href} href={l.href}
+            className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/25 text-emerald-300 text-sm font-medium hover:bg-emerald-500/20 transition-colors no-underline">
+            {l.label} →
           </Link>
         ))}
       </div>
