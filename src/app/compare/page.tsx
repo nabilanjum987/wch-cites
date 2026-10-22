@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import CompareTool from '@/components/compare/CompareTool';
 import CompareView from '@/components/compare/CompareView';
-import { getPairCompare, POPULAR_PAIRS, findCompareCity } from '@/lib/compare';
+import { getPairCompare, POPULAR_PAIRS, findCompareCity, PROVINCE_PAIRS, findProvince } from '@/lib/compare';
 
 export const revalidate = 3600;
 
@@ -44,6 +44,36 @@ export default async function ComparePage() {
       ) : (
         <p className="text-sm text-gray-400">Live comparison data is unavailable right now — please try again shortly.</p>
       )}
-    </main>
+    
+      <section className="mt-10">
+        <h2 className="text-lg font-semibold text-white">Province vs province — 2023 census figures</h2>
+        <p className="mt-1 max-w-2xl text-sm text-gray-400">
+          The same census figure set for both sides (Pakistan Bureau of Statistics, 2023), plus live weather in each capital.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {PROVINCE_PAIRS.map(([x, y]) => (
+            <Link
+              key={`${x}-${y}`}
+              href={`/compare/${x}-vs-${y}`}
+              className="rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20"
+            >
+              {findProvince(x)!.name} vs {findProvince(y)!.name}
+            </Link>
+          ))}
+        </div>
+        <h2 className="mt-8 text-lg font-semibold text-white">Country vs country — World Bank</h2>
+        <p className="mt-1 max-w-2xl text-sm text-gray-400">
+          One dataset, both sides: a figure appears only where Pakistan and India report the same World Bank indicator.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href="/compare/pakistan-vs-india"
+            className="rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20"
+          >
+            Pakistan vs India
+          </Link>
+        </div>
+      </section>
+</main>
   );
 }
