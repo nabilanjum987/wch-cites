@@ -151,11 +151,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!p) return { title: 'Personality Not Found | WorldCityHub' };
   return {
     title: `${p.name} — ${p.title} | WorldCityHub`,
-    description: p.description.slice(0, 160),
+    description: p.description.slice(0, 155),
     alternates: { canonical: `https://worldcityhub.vercel.app/personalities/${slug}` },
     openGraph: {
       title: `${p.name} | WorldCityHub`,
-      description: p.description.slice(0, 160),
+      description: p.description.slice(0, 155),
       images: p.imageUrl ? [{ url: p.imageUrl }] : [],
     },
   };

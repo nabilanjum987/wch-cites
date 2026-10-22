@@ -8,7 +8,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Contact WorldCityHub | WorldCityHub',
   description:
-    'Contact WorldCityHub: report a wrong figure, suggest missing information or a new place through the improvement form — every suggestion is reviewed by a human.',
+    'Report a wrong figure, suggest missing information or a new place through the WorldCityHub improvement form — every suggestion is reviewed by a human.',
   alternates: { canonical: 'https://worldcityhub.vercel.app/contact' },
   openGraph: {
     title: 'Contact WorldCityHub | WorldCityHub',

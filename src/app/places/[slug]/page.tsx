@@ -152,12 +152,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const place = await getPlace(slug);
   if (!place) return { title: 'Place Not Found | WorldCityHub' };
   return {
-    title: `${place.name}, ${place.city} — Visitor Guide, History & Tips | WorldCityHub`,
-    description: place.description.slice(0, 160),
+    title: `${place.name}, ${place.city} — Visitor Guide | WorldCityHub`,
+    description: place.description.slice(0, 155),
     alternates: { canonical: `https://worldcityhub.vercel.app/places/${slug}` },
     openGraph: {
       title: `${place.name} | WorldCityHub`,
-      description: place.description.slice(0, 160),
+      description: place.description.slice(0, 155),
       images: place.imageUrl ? [{ url: place.imageUrl }] : [],
     },
   };
