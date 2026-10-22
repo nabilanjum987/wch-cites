@@ -28,6 +28,7 @@ const footerLinks = {
     { label: 'Terms of Use', href: '/terms' },
     { label: 'Data Sources', href: '/sources' },
     { label: 'Contact Us', href: '/contact' },
+    { label: 'Improve WCH', href: '/improve' },
   ],
 };
 
