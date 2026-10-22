@@ -55,7 +55,7 @@ function mapGNewsArticle(a: any, category: string, country: string, language: st
   };
 }
 
-async function gnewsSearch(
+export async function gnewsSearch(
   query: string,
   language: string,
   max: number,
