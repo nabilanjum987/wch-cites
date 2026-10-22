@@ -89,7 +89,12 @@ const PACKAGE_CITY_FALLBACK: Record<string, City> = {
 };
 
 export async function getCityCompare(ref: CompareCityRef): Promise<CityCompareData | null> {
-  const city = (await getCityData(ref.countrySlug, ref.provinceSlug, ref.citySlug)) ?? PACKAGE_CITY_FALLBACK[ref.citySlug] ?? null;
+  // The city DB carries zeroed stub rows for unpublished cities (population 0,
+  // coords 0,0, "waiting to be discovered"): a stub is not data. A verified
+  // package outranks a stub; a real DB row outranks the package.
+  const dbCity = await getCityData(ref.countrySlug, ref.provinceSlug, ref.citySlug);
+  const isStub = dbCity != null && (dbCity.population === 0 || (dbCity.lat === 0 && dbCity.lng === 0));
+  const city = (!isStub && dbCity) || PACKAGE_CITY_FALLBACK[ref.citySlug] || dbCity;
   if (!city) return null;
   const [w, aqiData, prayerDay] = await Promise.all([
     fetchWeatherData(city.lat, city.lng).catch(() => null),
