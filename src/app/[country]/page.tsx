@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import CountryPage from './CountryClient';
+import CountryInventory from '@/components/shared/CountryInventory';
+import ImproveCTA from '@/components/shared/ImproveCTA';
 
 // Server wrapper: the interactive country page lives in CountryClient.tsx.
 // Metadata must be exported from a server component, so it lives here —
@@ -26,6 +28,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function Page() {
-  return <CountryPage />;
+export default async function Page({ params }: PageProps) {
+  const p = await params;
+  return (
+    <>
+      <CountryPage />
+      <CountryInventory countrySlug={p.country} />
+      <ImproveCTA country={p.country} label={titleCase(p.country)} />
+    </>
+  );
 }

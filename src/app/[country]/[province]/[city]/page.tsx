@@ -7,6 +7,7 @@
 import type { Metadata } from 'next';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import Link from 'next/link';
+import ImproveCTA from '@/components/shared/ImproveCTA';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { generateCityMeta, generateCitySchema } from '@/lib/seo/cityMeta';
 import {
@@ -1030,6 +1031,8 @@ export default async function CityPage({
 
         </div>
       </main>
+
+      <ImproveCTA country={resolvedParams.country} city={resolvedParams.city} label={cityParams.city} />
 
       {/* Live clock script */}
       <script

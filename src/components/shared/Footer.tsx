@@ -26,6 +26,7 @@ const footerLinks = {
     { label: 'Privacy Policy', href: '#' },
     { label: 'Terms of Service', href: '#' },
     { label: 'Contact', href: '#' },
+    { label: 'Improve WCH', href: '/improve' },
     { label: 'Sitemap', href: '#' },
   ],
 };
