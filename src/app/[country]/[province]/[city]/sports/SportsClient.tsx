@@ -767,25 +767,15 @@ function NewsCard({ article }: { article: SportsNews }) {
 function AffiliateSection() {
   const affiliates = [
     {
+      // Q11: two cards here linked to href="#" (dead links, Link Law
+      // L5) and this card claimed an unverifiable "Flat 8% off" — the
+      // dead cards are removed and the claim is gone. Only cards with
+      // a real destination remain.
       title: 'Buy Cricket Gear',
-      subtitle: 'Flat 8% off on Amazon',
+      subtitle: 'Cricket gear on Amazon',
       icon: '🏏',
       url: `https://www.amazon.com/s?k=cricket+gear&tag=worldcityhub-20`,
       bg: 'from-amber-50 to-orange-50',
-    },
-    {
-      title: 'Watch Live Cricket',
-      subtitle: 'Stream matches online',
-      icon: '📺',
-      url: '#',
-      bg: 'from-blue-50 to-indigo-50',
-    },
-    {
-      title: 'Fantasy Cricket',
-      subtitle: 'Play & win on Dream11',
-      icon: '🏆',
-      url: '#',
-      bg: 'from-purple-50 to-pink-50',
     },
     {
       title: 'Match Tickets',

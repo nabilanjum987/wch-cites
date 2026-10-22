@@ -92,7 +92,10 @@ export function generateCitySchema(props: CityMetaProps) {
         "name": `What is ${city} famous for?`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `${city} is famous for its Mughal-era monuments (Badshahi Mosque, Lahore Fort, Shalimar Gardens), its rich food culture (nihari, karahi, street food of Food Street), its literary and artistic heritage (Allama Iqbal, Faiz Ahmed Faiz), and its role as Pakistan's cultural capital. The city is also Pakistan's second-largest economic hub and home to top universities including LUMS and Punjab University.`
+          // Q11: this answer previously hard-coded LAHORE's landmarks,
+          // people and "cultural capital" claim into every city's
+          // schema. It is now city-neutral and factual for any city.
+          "text": `${city} is known for its historic landmarks, its food culture, and its people — poets, athletes, scholars and artists who shaped ${props.country ?? 'the country'}. The Famous Places and Famous People sections of this page list the highlights for ${city}, and the full city guide covers its economy, events and daily life.`
         }
       },
       {
@@ -100,7 +103,9 @@ export function generateCitySchema(props: CityMetaProps) {
         "name": `What is the population of ${city} in ${year}?`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `${city}'s population in ${year} is estimated at over 13 million in the metropolitan area, making it Pakistan's second-largest city after Karachi. The city's population has grown rapidly due to rural-to-urban migration and a high birth rate, with growth projected to continue through 2040.`
+          "text": props.population
+            ? `${city}'s population is ${props.population} (city dataset figure). Like most large cities in the region it continues to grow through rural-to-urban migration and natural increase.`
+            : `${city} is one of the larger cities of ${props.country ?? 'its country'}, and continues to grow through rural-to-urban migration and natural increase.`
         }
       },
       {
@@ -108,7 +113,7 @@ export function generateCitySchema(props: CityMetaProps) {
         "name": `What language is spoken in ${city}?`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `The primary languages spoken in ${city} are Punjabi (the mother tongue of the majority of residents) and Urdu (the national language used in education, government, and media). English is widely used in business, universities, and upscale neighbourhoods. Many residents are multilingual, switching between Punjabi, Urdu, and English in daily life.`
+          "text": `Urdu (the national language, used in education, government and media) and the regional language of ${props.province ?? 'the province'} are the primary languages spoken in ${city}. English is widely used in business, universities and government. Many residents are multilingual and switch between languages in daily life.`
         }
       },
       {
@@ -175,7 +180,9 @@ export function generateCitySchema(props: CityMetaProps) {
         "name": country
       }
     },
-    "description": `${city} is the capital of ${province}, ${country}. A major cultural, economic, and historical centre with a population of over 13 million.`,
+    "description": props.population
+      ? `${city} is the capital of ${province}, ${country}. A major cultural, economic, and historical centre with a population of ${props.population}.`
+      : `${city} is the capital of ${province}, ${country}. A major cultural, economic, and historical centre.`,
     "url": `https://worldcityhub.vercel.app/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`
   };
 

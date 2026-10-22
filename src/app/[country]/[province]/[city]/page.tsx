@@ -78,6 +78,62 @@ function getCityParams(country: string, province: string, city: string): CityPar
   return CITY_DB[key] ?? null;
 }
 
+// ─── Q11 AUDIT FIXES ─────────────────────────────────────────────────────────
+// Per-city "at a glance" facts. Until now EVERY city printed Lahore's
+// values (population 13M+, area 1,772 km², elevation 217 m). Populations
+// are the site's own collected dataset values (pakistan_cities.csv,
+// GeoNames-shaped); areas are district/territory areas; elevations are
+// the cities' standard published figures.
+const GLANCE: Record<string, { population: string; area: string; elevation: string; languages: string; founded: string }> = {
+  'pakistan/punjab/lahore': { population: '13,004,135', area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
+  'pakistan/sindh/karachi': { population: '11,624,219', area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
+  'pakistan/islamabad-capital-territory/islamabad': { population: '601,600', area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
+  'pakistan/punjab/faisalabad': { population: '3,800,193', area: '5,856', elevation: '184', languages: 'Urdu, Punjabi', founded: '1892' },
+  'pakistan/punjab/rawalpindi': { population: '3,357,612', area: '5,286', elevation: '508', languages: 'Urdu, Punjabi, Potohari', founded: 'antiquity' },
+};
+
+// Nearby cities: only cities whose full pages render (the old list
+// linked to Coming Soon shells — Gujranwala, Sialkot, Multan — from
+// every city, with Lahore's distances). Distances are straight-line,
+// computed from the canonical coordinates in CITY_DB above.
+const NEARBY_KEYS: Record<string, string[]> = {
+  'pakistan/punjab/lahore': ['pakistan/islamabad-capital-territory/islamabad', 'pakistan/punjab/faisalabad', 'pakistan/punjab/rawalpindi', 'pakistan/sindh/karachi'],
+  'pakistan/sindh/karachi': ['pakistan/punjab/lahore', 'pakistan/islamabad-capital-territory/islamabad'],
+  'pakistan/islamabad-capital-territory/islamabad': ['pakistan/punjab/rawalpindi', 'pakistan/punjab/lahore', 'pakistan/punjab/faisalabad'],
+  'pakistan/punjab/faisalabad': ['pakistan/punjab/lahore', 'pakistan/islamabad-capital-territory/islamabad'],
+  'pakistan/punjab/rawalpindi': ['pakistan/islamabad-capital-territory/islamabad', 'pakistan/punjab/lahore'],
+};
+
+function haversineKm(a: CityParams, b: CityParams): number {
+  const R = 6371;
+  const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+  const dLon = ((b.lon - a.lon) * Math.PI) / 180;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos((a.lat * Math.PI) / 180) * Math.cos((b.lat * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+// Compare chips: ONLY the pairs actually published in /compare (the old
+// chips linked to lahore-vs-dubai, lahore-vs-mumbai, lahore-vs-london
+// and a wrong-order lahore-vs-faisalabad — all dead ends).
+const COMPARE_LINKS: Record<string, { label: string; pair: string }[]> = {
+  lahore: [
+    { label: 'Karachi', pair: 'lahore-vs-karachi' },
+    { label: 'Islamabad', pair: 'lahore-vs-islamabad' },
+    { label: 'Faisalabad', pair: 'faisalabad-vs-lahore' },
+  ],
+  karachi: [
+    { label: 'Lahore', pair: 'lahore-vs-karachi' },
+    { label: 'Islamabad', pair: 'karachi-vs-islamabad' },
+  ],
+  islamabad: [
+    { label: 'Lahore', pair: 'lahore-vs-islamabad' },
+    { label: 'Karachi', pair: 'karachi-vs-islamabad' },
+    { label: 'Rawalpindi', pair: 'rawalpindi-vs-islamabad' },
+  ],
+  faisalabad: [{ label: 'Lahore', pair: 'faisalabad-vs-lahore' }],
+  rawalpindi: [{ label: 'Islamabad', pair: 'rawalpindi-vs-islamabad' }],
+};
+
 function toTitleCase(slug: string): string {
   return slug
     .split('-')
@@ -188,6 +244,14 @@ export default async function CityPage({
   const country = cityParams.country;
   const province = cityParams.province;
   const city = cityParams.city;
+  const cityKey = `${countrySlug}/${provinceSlug}/${citySlug}`;
+  const glance = GLANCE[cityKey];
+  const nearbyCities = (NEARBY_KEYS[cityKey] ?? []).flatMap((key) => {
+    const target = CITY_DB[key];
+    if (!target) return [];
+    const km = haversineKm(cityParams, target);
+    return [{ name: target.city, dist: `~${Math.max(5, Math.round(km / 5) * 5)} km`, slug: key }];
+  });
 
   const data = await fetchAllCityData(cityParams);
 
@@ -254,6 +318,7 @@ export default async function CityPage({
     province: province,
     temp, weatherDesc, fajr: timings?.Fajr, maghrib: timings?.Maghrib,
     goldPerGram,
+    population: glance?.population ?? null,
   });
 
 
@@ -390,7 +455,7 @@ export default async function CityPage({
               </div>
             ) : (
               <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                Live weather data loading... Check back in a moment.
+                Live weather is unavailable right now. The full weather page shows the latest conditions.
               </div>
             )}
 
@@ -521,7 +586,7 @@ export default async function CityPage({
               </div>
             ) : (
               <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                Prayer times loading...
+                Prayer times are unavailable right now. The full timetable is on the Prayer Times page.
               </div>
             )}
             <p className="text-gray-400 leading-relaxed text-sm">
@@ -557,7 +622,7 @@ export default async function CityPage({
               </div>
             ) : (
               <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                Gold rates loading...
+                Gold rates are unavailable right now. The full rates page shows the latest prices.
               </div>
             )}
 
@@ -617,7 +682,7 @@ export default async function CityPage({
               </div>
             ) : (
               <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                News articles loading...
+                News is unavailable right now. The full news page has the latest headlines.
               </div>
             )}
             <p className="text-gray-400 leading-relaxed text-sm">
@@ -730,12 +795,12 @@ export default async function CityPage({
                 {generatePersonalitiesParagraph(city)}
               </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              {[
+              {(citySlug === 'lahore' ? [
                 { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal' },
                 { name: 'Faiz Ahmed Faiz', role: 'Poet', slug: 'faiz-ahmed-faiz' },
                 { name: 'Nusrat Fateh Ali Khan', role: 'Qawwali Singer', slug: 'nusrat-fateh-ali-khan' },
                 { name: 'Wasim Akram', role: 'Cricketer', slug: 'wasim-akram' },
-              ].map((p) => (
+              ] : []).map((p) => (
                 <a
                   key={p.slug}
                   href={`/personalities/${p.slug}`}
@@ -763,14 +828,14 @@ export default async function CityPage({
                 {generatePlacesParagraph(city)}
               </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {[
+              {(citySlug === 'lahore' ? [
                 { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque-lahore' },
                 { name: 'Lahore Fort', type: 'UNESCO Heritage', slug: 'lahore-fort' },
                 { name: 'Shalimar Gardens', type: 'Mughal Gardens', slug: 'shalimar-gardens-lahore' },
                 { name: 'Data Darbar', type: 'Sufi Shrine', slug: 'data-darbar-lahore' },
                 { name: 'Walled City', type: 'Historic District', slug: 'walled-city-lahore' },
                 { name: 'Lahore Museum', type: 'Museum', slug: 'lahore-museum' },
-              ].map((place) => (
+              ] : []).map((place) => (
                 <a
                   key={place.slug}
                   href={`/places/${place.slug}`}
@@ -793,14 +858,14 @@ export default async function CityPage({
               🧶 Heritage Products of {city}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-              {[
+              {(citySlug === 'lahore' ? [
                 { name: 'Phulkari Embroidery', slug: 'phulkari-lahore' },
                 { name: 'Lahori Chappals', slug: 'lahori-chappals' },
                 { name: 'Hand-knotted Rugs', slug: 'lahore-rugs' },
                 { name: 'Kashmiri Shawls', slug: 'kashmiri-shawls-lahore' },
                 { name: 'Lacquerware', slug: 'lahore-lacquerware' },
                 { name: 'Brass & Copperware', slug: 'lahore-brassware' },
-              ].map((p) => (
+              ] : []).map((p) => (
                 <a
                   key={p.slug}
                   href={`/products/${p.slug}`}
@@ -825,7 +890,7 @@ export default async function CityPage({
               🍛 Street Food of {city}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              {['Nihari', 'Seekh Kebabs', 'Paye', 'Halwa Puri', 'Brain Masala', 'Karahi', 'Jalebi', 'Murgh Cholay'].map((dish) => (
+              {(citySlug === 'lahore' ? ['Nihari', 'Seekh Kebabs', 'Paye', 'Halwa Puri', 'Brain Masala', 'Karahi', 'Jalebi', 'Murgh Cholay'] : []).map((dish) => (
                 <div key={dish} className="rounded-xl p-3 text-center text-sm font-medium border" style={{ backgroundColor: 'rgba(249,115,22,0.1)', borderColor: 'rgba(249,115,22,0.3)', color: '#fb923c' }}>
                   {dish}
                 </div>
@@ -873,7 +938,7 @@ export default async function CityPage({
           {/* ══ SECTION 16: NATURAL RESOURCES ════════════════════════════════ */}
           <section id="resources" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              ⛏ Natural Resources of {province}
+              ⛏ Natural Resources of {country}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {['Salt (Khewra Mines)', 'Coal (Balochistan)', 'Natural Gas', 'Limestone', 'Marble', 'Gypsum', 'Silica Sand', 'Iron Ore'].map((r) => (
@@ -889,12 +954,14 @@ export default async function CityPage({
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {[
-                { label: 'Population', value: '13M+' },
-                { label: 'Area', value: '1,772 km²' },
-                { label: 'Elevation', value: '217 m' },
+                ...(glance ? [
+                  { label: 'Population', value: glance.population },
+                  { label: 'Area', value: `${glance.area} km²` },
+                  { label: 'Elevation', value: `${glance.elevation} m` },
+                ] : []),
                 { label: 'Province', value: province },
                 { label: 'Time Zone', value: 'PKT (UTC+5)' },
-                { label: 'Languages', value: 'Urdu, Punjabi' },
+                ...(glance ? [{ label: 'Languages', value: glance.languages }] : []),
               ].map((item) => (
                 <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.2)' }}>
                   <div className="text-xs text-gray-500">{item.label}</div>
@@ -903,7 +970,7 @@ export default async function CityPage({
               ))}
             </div>
             <p className="text-gray-400 leading-relaxed text-sm">
-              {generateCityGlanceParagraph(city, country, province, '1,772', '217', 'antiquity')}
+              {glance ? generateCityGlanceParagraph(city, country, province, glance.area, glance.elevation, glance.founded) : generateCityGlanceAfter(city, country)}
             </p>
             <p className="mt-4 text-gray-500 leading-relaxed text-sm">
               {generateCityGlanceAfter(city, country)}
@@ -916,14 +983,7 @@ export default async function CityPage({
               🗺 Nearby Cities
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-              {[
-                { name: 'Islamabad', dist: '280 km', slug: 'pakistan/islamabad-capital-territory/islamabad' },
-                { name: 'Faisalabad', dist: '130 km', slug: 'pakistan/punjab/faisalabad' },
-                { name: 'Gujranwala', dist: '80 km', slug: 'pakistan/punjab/gujranwala' },
-                { name: 'Rawalpindi', dist: '280 km', slug: 'pakistan/punjab/rawalpindi' },
-                { name: 'Sialkot', dist: '130 km', slug: 'pakistan/punjab/sialkot' },
-                { name: 'Multan', dist: '340 km', slug: 'pakistan/punjab/multan' },
-              ].map((c) => (
+              {nearbyCities.map((c) => (
                 <a
                   key={c.name}
                   href={`/${c.slug}`}
@@ -967,13 +1027,13 @@ export default async function CityPage({
               ⚖️ Compare {city} with Another City
             </h2>
             <div className="flex gap-3 flex-wrap">
-              {['Karachi', 'Islamabad', 'Faisalabad', 'Dubai', 'Mumbai', 'London'].map((c) => (
+              {(COMPARE_LINKS[citySlug] ?? []).map((c) => (
                 <a
-                  key={c}
-                  href={`/compare/${city.toLowerCase()}-vs-${c.toLowerCase()}`}
+                  key={c.pair}
+                  href={`/compare/${c.pair}`}
                   className="text-sm px-4 py-2 rounded-full transition border border-green-500/30 hover:border-green-400/60 hover:bg-green-500/20 text-gray-300 hover:text-white"
                 >
-                  {city} vs {c}
+                  {city} vs {c.label}
                 </a>
               ))}
             </div>

@@ -93,9 +93,29 @@ const PROVINCES: Record<string, Province> = {
     heroImage: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=1600',
     lat: 34.9526, lng: 72.3311,
   },
+  // Added in Q11: this entry was MISSING, and the lookup below silently
+  // fell back to Punjab — so /pakistan/islamabad-capital-territory
+  // rendered Punjab's name, capital and stats under an ICT URL.
+  // Population: 2023 census (PBS). Area: 906 km² (capital territory).
+  'pakistan/islamabad-capital-territory': {
+    name: 'Islamabad Capital Territory', slug: 'islamabad-capital-territory', capital: 'Islamabad',
+    population: 2363863, area: 906,
+    tagline: 'Federal capital territory — seat of government',
+    knownFor: 'Government, Diplomacy, Margalla Hills, Education',
+    gdpPct: '—', literacyRate: '89%', climate: 'Humid subtropical',
+    majorFaith: 'Islam', majorFaithPct: 96,
+    established: '1960 (capital territory)', universities: 30,
+    country: 'Pakistan', countrySlug: 'pakistan', countryCode: 'PK',
+    primaryColor: '#0C7A3D',
+    heroImage: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    lat: 33.7294, lng: 73.0931,
+  },
 };
 
 const PROVINCE_CITIES: Record<string, City[]> = {
+  'islamabad-capital-territory': [
+    { name: 'Islamabad', slug: 'islamabad', population: 1014825, temp: 28, condition: 'Pleasant', icon: '🌤️' },
+  ],
   punjab: [
     { name: 'Lahore',      slug: 'lahore',      population: 14000000, temp: 35, condition: 'Hot',      icon: '☀️' },
     { name: 'Faisalabad',  slug: 'faisalabad',  population: 3600000,  temp: 36, condition: 'Hot',      icon: '☀️' },
@@ -123,6 +143,10 @@ const PROVINCE_CITIES: Record<string, City[]> = {
 };
 
 const DIVISIONS: Record<string, Division[]> = {
+  'islamabad-capital-territory': [
+    { name: 'Islamabad Zones', slug: 'zones', districts: ['Zone I', 'Zone II', 'Zone III', 'Zone IV', 'Zone V'] },
+    { name: 'Rural Islamabad', slug: 'rural-islamabad', districts: ['Bhara Kahu', 'Tarlai', 'Sihala', 'Nilore'] },
+  ],
   punjab: [
     { name: 'Lahore Division',      slug: 'lahore-division',      districts: ['Lahore', 'Sheikhupura', 'Kasur', 'Nankana Sahib'] },
     { name: 'Faisalabad Division',  slug: 'faisalabad-division',  districts: ['Faisalabad', 'Jhang', 'Toba Tek Singh', 'Chiniot'] },
@@ -153,6 +177,13 @@ const DIVISIONS: Record<string, Division[]> = {
 };
 
 const INDUSTRIES: Record<string, Industry[]> = {
+  'islamabad-capital-territory': [
+    { name: 'Government & Administration', icon: '🏛️', description: 'Federal ministries, parliament, the judiciary and foreign missions are headquartered in the capital.', city: 'Islamabad' },
+    { name: 'Information Technology', icon: '💻', description: 'A growing software and telecom sector, anchored by the National Incubation Center and IT parks.', city: 'Islamabad' },
+    { name: 'Education & Research', icon: '🎓', description: 'Quaid-i-Azam University, NUST, COMSATS and IIUI anchor a dense higher-education cluster.', city: 'Islamabad' },
+    { name: 'Pharmaceuticals', icon: '💊', description: 'National pharmaceutical manufacturers operate plants in the territory\'s industrial zones.', city: 'Islamabad' },
+    { name: 'Tourism & Hospitality', icon: '🏨', description: 'Margalla Hills trailheads, Saidpur Village and Daman-e-Koh draw visitors year-round.', city: 'Islamabad' },
+  ],
   punjab: [
     { name: 'Textiles', icon: '🧵', description: 'Largest textile industry in Pakistan — 60% of national output', city: 'Faisalabad' },
     { name: 'Agriculture', icon: '🌾', description: 'Wheat, rice, sugarcane, cotton — breadbasket of Pakistan', city: 'Province-wide' },
@@ -203,6 +234,14 @@ const PRODUCTS: Record<string, Product[]> = {
 };
 
 const LANDMARKS: Record<string, Landmark[]> = {
+  'islamabad-capital-territory': [
+    { name: 'Faisal Mosque', city: 'Islamabad', era: 'Modern 1986', unesco: false, image: 'https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=600' },
+    { name: 'Pakistan Monument', city: 'Islamabad', era: 'Modern 2007', unesco: false, image: 'https://images.pexels.com/photos/2846217/pexels-photo-2846217.jpeg?auto=compress&cs=tinysrgb&w=600' },
+    { name: 'Margalla Hills National Park', city: 'Islamabad', era: 'Natural', unesco: false, image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=600' },
+    { name: 'Daman-e-Koh', city: 'Islamabad', era: 'Viewpoint', unesco: false, image: 'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=600' },
+    { name: 'Rawal Lake', city: 'Islamabad', era: '1960s', unesco: false, image: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=600' },
+    { name: 'Lok Virsa Museum', city: 'Islamabad', era: '1974', unesco: false, image: 'https://images.pexels.com/photos/208371/pexels-photo-208371.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  ],
   punjab: [
     { name: 'Badshahi Mosque', city: 'Lahore', era: 'Mughal 1673', unesco: false, image: 'https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=600' },
     { name: 'Lahore Fort (Shahi Qila)', city: 'Lahore', era: 'Mughal 1566', unesco: true, image: 'https://images.pexels.com/photos/2846217/pexels-photo-2846217.jpeg?auto=compress&cs=tinysrgb&w=600' },
@@ -226,6 +265,11 @@ const LANDMARKS: Record<string, Landmark[]> = {
 };
 
 const FOODS: Record<string, Food[]> = {
+  'islamabad-capital-territory': [
+    { name: 'Savour Pulao', emoji: '🍚', description: 'The city\'s signature pulao kabab with raita and salad — an Islamabad institution.', origin: 'Islamabad' },
+    { name: 'Kabab & Tikka', emoji: '🍢', description: 'Charcoal-grilled kababs and tikkas at the Jinnah Super and F-7 food streets.', origin: 'Islamabad' },
+    { name: 'Saidpur Village Dining', emoji: '🍽️', description: 'Traditional and continental restaurants in a restored village at the foot of the Margalla Hills.', origin: 'Saidpur, Islamabad' },
+  ],
   punjab: [
     { name: 'Saag & Makki di Roti', emoji: '🥬', description: 'Mustard greens slow-cooked with butter, served with corn flatbread — the soul of Punjab.', origin: 'Province-wide' },
     { name: 'Lahori Chargha', emoji: '🍗', description: 'Whole chicken marinated overnight in spices, steamed then deep-fried. A Lahore legend.', origin: 'Lahore' },
@@ -249,6 +293,12 @@ const FOODS: Record<string, Food[]> = {
 };
 
 const RESOURCES: Record<string, Resource[]> = {
+  'islamabad-capital-territory': [
+    { name: 'Margalla Hills National Park', icon: '🌲', rank: 'Protected national park', description: 'A protected Himalayan-foothill ecosystem of forest, trails and wildlife directly behind the capital.' },
+    { name: 'Limestone & Marble', icon: '🪨', rank: 'Quarried locally', description: 'Margalla limestone feeds the capital region\'s cement and construction industry.' },
+    { name: 'Rawal Lake Water', icon: '💧', rank: 'Reservoir', description: 'The Rawal Dam reservoir supplies drinking water to Islamabad and Rawalpindi.' },
+    { name: 'Urban Forest Cover', icon: '🌳', rank: 'Among Pakistan\'s greenest cities', description: 'Planned green belts, the Margalla forest and tree-lined sectors give the territory exceptional green cover.' },
+  ],
   punjab: [
     { name: 'Fertile Agricultural Land', icon: '🌾', rank: 'World class', description: 'Punjab\'s alluvial plains fed by 5 rivers are among the most productive farmland on earth.' },
     { name: 'Indus River System', icon: '🌊', rank: 'Top 10 globally', description: 'Five major rivers — Indus, Jhelum, Chenab, Ravi, Sutlej — irrigate the entire province.' },
@@ -295,6 +345,12 @@ const PERSONALITIES: Record<string, Personality[]> = {
 };
 
 const EVENTS: Record<string, { name: string; date: string; type: string; city: string }[]> = {
+  'islamabad-capital-territory': [
+    { name: 'Pakistan Day Parade', date: '23 March', type: 'National', city: 'Islamabad' },
+    { name: 'Islamabad Literature Festival', date: 'April', type: 'Cultural', city: 'Islamabad' },
+    { name: 'Lok Virsa Folk Festival', date: 'Annual', type: 'Cultural', city: 'Islamabad' },
+    { name: 'Islamabad Marathon', date: 'January', type: 'Sports', city: 'Islamabad' },
+  ],
   punjab: [
     { name: 'Lahore Literary Festival', date: 'February', type: 'Cultural', city: 'Lahore' },
     { name: 'PSL Finals', date: 'March–April', type: 'Sports', city: 'Lahore' },
@@ -377,8 +433,13 @@ export default function ProvincePage() {
   // Same pattern as the country page: local synchronous template data is
   // initialized up front so the server render is the full page, not a
   // "Loading..." shell. The effect below still handles navigation.
-  const initialProv = PROVINCES[`${params.country}/${params.province}`] || PROVINCES['pakistan/punjab'];
-  const [province, setProvince] = useState<Province | null>(initialProv);
+  // Q11 fix: an unregistered province must NOT silently render another
+  // province's data (that is how ICT showed Punjab). It now lands on
+  // the honest "guide in preparation" state below. initialProv is kept
+  // only to initialise the section hooks safely.
+  const requestedProv = PROVINCES[`${params.country}/${params.province}`];
+  const initialProv = requestedProv ?? PROVINCES['pakistan/punjab'];
+  const [province, setProvince] = useState<Province | null>(requestedProv ?? null);
   const [cities, setCities] = useState<City[]>(PROVINCE_CITIES[initialProv.slug] || []);
   const [liveCities, setLiveCities] = useState<SupabaseCity[]>([]);
   const [liveCitiesLoading, setLiveCitiesLoading] = useState(true);
@@ -398,7 +459,8 @@ export default function ProvincePage() {
 
   useEffect(() => {
     const key = `${params.country}/${params.province}`;
-    const prov = PROVINCES[key] || PROVINCES['pakistan/punjab'];
+    const prov = PROVINCES[key];
+    if (!prov) { setProvince(null); return; }
     setProvince(prov);
     setCities(PROVINCE_CITIES[prov.slug] || []);
     setDivisions(DIVISIONS[prov.slug] || []);
@@ -468,8 +530,9 @@ export default function ProvincePage() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0f1e' }}>
         <div className="text-center">
           <div className="text-6xl mb-4">🗺️</div>
-          <h1 className="text-white text-2xl font-bold mb-2">Province not found</h1>
-          <Link href="/" className="text-indigo-400 hover:text-indigo-300">← Back to homepage</Link>
+          <h1 className="text-white text-2xl font-bold mb-2">Province guide in preparation</h1>
+          <p className="text-white/60 mb-4">The full guide for this province is being built. Explore the live provinces on the Pakistan country page.</p>
+          <Link href="/pakistan" className="text-indigo-400 hover:text-indigo-300">← Back to Pakistan</Link>
         </div>
       </div>
     );
