@@ -159,8 +159,8 @@ export default async function CountriesPage({
             </p>
             <p className="text-white/60 max-w-2xl mb-6 leading-relaxed">
               The local time in each capital is calculated from its IANA time zone, and every temperature is
-              read in a single Open-Meteo request covering all capitals at once — the same weather service
-              that powers this site&apos;s city pages. When a temperature cannot be read, the table shows a
+              read in a single Open-Meteo request covering all capitals at once — the same Open-Meteo service
+              behind the live panels on this site&apos;s homepage. When a temperature cannot be read, the table shows a
               dash rather than a guess. Start with the guide that is complete today:{' '}
               <Link href="/pakistan" className="text-cyan-300 underline">Pakistan</Link>, with full city guides
               for <Link href="/pakistan/punjab/lahore" className="text-cyan-300 underline">Lahore</Link>,{' '}
@@ -177,8 +177,8 @@ export default async function CountriesPage({
             <p className="text-white/60 max-w-2xl mb-6 leading-relaxed">
               Every full guide follows the same template, proven first on Pakistan: an overview of the
               country, its provinces and its cities — and for each city the same family of pages covering
-              weather, prayer times, rates, news, economy, sports, events, horoscope and notable
-              personalities. The figures come from the public sources named on each page — the World Bank
+              weather, prayer times, rates, news, economy, sports and events, plus sections on the
+              city&apos;s notable personalities and famous places. The figures come from the public sources named on each page — the World Bank
               for economy indicators, Open-Meteo and OpenWeatherMap for weather, Aladhan for prayer times,
               CoinGecko for gold and crypto — never from a writer&apos;s imagination.
             </p>

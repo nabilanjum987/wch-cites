@@ -329,8 +329,8 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                 Pakistan trades and remits in, world stock indices and the World Bank&apos;s country
                 indicators. Every figure is fetched from a named public source — every figure is fetched from a named source —{' '}
                 <a href="/sources" className="text-amber-300 underline">the full list is published here</a> — and when a
-                feed is down, its section says so honestly instead of showing yesterday&apos;s number as
-                today&apos;s.
+                feed is down, its section is left out or reports itself unavailable instead of showing
+                yesterday&apos;s number as today&apos;s.
               </p>
             </div>
 
