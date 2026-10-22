@@ -83,29 +83,49 @@ function ensureDescription(profile: PersonalityProfile): PersonalityProfile {
   return { ...profile, description: fallbackDescription(profile) };
 }
 
+// ── Row-shape coercion (CARD 0.1 build fix, 2026-10-22) ────────────────────
+// Production rows come from the OLD personalities table, whose array
+// columns are plain text: achievements / timeline / works / quotes /
+// description_sections / sources can arrive as strings (or other
+// non-arrays). `?? []` only guards null — a string passes straight
+// through and the detail page dies prerendering on `.map`. So EVERY
+// array field is coerced here, at the single mapping point, and the
+// text fields are coerced to strings where the page expects strings
+// (summary was already handled in CARD 0). A non-array value degrades
+// to an empty section — the page shows less, it never crashes.
+const asArray = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
+const asString = (v: unknown): string =>
+  typeof v === 'string' ? v : v == null ? '' : String(v);
+const asOptString = (v: unknown): string | undefined =>
+  typeof v === 'string' && v.length > 0 ? v : undefined;
+
 function rowToProfile(r: PersonalityRow): PersonalityProfile {
-  const wiki = (r.sources ?? []).find((s) => /wikipedia/i.test(s.name))?.url;
+  const sources = asArray<{ name: string; url: string }>(r.sources);
+  const wikiEntry = sources.find(
+    (s) => !!s && typeof s.name === 'string' && /wikipedia/i.test(s.name),
+  );
+  const wiki = typeof wikiEntry?.url === 'string' ? wikiEntry.url : undefined;
   return ensureDescription({
-    slug: r.slug,
-    name: r.name,
-    title: r.title,
-    imageUrl: r.image_url ?? undefined,
-    birthDate: r.birth_date ?? undefined,
-    deathDate: r.death_date ?? undefined,
-    nationality: r.nationality,
-    city: r.city_name,
-    citySlug: r.city_slug ?? '',
-    country: r.country_name,
-    countrySlug: r.country_slug,
-    province: r.province_name,
-    provinceSlug: r.province_slug ?? '',
+    slug: asString(r.slug),
+    name: asString(r.name),
+    title: asString(r.title),
+    imageUrl: asOptString(r.image_url),
+    birthDate: asOptString(r.birth_date),
+    deathDate: asOptString(r.death_date),
+    nationality: asString(r.nationality),
+    city: asString(r.city_name),
+    citySlug: asString(r.city_slug),
+    country: asString(r.country_name),
+    countrySlug: asString(r.country_slug),
+    province: asString(r.province_name),
+    provinceSlug: asString(r.province_slug),
     description: typeof r.summary === 'string' ? r.summary : '',
-    primaryColor: r.primary_color || '#01411C',
-    timeline: r.timeline ?? [],
-    achievements: r.achievements ?? [],
-    works: r.works ?? [],
-    quotes: r.quotes ?? [],
-    descriptionSections: r.description_sections ?? [],
+    primaryColor: asString(r.primary_color) || '#01411C',
+    timeline: asArray(r.timeline),
+    achievements: asArray(r.achievements),
+    works: asArray(r.works),
+    quotes: asArray(r.quotes),
+    descriptionSections: asArray(r.description_sections),
     wikiUrl: wiki,
   });
 }
