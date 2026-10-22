@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import HomeClient from './HomeClient';
 import WorldNewsSection from '@/components/home/WorldNewsSection';
 import WebsiteTicker from '@/components/home/WebsiteTicker';
+import MyCitySection from '@/components/home/MyCitySection';
 
 // Server wrapper for the homepage: the interactive page lives in
 // HomeClient.tsx, metadata lives here, and the (server-rendered, real
@@ -23,5 +24,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <HomeClient newsSlot={<WorldNewsSection />} ticker2Slot={<WebsiteTicker />} />;
+  return <HomeClient newsSlot={<WorldNewsSection />} ticker2Slot={<WebsiteTicker />} myCitySlot={<MyCitySection />} />;
 }

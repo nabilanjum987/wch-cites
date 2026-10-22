@@ -27,7 +27,7 @@ import {
 } from '@/components/shared/AnimatedComponents';
 import { COLORS } from '@/lib/design-system';
 
-export default function Home({ newsSlot, ticker2Slot }: { newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode }) {
+export default function Home({ newsSlot, ticker2Slot, myCitySlot }: { newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode; myCitySlot?: React.ReactNode }) {
   const handleCitySelect = (city: { country_slug: string; province_slug: string; city_slug: string }) => {
     if (city) window.location.href = `/${city.country_slug}/${city.province_slug}/${city.city_slug}`;
   };
@@ -78,10 +78,13 @@ export default function Home({ newsSlot, ticker2Slot }: { newsSlot?: React.React
         </section>
       </AuroraBackground>
 
+      {/* ── MY CITY PANEL (§4) — frozen order: World Time hero →
+          My City → Ticker 2. Server-rendered slot from page.tsx. */}
+      {myCitySlot}
+
       {/* ── TICKER 2 — WEBSITE LIVE (WP2 Slice 1) ──
           Placement LOCKED by the frozen spec: directly under the
-          My City panel (§4). The My City panel is inserted between
-          the hero and this ticker by the next slice (Q4). */}
+          My City panel (§4). */}
       {ticker2Slot}
 
       {/* ── GLOBAL INSIGHTS ── */}
