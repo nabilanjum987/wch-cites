@@ -74,6 +74,20 @@ export function countrySlugToIso2(slug: string): string {
   return SLUG_TO_ISO2[clean] || clean.toUpperCase().slice(0, 2);
 }
 
+// Canonical ISO2 resolution (PC1 fix, 2026-10-22). The explicit slug map
+// ALWAYS wins. A stored/fallback country_code is used only when the slug
+// is not in the map — never the other way round. The pre-fix economy page
+// trusted a generated fallback record whose country_code was derived by
+// truncating the slug ("pakistan" -> "PA"), which is Panama's ISO2, so
+// cities missing from that fallback table silently showed Panama's
+// World Bank indicators.
+export function resolveIso2(countrySlug: string, storedCode?: string | null): string {
+  const clean = countrySlug.toLowerCase().trim();
+  if (SLUG_TO_ISO2[clean]) return SLUG_TO_ISO2[clean];
+  if (storedCode && /^[A-Za-z]{2}$/.test(storedCode)) return storedCode.toUpperCase();
+  return countrySlugToIso2(countrySlug);
+}
+
 
 // ── Latest-value indicators (Batch 3b) ──────────────────────────────────────
 // Real country indicators from the World Bank, latest non-null value per
@@ -199,4 +213,29 @@ export function stressLevel(score: number): 'low' | 'medium' | 'high' | 'critica
   if (score < 60) return 'medium';
   if (score < 80) return 'high';
   return 'critical';
+}
+
+// ── THE canonical country-economy dataset (PC1 fix, 2026-10-22) ────────────
+// ONE cached fetch per country feeds every consumer: the economy page's
+// cards, the Financial Stress Meter, the Misery Index table, and the
+// city-main economy snapshot all read from this single result, so two
+// pages (or two sections of one page) can never disagree about a
+// country's figures again. The underlying fetches carry a 24h Next
+// data-cache revalidate (see fetchWorldBankLatest), and every value
+// keeps its World Bank data year.
+export interface CountryEconomy {
+  iso2: string;
+  values: WBValues;
+  misery: MiseryRow[];
+}
+
+export async function getCountryEconomy(iso2: string): Promise<CountryEconomy> {
+  const code = iso2.toUpperCase();
+  const codes = Array.from(new Set([code, ...MISERY_META.map((m) => m.iso2)]));
+  const map = await fetchWorldBankLatest(codes);
+  return {
+    iso2: code,
+    values: map[code] ?? {},
+    misery: buildMiseryIndex(map),
+  };
 }

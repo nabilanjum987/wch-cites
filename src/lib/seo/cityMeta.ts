@@ -27,7 +27,8 @@ export function generateCityMeta(props: CityMetaProps) {
   // QA gate: title ≤60 chars, real city name (never the lowercase slug),
   // and a description built only from data that actually exists — a
   // missing value must shorten the sentence, never print a placeholder.
-  const title = `${city} Today — Weather, Prayer Times & News | WorldCityHub`;
+  // Pattern audited to ≤60 chars for city names up to 15 chars (PC1(4)).
+  const title = `${city} Weather, Prayer Times & News | WorldCityHub`;
 
   const segments: string[] = [
     temp ? `${Math.round(temp)}°C ${weatherDesc ?? 'weather right now'}` : 'live weather',

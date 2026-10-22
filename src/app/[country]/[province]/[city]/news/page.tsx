@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cityName = cityData?.name ?? city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   const countryName = cityData?.country ?? country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   return {
-    title: `${cityName} News — Headlines & Urdu News | WorldCityHub`,
+    title: `${cityName} News — Latest Headlines | WorldCityHub`,
     description: `Latest ${cityName} news: breaking stories, local headlines, Urdu news and the global events affecting ${cityName}, ${countryName}.`,
     alternates: { canonical: `https://worldcityhub.vercel.app/${country}/${province}/${city}/news` },
   };

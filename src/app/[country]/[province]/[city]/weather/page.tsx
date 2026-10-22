@@ -12,7 +12,7 @@ const titleCase = (s: string) => s.split('-').map(w => w.charAt(0).toUpperCase()
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const p = await params
   const city = titleCase(p.city), province = titleCase(p.province), country = titleCase(p.country)
-  const title = `${city} Weather Today & 7-Day Forecast | WorldCityHub`
+  const title = `${city} Weather & 7-Day Forecast | WorldCityHub`
   const description = `${city} weather today: live conditions, hourly & 7-day forecast, air quality and what to wear — ${city}, ${province}, ${country}.`
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/weather`
   return {

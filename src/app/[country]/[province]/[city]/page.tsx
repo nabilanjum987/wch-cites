@@ -175,11 +175,19 @@ export default async function CityPage({
   params: Promise<{ country: string; province: string; city: string }>;
 }) {
   const resolvedParams = await params;
-  const { country, province, city } = await params;
-  const cityParams = getCityParams(country, province, city);
+  const { country: countrySlug, province: provinceSlug, city: citySlug } = await params;
+  const cityParams = getCityParams(countrySlug, provinceSlug, citySlug);
   if (!cityParams) {
-    return <ComingSoonCity countrySlug={country} country={toTitleCase(country)} city={toTitleCase(city)} />;
+    return <ComingSoonCity countrySlug={countrySlug} country={toTitleCase(countrySlug)} city={toTitleCase(citySlug)} />;
   }
+
+  // PC1(2): every rendered heading, label and generated paragraph below
+  // uses the DISPLAY names (Lahore, Punjab, Pakistan) from the city
+  // record — never the lowercase URL slugs. Slugs stay in
+  // resolvedParams / *Slug for URLs only.
+  const country = cityParams.country;
+  const province = cityParams.province;
+  const city = cityParams.city;
 
   const data = await fetchAllCityData(cityParams);
 
@@ -273,7 +281,7 @@ export default async function CityPage({
 
         {/* ── FLAG SYMBOL BACKGROUND ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-          <FlagSymbolBackground countrySlug={country} />
+          <FlagSymbolBackground countrySlug={countrySlug} />
         </div>
 
         {/* ══ SECTION 1: TICKER BAR ══════════════════════════════════════════ */}
