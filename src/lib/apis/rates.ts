@@ -260,7 +260,10 @@ export interface CurrencyPair {
   rate: number;
   interbank_rate: number;
   open_market_rate: number;
-  change_24h: number;
+  // Day change computed from dated snapshots of the published currency
+  // dataset; null when the previous day's snapshot is unavailable —
+  // the UI hides the change chip instead of showing a fabricated 0%.
+  change_24h: number | null;
   flag: string;
 }
 
@@ -287,41 +290,72 @@ const PAIR_META: Record<string, { name: string; flag: string }> = {
   TRY: { name: 'Turkish Lira', flag: 'TR' },
 };
 
-// Real exchange rates from Frankfurter (European Central Bank data,
-// free, no key). The old version returned a static rate table with a
-// Math.random() daily change and a modeled "open market" spread
-// presented as real — removed. Interbank and open-market are the same
-// published rate until a real open-market feed exists.
+// Real exchange rates from the ExchangeRate-API open endpoint
+// (open.er-api.com — free, keyless), migrated off Frankfurter in Q8:
+// Frankfurter's new host (frankfurter.dev) returns only ECB currencies,
+// so PKR, AED and SAR silently vanished from this table. The open
+// endpoint publishes one USD-based snapshot covering every pair here;
+// conversions between two non-USD currencies cross-divide through USD
+// (see calculateRemittance), exactly as the homepage tickers do.
+// The day change is computed from dated snapshots of the published
+// currency dataset (cdn.jsdelivr.net/npm/@fawazahmed0/currency-api),
+// comparing its latest date with the day before; when that dataset
+// does not answer, change_24h is null and the UI hides the chip.
+const OPEN_FX_URL = 'https://open.er-api.com/v6/latest/USD';
+const DATED_FX_BASE = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api';
+
+async function fetchDatedUsdFile(dateOrLatest: string): Promise<{ date?: string; usd?: Record<string, number> } | null> {
+  try {
+    const res = await fetch(`${DATED_FX_BASE}@${dateOrLatest}/v1/currencies/usd.json`, {
+      next: { revalidate: 86400 },
+    } as RequestInit);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchCurrencyPairs(): Promise<CurrencyPair[]> {
   try {
-    const codes = Object.keys(PAIR_META).join(',');
-    const end = new Date();
-    const startD = new Date(end);
-    startD.setDate(startD.getDate() - 7);
-    const fmt = (d: Date) => d.toISOString().split('T')[0];
-    const res = await fetch(
-      `https://api.frankfurter.app/${fmt(startD)}..${fmt(end)}?from=USD&to=${codes}`
-    );
+    const res = await fetch(OPEN_FX_URL, { next: { revalidate: 3600 } } as RequestInit);
     if (!res.ok) return [];
     const json = await res.json();
-    const days = Object.keys(json?.rates ?? {}).sort();
-    if (!days.length) return [];
-    const latest = json.rates[days[days.length - 1]];
-    const prev = days.length > 1 ? json.rates[days[days.length - 2]] : null;
+    const rates = json?.rates as Record<string, number> | undefined;
+    if (!rates) return [];
+
+    // Previous-day reference for the change chip (same per-USD basis).
+    const changeByCode: Record<string, number | null> = {};
+    try {
+      const latestFile = await fetchDatedUsdFile('latest');
+      const latestDate = latestFile?.date;
+      const latestRates = latestFile?.usd;
+      if (latestDate && latestRates) {
+        const prevDate = new Date(`${latestDate}T00:00:00Z`);
+        prevDate.setUTCDate(prevDate.getUTCDate() - 1);
+        const prevRates = (await fetchDatedUsdFile(prevDate.toISOString().split('T')[0]))?.usd;
+        if (prevRates) {
+          for (const code of Object.keys(PAIR_META)) {
+            const cur = latestRates[code.toLowerCase()];
+            const old = prevRates[code.toLowerCase()];
+            changeByCode[code] = typeof cur === 'number' && typeof old === 'number' && old > 0
+              ? Math.round(((cur - old) / old) * 10000) / 100
+              : null;
+          }
+        }
+      }
+    } catch { /* change chips stay hidden; the rates themselves are live */ }
+
     return Object.entries(PAIR_META).flatMap(([code, meta]) => {
-      const rate = latest?.[code];
+      const rate = rates[code];
       if (typeof rate !== 'number') return [];
-      const prevRate = prev?.[code];
-      const change = typeof prevRate === 'number' && prevRate > 0
-        ? Math.round(((rate - prevRate) / prevRate) * 10000) / 100
-        : 0;
       return [{
         code,
         name: meta.name,
         rate,
         interbank_rate: rate,
         open_market_rate: rate,
-        change_24h: change,
+        change_24h: changeByCode[code] ?? null,
         flag: meta.flag,
       }];
     });
@@ -331,25 +365,34 @@ export async function fetchCurrencyPairs(): Promise<CurrencyPair[]> {
 }
 
 export async function fetchCurrencyHistory(code: string, years: number = 1): Promise<CurrencyHistory[]> {
-  // Real historical rates from Frankfurter (ECB). The old version
-  // generated a Math.random() walk and presented it as the currency's
-  // actual history — removed.
+  // Real historical rates, migrated off Frankfurter in Q8 (the
+  // ExchangeRate-API open endpoint publishes only the latest snapshot,
+  // no history). History is sampled from dated snapshots of the
+  // published currency dataset (one immutable file per day), at ~52
+  // evenly spaced points across the requested range; each point is
+  // that day's real published rate. A day whose file is missing is
+  // skipped — the series is never interpolated or invented.
   try {
     if (code === 'USD') return [];
+    const key = code.toLowerCase();
+    const totalDays = Math.round(years * 365);
+    const points = 52;
+    const step = Math.max(1, Math.floor(totalDays / points));
+    const dates: string[] = [];
     const end = new Date();
-    const startD = new Date(end);
-    startD.setDate(startD.getDate() - Math.round(years * 365));
-    const fmt = (d: Date) => d.toISOString().split('T')[0];
-    const res = await fetch(
-      `https://api.frankfurter.app/${fmt(startD)}..${fmt(end)}?from=USD&to=${code}`
-    );
-    if (!res.ok) return [];
-    const json = await res.json();
-    const days = Object.keys(json?.rates ?? {}).sort();
-    return days.flatMap((date) => {
-      const rate = json.rates[date]?.[code];
-      return typeof rate === 'number' ? [{ date, rate }] : [];
-    });
+    for (let back = totalDays; back >= 0; back -= step) {
+      const d = new Date(end);
+      d.setUTCDate(d.getUTCDate() - back);
+      dates.push(d.toISOString().split('T')[0]);
+    }
+    const results = await Promise.all(dates.map(async (date) => {
+      const file = await fetchDatedUsdFile(date);
+      const rate = file?.usd?.[key];
+      return typeof rate === 'number' ? { date: file?.date ?? date, rate } : null;
+    }));
+    return results
+      .filter((r): r is CurrencyHistory => r !== null)
+      .sort((a, b) => a.date.localeCompare(b.date));
   } catch {
     return [];
   }
