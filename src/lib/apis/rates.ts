@@ -604,15 +604,40 @@ export interface NewsArticle {
   description: string;
 }
 
-export function getDefaultFinancialNews(countrySlug: string): NewsArticle[] {
-  const newsTemplates: Record<string, NewsArticle[]> = {
-    pakistan: [
-      { title: 'SBP maintains policy rate at 22% amid inflation concerns', source: 'Dawn', publishedAt: new Date().toISOString(), url: '#', description: 'State Bank keeps rates steady as inflation shows signs of moderating.' },
-      { title: 'PKR strengthens against USD in interbank trading', source: 'The News', publishedAt: new Date(Date.now() - 86400000).toISOString(), url: '#', description: 'Rupee gains ground amid improved foreign inflows.' },
-      { title: 'Gold prices surge as investors seek safe haven assets', source: 'Business Recorder', publishedAt: new Date(Date.now() - 172800000).toISOString(), url: '#', description: 'Local gold prices hit record highs following global trends.' },
-      { title: 'KSE-100 index reaches new milestone', source: 'Express Tribune', publishedAt: new Date(Date.now() - 259200000).toISOString(), url: '#', description: 'Stock market rally continues on positive economic indicators.' },
-      { title: 'Inflation rate expected to ease in coming months', source: 'Geo News', publishedAt: new Date(Date.now() - 345600000).toISOString(), url: '#', description: 'Government measures projected to bring down food prices.' },
-    ],
-  };
-  return newsTemplates[countrySlug] || newsTemplates['pakistan'];
+// Real financial headlines from GNews (the project's news provider).
+// This replaces getDefaultFinancialNews, which returned five INVENTED
+// headlines attributed to real outlets (Dawn, The News, Business
+// Recorder, Express Tribune, Geo News) with '#' links and rolling fake
+// timestamps — including a stale "SBP maintains policy rate at 22%"
+// claim. Fabrication removed; on any failure the section simply hides.
+export async function fetchFinancialNews(countrySlug: string): Promise<NewsArticle[]> {
+  const key = process.env.NEXT_PUBLIC_GNEWS_KEY ?? '';
+  if (!key) return [];
+  try {
+    const countryName = countrySlug
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+    const params = new URLSearchParams({
+      q: `${countryName} economy finance business`,
+      lang: 'en',
+      max: '5',
+      sortby: 'publishedAt',
+    });
+    params.set('apikey', key);
+    const res = await fetch(`https://gnews.io/api/v4/search?${params.toString()}`);
+    if (!res.ok) return [];
+    const json = await res.json();
+    if (!json.articles) return [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return json.articles.map((a: any): NewsArticle => ({
+      title: a.title ?? '',
+      source: a.source?.name ?? 'Unknown',
+      publishedAt: a.publishedAt ?? new Date().toISOString(),
+      url: a.url ?? '#',
+      description: a.description ?? '',
+    }));
+  } catch {
+    return [];
+  }
 }

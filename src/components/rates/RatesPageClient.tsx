@@ -37,7 +37,7 @@ import {
   Wallet,
   Clock,
 } from 'lucide-react';
-import { fetchGoldRates, fetchOilPrices, fetchFuelPrices, fetchCryptoData, fetchCurrencyPairs, fetchCurrencyHistory, fetchStockIndices, fetchStockMovers, fetchCommodities, FINANCIAL_STRESS_DATA, MISERY_INDEX_DATA, calculateCurrencyLoss, calculateRemittance, calculateLoan, calculateSavings, calculatePurchasingPower, calculateMiseryImpact, INTEREST_RATES, generateInterestRateHistory, generateOilAffectParagraph, getDefaultFinancialNews, type GoldRates, type OilPrice, type FuelPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type CurrencyHistory, type StockIndex, type StockMover, type Commodity, type FinancialStressData, type MiseryIndex, type NewsArticle } from '../../lib/apis/rates';
+import { fetchGoldRates, fetchOilPrices, fetchFuelPrices, fetchCryptoData, fetchCurrencyPairs, fetchCurrencyHistory, fetchStockIndices, fetchStockMovers, fetchCommodities, FINANCIAL_STRESS_DATA, MISERY_INDEX_DATA, calculateCurrencyLoss, calculateRemittance, calculateLoan, calculateSavings, calculatePurchasingPower, calculateMiseryImpact, INTEREST_RATES, generateInterestRateHistory, generateOilAffectParagraph, fetchFinancialNews, type GoldRates, type OilPrice, type FuelPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type CurrencyHistory, type StockIndex, type StockMover, type Commodity, type FinancialStressData, type MiseryIndex, type NewsArticle } from '../../lib/apis/rates';
 import {
   COUNTRY_CURRENCIES,
   FLAG_COLORS,
@@ -475,7 +475,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
           Promise.resolve(fetchStockIndices()),
           Promise.resolve(fetchStockMovers()),
           Promise.resolve(fetchCommodities()),
-          Promise.resolve(getDefaultFinancialNews(countrySlug)),
+          fetchFinancialNews(countrySlug),
         ]);
         setRates(goldData);
         setOilPrices(oilData);
