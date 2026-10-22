@@ -656,10 +656,12 @@ function StadiumCard({ stadium }: { stadium: Stadium }) {
           <p className="font-semibold text-white truncate">{stadium.team}</p>
         </div>
       </div>
-      <div className="mt-3 pt-3 border-t border-white/8">
-        <p className="text-xs text-gray-400">Current Weather</p>
-        <p className="text-sm font-medium text-white">{weather ?? 'Loading...'}</p>
-      </div>
+      {weather && (
+        <div className="mt-3 pt-3 border-t border-white/8">
+          <p className="text-xs text-gray-400">Current Weather</p>
+          <p className="text-sm font-medium text-white">{weather}</p>
+        </div>
+      )}
     </motion.div>
   );
 }
