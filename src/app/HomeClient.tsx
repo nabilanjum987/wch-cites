@@ -153,8 +153,8 @@ export default function Home({ newsSlot }: { newsSlot?: React.ReactNode }) {
       </Section>
 
       {/* ── WORLD WEATHER EXTREMES ── */}
-      <Section bg="darker" title="Weather Extremes Today"
-        desc="The planet's most extreme weather conditions — right now. Jacobabad recording 52°C while Oymyakon sits at minus 67. Mawsynram drowning in eleven thousand millimeters of rain a year while the Atacama desert receives less than a millimeter. These are not records — they are today's actual conditions at the most extreme inhabited places on earth.">
+      <Section bg="darker" title="Weather Extremes"
+        desc="Live temperatures from two of Earth's most extreme inhabited places — Jacobabad and Oymyakon — alongside the climate records that make these places famous: Mawsynram's rainfall, the Atacama's aridity, Wellington's wind and Aomori's snow.">
         <WorldWeatherExtremes />
       </Section>
 
