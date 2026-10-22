@@ -13,7 +13,7 @@ const BASE = 'https://worldcityhub.vercel.app';
 export const metadata: Metadata = {
   title: 'Wonders of the World: Live Guides, Weather & Facts',
   description:
-    'WorldCityHub wonder guides: verified facts from Wikidata & UNESCO, licensed photos with credits, and a live layer — weather, sunrise and golden hour at each wonder.',
+    'Wonder guides with facts verified against Wikidata & UNESCO, licensed credited photos, and a live layer — weather, sunrise and golden hour.',
   alternates: { canonical: `${BASE}/wonders` },
 };
 
