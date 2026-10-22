@@ -129,21 +129,28 @@ export async function searchNews(
 // region tabs on /news can group them.
 export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
   if (!API_KEY) return [];
-  const feeds: { query: string; countryName: string }[] = [
-    { query: 'category=world', countryName: '' },
-    { query: 'country=pk', countryName: 'Pakistan' },
-    { query: 'country=us', countryName: 'United States of America' },
-    { query: 'country=ae', countryName: 'United Arab Emirates' },
+  // Feed mix chosen for what the free plan actually serves: 'world' and
+  // the US/GB country editions are supported top-headlines feeds, while
+  // Pakistan is not a GNews country edition — its headlines come from
+  // the search endpoint instead (the same route the city pages' strip
+  // already uses successfully). Country editions for pk/ae returned
+  // nothing in production (verified 2026-10-21).
+  const feeds: { query: string; countryName: string; endpoint: string }[] = [
+    { query: 'category=world', countryName: '', endpoint: 'top-headlines' },
+    { query: 'country=us', countryName: 'United States of America', endpoint: 'top-headlines' },
+    { query: 'country=gb', countryName: 'United Kingdom', endpoint: 'top-headlines' },
+    { query: 'q=Pakistan', countryName: 'Pakistan', endpoint: 'search' },
   ];
   const results = await Promise.allSettled(
-    feeds.map(async ({ query, countryName }) => {
+    feeds.map(async ({ query, countryName, endpoint }) => {
       const params = new URLSearchParams({ lang: 'en', max: '6' });
       for (const pair of query.split('&')) {
         const [k, v] = pair.split('=');
         params.set(k, v);
       }
+      if (endpoint === 'search') params.set('sortby', 'publishedAt');
       params.set('apikey', API_KEY);
-      const url = `${BASE}/top-headlines?${params.toString()}`;
+      const url = `${BASE}/${endpoint}?${params.toString()}`;
       const res = await fetch(url, ({ next: { revalidate: 10800 } } as any));
       if (!res.ok) return [] as NewsArticle[];
       const json = await res.json();
