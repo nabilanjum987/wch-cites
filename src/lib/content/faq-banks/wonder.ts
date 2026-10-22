@@ -32,7 +32,7 @@ export const WONDER_FAQ_BANK: FaqBank = [
     question: 'What are the opening hours and ticket prices for {name}?',
     answer:
       '{hoursText} Ticket prices are reproduced from {feesSource}, the official source, and were last verified on {feesChecked}; if the official prices have not been verified, this page hides the fee table rather than guessing. Always re-check the official site before travelling.',
-    slots: ['hoursText', 'feesSource', 'feesChecked'],
+    slots: ['name', 'hoursText', 'feesSource', 'feesChecked'],
     source: 'The data row’s visitor block (hoursText/fees/sourceName/lastVerified) — the template hides fees entirely when unverified.',
   },
   {
@@ -40,7 +40,7 @@ export const WONDER_FAQ_BANK: FaqBank = [
     question: 'When is {name} closed?',
     answer:
       '{closedDays} The open-or-closed status shown on this page is calculated from that verified rule together with today’s sunrise and sunset at the site — it is never typed in by hand.',
-    slots: ['closedDays'],
+    slots: ['name', 'closedDays'],
     source: 'The data row’s visitor block (closedDays) + the golden template’s calculated open-status (blueprint rule).',
   },
   {
