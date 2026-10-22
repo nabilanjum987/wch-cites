@@ -1,7 +1,14 @@
 import type { Metadata } from 'next';
 import HomeClient from './HomeClient';
-import WorldNewsSection from '@/components/home/WorldNewsSection';
 import WebsiteTicker from '@/components/home/WebsiteTicker';
+import MyCitySection from '@/components/home/MyCitySection';
+import TodaysWorld from '@/components/home/TodaysWorld';
+import NewsPanel from '@/components/home/NewsPanel';
+import FinanceFigures from '@/components/home/FinanceFigures';
+import EventsPanel from '@/components/home/EventsPanel';
+import EconomyPanel from '@/components/home/EconomyPanel';
+import SportsPanel from '@/components/home/SportsPanel';
+import ConflictsPanel from '@/components/home/ConflictsPanel';
 
 // Server wrapper for the homepage: the interactive page lives in
 // HomeClient.tsx, metadata lives here, and the (server-rendered, real
@@ -23,5 +30,17 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <HomeClient newsSlot={<WorldNewsSection />} ticker2Slot={<WebsiteTicker />} />;
+  return (
+    <HomeClient
+      newsSlot={<NewsPanel />}
+      ticker2Slot={<WebsiteTicker />}
+      myCitySlot={<MyCitySection />}
+      todaysWorldSlot={<TodaysWorld />}
+      financeSlot={<FinanceFigures />}
+      eventsSlot={<EventsPanel />}
+      economySlot={<EconomyPanel />}
+      sportsSlot={<SportsPanel />}
+      conflictsSlot={<ConflictsPanel />}
+    />
+  );
 }
