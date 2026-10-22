@@ -68,10 +68,15 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
   const live = await getOceanLive(ocean);
   const hero = oceanHero(ocean);
   const gallery = ocean.media.filter((m) => m.role !== 'hero');
-  const season = monsoonSeason(ocean.marineTimezone);
+  const season = monsoonSeason(ocean.marineTimezone, ocean.slug);
   const coast = ocean.coastalCity;
-  const localTime = formatLocalTime(coast.timezone);
-  const localDate = formatLocalDate(coast.timezone);
+  const oceanWord = ocean.name.includes('Ocean') ? 'ocean' : 'sea';
+  const clockTimezone = coast?.timezone ?? ocean.marineTimezone;
+  const localTime = formatLocalTime(clockTimezone);
+  const localDate = formatLocalDate(clockTimezone);
+  const pointLabel = `${Math.abs(ocean.lat)}° ${ocean.lat >= 0 ? 'N' : 'S'}, ${Math.abs(ocean.lng)}° ${ocean.lng >= 0 ? 'E' : 'W'}`;
+  const areaChip = ocean.facts.find((f) => f.label === 'Total area')?.value.split('(')[0].trim();
+  const depthChip = ocean.facts.find((f) => f.label === 'Maximum depth')?.value;
   const googleKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || null;
 
   const jsonLd = {
@@ -120,17 +125,19 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
         <h1 className="mt-3 text-4xl font-bold sm:text-5xl">{ocean.name}</h1>
         <div className="mt-4 flex flex-wrap gap-2">
           <span className="rounded-full bg-sky-500/15 px-3.5 py-1.5 text-xs font-semibold text-sky-300">
-            {ocean.partOfName} · northwestern arm
+            {ocean.partOfLabel}
           </span>
+          {(areaChip || depthChip) && (
+            <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-gray-200">
+              {[areaChip, depthChip ? `max depth ${depthChip}` : null].filter(Boolean).join(' · ')}
+            </span>
+          )}
           <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-gray-200">
-            3,862,000 km² · max depth 5,395 m
-          </span>
-          <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-gray-200">
-            {coast.name} time: <OceanClock timezone={coast.timezone} initial={localTime} /> · {localDate}
+            {coast ? `${coast.name} time` : 'Ocean point time (UTC)'}: <OceanClock timezone={clockTimezone} initial={localTime} /> · {localDate}
           </span>
           {live && live.waveHeight !== null && (
             <span className="rounded-full bg-emerald-500/15 px-3.5 py-1.5 text-xs font-semibold text-emerald-300">
-              Waves now {live.waveHeight.toFixed(2)} m · {seaStateLabel(live.waveHeight)}
+              {live.waveHeight !== null ? `Waves now ${live.waveHeight.toFixed(2)} m · ${seaStateLabel(live.waveHeight)}` : 'Wave feed unavailable at this point'}
             </span>
           )}
         </div>
@@ -162,7 +169,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
             <h2 className="text-lg font-bold text-sky-200">The sea today — the quick answer</h2>
             <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="text-xs uppercase tracking-wide text-gray-400">Waves (open sea, 16°N 64°E)</p>
+                <p className="text-xs uppercase tracking-wide text-gray-400">Waves (open sea, {pointLabel})</p>
                 <p className="mt-1 text-sm font-semibold text-white">
                   {live.waveHeight !== null ? `${live.waveHeight.toFixed(2)} m · ${seaStateLabel(live.waveHeight)}` : 'Feed unavailable'}
                 </p>
@@ -173,7 +180,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
                 </p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-gray-400">{coast.name} coast weather</p>
+                <p className="text-xs uppercase tracking-wide text-gray-400">{coast ? `${coast.name} coast weather` : 'Coastal weather'}</p>
                 <p className="mt-1 text-sm font-semibold text-white">
                   {live.coast ? `${Math.round(live.coast.tempNow)}°C · ${weatherLabel(live.coast.weatherCode)}` : 'Feed unavailable'}
                 </p>
@@ -186,12 +193,12 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
                 <p className="mt-1 text-sm font-semibold text-white">
                   {live.coast ? `${live.coast.sunrise} – ${live.coast.sunset}` : '—'}
                 </p>
-                <p className="mt-1 text-xs text-gray-400">Sunrise – sunset at {coast.name} (local)</p>
+                <p className="mt-1 text-xs text-gray-400">Sunrise – sunset {coast ? `at ${coast.name} (local)` : '— no published coastal city yet'}</p>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-gray-400">Season frame</p>
                 <p className="mt-1 text-sm font-semibold text-white">{season.name}</p>
-                <p className="mt-1 text-xs text-gray-400">Live data: Open-Meteo Marine, sampled {live.sampledAt.replace('T', ' ')} ({coast.name} time)</p>
+                <p className="mt-1 text-xs text-gray-400">Live data: Open-Meteo Marine, sampled {live.sampledAt.replace('T', ' ')} ({coast ? `${coast.name} time` : 'UTC'})</p>
               </div>
             </div>
           </div>
@@ -249,31 +256,42 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
                   </div>
                 )}
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-                <p className="text-sm text-gray-400">On the coast — {coast.name}, {coast.countryName}</p>
-                {live.coast ? (
-                  <>
-                    <p className="mt-1 text-4xl font-bold">
-                      {Math.round(live.coast.tempNow)}°C{' '}
-                      <span className="text-base font-medium text-gray-300">{weatherLabel(live.coast.weatherCode)}</span>
-                    </p>
-                    <ul className="mt-3 space-y-1 text-sm text-gray-300">
-                      <li>Feels like {Math.round(live.coast.feelsLike)}°C · humidity {Math.round(live.coast.humidity)}%</li>
-                      <li>Wind {Math.round(live.coast.windKmh)} km/h</li>
-                      <li>Sunrise {live.coast.sunrise} · sunset {live.coast.sunset} (local)</li>
-                    </ul>
-                  </>
-                ) : (
-                  <p className="mt-2 text-sm text-gray-400">Coastal weather feed unavailable right now.</p>
-                )}
-                <Link
-                  href={coast.path}
-                  className="mt-4 inline-block rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-sky-400"
-                >
-                  Open the full {coast.name} guide →
-                </Link>
-                <p className="mt-2 text-xs text-gray-500">Weather, prayer times, rates, news and events for the sea&apos;s great northern port city.</p>
-              </div>
+              {coast ? (
+                <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+                  <p className="text-sm text-gray-400">On the coast — {coast.name}, {coast.countryName}</p>
+                  {live.coast ? (
+                    <>
+                      <p className="mt-1 text-4xl font-bold">
+                        {Math.round(live.coast.tempNow)}°C{' '}
+                        <span className="text-base font-medium text-gray-300">{weatherLabel(live.coast.weatherCode)}</span>
+                      </p>
+                      <ul className="mt-3 space-y-1 text-sm text-gray-300">
+                        <li>Feels like {Math.round(live.coast.feelsLike)}°C · humidity {Math.round(live.coast.humidity)}%</li>
+                        <li>Wind {Math.round(live.coast.windKmh)} km/h</li>
+                        <li>Sunrise {live.coast.sunrise} · sunset {live.coast.sunset} (local)</li>
+                      </ul>
+                    </>
+                  ) : (
+                    <p className="mt-2 text-sm text-gray-400">Coastal weather feed unavailable right now.</p>
+                  )}
+                  <Link
+                    href={coast.path}
+                    className="mt-4 inline-block rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-sky-400"
+                  >
+                    Open the full {coast.name} guide →
+                  </Link>
+                  <p className="mt-2 text-xs text-gray-500">Weather, prayer times, rates, news and events for the sea&apos;s great northern port city.</p>
+                </div>
+              ) : (
+                <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+                  <p className="text-sm text-gray-400">On the coast</p>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-300">
+                    WorldCityHub has no published coastal city on this ocean yet, so this page carries the
+                    open-ocean live panel only — no city is dressed up as a coast it does not stand on.
+                    Coastal coverage joins when that city&apos;s own guide passes the QA gate.
+                  </p>
+                </div>
+              )}
               <div className="rounded-xl border border-sky-400/25 bg-sky-400/5 p-5">
                 <p className="text-sm font-semibold text-sky-200">🌊 {season.name}</p>
                 <p className="mt-2 text-sm leading-relaxed text-gray-200">{season.text}</p>
@@ -286,14 +304,14 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
         )}
 
         {/* 6 — The story */}
-        <Section title="The story of this sea">
+        <Section title={`The story of this ${ocean.name.includes('Ocean') ? 'ocean' : 'sea'}`}>
           <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
             {ocean.intro.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
             <p className="text-sm text-gray-400">
               Read more:{' '}
-              <a href="https://en.wikipedia.org/wiki/Arabian_Sea" target="_blank" rel="noopener noreferrer" className="text-sky-300 underline">
+              <a href={`https://en.wikipedia.org/wiki/${ocean.wikiTitle}`} target="_blank" rel="noopener noreferrer" className="text-sky-300 underline">
                 Wikipedia — {ocean.name}
               </a>{' '}
               ·{' '}
@@ -314,7 +332,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
         </Section>
 
         {/* 8 — The monsoon sea */}
-        <Section title="The monsoon sea">
+        <Section title={ocean.seasonTitle}>
           <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
             {ocean.monsoon.map((p, i) => (
               <p key={i}>{p}</p>
@@ -326,7 +344,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
         <Section title="See it live">
           <OceanMap lat={ocean.lat} lng={ocean.lng} name={ocean.name} googleKey={googleKey} />
           <p className="mt-2 text-sm text-gray-400">
-            The marker is the sea&apos;s representative point from Wikidata (16° N, 64° E) — the same point the live wave
+            The marker is the {ocean.name.includes('Ocean') ? 'ocean' : 'sea'}&apos;s representative point from Wikidata ({pointLabel}) — the same point the live wave
             panel measures.
           </p>
         </Section>
@@ -354,27 +372,33 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           </div>
         </Section>
 
-        {/* 11 — Coastal city */}
+        {/* 11 — Coastal city (published coastal city only; never a fake shore) */}
         <Section title="On its shore — our city guide">
-          <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-            <h3 className="text-lg font-semibold text-white">{coast.name}, {coast.countryName}</h3>
-            <p className="mt-1 max-w-3xl text-sm leading-relaxed text-gray-300">
-              The great port city of the sea&apos;s northern shore — and a full WorldCityHub city guide: live weather,
-              prayer times, gold and currency rates, news, sports and events, all from real sources.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Link href={coast.path} className="rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-sky-400">
-                {coast.name} guide →
-              </Link>
-              <Link href={`${coast.path}/weather`} className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">
-                {coast.name} weather →
-              </Link>
+          {coast ? (
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+              <h3 className="text-lg font-semibold text-white">{coast.name}, {coast.countryName}</h3>
+              <p className="mt-1 max-w-3xl text-sm leading-relaxed text-gray-300">
+                A full WorldCityHub city guide on this {oceanWord}&apos;s shore: live weather, prayer times, gold and
+                currency rates, news, sports and events, all from real sources.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link href={coast.path} className="rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-sky-400">
+                  {coast.name} guide →
+                </Link>
+                <Link href={`${coast.path}/weather`} className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">
+                  {coast.name} weather →
+                </Link>
+              </div>
+              <p className="mt-3 text-xs text-gray-500">
+                Other shore cities join this block as their own guides publish; they are never linked before they are real.
+              </p>
             </div>
-            <p className="mt-3 text-xs text-gray-500">
-              Other shore cities — Mumbai, Muscat, Salalah, Gwadar — join this block as their own guides publish; they are
-              never linked before they are real.
+          ) : (
+            <p className="max-w-3xl text-sm leading-relaxed text-gray-300">
+              WorldCityHub has no published coastal city on this {oceanWord} yet — city guides join this block as they
+              publish, and nothing is linked before it is real.
             </p>
-          </div>
+          )}
         </Section>
 
         {/* 12 — FAQs + sources & credits + related */}
