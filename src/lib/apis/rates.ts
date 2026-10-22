@@ -158,6 +158,56 @@ export async function fetchGoldRates(
   }
 }
 
+export interface SilverRates {
+  per_oz: number;
+  per_gram: number;
+  per_tola: number;
+  per_kg: number;
+  // Sterling silver (.925) per gram, DERIVED from the spot price
+  // (spot x 0.925 fineness) and labelled as derived in the UI.
+  sterling_per_gram: number;
+  currency: string;
+  currency_symbol: string;
+  // The source's own update timestamp (gold-api `updatedAt`).
+  last_updated: string;
+}
+
+// Silver spot comes from gold-api.com (XAG) — the same keyless source
+// the homepage ticker layer uses (src/lib/tickers.ts), so /rates#silver
+// and Ticker 1's silver item can never disagree. gold-api publishes a
+// spot price and its own timestamp but NO 24h change figure, so this
+// type deliberately has no change field: the section shows spot and
+// derived weights only, never an invented daily move.
+export async function fetchSilverRates(
+  currencyRate = 1,
+  currencyCode = 'USD',
+  currencySymbol = '$'
+): Promise<SilverRates | null> {
+  try {
+    const res = await fetch('https://api.gold-api.com/price/XAG', {
+      next: { revalidate: 300 },
+    } as RequestInit);
+    if (!res.ok) return null;
+    const d = await res.json();
+    const spot = typeof d?.price === 'number' ? d.price : null;
+    if (!spot) return null;
+    const conv = (usd: number) => Math.round(usd * currencyRate * 100) / 100;
+    const perGramUsd = spot / TROY_OZ_TO_GRAM;
+    return {
+      per_oz: conv(spot),
+      per_gram: conv(perGramUsd),
+      per_tola: conv(perGramUsd * GRAM_TO_TOLA),
+      per_kg: conv(perGramUsd * 1000),
+      sterling_per_gram: conv(perGramUsd * 0.925),
+      currency: currencyCode,
+      currency_symbol: currencySymbol,
+      last_updated: typeof d?.updatedAt === 'string' ? d.updatedAt : new Date().toISOString(),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchOilPrices(): Promise<OilPrice[]> {
   // No free, keyless, reliable oil price feed exists. The old version
   // returned invented base prices jittered with Math.random() and
