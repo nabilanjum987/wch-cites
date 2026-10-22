@@ -752,7 +752,7 @@ function NewsCard({ article }: { article: SportsNews }) {
     >
       {article.image && (
         <div className="aspect-video bg-transparent/5">
-          <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+          <img loading="lazy" decoding="async" src={article.image} alt={article.title} className="w-full h-full object-cover" />
         </div>
       )}
       <div className="p-4">

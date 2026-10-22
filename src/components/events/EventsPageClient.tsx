@@ -83,7 +83,7 @@ function EventCard({ event, primaryColor, view }: {
         className="flex gap-4 items-start bg-transparent rounded-xl border border-white/8 p-4 hover: transition-shadow"
       >
         {event.image_url && (
-          <img src={event.image_url} alt={event.title} className="w-24 h-16 object-cover rounded-lg flex-shrink-0" />
+          <img loading="lazy" decoding="async" src={event.image_url} alt={event.title} className="w-24 h-16 object-cover rounded-lg flex-shrink-0" />
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -121,7 +121,7 @@ function EventCard({ event, primaryColor, view }: {
     >
       <div className="relative h-36 bg-gradient-to-br from-gray-100 to-gray-200">
         {event.image_url
-          ? <img src={event.image_url} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          ? <img loading="lazy" decoding="async" src={event.image_url} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
           : <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: `${primaryColor}20` }}>
               {catCfg && <catCfg.icon size={40} style={{ color: primaryColor }} className="opacity-40" />}
             </div>
