@@ -934,7 +934,1437 @@ const SOUTHERN_OCEAN: Ocean = {
   ]
 };
 
-export const BUILT_OCEANS: Ocean[] = [PACIFIC_OCEAN, ATLANTIC_OCEAN, INDIAN_OCEAN, ARCTIC_OCEAN, SOUTHERN_OCEAN];
+// ─── SEAS BATCH (R3B, 2026-10-22) ───────────────────────────────────────
+// Ten seas on the golden ocean pattern. QIDs verified by description
+// match (the Persian Gulf is Q34675 — Q37643, the 1990–91 war item,
+// was rejected). Areas/coords from Wikidata; depths cross-checked with
+// Wikipedia and every figure variant recorded in the row's sources.
+// coastalCity is null for all ten: no published WorldCityHub city
+// stands on these seas yet, so the coastal blocks hide — never faked.
+// BUILT only: PUBLISHED_OCEANS stays Arabian-Sea-only, hub links
+// unchanged, sitemap untouched; migration 0012 seeds them as drafts.
+
+const MEDITERRANEAN_SEA: Ocean = {
+  "slug": "mediterranean-sea",
+  "name": "Mediterranean Sea",
+  "wikidataQid": "Q4918",
+  "partOfName": "Atlantic Ocean",
+  "partOfLabel": "Atlantic Ocean · the sea between the continents",
+  "seasonTitle": "Mistral, sirocco & the winter storm season",
+  "wikiTitle": "Mediterranean_Sea",
+  "lat": 38,
+  "lng": 17,
+  "marineTimezone": "Europe/Rome",
+  "seoTitle": "Mediterranean Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The Mediterranean Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The Mediterranean Sea is the world's largest inland sea, almost entirely enclosed by Europe to the north, Asia to the east and Africa to the south, and connected to the Atlantic only by the 14-kilometre Strait of Gibraltar. Some 46,000 kilometres of coastline and more than 3,000 islands — Sicily, Sardinia, Cyprus, Crete among them — frame the basin that hosted the Phoenician, Greek, Roman and Ottoman worlds.",
+    "It is a sea in negative balance: evaporation exceeds the rain and river inflow, so Atlantic surface water pours in at Gibraltar while dense, salty Mediterranean water slips out beneath — a circulation that takes roughly a century to renew the whole basin. Its waters are famously clear and famously poor in nutrients, yet the sea holds an outsized share of the world's marine species for its size.",
+    "The Mediterranean is warming faster than the global ocean average, tropical species are arriving through the Suez Canal (Lessepsian migration), and its eastern basin reaches some of the highest summer sea temperatures of any large sea. The live block on this page samples conditions at the sea's Wikidata representative point in the Ionian."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Atlantic Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "2,500,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "1,500 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "5,267 m — Calypso Deep, Ionian Sea",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Connection to the ocean",
+      "value": "Strait of Gibraltar, ≈14 km wide",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "38° N, 17° E",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "Europe to the north (Spain, France, Italy, the Balkans, Greece), Asia to the east (Turkey, the Levant), Africa to the south (Morocco to Egypt). Named sub-basins include the Adriatic, Aegean, Ionian, Tyrrhenian, Ligurian, Balearic and Levantine seas. Two artificial and natural doors matter most: Gibraltar to the Atlantic, and the Suez Canal (1869) to the Red Sea (Wikipedia)."
+  ],
+  "monsoon": [
+    "No monsoon — the Mediterranean runs on winter storms and named local winds: the cold, dry mistral down the Rhône valley, the hot Saharan sirocco from the south, the summer etesian (meltemi) winds of the Aegean. Autumn brings the sea's most dangerous weather, when warm water fuels intense cyclones — occasionally full 'medicanes', Mediterranean hurricanes.",
+    "Summer is the calm, hot season the tourist calendar is built on, with sea temperatures reaching 28–30 °C in the east; winter delivers the rain that the surrounding lands depend on, and the deep-water formation events in the Gulf of Lion and the Adriatic that ventilate the whole basin."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How big is the Mediterranean Sea?",
+      "a": "About 2,500,000 km² (Wikidata) — roughly 0.7% of the world ocean's surface, holding a disproportionate share of its marine species and nearly all of its oldest maritime history."
+    },
+    {
+      "q": "What is the deepest point of the Mediterranean?",
+      "a": "The Calypso Deep in the Ionian Sea, at 5,267 m — the trench system off Greece is the basin's deepest structure."
+    },
+    {
+      "q": "Is the Mediterranean connected to the Atlantic?",
+      "a": "Yes — through the Strait of Gibraltar, only about 14 km wide. Atlantic water flows in at the surface to replace what evaporation removes."
+    },
+    {
+      "q": "Why is the Mediterranean so clear?",
+      "a": "It is an oligotrophic (nutrient-poor) sea: little river inflow and an anti-estuarine circulation keep plankton levels low, so the water stays exceptionally transparent."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Aerial photographs of Israel IMG 2006.JPG",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/64/Aerial_photographs_of_Israel_IMG_2006.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Aerial_photographs_of_Israel_IMG_2006.JPG",
+      "width": 3648,
+      "height": 2736,
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "author": "deror_avi",
+      "attribution": "\"Aerial photographs of Israel IMG 2006.JPG\" by deror_avi — CC BY-SA 3.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Mediterranean Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Aerial photographs of Israel IMG 2007.JPG",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/69/Aerial_photographs_of_Israel_IMG_2007.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Aerial_photographs_of_Israel_IMG_2007.JPG",
+      "width": 3648,
+      "height": 2736,
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "author": "deror_avi",
+      "attribution": "\"Aerial photographs of Israel IMG 2007.JPG\" by deror_avi — CC BY-SA 3.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Mediterranean Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Aerial photographs of Israel IMG 2008.JPG",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/49/Aerial_photographs_of_Israel_IMG_2008.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Aerial_photographs_of_Israel_IMG_2008.JPG",
+      "width": 3648,
+      "height": 2736,
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "author": "deror_avi",
+      "attribution": "\"Aerial photographs of Israel IMG 2008.JPG\" by deror_avi — CC BY-SA 3.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Mediterranean Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (38, 17), area",
+      "sourceName": "Wikidata — Q4918 (Mediterranean Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q4918",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"Mediterranean Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Mediterranean_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Area is quoted between 2.5 and 2.51 million km² across references; the page uses the Wikidata figure. Maximum depth 5,267 m (Calypso Deep) is the commonly published survey value.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Mediterranean_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const CARIBBEAN_SEA: Ocean = {
+  "slug": "caribbean-sea",
+  "name": "Caribbean Sea",
+  "wikidataQid": "Q1247",
+  "partOfName": "Atlantic Ocean",
+  "partOfLabel": "Atlantic Ocean · the tropical American sea",
+  "seasonTitle": "Hurricane season & the trade winds",
+  "wikiTitle": "Caribbean_Sea",
+  "lat": 15,
+  "lng": -75,
+  "marineTimezone": "America/Puerto_Rico",
+  "seoTitle": "Caribbean Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The Caribbean Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The Caribbean Sea is a tropical marginal sea of the western Atlantic, bounded by the coasts of Central and South America to the south and west and enclosed to the north and east by the island arcs of the Greater and Lesser Antilles. Its warm, clear water — fed by the North Equatorial Current through the island passages — exits through the Yucatán Channel to become the Gulf Stream.",
+    "Beneath the postcard surface lies the deepest water in the Atlantic tropics: the Cayman Trough between Jamaica and the Cayman Islands plunges to 7,686 metres, close to the boundary where the North American and Caribbean plates slide past each other.",
+    "The Caribbean is one of the world's great biodiversity and tourism regions — coral reefs, the Mesoamerican Barrier Reef (the Atlantic's largest), and a hurricane corridor whose season, June to November, structures life on every island in it. The live block samples the sea at its Wikidata representative point south of Jamaica."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Atlantic Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "2,754,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "≈2,200 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "7,686 m — Cayman Trough",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Outlet",
+      "value": "Yucatán Channel → Gulf of Mexico → Gulf Stream",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "15° N, 75° W",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "South and west: Venezuela, Colombia, Panama, Costa Rica, Nicaragua, Honduras, Belize and Mexico's Yucatán. North and east: Cuba, Hispaniola, Puerto Rico and the Lesser Antilles chain down to Grenada. The sea's great sub-basins — Venezuelan, Colombian, Cayman and Yucatán — are divided by submarine ridges (Wikipedia)."
+  ],
+  "monsoon": [
+    "The Caribbean's year divides by the Atlantic hurricane season (1 June – 30 November): trade winds dominate the dry months, then the season's Cape Verde and in-situ storms track west across the sea, most intensely from August to October. It is the same season that fills the sea with sargassum in heavy years.",
+    "Outside the storms, the easterly trades keep conditions remarkably steady — water 26–29 °C year-round — which is why the reef systems and the sailing calendar both treat winter as high season."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How deep is the Caribbean Sea?",
+      "a": "Its average depth is about 2,200 m, and the Cayman Trough reaches 7,686 m — the deepest point in the tropical Atlantic."
+    },
+    {
+      "q": "Where does Caribbean water go?",
+      "a": "North-west through the Yucatán Channel into the Gulf of Mexico, then out through the Florida Straits as the core of the Gulf Stream."
+    },
+    {
+      "q": "When is hurricane season in the Caribbean?",
+      "a": "Officially 1 June to 30 November, peaking from mid-August to late October."
+    },
+    {
+      "q": "What is the largest reef system in the Caribbean?",
+      "a": "The Mesoamerican Barrier Reef off Belize, Honduras, Guatemala and Mexico — about 1,000 km, the largest barrier reef in the Atlantic."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Aerial of the island of Holbox, Mexico (28707744657).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/21/Aerial_of_the_island_of_Holbox%2C_Mexico_%2828707744657%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Aerial_of_the_island_of_Holbox,_Mexico_(28707744657).jpg",
+      "width": 5464,
+      "height": 3070,
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+      "author": "dronepicr",
+      "attribution": "\"Aerial of the island of Holbox, Mexico (28707744657).jpg\" by dronepicr — CC BY 2.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Caribbean Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Curacao Fort Beekenburg Luftbild (213574135).jpeg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Curacao_Fort_Beekenburg_Luftbild_%28213574135%29.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Curacao_Fort_Beekenburg_Luftbild_(213574135).jpeg",
+      "width": 2048,
+      "height": 1535,
+      "licence": "CC BY 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/3.0",
+      "author": "Dronepicr",
+      "attribution": "\"Curacao Fort Beekenburg Luftbild (213574135).jpeg\" by Dronepicr — CC BY 3.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Caribbean Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Curacao Island (213574225).jpeg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Curacao_Island_%28213574225%29.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Curacao_Island_(213574225).jpeg",
+      "width": 2048,
+      "height": 1535,
+      "licence": "CC BY 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/3.0",
+      "author": "Dronepicr",
+      "attribution": "\"Curacao Island (213574225).jpeg\" by Dronepicr — CC BY 3.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Caribbean Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (15, -75), area",
+      "sourceName": "Wikidata — Q1247 (Caribbean Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q1247",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"Caribbean Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Caribbean_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Area appears as 2,754,000 km² (Wikidata) and 2,640,000 km² in some compilations that treat marginal bays differently; this page uses the Wikidata figure and shows the variant here.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Caribbean_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const SOUTH_CHINA_SEA: Ocean = {
+  "slug": "south-china-sea",
+  "name": "South China Sea",
+  "wikidataQid": "Q37660",
+  "partOfName": "Pacific Ocean",
+  "partOfLabel": "Pacific Ocean · the great Asian marginal sea",
+  "seasonTitle": "Two monsoons & typhoon alley",
+  "wikiTitle": "South_China_Sea",
+  "lat": 12,
+  "lng": 113,
+  "marineTimezone": "Asia/Shanghai",
+  "seoTitle": "South China Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The South China Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The South China Sea is the largest marginal sea of the western Pacific, stretching from the Taiwan Strait to the Strait of Malacca approaches, bordered by China, Vietnam, the Philippines, Malaysia, Brunei and Indonesia's Natuna waters. It covers about 3.5 million km² and carries some of the busiest shipping lanes on Earth — a large share of world trade by value transits it.",
+    "Its floor is a young ocean basin (opened by seafloor spreading tens of millions of years ago) ringed by shelves, reefs and island groups — the Paracels, Spratlys, Pratas and Scarborough Shoal among them — whose sovereignty is disputed among the littoral states; this page records geography and measurements only.",
+    "Two monsoons a year reverse its surface circulation and winds, and its warm pool breeds typhoons that strike every coast around it. The live block samples conditions at the sea's Wikidata representative point in its central basin."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Pacific Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "3,500,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "≈1,212 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "≈5,016 m (see sources note)",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Key entrances",
+      "value": "Taiwan Strait, Luzon Strait, Mindoro and Balabac straits",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "12° N, 113° E",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "West: Vietnam and the Malay Peninsula. North: China and Taiwan. East: the Philippines (Luzon, Palawan). South: Borneo and the Natuna Sea. The deep central basin is separated from the Pacific by the island arcs; the shallow Sunda Shelf floods the south and the Gulf of Tonkin the northwest (Wikipedia)."
+  ],
+  "monsoon": [
+    "Few seas are as monsoon-governed: the northeast monsoon (roughly November–March) drives winds and surface currents down the Vietnam coast, the southwest monsoon (June–September) reverses them — the reversal that timed the historic junk and dhow trade routes.",
+    "Typhoons form over its warm waters or enter from the Pacific through the Luzon Strait, peaking in late summer and autumn; the strongest have crossed every coast of the sea."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How big is the South China Sea?",
+      "a": "About 3,500,000 km² (Wikidata) — one of the largest marginal seas in the world, roughly the size of India."
+    },
+    {
+      "q": "How deep is the South China Sea?",
+      "a": "On average about 1,212 m; its deepest basin floor is commonly charted near 5,016 m — see the sources note on the variant figure."
+    },
+    {
+      "q": "Which countries border the South China Sea?",
+      "a": "China, Taiwan, the Philippines, Vietnam, Malaysia, Brunei and Indonesia (Natuna waters) — with overlapping maritime claims that remain disputed."
+    },
+    {
+      "q": "Why does the South China Sea matter to shipping?",
+      "a": "It links the Indian Ocean (via Malacca) to East Asia's ports; estimates commonly cited by UNCTAD put roughly a third of global shipping transiting it."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "1947 South China Sea Islands Map.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/1947_South_China_Sea_Islands_Map.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:1947_South_China_Sea_Islands_Map.jpg",
+      "width": 2654,
+      "height": 3840,
+      "licence": "CC0",
+      "licenceUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "author": "Q9405484",
+      "attribution": "\"1947 South China Sea Islands Map.jpg\" by Q9405484 — CC0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "South China Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "1956 South China Sea Map.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/97/1956_South_China_Sea_Map.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:1956_South_China_Sea_Map.jpg",
+      "width": 1945,
+      "height": 2325,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "C.H.I.D.",
+      "attribution": "\"1956 South China Sea Map.jpg\" by C.H.I.D. — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "South China Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "75967 South-China-Sea-1.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/00/75967_South-China-Sea-1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:75967_South-China-Sea-1.jpg",
+      "width": 9570,
+      "height": 6660,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Office of the Geographer, US Department of State, US Government",
+      "attribution": "\"75967 South-China-Sea-1.jpg\" by Office of the Geographer, US Department of State, US Government — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "South China Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (12, 113), area",
+      "sourceName": "Wikidata — Q37660 (South China Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q37660",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"South China Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/South_China_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Maximum depth is genuinely variant: 5,016 m is the widely published figure, while some compilations give up to about 5,559 m for the basin east of the Spratlys. The page shows the common figure and records the range here rather than picking silently.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/South_China_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const RED_SEA: Ocean = {
+  "slug": "red-sea",
+  "name": "Red Sea",
+  "wikidataQid": "Q23406",
+  "partOfName": "Indian Ocean",
+  "partOfLabel": "Indian Ocean · the young rift sea",
+  "seasonTitle": "Heat, khamsin winds & the northern winter",
+  "wikiTitle": "Red_Sea",
+  "lat": 22,
+  "lng": 38,
+  "marineTimezone": "Africa/Cairo",
+  "seoTitle": "Red Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The Red Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The Red Sea is a narrow seawater inlet of the Indian Ocean between Africa and the Arabian Peninsula — and geologically an ocean in the making. It occupies part of the Great Rift system: Arabia is splitting away from Africa, the rift floor has been spreading for millions of years, and hot, metal-rich brine pools sit in its central trough.",
+    "Almost no rain falls on it and no river flows into it, so evaporation rules: it is among the saltiest seas on Earth (around 40 parts per thousand in the north) and among the warmest, with summer surface temperatures over 30 °C. Its fringing coral reefs, adapted to that heat, are studied worldwide as a possible refuge for corals in a warming ocean.",
+    "At its north it forks around the Sinai Peninsula into the Gulfs of Suez and Aqaba; at its south the Bab el-Mandeb strait joins it to the Gulf of Aden. Through Suez it carries the Europe–Asia shipping artery. The live block samples its Wikidata representative point off the Sudanese coast."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Indian Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "438,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "≈490 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "≈3,040 m — central (Suakin) trough",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Salinity",
+      "value": "≈36–41‰ — among the saltiest open seas",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "22° N, 38° E",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "West: Egypt, Sudan, Eritrea and Djibouti. East: Saudi Arabia and Yemen. Length ≈2,250 km, greatest width ≈355 km. The northern forks (Suez and Aqaba) are separated by Sinai; the southern gate is Bab el-Mandeb, ≈29 km wide (Wikipedia)."
+  ],
+  "monsoon": [
+    "The Red Sea has a split wind regime: the northern half blows from the northwest almost all year, while the south reverses with the Indian Ocean monsoon — southerlies in winter bring the sea's only real (still slight) seasonal cooling and its rare rain.",
+    "Summer heat is extreme (air temperatures regularly above 40 °C on its coasts) and the khamsin/sharqi dust winds cut visibility; divers favour autumn to spring, when the water is clearest and coolest — though 'cool' here still means the mid-20s."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "Why is it called the Red Sea?",
+      "a": "The name is ancient and its origin is debated — seasonal blooms of the reddish cyanobacterium Trichodesmium, red-rimmed mountains, and an old colour-direction naming scheme are all proposed; no single explanation is proven."
+    },
+    {
+      "q": "How salty is the Red Sea?",
+      "a": "About 36–41 parts per thousand, well above the ocean average of 35 — a result of extreme evaporation, no river inflow and almost no rain."
+    },
+    {
+      "q": "Is the Red Sea really a young ocean?",
+      "a": "Yes — it is a rift where continental crust has already split in the central trough and new oceanic crust is forming; given tens of millions of years it becomes an ocean basin."
+    },
+    {
+      "q": "How warm does the Red Sea get?",
+      "a": "Summer surface water commonly exceeds 30 °C, among the warmest of any sea; its deep water is also unusually warm (≈21 °C throughout)."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "A swimmer and coral reefs of the Red Sea.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fc/A_swimmer_and_coral_reefs_of_the_Red_Sea.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:A_swimmer_and_coral_reefs_of_the_Red_Sea.jpg",
+      "width": 2110,
+      "height": 3200,
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "author": "kallerna",
+      "attribution": "\"A swimmer and coral reefs of the Red Sea.jpg\" by kallerna — CC BY-SA 3.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Red Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Coral (Acropora hemprichii), Ras Katy, Sharm el-Sheij, Egipto, 2022-03-26, DD 108.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Coral_%28Acropora_hemprichii%29%2C_Ras_Katy%2C_Sharm_el-Sheij%2C_Egipto%2C_2022-03-26%2C_DD_108.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Coral_(Acropora_hemprichii),_Ras_Katy,_Sharm_el-Sheij,_Egipto,_2022-03-26,_DD_108.jpg",
+      "width": 4322,
+      "height": 4322,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Diego Delso",
+      "attribution": "\"Coral (Acropora hemprichii), Ras Katy, Sharm el-Sheij, Egipto, 2022-03-26, DD 108.jpg\" by Diego Delso — CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Red Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Coral (Annella mollis), parque nacional Ras Muhammad, Egipto, 2022-03-28, DD 108.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Coral_%28Annella_mollis%29%2C_parque_nacional_Ras_Muhammad%2C_Egipto%2C_2022-03-28%2C_DD_108.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Coral_(Annella_mollis),_parque_nacional_Ras_Muhammad,_Egipto,_2022-03-28,_DD_108.jpg",
+      "width": 4720,
+      "height": 4720,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Diego Delso",
+      "attribution": "\"Coral (Annella mollis), parque nacional Ras Muhammad, Egipto, 2022-03-28, DD 108.jpg\" by Diego Delso — CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Red Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (22, 38), area",
+      "sourceName": "Wikidata — Q23406 (Red Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q23406",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"Red Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Red_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Total area is given as 438,000 km² by Wikidata and up to about 450,000 km² when the northern gulfs are fully counted; maximum depth figures cluster at 2,860–3,040 m by survey. The page uses the Wikidata area and the commonly charted 3,040 m, flagged as approximate.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Red_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const BERING_SEA: Ocean = {
+  "slug": "bering-sea",
+  "name": "Bering Sea",
+  "wikidataQid": "Q44725",
+  "partOfName": "Pacific Ocean",
+  "partOfLabel": "Pacific Ocean · the cold northern sea",
+  "seasonTitle": "Ice edge, Aleutian storms & the long winter",
+  "wikiTitle": "Bering_Sea",
+  "lat": 58,
+  "lng": -178,
+  "marineTimezone": "America/Nome",
+  "seoTitle": "Bering Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The Bering Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The Bering Sea is the cold marginal sea of the North Pacific between Alaska and Russia's Far East, joined to the Arctic Ocean by the narrow Bering Strait and fenced to the south by the Aleutian island arc. Its eastern half is one of the broadest continental shelves on Earth — shallow, rich and stormy — while the southwest drops into deep Aleutian Basin water.",
+    "This is one of the most productive seas on the planet: its shelf supports vast pollock, salmon and king crab fisheries and seasonal concentrations of seabirds and marine mammals that follow the ice edge's spring bloom.",
+    "Winter sea ice covers its northern half, the Aleutian low drives some of the fiercest extratropical storms anywhere, and the strait above it was the ice-age land bridge (Beringia) by which people first reached the Americas. The live block samples conditions at its Wikidata representative point in the deep basin."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Pacific Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "2,300,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "≈1,547 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "≈4,772 m — Aleutian Basin",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Northern gate",
+      "value": "Bering Strait, ≈82 km wide",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "58° N, 178° W",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "East: Alaska. West: Kamchatka and Chukotka (Russia). South: the Aleutian and Commander island arcs separate it from the open Pacific, with deep passes (notably Kamchatka Strait) exchanging water. The Anadyr and Bristol bays cut its northern and eastern shores (Wikipedia)."
+  ],
+  "monsoon": [
+    "No monsoon — the Bering runs on ice and storms. From roughly October the northern sea freezes southward; the ice edge is the engine of the spring bloom that feeds the food web. The Aleutian Low steers Pacific storms into the sea all winter; summer is the short, foggy working season for the fisheries.",
+    "In recent decades the winter ice has repeatedly failed to reach its old extent (notably 2018–2019), a shift watched closely because the shelf's cold pool organises the whole ecosystem."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How big is the Bering Sea?",
+      "a": "About 2,300,000 km² (Wikidata); roughly half of it is shallow continental shelf less than 200 m deep — the part that makes it so productive."
+    },
+    {
+      "q": "Which two countries border the Bering Sea?",
+      "a": "The United States (Alaska) and Russia (Chukotka and Kamchatka); their maritime boundary runs through it and the Bering Strait."
+    },
+    {
+      "q": "What is the Bering Sea famous for catching?",
+      "a": "Alaska pollock (among the largest single-species fisheries in the world), salmon, Pacific cod and king and snow crab."
+    },
+    {
+      "q": "Was there really a land bridge here?",
+      "a": "Yes — during the last ice age, sea level was low enough that the strait and shelf were dry land (Beringia), connecting Asia and North America."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Aerial view of Tutakoke Bird Camp, Coast of the Bering Sea just south of Hooper Bay, Alaska, near Chevak, Alaska.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/68/Aerial_view_of_Tutakoke_Bird_Camp%2C_Coast_of_the_Bering_Sea_just_south_of_Hooper_Bay%2C_Alaska%2C_near_Chevak%2C_Alaska.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Tutakoke_Bird_Camp,_Coast_of_the_Bering_Sea_just_south_of_Hooper_Bay,_Alaska,_near_Chevak,_Alaska.jpg",
+      "width": 3008,
+      "height": 2000,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Becker, Don, USGS EROS - U.S. Fish and Wildlife Service",
+      "attribution": "\"Aerial view of Tutakoke Bird Camp, Coast of the Bering Sea just south of Hooper Bay, Alaska, near Chevak, Alaska.jpg\" by Becker, Don, USGS EROS - U.S. Fish and Wildlife Service — Public domain, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Bering Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Bering Sea Storm, Looking Down East Beach (5188618614).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Bering_Sea_Storm%2C_Looking_Down_East_Beach_%285188618614%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Bering_Sea_Storm,_Looking_Down_East_Beach_(5188618614).jpg",
+      "width": 4000,
+      "height": 3000,
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+      "author": "Bering Land Bridge National Preserve",
+      "attribution": "\"Bering Sea Storm, Looking Down East Beach (5188618614).jpg\" by Bering Land Bridge National Preserve — CC BY 2.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Bering Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Bering Sea Sunrise (8287968367).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Bering_Sea_Sunrise_%288287968367%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Bering_Sea_Sunrise_(8287968367).jpg",
+      "width": 3872,
+      "height": 2224,
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+      "author": "Bering Land Bridge National Preserve",
+      "attribution": "\"Bering Sea Sunrise (8287968367).jpg\" by Bering Land Bridge National Preserve — CC BY 2.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Bering Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (58, -178), area",
+      "sourceName": "Wikidata — Q44725 (Bering Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q44725",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"Bering Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Bering_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Maximum depth is cited between about 4,151 m and 4,772 m in different compilations of the Aleutian Basin soundings; the page uses ≈4,772 m marked approximate, with the range recorded here.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Bering_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const CORAL_SEA: Ocean = {
+  "slug": "coral-sea",
+  "name": "Coral Sea",
+  "wikidataQid": "Q82931",
+  "partOfName": "Pacific Ocean",
+  "partOfLabel": "Pacific Ocean · the sea of reefs",
+  "seasonTitle": "Cyclone season & the November coral spawn",
+  "wikiTitle": "Coral_Sea",
+  "lat": -18,
+  "lng": 158,
+  "marineTimezone": "Australia/Brisbane",
+  "seoTitle": "Coral Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The Coral Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The Coral Sea is the great marginal sea off Australia's northeast coast, stretching from Papua New Guinea and the Solomon Islands to New Caledonia and the Queensland shore. It takes its name from its defining cargo: coral formations beyond counting, including the whole of the Great Barrier Reef along its western margin and the remote atolls of the Coral Sea Islands Territory.",
+    "Its deep basin — over 9,000 m at its deepest in the south — is swept by the East Australian Current, which splits from the South Equatorial flow near its northern reefs and carries warm water down the Australian coast (the current made famous, in stylised form, by a generation of filmgoers).",
+    "In May 1942 it hosted the Battle of the Coral Sea, the first naval battle fought entirely by carrier aircraft that never sighted each other. The live block on this page samples conditions at the sea's Wikidata representative point east of the Barrier Reef."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Pacific Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "4,791,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "≈2,394 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "≈9,140 m (see sources note)",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Signature current",
+      "value": "East Australian Current",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "18° S, 158° E",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "West: Queensland, Australia, and the Great Barrier Reef. North: Papua New Guinea and the Solomons. East: Vanuatu and New Caledonia. South: it merges with the Tasman Sea. Its named sub-areas include the Louisiade and Queensland plateaus and the deep Coral Sea Basin (Wikipedia)."
+  ],
+  "monsoon": [
+    "The Coral Sea's storm season is the Australian tropical cyclone season (roughly November–April), when lows forming over its warm water track toward Queensland, the Solomons or New Caledonia. Between events, the southeast trades rule.",
+    "Its biological calendar peaks in late spring, when mass coral spawning — the synchronised release timed to the November full moon on the Barrier Reef — turns the water into a snowstorm of eggs and larvae over a few nights."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How big is the Coral Sea?",
+      "a": "About 4,791,000 km² (Wikidata) — the largest of the Pacific's Australian-side marginal seas."
+    },
+    {
+      "q": "Is the Great Barrier Reef in the Coral Sea?",
+      "a": "Yes — the reef system runs along the Coral Sea's western margin off Queensland; the sea and the reef share this site's coverage."
+    },
+    {
+      "q": "What happened in the Battle of the Coral Sea?",
+      "a": "In May 1942 US and Japanese carrier fleets fought the first battle in which the ships never saw each other — all attacks were by aircraft. It halted Japan's seaborne move on Port Moresby."
+    },
+    {
+      "q": "How deep is the Coral Sea?",
+      "a": "Average ≈2,394 m; the commonly cited maximum is about 9,140 m in its southern trenches — see the note on figure variants."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "AST-16-1154 - Apollo Soyuz Test Project - Apollo Soyuz Test Project, Australia, Great Barrier Reef, Coral Sea, Maley Reef - NARA - 16630394.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e6/AST-16-1154_-_Apollo_Soyuz_Test_Project_-_Apollo_Soyuz_Test_Project%2C_Australia%2C_Great_Barrier_Reef%2C_Coral_Sea%2C_Maley_Reef_-_NARA_-_16630394.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:AST-16-1154_-_Apollo_Soyuz_Test_Project_-_Apollo_Soyuz_Test_Project,_Australia,_Great_Barrier_Reef,_Coral_Sea,_Maley_Reef_-_NARA_-_16630394.jpg",
+      "width": 4400,
+      "height": 4600,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Unknown authorUnknown author or not provided",
+      "attribution": "\"AST-16-1154 - Apollo Soyuz Test Project - Apollo Soyuz Test Project, Australia, Great Barrier Reef, Coral Sea, Maley Reef - NARA - 16630394.jpg\" by Unknown authorUnknown author or not provided — Public domain, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Coral Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "AST-16-1155 - Apollo Soyuz Test Project - Apollo Soyuz Test Project, Coral Sea, Maley Reef, Abington Reef - NARA - 16630397.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/AST-16-1155_-_Apollo_Soyuz_Test_Project_-_Apollo_Soyuz_Test_Project%2C_Coral_Sea%2C_Maley_Reef%2C_Abington_Reef_-_NARA_-_16630397.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:AST-16-1155_-_Apollo_Soyuz_Test_Project_-_Apollo_Soyuz_Test_Project,_Coral_Sea,_Maley_Reef,_Abington_Reef_-_NARA_-_16630397.jpg",
+      "width": 4400,
+      "height": 4600,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Unknown authorUnknown author or not provided",
+      "attribution": "\"AST-16-1155 - Apollo Soyuz Test Project - Apollo Soyuz Test Project, Coral Sea, Maley Reef, Abington Reef - NARA - 16630397.jpg\" by Unknown authorUnknown author or not provided — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Coral Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "AST-16-1156 - Apollo Soyuz Test Project - Apollo Soyuz Test Project, Coral Sea, Coringa Islands, Maley Reef - NARA - 16630400.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/01/AST-16-1156_-_Apollo_Soyuz_Test_Project_-_Apollo_Soyuz_Test_Project%2C_Coral_Sea%2C_Coringa_Islands%2C_Maley_Reef_-_NARA_-_16630400.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:AST-16-1156_-_Apollo_Soyuz_Test_Project_-_Apollo_Soyuz_Test_Project,_Coral_Sea,_Coringa_Islands,_Maley_Reef_-_NARA_-_16630400.jpg",
+      "width": 4400,
+      "height": 4600,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Unknown authorUnknown author or not provided",
+      "attribution": "\"AST-16-1156 - Apollo Soyuz Test Project - Apollo Soyuz Test Project, Coral Sea, Coringa Islands, Maley Reef - NARA - 16630400.jpg\" by Unknown authorUnknown author or not provided — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Coral Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (-18, 158), area",
+      "sourceName": "Wikidata — Q82931 (Coral Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q82931",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"Coral Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Coral_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Maximum depth is the sea's softest figure: 9,140 m appears in standard references for the trench system at its southern edge, while basin-floor charts elsewhere support nearer 7,000–9,000 m. The page shows ≈9,140 m with this note rather than a false precision.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Coral_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const PERSIAN_GULF: Ocean = {
+  "slug": "persian-gulf",
+  "name": "Persian Gulf",
+  "wikidataQid": "Q34675",
+  "partOfName": "Indian Ocean",
+  "partOfLabel": "Indian Ocean · the shallow energy sea",
+  "seasonTitle": "Shamal winds & the hottest sea summers",
+  "wikiTitle": "Persian_Gulf",
+  "lat": 26,
+  "lng": 52,
+  "marineTimezone": "Asia/Dubai",
+  "seoTitle": "Persian Gulf: Live Waves, Weather & Facts",
+  "seoDescription": "The Persian Gulf live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The Persian Gulf — also called the Arabian Gulf in the Arab states on its western shore — is a shallow extension of the Indian Ocean between Iran and the Arabian Peninsula, joined to the Gulf of Oman and the Arabian Sea by the Strait of Hormuz. It is remarkably shallow: about 50 metres on average and nowhere much over 90, a flooded river valley drowned as sea level rose after the last ice age.",
+    "No sea carries more economic weight per square kilometre: roughly a fifth of the world's petroleum liquids and a large share of its liquefied natural gas leave through Hormuz. Its coasts hold the port and finance cities whose country and city pages this site is building toward.",
+    "Summer here is superlative — its shallow water becomes the warmest large-sea water on Earth, exceeding 36 °C in places, with air temperatures and humidity that push heat stress records. The live block samples conditions at its Wikidata representative point in the central Gulf. (The name is genuinely dual: Persian Gulf in UN and most international usage, Arabian Gulf regionally; the page uses the UN form and records both.)"
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Indian Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "251,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "≈50 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "≈90 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Outlet",
+      "value": "Strait of Hormuz, ≈39 km at its narrowest",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "26° N, 52° E",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "Northeast: Iran. Southwest and west: Iraq, Kuwait, Saudi Arabia, Bahrain, Qatar and the United Arab Emirates. Southeast: Oman's Musandam tip guards Hormuz. The Shatt al-Arab (Tigris–Euphrates outflow) enters at the head (Wikipedia)."
+  ],
+  "monsoon": [
+    "The Gulf's signature wind is the shamal — northwesterlies that blow dust and build short, steep seas, strongest in winter and again in early summer. The sea itself escapes the Indian Ocean monsoon's violence but not its humidity.",
+    "Summer water temperatures above 36 °C in the southern shallows make this the world's warmest sea at scale; winter brings the only comfortable boating season and occasional sharp cold shamals."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How deep is the Persian Gulf?",
+      "a": "Barely: about 50 m on average and roughly 90 m at its deepest — you could stand the world's tallest building in it many times over sideways, but a mid-rise tower would breach the surface at the average spot."
+    },
+    {
+      "q": "Persian Gulf or Arabian Gulf — which name is right?",
+      "a": "Both are in official use: \"Persian Gulf\" is the UN and historical international standard; \"Arabian Gulf\" is standard in the Arab littoral states. WorldCityHub uses the UN form and records the dual usage openly."
+    },
+    {
+      "q": "How much oil passes through the Strait of Hormuz?",
+      "a": "Commonly estimated at about a fifth of global petroleum liquids consumption, plus roughly a fifth of global LNG trade — making Hormuz the world's most important energy chokepoint (EIA estimates)."
+    },
+    {
+      "q": "Why is the Gulf so warm?",
+      "a": "It is shallow, nearly enclosed, and sits under some of the hottest summer air on Earth — there is simply little water to heat, and a lot of sun and hot wind to heat it."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Artificial Archipelagos, Dubai, United Arab Emirates ISS022-E-024940 lrg.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/Artificial_Archipelagos%2C_Dubai%2C_United_Arab_Emirates_ISS022-E-024940_lrg.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Artificial_Archipelagos,_Dubai,_United_Arab_Emirates_ISS022-E-024940_lrg.jpg",
+      "width": 4288,
+      "height": 2848,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Member of the Expedition 22 crew.",
+      "attribution": "\"Artificial Archipelagos, Dubai, United Arab Emirates ISS022-E-024940 lrg.jpg\" by Member of the Expedition 22 crew. — Public domain, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Persian Gulf — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Artificial Archipelagos, Dubai, United Arab Emirates ISS022-E-024940 lrg (cropped to The World).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/53/Artificial_Archipelagos%2C_Dubai%2C_United_Arab_Emirates_ISS022-E-024940_lrg_%28cropped_to_The_World%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Artificial_Archipelagos,_Dubai,_United_Arab_Emirates_ISS022-E-024940_lrg_(cropped_to_The_World).jpg",
+      "width": 1814,
+      "height": 2383,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Member of the Expedition 22 crew.",
+      "attribution": "\"Artificial Archipelagos, Dubai, United Arab Emirates ISS022-E-024940 lrg (cropped to The World).jpg\" by Member of the Expedition 22 crew. — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Persian Gulf — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Artificial islands built on the Persian Gulf coast of Dubai, United Arab Emirates (iss073e0247372).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Artificial_islands_built_on_the_Persian_Gulf_coast_of_Dubai%2C_United_Arab_Emirates_%28iss073e0247372%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Artificial_islands_built_on_the_Persian_Gulf_coast_of_Dubai,_United_Arab_Emirates_(iss073e0247372).jpg",
+      "width": 8256,
+      "height": 5504,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "NASA Johnson Space Center",
+      "attribution": "\"Artificial islands built on the Persian Gulf coast of Dubai, United Arab Emirates (iss073e0247372).jpg\" by NASA Johnson Space Center — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Persian Gulf — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (26, 52), area",
+      "sourceName": "Wikidata — Q34675 (Persian Gulf)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q34675",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"Persian Gulf\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Persian_Gulf",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Area is given from 239,000 to 251,000 km² across sources depending on the Hormuz boundary used; the page uses the Wikidata figure. Maximum depth is charted between about 90 and 110 m near the strait; the page uses ≈90 m for the basin proper and says so.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Persian_Gulf",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const TASMAN_SEA: Ocean = {
+  "slug": "tasman-sea",
+  "name": "Tasman Sea",
+  "wikidataQid": "Q33254",
+  "partOfName": "Pacific Ocean",
+  "partOfLabel": "Pacific Ocean · the Ditch between two nations",
+  "seasonTitle": "The westerlies & Tasman lows",
+  "wikiTitle": "Tasman_Sea",
+  "lat": -37,
+  "lng": 161,
+  "marineTimezone": "Australia/Sydney",
+  "seoTitle": "Tasman Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The Tasman Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The Tasman Sea is the stretch of the South Pacific between Australia and New Zealand — known on both sides, with proprietorial affection, as 'the Ditch'. About 2,000 kilometres wide, it is named for Abel Tasman, the first European to reach New Zealand and Tasmania (1642), and it was first flown and sailed solo in feats that still define trans-Tasman rivalry.",
+    "It is a restless sea: the roaring-forties westerlies cross it unimpeded, East Coast Lows spin up off New South Wales, and the East Australian Current's eddies push warm water far south along both coasts. Its floor holds the Tasman Basin abyss and the Lord Howe Rise, a drowned continental fragment of Zealandia.",
+    "For two nations it is less a barrier than a shared backyard — the sea of the Sydney to Hobart yacht race start, of trans-Tasman flights, and of weather systems that serve both countries in turn. The live block samples its Wikidata representative point mid-Tasman."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Pacific Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "2,300,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "≈5,943 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Named for",
+      "value": "Abel Janszoon Tasman (voyages of 1642)",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Width",
+      "value": "≈2,000 km between the two coasts",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "37° S, 161° E",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "West: New South Wales, Victoria and Tasmania (Australia). East: New Zealand's North and South islands. North: it meets the Coral Sea off Brisbane; south: Bass Strait and the Southern Ocean approaches. Lord Howe and Norfolk islands sit in its northern half (Wikipedia)."
+  ],
+  "monsoon": [
+    "No monsoon — the Tasman belongs to the westerlies. Winter brings processions of fronts and the intense East Coast Lows that flood and erode the New South Wales coast; summer weakens the flow, lets tropical moisture feed down, and occasionally admits a decaying tropical cyclone from the Coral Sea.",
+    "The Sydney to Hobart race (from Boxing Day) is timed to this regime and has met its worst: the 1998 storm that sank five yachts remains the sea's defining modern tragedy and the reason race safety rules worldwide changed."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "Why is the Tasman Sea called \"the Ditch\"?",
+      "a": "Australians and New Zealanders both call crossing it \"crossing the Ditch\" — a joking diminutive for a 2,000 km ocean crossing, used for everything from flights to sporting tours."
+    },
+    {
+      "q": "How wide is the Tasman Sea?",
+      "a": "About 2,000 km from Sydney to Wellington — roughly three hours by air, and five to nine days in a racing yacht."
+    },
+    {
+      "q": "How deep is the Tasman Sea?",
+      "a": "Its abyssal basin reaches about 5,943 m; the average is not a standard published figure, so this page does not invent one."
+    },
+    {
+      "q": "Who was Tasman?",
+      "a": "Abel Janszoon Tasman, the Dutch navigator whose 1642 voyage first reached Tasmania and New Zealand for Europe — both the sea and the island state carry his name."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "00 1294 Buller River - New Zealand.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/00_1294_Buller_River_-_New_Zealand.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:00_1294_Buller_River_-_New_Zealand.jpg",
+      "width": 3168,
+      "height": 2112,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "W. Bulach",
+      "attribution": "\"00 1294 Buller River - New Zealand.jpg\" by W. Bulach — CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Tasman Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "00 2323 West Coast Region.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/00_2323_West_Coast_Region.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:00_2323_West_Coast_Region.jpg",
+      "width": 3300,
+      "height": 2200,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "W. Bulach",
+      "attribution": "\"00 2323 West Coast Region.jpg\" by W. Bulach — CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Tasman Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Abel tasman sea kayaking.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/32/Abel_tasman_sea_kayaking.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Abel_tasman_sea_kayaking.jpg",
+      "width": 1600,
+      "height": 1200,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Tobias Thierer",
+      "attribution": "\"Abel tasman sea kayaking.jpg\" by Tobias Thierer — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Tasman Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (-37, 161), area",
+      "sourceName": "Wikidata — Q33254 (Tasman Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q33254",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"Tasman Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Tasman_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Area appears as 2,300,000 km² (Wikidata) and about 2,515,000 km² in some Australian references with different northern limits; the page uses the Wikidata figure and records the variant.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Tasman_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const BALTIC_SEA: Ocean = {
+  "slug": "baltic-sea",
+  "name": "Baltic Sea",
+  "wikidataQid": "Q545",
+  "partOfName": "Atlantic Ocean",
+  "partOfLabel": "Atlantic Ocean · the young brackish inland sea",
+  "seasonTitle": "Ice winters & algal summers",
+  "wikiTitle": "Baltic_Sea",
+  "lat": 58,
+  "lng": 20,
+  "marineTimezone": "Europe/Stockholm",
+  "seoTitle": "Baltic Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The Baltic Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The Baltic Sea is a shallow, brackish inland sea of northern Europe, enclosed by the Scandinavian Peninsula, Finland, the Baltic states and the North European Plain, and reaching the Atlantic only through the narrow Danish straits. It is one of the youngest seas on Earth — its basin has cycled between lake and sea since the ice sheets retreated, and land around the Gulf of Bothnia is still rising nearly a centimetre a year.",
+    "River inflow from a huge catchment makes it one of the world's largest brackish bodies: surface salinity falls from about 20‰ near Denmark to almost fresh in the northern gulfs, so marine and freshwater species live at their limits side by side.",
+    "Its shallowness and slow flushing (a water parcel stays for decades) make it fragile: summer cyanobacteria blooms, deep-basin oxygen dead zones and a heavy shipping load are its documented modern pressures, governed cooperatively by the HELCOM states. The live block samples its Wikidata representative point in the Baltic Proper."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Atlantic Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "377,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "55 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "459 m — Landsort Deep",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Salinity",
+      "value": "≈2–20‰ surface — brackish throughout",
+      "source": "Wikipedia / HELCOM"
+    },
+    {
+      "label": "Representative point",
+      "value": "58° N, 20° E",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "Clockwise from Denmark: Sweden, Finland (Åland between), Russia's St Petersburg and Kaliningrad coasts, Estonia, Latvia, Lithuania, Poland and Germany. Sub-basins: the Gulfs of Bothnia, Finland and Riga, the Baltic Proper, and the Danish straits and Kattegat toward the North Sea (Wikipedia)."
+  ],
+  "monsoon": [
+    "No monsoon — the Baltic's drama is ice and bloom. In cold winters the northern gulfs freeze completely and ice roads link archipelago islands; mild winters (increasingly common) leave the south ice-free. Summer stratification sets up the cyanobacteria blooms that paint the surface green-gold in satellite images.",
+    "Autumn storms drive the sea level against low coasts and push the occasional major inflow of salty North Sea water through the Danish straits — the rare events that re-oxygenate the deep basins."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "Why is the Baltic Sea brackish?",
+      "a": "Enormous river inflow and only narrow, shallow connections to the ocean keep it diluted: salinity ranges from about 20‰ in the southwest to nearly fresh in the far north."
+    },
+    {
+      "q": "How deep is the Baltic Sea?",
+      "a": "Only 55 m on average; its deepest point, the Landsort Deep off Sweden, is 459 m."
+    },
+    {
+      "q": "Does the Baltic Sea freeze?",
+      "a": "Its northern and eastern parts freeze every winter to some degree; in severe winters the ice can cover most of the sea, while recent mild winters have set record-low ice extents."
+    },
+    {
+      "q": "Why does the Baltic have dead zones?",
+      "a": "Slow water exchange plus nutrient loads let deep basins stagnate and lose oxygen — among the largest human-linked hypoxic areas in the world ocean, monitored by HELCOM."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "An old man carefully descending into the Baltic sea (4190349949).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/An_old_man_carefully_descending_into_the_Baltic_sea_%284190349949%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:An_old_man_carefully_descending_into_the_Baltic_sea_(4190349949).jpg",
+      "width": 6201,
+      "height": 3902,
+      "licence": "CC BY-SA 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "author": "One Trick Pony from Stockholm",
+      "attribution": "\"An old man carefully descending into the Baltic sea (4190349949).jpg\" by One Trick Pony from Stockholm — CC BY-SA 2.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Baltic Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Baltic Sea, Sweden.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Baltic_Sea%2C_Sweden.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Baltic_Sea,_Sweden.jpg",
+      "width": 4608,
+      "height": 3072,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Аліна Семенець",
+      "attribution": "\"Baltic Sea, Sweden.jpg\" by Аліна Семенець — CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Baltic Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Baltic Sea (MODIS 2017-05-20).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/33/Baltic_Sea_%28MODIS_2017-05-20%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Baltic_Sea_(MODIS_2017-05-20).jpg",
+      "width": 4881,
+      "height": 4153,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Jeff Schmaltz, MODIS Land Rapid Response Team, NASA GSFC",
+      "attribution": "\"Baltic Sea (MODIS 2017-05-20).jpg\" by Jeff Schmaltz, MODIS Land Rapid Response Team, NASA GSFC — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Baltic Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (58, 20), area",
+      "sourceName": "Wikidata — Q545 (Baltic Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q545",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"Baltic Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Baltic_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Area is published between about 377,000 km² (Wikidata, excluding the Kattegat) and 415,000 km² including it; the page uses the Wikidata basis and states the exclusion here.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Baltic_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+const NORTH_SEA: Ocean = {
+  "slug": "north-sea",
+  "name": "North Sea",
+  "wikidataQid": "Q1693",
+  "partOfName": "Atlantic Ocean",
+  "partOfLabel": "Atlantic Ocean · the shallow shelf sea of Europe",
+  "seasonTitle": "Atlantic storms & the tidal engine",
+  "wikiTitle": "North_Sea",
+  "lat": 56.459,
+  "lng": 3.683,
+  "marineTimezone": "Europe/London",
+  "seoTitle": "North Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The North Sea live: wave height, size and depth facts with sources shown, and its seasons explained.",
+  "intro": [
+    "The North Sea is the shallow marginal sea of the Atlantic between Great Britain, Scandinavia and the continent — one of the world's busiest seas, fished, drilled, shipped across and now wind-farmed at industrial scale. Its southern floor is so shallow (the Dogger Bank rises to within 15–40 m of the surface) that during the last ice age it was dry land: Doggerland, a inhabited plain now yielding mammoth bones and Mesolithic tools in trawl nets.",
+    "It is a tidal sea above all: Atlantic tides amplified in its basin slosh its coasts twice daily, building the Wadden Sea's mudflat world heritage coast and driving the storm surges that are its chief natural hazard — the 1953 surge that killed over 2,500 people rebuilt Dutch and British coastal defence philosophy.",
+    "Oil and gas from its central rigs powered late-20th-century Britain and Norway; the same slots now host some of the world's largest offshore wind farms. The live block samples conditions at its Wikidata representative point off Scotland."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Atlantic Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "570,000 km²",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Average depth",
+      "value": "≈95 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "≈700 m — Norwegian Trench (Skagerrak)",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Signature feature",
+      "value": "Dogger Bank — drowned ice-age land",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "56.459° N, 3.683° E",
+      "source": "Wikidata"
+    }
+  ],
+  "geography": [
+    "West: England and Scotland. East and south: Norway, Denmark, Germany, the Netherlands, Belgium and a corner of France. North: it opens to the Norwegian Sea past Shetland; south: the Dover Strait (33 km) into the English Channel (Wikipedia)."
+  ],
+  "monsoon": [
+    "No monsoon — the North Sea takes the North Atlantic's weather head-on: autumn and winter depressions drive gales and the dangerous combination of surge plus spring tide on the low Dutch, German and English coasts. Summer is its working calm, the season of the offshore construction and the sailing calendar.",
+    "Fog banks over the cold northern water in late spring, and 'haar' (sea fret) on the Scottish and Northumbrian coasts, are its quieter signatures."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How deep is the North Sea?",
+      "a": "Shallow: about 95 m on average, and only 15–40 m over the Dogger Bank — though the Norwegian Trench off Norway cuts to roughly 700 m."
+    },
+    {
+      "q": "What was Doggerland?",
+      "a": "The inhabited plain that joined Britain to Europe when sea level was lower; it drowned as the ice melted, finally separating Britain around 6500 BC. Its bones and tools still surface in fishing nets."
+    },
+    {
+      "q": "Why is the North Sea so busy?",
+      "a": "It fronts some of Europe's largest ports (Rotterdam, Antwerp, Hamburg), its oil, gas and wind resources, and the shipping lanes between the Atlantic and the Baltic."
+    },
+    {
+      "q": "What was the 1953 flood?",
+      "a": "A storm surge on 31 January–1 February 1953 that breached dykes and sea walls in the Netherlands, England and Belgium, killing more than 2,500 people and driving the Delta Works and Thames Barrier programmes."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Cromer - sea wall, town and church from storm-damaged groyne - geograph.org.uk - 4043902.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Cromer_-_sea_wall%2C_town_and_church_from_storm-damaged_groyne_-_geograph.org.uk_-_4043902.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Cromer_-_sea_wall,_town_and_church_from_storm-damaged_groyne_-_geograph.org.uk_-_4043902.jpg",
+      "width": 4896,
+      "height": 3672,
+      "licence": "CC BY-SA 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "author": "ruth e",
+      "attribution": "\"Cromer - sea wall, town and church from storm-damaged groyne - geograph.org.uk - 4043902.jpg\" by ruth e — CC BY-SA 2.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "North Sea — representative view",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Dust Storm off Egypt (15976).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Dust_Storm_off_Egypt_%2815976%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Dust_Storm_off_Egypt_(15976).jpg",
+      "width": 3000,
+      "height": 3000,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "NASA image created by Jesse Allen, Earth Observatory, using data obtained from the Goddard Earth Sciences DAAC.",
+      "attribution": "\"Dust Storm off Egypt (15976).jpg\" by NASA image created by Jesse Allen, Earth Observatory, using data obtained from t — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "North Sea — gallery view 1",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Dust storm over the eastern Mediterranean Sea (MODIS 2018-02-15).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Dust_storm_over_the_eastern_Mediterranean_Sea_%28MODIS_2018-02-15%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Dust_storm_over_the_eastern_Mediterranean_Sea_(MODIS_2018-02-15).jpg",
+      "width": 3400,
+      "height": 4400,
+      "licence": "Public domain",
+      "licenceUrl": "",
+      "author": "Jeff Schmaltz, MODIS Land Rapid Response Team, NASA GSFC",
+      "attribution": "\"Dust storm over the eastern Mediterranean Sea (MODIS 2018-02-15).jpg\" by Jeff Schmaltz, MODIS Land Rapid Response Team, NASA GSFC — Public domain, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "North Sea — gallery view 2",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, representative point (56.459, 3.683), area",
+      "sourceName": "Wikidata — Q1693 (North Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q1693",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Average/maximum depth and geography detail",
+      "sourceName": "Wikipedia — \"North Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/North_Sea",
+      "checkedAt": "2026-10-22"
+    },
+    {
+      "claim": "Figure variants: Area is cited from 570,000 km² (Wikidata) to about 750,000 km² when the Skagerrak and Channel approaches are counted in; maximum depth similarly hinges on whether the Skagerrak trench is included. The page uses the Wikidata area and the trench-inclusive depth, both flagged.",
+      "sourceName": "WorldCityHub R3B dataset note",
+      "sourceUrl": "https://en.wikipedia.org/wiki/North_Sea",
+      "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+export const BUILT_OCEANS: Ocean[] = [PACIFIC_OCEAN, ATLANTIC_OCEAN, INDIAN_OCEAN, ARCTIC_OCEAN, SOUTHERN_OCEAN, MEDITERRANEAN_SEA, CARIBBEAN_SEA, SOUTH_CHINA_SEA, RED_SEA, BERING_SEA, CORAL_SEA, PERSIAN_GULF, TASMAN_SEA, BALTIC_SEA, NORTH_SEA];
 
 export const PUBLISHED_OCEANS: Ocean[] = [ARABIAN_SEA];
 
