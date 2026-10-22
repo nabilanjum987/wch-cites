@@ -111,6 +111,20 @@ export default async function CountriesPage({
           <p className="text-white/60 text-lg mb-10 max-w-2xl">
             Pick a continent to see which countries and cities are live on WorldCityHub right now.
           </p>
+          <p className="text-white/60 leading-relaxed max-w-2xl mb-6">
+            WorldCityHub is building a living guide to every country on earth — its capital and cities, its
+            weather and prayer times, its money, its headlines and its notable people — one country at a
+            time, and only ever with real data. A country marked &ldquo;Full guide live&rdquo; below has a
+            complete country page behind it; the rest are being built to the same standard before they open.
+          </p>
+          <p className="text-white/60 leading-relaxed max-w-2xl mb-10">
+            That standard is the point of this site. A page is published only when it renders completely from
+            live sources — no placeholder text dressed up as information, and no estimated figure presented
+            as a measurement. Where a value cannot be verified, the page shows less rather than inventing
+            more. The <Link href="/sources" className="text-cyan-300 underline">data sources</Link> page names
+            where every figure comes from, and the <Link href="/improve" className="text-cyan-300 underline">improvement form</Link> reaches
+            the people who maintain these pages if you spot something wrong or missing.
+          </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {CONTINENTS.map((c) => (
               <Link key={c.slug} href={`/countries?continent=${c.slug}`} className="no-underline group">
@@ -143,9 +157,36 @@ export default async function CountriesPage({
               the remaining country pages are being completed one by one, and each row
               links to that country&apos;s page.
             </p>
+            <p className="text-white/60 max-w-2xl mb-6 leading-relaxed">
+              The local time in each capital is calculated from its IANA time zone, and every temperature is
+              read in a single Open-Meteo request covering all capitals at once — the same weather service
+              that powers this site&apos;s city pages. When a temperature cannot be read, the table shows a
+              dash rather than a guess. Start with the guide that is complete today:{' '}
+              <Link href="/pakistan" className="text-cyan-300 underline">Pakistan</Link>, with full city guides
+              for <Link href="/pakistan/punjab/lahore" className="text-cyan-300 underline">Lahore</Link>,{' '}
+              <Link href="/pakistan/sindh/karachi" className="text-cyan-300 underline">Karachi</Link> and{' '}
+              <Link href="/pakistan/islamabad-capital-territory/islamabad" className="text-cyan-300 underline">Islamabad</Link>.
+            </p>
             <CapitalsTable rows={capitalRows} />
             <p className="text-white/35 text-xs mt-4">
               Capital data: GeoNames. Temperatures: Open-Meteo, refreshed every 30 minutes.
+            </p>
+          </section>
+          <section className="mt-16">
+            <h2 className="text-3xl font-bold mb-3">How a WorldCityHub country guide is built</h2>
+            <p className="text-white/60 max-w-2xl mb-6 leading-relaxed">
+              Every full guide follows the same template, proven first on Pakistan: an overview of the
+              country, its provinces and its cities — and for each city the same family of pages covering
+              weather, prayer times, rates, news, economy, sports, events, horoscope and notable
+              personalities. The figures come from the public sources named on each page — the World Bank
+              for economy indicators, Open-Meteo and OpenWeatherMap for weather, Aladhan for prayer times,
+              CoinGecko for gold and crypto — never from a writer&apos;s imagination.
+            </p>
+            <p className="text-white/60 max-w-2xl leading-relaxed">
+              Coverage grows in verified batches rather than by flooding the index with thin pages, so a
+              country that is not live yet still appears in the capitals table above with its live time and
+              weather. If your country is missing, you can tell us what to build first through the{' '}
+              <Link href="/improve" className="text-cyan-300 underline">improvement form</Link>.
             </p>
           </section>
         </div>
@@ -191,7 +232,7 @@ export default async function CountriesPage({
         <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-6">
           <p className="text-white/70">
             {countries.length > 0
-              ? `More ${activeContinent.name} countries are being added regularly as we build out full city and country profiles.`
+              ? `More ${activeContinent.name} countries are being added regularly as we build out full city and country profiles. Every live guide follows the same verified template — real data only, with its sources named on the page.`
               : `No ${activeContinent.name} countries are live yet — we're adding countries and capitals one at a time. Check back soon.`}
           </p>
         </div>

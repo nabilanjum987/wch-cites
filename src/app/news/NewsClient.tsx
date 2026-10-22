@@ -42,6 +42,18 @@ export default function NewsClient({ items }: { items: WorldNewsItem[] }) {
           headlines from trusted publishers across Asia, the Middle East, Europe, the Americas,
           Africa, and Oceania — refreshed every 15 minutes.
         </p>
+        <p className="text-white/60 leading-relaxed max-w-3xl mb-10">
+          WorldCityHub writes no news of its own. Every headline here is aggregated from established
+          publishers and links straight to the original story at its source — you get the headline, the
+          publisher and the time, nothing rewritten and nothing invented. When the feed is unavailable,
+          this page says so plainly instead of filling the space with placeholder stories. Follow one
+          stream through the categories above — <Link href="/news?category=finance" className="text-indigo-300 underline">finance</Link>,{' '}
+          <Link href="/news?category=crypto" className="text-indigo-300 underline">crypto</Link>,{' '}
+          <Link href="/news?category=sports" className="text-indigo-300 underline">sports</Link> and more —
+          or go local with the latest coverage from{' '}
+          <Link href="/pakistan/punjab/lahore/news" className="text-indigo-300 underline">Lahore</Link> and{' '}
+          <Link href="/pakistan/sindh/karachi/news" className="text-indigo-300 underline">Karachi</Link>.
+        </p>
 
         {items.length === 0 ? (
           <div className="rounded-xl border border-white/10 bg-white/5 p-8 text-center">
