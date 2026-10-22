@@ -47,9 +47,9 @@ export default async function ComparePage() {
       <h2 className="mb-4 mt-10 text-xl font-bold text-white">Popular: Lahore vs Karachi</h2>
       <p className="mb-4 max-w-2xl text-sm leading-relaxed text-gray-400">
         The pairing readers ask for most: Pakistan&apos;s two largest cities on the same live figures, head
-        to head. For the full picture behind the numbers, open the complete guides to{' '}
-        <Link href="/pakistan/punjab/lahore" className="text-emerald-300 underline">Lahore</Link> and{' '}
-        <Link href="/pakistan/sindh/karachi" className="text-emerald-300 underline">Karachi</Link> — weather,
+        to head. For the full picture behind the numbers, open{' '}
+        <Link href="/pakistan/punjab/lahore" className="text-emerald-300 underline">Lahore’s complete guide</Link> and{' '}
+        <Link href="/pakistan/sindh/karachi" className="text-emerald-300 underline">Karachi’s</Link> — weather,
         prayer times, rates, events and news for each city.
       </p>
       {pair ? (
@@ -60,7 +60,7 @@ export default async function ComparePage() {
       <p className="mt-10 max-w-2xl text-sm leading-relaxed text-gray-400">
         Comparisons exist only for cities with full published guides, and the list grows as new cities pass
         the same verification standard. To suggest a pairing — or to report a figure that looks wrong — use
-        the <Link href="/improve" className="text-emerald-300 underline">improvement form</Link>.
+        the <Link href="/improve" className="text-emerald-300 underline">suggestion form</Link>.
       </p>
     </main>
   );
