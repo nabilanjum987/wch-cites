@@ -140,6 +140,11 @@ function ZakatCalculator({ nisabValue, nisabGrams, symbol, perGram }: ZakatCalcu
         </div>
         <h2 className="text-lg font-bold text-gray-900">Zakat Calculator</h2>
       </div>
+      <p className="text-sm text-gray-600 leading-relaxed mb-5 max-w-2xl">
+        Zakat is charged at 2.5% on qualifying wealth held above the nisab threshold. This calculator values
+        your gold at the live price on this page and compares your total against the nisab — shown in the box
+        below — before working out what is due.
+      </p>
 
       <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 mb-5">
         <p className="text-sm font-bold text-amber-900">
@@ -318,6 +323,15 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
               <p className="text-gray-400 mt-3 text-base">
                 Live prices in USD · All karats · Updated every 5 minutes
               </p>
+              <p className="text-gray-400 mt-3 max-w-2xl leading-relaxed">
+                One page for the numbers people check every day: the live gold price in every karat, oil and
+                the wider commodity board, the top cryptocurrencies, exchange rates for the currencies
+                Pakistan trades and remits in, world stock indices and the World Bank&apos;s country
+                indicators. Every figure is fetched from a named public source — the full list is on our{' '}
+                <a href="/sources" className="text-amber-300 underline">data sources</a> page — and when a
+                feed is down, its section says so honestly instead of showing yesterday&apos;s number as
+                today&apos;s.
+              </p>
             </div>
 
             <div className="flex items-center gap-4 flex-wrap">
@@ -389,6 +403,14 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
           <div id="gold" className="grid grid-cols-1 lg:grid-cols-3 gap-8 scroll-mt-28">
             {/* Left column */}
             <div className="lg:col-span-2 space-y-8">
+              <p className="text-sm leading-relaxed text-gray-600 max-w-3xl">
+                Pure gold is 24 karat. Every lower karat is an alloy, and its price is the same live spot
+                price scaled by its purity — 22K is 22/24 pure, 21K is 21/24 and 18K is 18/24. The table
+                below converts the spot price into per-ounce, per-gram and per-tola figures (one tola =
+                11.664 grams), so the number matches the unit your jeweller or bullion dealer quotes. Retail
+                jewellery prices will differ: making charges are added on top, as the notes beside the table
+                explain.
+              </p>
               {/* Karat Price Table */}
               <div className="card p-6">
                 <div className="flex items-center justify-between mb-6">
@@ -458,6 +480,11 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                   <div>
                     <h2 className="text-xl font-bold text-gray-900">30-Day Price History</h2>
                     <p className="text-sm text-gray-500 mt-1">24K gold per gram · USD</p>
+                    <p className="text-sm text-gray-500 mt-1 max-w-xl">
+                      Thirty daily closes from the same live feed, so one day&apos;s spike can be judged
+                      against the month&apos;s trend. The badge in the corner tracks the change across the
+                      year to date.
+                    </p>
                   </div>
                   <div
                     className={`badge ${isYTDPositive ? 'badge-success' : 'badge-danger'}`}
@@ -519,6 +546,10 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
               {/* Today's Range Detail */}
               <div className="card p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-5">Today's Market Summary</h2>
+                <p className="text-sm text-gray-500 leading-relaxed -mt-3 mb-5 max-w-2xl">
+                  The day&apos;s trading range for 24K gold at a glance — open, current, high and low. A
+                  narrow range means a quiet market; a wide one means the price moved hard during the day.
+                </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {[
                     { label: 'Open', value: fmt(rates.open), sub: 'per gram' },
@@ -625,6 +656,11 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
               </div>
               Oil & Energy Prices
             </div>
+            <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mt-4">
+              These are the benchmark prices the world&apos;s fuel costs are built on — when crude moves,
+              petrol, transport and eventually food prices follow. Each card shows its unit (a barrel for
+              crude oils) with the day&apos;s change beside the price.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
               {oilPrices.map((oil) => {
                 const isUp = oil.change_24h >= 0;
@@ -708,6 +744,12 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                   </table>
                 </div>
               </div>
+              <p className="text-sm text-gray-600 leading-relaxed mt-4 max-w-3xl">
+                The ten largest cryptocurrencies by market capitalisation, priced live from CoinGecko, with
+                the total size of the crypto market and Bitcoin&apos;s share of it shown above the table. The
+                Fear &amp; Greed badge summarises market sentiment — useful context for the mood of the
+                market, never a signal to buy or sell.
+              </p>
               <p className="text-xs text-gray-400 mt-2 text-right">
                 Data from CoinGecko · Fear & Greed Index measures market sentiment
               </p>
@@ -723,6 +765,12 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                 </div>
                 Currency Exchange Rates
               </div>
+              <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mt-4">
+                Two rates are shown side by side because they answer two different questions. The interbank
+                rate is what banks trade at between themselves; the open-market rate, set by money changers,
+                is the one that decides what a remittance actually arrives as. A dash in the 24h column means
+                no reliable change figure was published — not that the rate stood still.
+              </p>
               <div className="card overflow-hidden mt-5">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
@@ -779,6 +827,11 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                 </div>
                 Global Stock Market Indices
               </div>
+              <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mt-4">
+                The headline index of each major market, with the day&apos;s points and percentage change. An
+                index is a weighted average of its market&apos;s leading companies, so one number tells you
+                the direction of a whole exchange.
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
                 {stockIndices.map((idx) => {
                   const isUp = idx.change >= 0;
@@ -818,6 +871,11 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
               <Percent className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">Interest Rates — World Bank Real Rates</h2>
             </div>
+            <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
+              Central-bank policy rates are not published as a free, machine-readable feed, so this section
+              shows the closest honest equivalent: the World Bank&apos;s real interest rate for each country
+              — the lending rate adjusted for inflation, with its data year on every card.
+            </p>
             {wbRates.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {wbRates.slice(0, 6).map((ir) => (
@@ -846,6 +904,11 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                 <Factory className="w-5 h-5 text-gray-600" />
                 <h2 className="text-xl font-semibold text-gray-900">Global Commodity Prices</h2>
               </div>
+              <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
+                Metals, energy and agricultural staples at their latest published prices — the raw-material
+                costs behind everything from flour to fuel. Each card names its unit, and prices are the spot
+                price or the latest exchange close the feed publishes.
+              </p>
 
               {/* Metals */}
               <div className="mb-6">
@@ -932,6 +995,11 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
               <AlertTriangle className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">Financial Stress Comparison</h2>
             </div>
+            <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
+              A simple comparative score, computed by WorldCityHub from two World Bank series — inflation and
+              unemployment — using the formula noted under the chart. It is a comparison aid, not an official
+              statistic: the same two inputs, weighted the same way, for every country.
+            </p>
             {wbStress.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FinancialStressMeter data={wbStress.find(d => d.country === 'Pakistan') ?? wbStress[0]} />
@@ -967,6 +1035,11 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
               <TrendingDown className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">Misery Index by Country</h2>
             </div>
+            <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
+              The classic Misery Index adds a country&apos;s inflation rate to its unemployment rate — the
+              two figures households feel most directly. Both inputs are the World Bank&apos;s latest
+              published values for each country, as the note under the table states.
+            </p>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">

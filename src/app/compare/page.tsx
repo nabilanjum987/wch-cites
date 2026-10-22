@@ -21,6 +21,12 @@ export default async function ComparePage() {
         A decision tool built only on live, measurable data — current weather, air quality, today&apos;s prayer
         times and population for both cities, side by side. Pick any two cities to compare.
       </p>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-gray-400">
+        Every figure here is measured, not estimated: the same live weather, air-quality and prayer-time
+        services feed both sides, so the verdict is decided by the data rather than by adjectives.
+        Categories that have no honest, free data source — day-to-day living costs, for example — are left
+        out entirely rather than filled with guesses.
+      </p>
 
       <div className="mt-6">
         <CompareTool />
@@ -39,11 +45,23 @@ export default async function ComparePage() {
       </div>
 
       <h2 className="mb-4 mt-10 text-xl font-bold text-white">Popular: Lahore vs Karachi</h2>
+      <p className="mb-4 max-w-2xl text-sm leading-relaxed text-gray-400">
+        The pairing readers ask for most: Pakistan&apos;s two largest cities on the same live figures, head
+        to head. For the full picture behind the numbers, open the complete guides to{' '}
+        <Link href="/pakistan/punjab/lahore" className="text-emerald-300 underline">Lahore</Link> and{' '}
+        <Link href="/pakistan/sindh/karachi" className="text-emerald-300 underline">Karachi</Link> — weather,
+        prayer times, rates, events and news for each city.
+      </p>
       {pair ? (
         <CompareView a={pair.a} b={pair.b} />
       ) : (
         <p className="text-sm text-gray-400">Live comparison data is unavailable right now — please try again shortly.</p>
       )}
+      <p className="mt-10 max-w-2xl text-sm leading-relaxed text-gray-400">
+        Comparisons exist only for cities with full published guides, and the list grows as new cities pass
+        the same verification standard. To suggest a pairing — or to report a figure that looks wrong — use
+        the <Link href="/improve" className="text-emerald-300 underline">improvement form</Link>.
+      </p>
     </main>
   );
 }
