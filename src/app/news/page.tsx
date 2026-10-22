@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const articles = await fetchWorldNews(12);
+  const articles = await fetchWorldNews(24);
   const items: WorldNewsItem[] = articles.map((a) => ({
     region: regionForCountry(a.country || ''),
     headline: a.title,
