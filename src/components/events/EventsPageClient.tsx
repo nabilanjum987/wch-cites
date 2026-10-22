@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { City, CityEvent, RecurringEvent, EventCategory, TimeTab, LevelTab } from '@/types/city';
 import { fetchCityEvents, fetchRecurringEvents } from '@/lib/apis/events';
+import { fetchCityDbEvents, mapDbEventToCityEvent } from '@/lib/events';
 import EventsMap from '@/components/city/EventsMap';
 import RecurringEvents from '@/components/city/RecurringEvents';
 import SubmitEvent from '@/components/city/SubmitEvent';
@@ -187,18 +188,61 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
   const loadEvents = useCallback(async () => {
     setLoading(true);
     try {
-      const [cityEvents, recurring] = await Promise.all([
+      const [cityEvents, recurring, dbRows] = await Promise.all([
         fetchCityEvents(city.name, city.country, city.country_code, city.lat, city.lng, timeTab, activeCategory === 'all' ? null : activeCategory, levelTab),
         fetchRecurringEvents(city.name),
+        // WorldCityHub's own events database (Q12) as an ADDITIONAL
+        // source. While migration 0003 is unapplied this returns [] and
+        // the page behaves exactly as before.
+        fetchCityDbEvents(citySlug),
       ]);
-      setEvents(cityEvents);
+
+      // Merge own-DB events that match the active tab/filters. Own-DB
+      // rows are 'local' (city) or 'national' (country-wide) level.
+      const now = new Date();
+      const startOfDay = new Date(now); startOfDay.setHours(0, 0, 0, 0);
+      const endOfWindow = (() => {
+        const d = new Date(now);
+        if (timeTab === 'today' || timeTab === 'tomorrow') d.setDate(d.getDate() + 1);
+        else if (timeTab === 'weekend') d.setDate(d.getDate() + 8);
+        else if (timeTab === 'week') d.setDate(d.getDate() + 7);
+        else if (timeTab === 'month') d.setMonth(d.getMonth() + 1);
+        else d.setFullYear(d.getFullYear() + 1);
+        d.setHours(23, 59, 59, 999);
+        return d;
+      })();
+      const dbEvents = dbRows
+        .map((row) => mapDbEventToCityEvent(row, city.name, city.country))
+        .filter((ev) => {
+          const t = new Date(ev.start_time).getTime();
+          if (t < startOfDay.getTime() || t > endOfWindow.getTime()) return false;
+          if (timeTab === 'today' && new Date(ev.start_time).toDateString() !== now.toDateString()) return false;
+          if (timeTab === 'tomorrow') {
+            const tm = new Date(now); tm.setDate(tm.getDate() + 1);
+            if (new Date(ev.start_time).toDateString() !== tm.toDateString()) return false;
+          }
+          if (levelTab === 'local' && ev.level !== 'local') return false;
+          if (levelTab === 'national' && ev.level !== 'national') return false;
+          if (levelTab === 'provincial' || levelTab === 'global') return false;
+          if (activeCategory !== 'all' && ev.category !== activeCategory) return false;
+          return true;
+        });
+
+      const seen = new Set(cityEvents.map((e) => `${e.title.toLowerCase()}|${e.start_time.slice(0, 10)}`));
+      const merged = [...cityEvents];
+      for (const ev of dbEvents) {
+        const key = `${ev.title.toLowerCase()}|${ev.start_time.slice(0, 10)}`;
+        if (!seen.has(key)) { seen.add(key); merged.push(ev); }
+      }
+      merged.sort((a, b) => +new Date(a.start_time) - +new Date(b.start_time));
+      setEvents(merged);
       setRecurringEvents(recurring);
     } catch (e) {
       console.error('Events load error:', e);
     } finally {
       setLoading(false);
     }
-  }, [city, timeTab, activeCategory, levelTab]);
+  }, [city, timeTab, activeCategory, levelTab, citySlug]);
 
   useEffect(() => { loadEvents(); }, [loadEvents]);
 
@@ -231,6 +275,9 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
           <p className="text-white/80 text-sm">
             Discover what's happening in {city.name} — local, national & global events
           </p>
+          <Link href="/events/submit" className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-semibold transition">
+            <Calendar size={13} /> Organising an event? List it for free
+          </Link>
         </div>
       </div>
 
