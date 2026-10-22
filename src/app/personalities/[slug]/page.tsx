@@ -34,13 +34,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const p = await getPersonalityBySlug(slug);
   if (!p) return { title: 'Personality Not Found | WorldCityHub' };
+  // Defensive guard (CARD 0): the data layer guarantees a non-empty
+  // description, but metadata generation must never be able to throw
+  // on a profile field again — a bad record degrades to name + title,
+  // it does not fail the build.
+  const desc = (typeof p.description === 'string' ? p.description.trim() : '') || `${p.name} — ${p.title}`;
   return {
     title: `${p.name} — ${p.title} | WorldCityHub`,
-    description: p.description.slice(0, 160),
+    description: desc.slice(0, 160),
     alternates: { canonical: `https://worldcityhub.vercel.app/personalities/${slug}` },
     openGraph: {
       title: `${p.name} | WorldCityHub`,
-      description: p.description.slice(0, 160),
+      description: desc.slice(0, 160),
       images: p.imageUrl ? [{ url: p.imageUrl }] : [],
     },
   };

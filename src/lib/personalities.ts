@@ -54,9 +54,38 @@ interface PersonalityRow {
   verified: boolean;
 }
 
+// ── Description guarantee (CARD 0 build fix, 2026-10-22) ───────────────────
+// A profile's description must ALWAYS be a non-empty string: page
+// metadata slices it during static generation, and the production
+// build died on /personalities/* because a database row reached the
+// page with description undefined (its summary was absent). The
+// fallback below is composed ONLY from the record's own fields —
+// name, title, nationality, city, country — never invented facts.
+function fallbackDescription(p: {
+  name: string;
+  title: string;
+  nationality?: string;
+  city?: string;
+  country?: string;
+}): string {
+  const place = [p.city, p.country].filter(Boolean).join(', ');
+  return (
+    `${p.name} — ${p.title}.` +
+    (p.nationality ? ` ${p.nationality} figure` : '') +
+    (place ? ` associated with ${place}.` : '')
+  );
+}
+
+function ensureDescription(profile: PersonalityProfile): PersonalityProfile {
+  if (typeof profile.description === 'string' && profile.description.trim().length > 0) {
+    return profile;
+  }
+  return { ...profile, description: fallbackDescription(profile) };
+}
+
 function rowToProfile(r: PersonalityRow): PersonalityProfile {
   const wiki = (r.sources ?? []).find((s) => /wikipedia/i.test(s.name))?.url;
-  return {
+  return ensureDescription({
     slug: r.slug,
     name: r.name,
     title: r.title,
@@ -70,7 +99,7 @@ function rowToProfile(r: PersonalityRow): PersonalityProfile {
     countrySlug: r.country_slug,
     province: r.province_name,
     provinceSlug: r.province_slug ?? '',
-    description: r.summary,
+    description: typeof r.summary === 'string' ? r.summary : '',
     primaryColor: r.primary_color || '#01411C',
     timeline: r.timeline ?? [],
     achievements: r.achievements ?? [],
@@ -78,7 +107,7 @@ function rowToProfile(r: PersonalityRow): PersonalityProfile {
     quotes: r.quotes ?? [],
     descriptionSections: r.description_sections ?? [],
     wikiUrl: wiki,
-  };
+  });
 }
 
 async function dbQuery(params: Record<string, string>): Promise<PersonalityProfile[] | null> {
@@ -101,7 +130,9 @@ async function dbQuery(params: Record<string, string>): Promise<PersonalityProfi
 }
 
 const seedList = (): PersonalityProfile[] =>
-  Object.values(PERSONALITIES_SEED).sort((a, b) => a.slug.localeCompare(b.slug));
+  Object.values(PERSONALITIES_SEED)
+    .map(ensureDescription)
+    .sort((a, b) => a.slug.localeCompare(b.slug));
 
 // ── Single profile (detail page) ────────────────────────────────────────────
 // Tries the database first (any row, so an unverified-but-migrated
@@ -109,8 +140,8 @@ const seedList = (): PersonalityProfile[] =>
 export async function getPersonalityBySlug(slug: string): Promise<PersonalityProfile | null> {
   const rows = await dbQuery({ slug: `eq.${slug}`, limit: '1' });
   if (rows && rows.length > 0) return rows[0];
-  if (rows === null) return PERSONALITIES_SEED[slug] ?? null;
-  return PERSONALITIES_SEED[slug] ?? null;
+  const seed = PERSONALITIES_SEED[slug];
+  return seed ? ensureDescription(seed) : null;
 }
 
 export async function getAllPersonalitySlugs(): Promise<string[]> {
