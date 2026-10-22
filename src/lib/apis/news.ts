@@ -141,8 +141,14 @@ export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
     { query: 'country=gb', countryName: 'United Kingdom', endpoint: 'top-headlines' },
     { query: 'q=Pakistan', countryName: 'Pakistan', endpoint: 'search' },
   ];
-  const results = await Promise.allSettled(
-    feeds.map(async ({ query, countryName, endpoint }) => {
+  // Feeds are fetched SEQUENTIALLY, not in parallel: with four parallel
+  // requests the free plan answered only one and rejected the rest
+  // (verified live 2026-10-21 — each deploy render showed exactly one
+  // feed's six cards). Sequential + the 3h cache keeps us at ~32
+  // requests/day and every feed lands.
+  const results: NewsArticle[][] = [];
+  for (const { query, countryName, endpoint } of feeds) {
+    try {
       const params = new URLSearchParams({ lang: 'en', max: '6' });
       for (const pair of query.split('&')) {
         const [k, v] = pair.split('=');
@@ -152,18 +158,19 @@ export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
       params.set('apikey', API_KEY);
       const url = `${BASE}/${endpoint}?${params.toString()}`;
       const res = await fetch(url, ({ next: { revalidate: 10800 } } as any));
-      if (!res.ok) return [] as NewsArticle[];
+      if (!res.ok) continue;
       const json = await res.json();
-      if (!json.articles) return [] as NewsArticle[];
+      if (!json.articles) continue;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return json.articles.map((a: any) => mapGNewsArticle(a, 'top', countryName, 'en'));
-    }),
-  );
+      results.push(json.articles.map((a: any) => mapGNewsArticle(a, 'top', countryName, 'en')));
+    } catch {
+      // one feed failing must not sink the others
+    }
+  }
   const seen = new Set<string>();
   const all: NewsArticle[] = [];
-  for (const r of results) {
-    if (r.status !== 'fulfilled') continue;
-    for (const a of r.value) {
+  for (const feedArticles of results) {
+    for (const a of feedArticles) {
       if (!a.url || seen.has(a.url)) continue;
       seen.add(a.url);
       all.push(a);
