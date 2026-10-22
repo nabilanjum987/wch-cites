@@ -100,7 +100,7 @@ const MAJOR_CITIES: Record<string, CityWeather[]> = {
   PK: [
     { name: 'Karachi', slug: 'karachi', temp: 32, condition: 'Partly Cloudy', icon: '⛅', provinceSlug: 'sindh' },
     { name: 'Lahore', slug: 'lahore', temp: 35, condition: 'Hot', icon: '☀️', provinceSlug: 'punjab' },
-    { name: 'Islamabad', slug: 'islamabad', temp: 30, condition: 'Clear', icon: '🌤️', provinceSlug: 'islamabad' },
+    { name: 'Islamabad', slug: 'islamabad', temp: 30, condition: 'Clear', icon: '🌤️', provinceSlug: 'islamabad-capital-territory' },
     { name: 'Faisalabad', slug: 'faisalabad', temp: 36, condition: 'Hot', icon: '☀️', provinceSlug: 'punjab' },
     { name: 'Rawalpindi', slug: 'rawalpindi', temp: 31, condition: 'Clear', icon: '🌤️', provinceSlug: 'punjab' },
     { name: 'Multan', slug: 'multan', temp: 38, condition: 'Very Hot', icon: '🔥', provinceSlug: 'punjab' },
@@ -1154,8 +1154,21 @@ export default function CountryPage() {
           <div className="flex flex-wrap gap-2">
             {[
               { label: 'Provinces', href: `/${country.slug}` },
-              { label: 'Weather', href: `/${country.slug}/${provinces[0]?.slug || 'province'}/islamabad/weather` },
-              { label: 'Prayer Times', href: `/${country.slug}/${provinces[0]?.slug || 'province'}/islamabad/prayer-times` },
+              // R9 audit fix: these two links hard-coded the city 'islamabad'
+              // under provinces[0] — on Pakistan that produced the wrong-
+              // province URLs /pakistan/punjab/islamabad/weather (which then
+              // rendered and self-canonicalised). They now resolve through
+              // the country's capital and ITS province, and vanish when the
+              // capital is not in the province data — never a guessed path.
+              ...(() => {
+                const capProv = provinces.find((p) => p.capital === country.capital);
+                if (!capProv) return [];
+                const capSlug = country.capital.toLowerCase().replace(/\s+/g, '-');
+                return [
+                  { label: 'Weather', href: `/${country.slug}/${capProv.slug}/${capSlug}/weather` },
+                  { label: 'Prayer Times', href: `/${country.slug}/${capProv.slug}/${capSlug}/prayer-times` },
+                ];
+              })(),
               { label: 'Rates', href: `/${country.slug}/rates` },
               { label: 'News', href: `/${country.slug}/news` },
               { label: 'Famous People', href: `/${country.slug}/personalities` },

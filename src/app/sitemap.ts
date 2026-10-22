@@ -14,6 +14,14 @@ const baseUrl = 'https://worldcityhub.vercel.app'
 const LIVE_CITIES = [
   { country: 'pakistan', province: 'punjab', city: 'lahore' },
   { country: 'pakistan', province: 'sindh', city: 'karachi' },
+  // R9 audit (2026-10-22): Islamabad, Faisalabad and Rawalpindi render the
+  // full city template with real data on production (verified page-by-page
+  // against Lahore's byte class) but were missing here — Islamabad reached
+  // the sitemap only via the Supabase merge, Faisalabad and Rawalpindi not
+  // at all. The dedupe set below keeps the merge from double-listing them.
+  { country: 'pakistan', province: 'islamabad-capital-territory', city: 'islamabad' },
+  { country: 'pakistan', province: 'punjab', city: 'faisalabad' },
+  { country: 'pakistan', province: 'punjab', city: 'rawalpindi' },
 ] as const
 
 const CITY_SUBPAGES = [
@@ -55,6 +63,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/pakistan`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/pakistan/punjab`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/pakistan/sindh`, changeFrequency: 'daily', priority: 0.7 },
+    // R9 audit: the other three province pages render the same full
+    // template on production (verified) but were absent from the sitemap.
+    { url: `${baseUrl}/pakistan/khyber-pakhtunkhwa`, changeFrequency: 'daily', priority: 0.7 },
+    { url: `${baseUrl}/pakistan/balochistan`, changeFrequency: 'daily', priority: 0.7 },
+    { url: `${baseUrl}/pakistan/islamabad-capital-territory`, changeFrequency: 'daily', priority: 0.7 },
   ]
 
   const horoscopePages: MetadataRoute.Sitemap = HOROSCOPE_SIGNS.map((sign) => ({

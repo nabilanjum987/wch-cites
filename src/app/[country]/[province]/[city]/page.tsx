@@ -9,6 +9,7 @@ import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
+import { PERSONALITIES_SEED } from '@/lib/data/personalities-seed';
 import { generateCityMeta, generateCitySchema } from '@/lib/seo/cityMeta';
 import {
   generateCityIntro,
@@ -795,12 +796,15 @@ export default async function CityPage({
                 {generatePersonalitiesParagraph(city)}
               </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              {(citySlug === 'lahore' ? [
-                { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal' },
-                { name: 'Faiz Ahmed Faiz', role: 'Poet', slug: 'faiz-ahmed-faiz' },
-                { name: 'Nusrat Fateh Ali Khan', role: 'Qawwali Singer', slug: 'nusrat-fateh-ali-khan' },
-                { name: 'Wasim Akram', role: 'Cricketer', slug: 'wasim-akram' },
-              ] : []).map((p) => (
+              {/* R9 audit fix: this strip hard-coded four Lahore names, three
+                  of which (Faiz, Nusrat, Wasim) had no profile page — dead
+                  links on every city page. It now derives from the actual
+                  personalities pool (seed/DB via PERSONALITIES_SEED), so a
+                  card exists only when its profile does. */}
+              {Object.values(PERSONALITIES_SEED)
+                .filter((p) => p.citySlug === citySlug)
+                .map((p) => ({ name: p.name, role: p.title.split(/[&,]/)[0].trim(), slug: p.slug }))
+                .map((p) => (
                 <a
                   key={p.slug}
                   href={`/personalities/${p.slug}`}
@@ -1089,7 +1093,7 @@ export default async function CityPage({
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`} className="hover:text-green-400 transition-colors">News</a>
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`} className="hover:text-green-400 transition-colors">Events</a>
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`} className="hover:text-green-400 transition-colors">Economy</a>
-              <a href={`/${resolvedParams.country}/sports`} className="hover:text-green-400 transition-colors">Sports</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/sports`} className="hover:text-green-400 transition-colors">Sports</a>
             </div>
             <p className="text-xs text-gray-600">
               Data updates every hour. Prayer times: Karachi method. Gold: LBMA + SBP rate.
