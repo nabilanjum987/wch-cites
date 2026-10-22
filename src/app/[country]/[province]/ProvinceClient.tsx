@@ -428,7 +428,7 @@ function SectionHeader({ icon: Icon, title, accent }: { icon: any; title: string
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function ProvincePage() {
+export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulation?: { value: number; year: number } | null } = {}) {
   const params = useParams<{ country: string; province: string }>();
   // Same pattern as the country page: local synchronous template data is
   // initialized up front so the server render is the full page, not a
@@ -539,6 +539,13 @@ export default function ProvincePage() {
   }
 
   const accent = province.primaryColor;
+  // FIX-POP1 (billi audit): the population-share denominator is the World
+  // Bank's latest SP.POP.TOTL for the country (server-fetched, same path
+  // as the economy data). Pakistan's dated fallback — 255,219,554,
+  // WB 2025, verified 2026-10-22 — applies only for PK when the live
+  // value is absent; with no total at all the share is not shown.
+  const countryTotal = wbCountryPopulation?.value ?? (province.countryCode === 'PK' ? 255219554 : null);
+  const countryTotalYear = wbCountryPopulation?.year ?? 2025;
   const bg = '#0a0f1e';
   const cardBg = 'rgba(255,255,255,0.04)';
   const cardBorder = `${accent}30`;
@@ -864,10 +871,12 @@ export default function ProvincePage() {
               <div>
                 <div className="text-gray-400 text-xs uppercase tracking-wider mb-2">Population Share</div>
                 <div className="text-5xl font-black mb-2" style={{ color: accent }}>
-                  {(province.population / 231000000 * 100).toFixed(1)}%
+                  {countryTotal ? `${(province.population / countryTotal * 100).toFixed(1)}%` : province.population.toLocaleString()}
                 </div>
                 <div className="text-gray-400 text-sm">
-                  of {province.country}'s total population of 231M lives in {province.name}.
+                  {countryTotal
+                    ? <>of {province.country}&rsquo;s total population of {(countryTotal / 1000000).toFixed(1)}M (World Bank, {countryTotalYear}) lives in {province.name}.</>
+                    : <>people live in {province.name}.</>}
                 </div>
               </div>
             </div>

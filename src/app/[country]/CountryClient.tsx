@@ -58,7 +58,7 @@ const COUNTRIES: Record<string, Country> = {
   pakistan: {
     name: 'Pakistan', code: 'PK', slug: 'pakistan', flag: '🇵🇰',
     region: 'South Asia', continent: 'Asia',
-    population: 231402117, area: 881913,
+    population: 255219554, area: 881913, // World Bank SP.POP.TOTL, Pakistan 2025 — verified 2026-10-22. Fallback only: the server page normally supplies the live WB value (wbPopulation prop).
     capital: 'Islamabad', currency: 'Pakistani Rupee (PKR)',
     languages: ['Urdu', 'English', 'Punjabi', 'Pashto', 'Sindhi', 'Balochi'],
     government: 'Federal Parliamentary Republic',
@@ -392,7 +392,7 @@ function SectionHeader({ icon: Icon, title, accent }: { icon: any; title: string
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function CountryPage() {
+export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: number; year: number } | null } = {}) {
   const params = useParams<{ country: string }>();
   // Template data below is local and synchronous — initialize state from
   // it so the server render contains the full page (real content for
@@ -494,6 +494,12 @@ export default function CountryPage() {
     );
   }
 
+  // FIX-POP1 (billi audit): the displayed population is the World Bank's
+  // latest SP.POP.TOTL for this country, fetched server-side through the
+  // same worldbank.ts path as the economy data. Pakistan's dated fallback
+  // (255,219,554 — WB 2025) applies only when the live value is absent.
+  const popFigure = wbPopulation ?? (country?.slug === 'pakistan' ? { value: 255219554, year: 2025 } : null);
+
   if (!country) {
     const slug = (params.country as string) || '';
     const name = slug
@@ -577,7 +583,7 @@ export default function CountryPage() {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {[
-              { label: 'Population', value: formatNumber(country.population), icon: '👥' },
+              { label: popFigure ? `Population — World Bank ${popFigure.year}` : 'Population', value: formatNumber(popFigure?.value ?? country.population), icon: '👥' },
               { label: 'Area', value: `${formatNumber(country.area)} km²`, icon: '🗺️' },
               { label: 'Capital', value: country.capital, icon: '🏛️' },
               { label: 'Currency', value: country.currency.split('(')[0].trim(), icon: '💵' },
