@@ -69,7 +69,7 @@ on unmerged PR branches and are noted as such).
 | Source | Owner | Powers | Licence / terms | Free-tier limits | Key | Fallback | Status 2026-10-22 |
 |---|---|---|---|---|---|---|---|
 | GNews | GNews | /news + homepage news (search endpoint; PK has no country edition) | **Free tier is NON-COMMERCIAL** (owner-flagged) | ~100 req/day, ~10 articles/req, ~12 h delay (per day log/API map) | owner (`NEXT_PUBLIC_GNEWS_KEY`, `GNEWS_API_KEY`) | RSS layer | ACTIVE — terms are the known commercial risk; owner decision pending |
-| NewsData.io | NewsData | — (nothing) | — | — | owner (key sits in Vercel) | n/a | **INERT** — zero references in this tree (grep-verified 2026-10-22); code never reads the key |
+| NewsData.io | NewsData | — (nothing) | — | — | owner (key sits in Vercel) | n/a | **INERT** — zero *functional* references in this tree (no endpoint, no env read; grep-verified 2026-10-22, wording corrected in the verification pass — the only service mention is a header comment in `news.ts` recording that this module originally used NewsData.io and was consolidated onto GNews in Batch 2i, 2026-10-21) |
 | RSS layer (news-rss.ts) | each publisher | News fallback/co-source: BBC, Al Jazeera, UN News, Dawn, ScienceDaily, NASA, CoinDesk, WHO (8 feeds in tree) | Publishers' RSS terms; headlines+links only | n/a | none | GNews | ACTIVE |
 | The Guardian Open Platform | Guardian News & Media | News fetcher (Q13, env-gated) | API terms; key required | UNVERIFIED | **absent** (owner-key item; code reads `GUARDIAN_API_KEY` ×3) | GNews/RSS | NOT WIRED — key absent |
 | Ticketmaster Discovery | Ticketmaster | Events listings | API terms | UNVERIFIED | owner (`NEXT_PUBLIC_TICKETMASTER_KEY`) | curated events DB (migration 0003) | ACTIVE; **PK coverage ≈ zero** (coverage fact, not a key fault) |
@@ -111,7 +111,9 @@ on unmerged PR branches and are noted as such).
    calls) — branch-dependent; reconcile at merge.
 3. **Frankfurter:** day-log suspicion confirmed in code — legacy host still called in
    `rates.ts`; the fix is PR #13 only.
-4. **NewsData inert:** confirmed by grep (zero references), not just by report.
+4. **NewsData inert:** confirmed by grep (zero functional references — one historical comment
+   in `news.ts` records its Batch-2i replacement by GNews; two other grep hits are an unrelated
+   local variable), not just by report.
 5. **OpenAQ v2 endpoint** in production code path — migration status UNVERIFIED (new note).
 6. **hadithapi.com / bible-api.com** observed in code but absent from the day log's source
    narrative — now registered with UNVERIFIED terms/key status.
