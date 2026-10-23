@@ -151,13 +151,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const place = await getPlace(slug);
   if (!place) return { title: 'Place Not Found | WorldCityHub' };
+  // Defensive guard (CARD C, mirroring the CARD 0 personalities fix):
+  // metadata generation must never be able to throw on a record
+  // field — a place whose description is missing degrades to
+  // name + city, it does not fail the build.
+  const desc = (typeof place.description === 'string' ? place.description.trim() : '') || `${place.name} — ${place.city}`;
   return {
-    title: `${place.name}, ${place.city} — Visitor Guide | WorldCityHub`,
-    description: place.description.slice(0, 155),
+    title: `${place.name}, ${place.city} — Visitor Guide, History & Tips | WorldCityHub`,
+    description: desc.slice(0, 160),
     alternates: { canonical: `https://worldcityhub.vercel.app/places/${slug}` },
     openGraph: {
       title: `${place.name} | WorldCityHub`,
-      description: place.description.slice(0, 155),
+      description: desc.slice(0, 160),
       images: place.imageUrl ? [{ url: place.imageUrl }] : [],
     },
   };

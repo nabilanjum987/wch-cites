@@ -52,6 +52,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/compare/faisalabad-vs-lahore`, changeFrequency: 'daily', priority: 0.5 },
     { url: `${baseUrl}/compare/rawalpindi-vs-islamabad`, changeFrequency: 'daily', priority: 0.5 },
     { url: `${baseUrl}/my-location`, changeFrequency: 'weekly', priority: 0.5 },
+    // Golden templates (marathon Q9/Q10): a route enters the sitemap
+    // only when its page is fully server-rendered with real data.
+    { url: `${baseUrl}/wonders`, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${baseUrl}/wonders/taj-mahal`, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/oceans`, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${baseUrl}/oceans/arabian-sea`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/pakistan`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/pakistan/punjab`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/pakistan/sindh`, changeFrequency: 'daily', priority: 0.7 },

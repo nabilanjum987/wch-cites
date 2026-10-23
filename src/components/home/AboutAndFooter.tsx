@@ -1,34 +1,30 @@
 import Link from 'next/link';
 import { Globe } from 'lucide-react';
 
+// Footer links (WP2 Slice 6 / Q6, link map §24): only routes that
+// exist and render today. The previous footer linked shell pages
+// (/wonders, /oceans), unpublished city pages (Dubai, Istanbul,
+// London, Tokyo) and four pages that do not exist yet (/privacy,
+// /terms, /sources, /contact). About / Contact / Privacy / Sources
+// are built by the homepage-related-pages card (WP3/Q8) — their links
+// switch on in that release (L5/L6), so the Company column carries a
+// plain note until then, not links.
 const footerLinks = {
   Explore: [
     { label: 'All Countries', href: '/countries' },
-    { label: 'World Wonders', href: '/wonders' },
-    { label: 'Oceans & Seas', href: '/oceans' },
-    { label: 'Active Conflicts', href: '/conflicts' },
     { label: 'Compare Cities', href: '/compare' },
+    { label: 'Horoscope', href: '/horoscope' },
+    { label: 'News', href: '/news' },
   ],
   'Tools & Data': [
-    { label: 'Prayer Times', href: '/prayer-times' },
     { label: 'Gold & Rates', href: '/rates' },
-    { label: 'World Weather', href: '/weather' },
-    { label: 'Horoscope', href: '/horoscope' },
     { label: 'My Location', href: '/my-location' },
+    { label: 'Improve WCH', href: '/improve' },
   ],
   'Top Cities': [
     { label: 'Lahore', href: '/pakistan/punjab/lahore' },
-    { label: 'Dubai', href: '/uae/dubai/dubai' },
-    { label: 'Istanbul', href: '/turkey/istanbul/istanbul' },
-    { label: 'London', href: '/uk/england/london' },
-    { label: 'Tokyo', href: '/japan/tokyo/tokyo' },
-  ],
-  Legal: [
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Terms of Use', href: '/terms' },
-    { label: 'Data Sources', href: '/sources' },
-    { label: 'Contact Us', href: '/contact' },
-    { label: 'Improve WCH', href: '/improve' },
+    { label: 'Karachi', href: '/pakistan/sindh/karachi' },
+    { label: 'Islamabad', href: '/pakistan/islamabad-capital-territory/islamabad' },
   ],
 };
 
@@ -97,6 +93,12 @@ export default function AboutAndFooter() {
                 </ul>
               </div>
             ))}
+            <div>
+              <h4 className="text-white font-semibold text-sm mb-4">Company</h4>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                About, Contact, Privacy and our Data Sources pages are in preparation — they will be linked here the moment they are live.
+              </p>
+            </div>
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5">

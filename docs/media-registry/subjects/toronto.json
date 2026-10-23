@@ -1,0 +1,96 @@
+{
+ "subject": "Toronto",
+ "type": "city",
+ "package": "Round 3 S2 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Toronto - ON - CN Tower bei Nacht2.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Toronto_-_ON_-_CN_Tower_bei_Nacht2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Toronto_-_ON_-_CN_Tower_bei_Nacht2.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Wladyslaw , Correction of perspective distortion: Niabot",
+   "licence": "CC BY 3.0",
+   "attribution": "\"Toronto - ON - CN Tower bei Nacht2\" by Wladyslaw , Correction of perspective distortion: Niabot — CC BY 3.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Toronto  —  ON  —  CN Tower bei Nacht2",
+   "focal_point": null,
+   "width": 2848,
+   "height": 4288,
+   "sha1": "b0d288acf3a4162bd7da949ff728929cb4f531fa",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Sunset Toronto Skyline Panorama Crop from Snake Island.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Sunset_Toronto_Skyline_Panorama_Crop_from_Snake_Island.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Sunset_Toronto_Skyline_Panorama_Crop_from_Snake_Island.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Jchmrt",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Sunset Toronto Skyline Panorama Crop from Snake Island\" by Jchmrt — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Sunset Toronto Skyline Panorama Crop from Snake Island",
+   "focal_point": null,
+   "width": 6759,
+   "height": 3001,
+   "sha1": "2bee304be246c4216d5921f76c93d35fe14114e8",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "122 - Toronto - Septembre 2009.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/122_-_Toronto_-_Septembre_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:122_-_Toronto_-_Septembre_2009.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Martin St-Amant ( S23678 )",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"122 - Toronto - Septembre 2009\" by Martin St-Amant ( S23678 ) — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "122  —  Toronto  —  Septembre 2009",
+   "focal_point": null,
+   "width": 16700,
+   "height": 4478,
+   "sha1": "8769097335db9e7386e1fe72279a5714fc567f5e",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Toronto - ON - CN Tower bei Nacht.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Toronto_-_ON_-_CN_Tower_bei_Nacht.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Toronto_-_ON_-_CN_Tower_bei_Nacht.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Wladyslaw Sojka",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Toronto - ON - CN Tower bei Nacht\" by Wladyslaw Sojka — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Toronto  —  ON  —  CN Tower bei Nacht",
+   "focal_point": null,
+   "width": 2380,
+   "height": 3861,
+   "sha1": "ff17f09d9c97af9da3acff46d47b8c32522aa2ec",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Toronto - ON - Skyline bei Nacht.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Toronto_-_ON_-_Skyline_bei_Nacht.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Toronto_-_ON_-_Skyline_bei_Nacht.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Wladyslaw ( talk )",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Toronto - ON - Skyline bei Nacht\" by Wladyslaw ( talk ) — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Toronto  —  ON  —  Skyline bei Nacht",
+   "focal_point": null,
+   "width": 4006,
+   "height": 2808,
+   "sha1": "e1c420de88dcaaa57413b659a1676eac1ed2e323",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Toronto - ON - Skyline10.jpg",
+   "reason": "licence not freely reusable: 'FAL'"
+  }
+ ]
+}

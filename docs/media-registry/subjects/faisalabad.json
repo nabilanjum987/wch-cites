@@ -1,0 +1,104 @@
+{
+ "subject": "Faisalabad",
+ "type": "city",
+ "package": "Round 2 R4 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Ghanta Ghar and Nepali Jame Masjid -IMG4170.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Ghanta_Ghar_and_Nepali_Jame_Masjid_-IMG4170.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Ghanta_Ghar_and_Nepali_Jame_Masjid_-IMG4170.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Bijay Chaurasia",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Ghanta Ghar and Nepali Jame Masjid -IMG4170\" by Bijay Chaurasia — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Ghanta Ghar and Nepali Jame Masjid  — IMG4170",
+   "focal_point": null,
+   "width": 5150,
+   "height": 2897,
+   "sha1": "70a261ebd4ed95ec30d103ec43a6c36a2c9eb281",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Clock Tower Faisalabad by Usman Nadeem.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Clock_Tower_Faisalabad_by_Usman_Nadeem.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower_Faisalabad_by_Usman_Nadeem.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Usman Nadeem",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Clock Tower Faisalabad by Usman Nadeem\" by Usman Nadeem — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Clock Tower Faisalabad by Usman Nadeem",
+   "focal_point": null,
+   "width": 4920,
+   "height": 3456,
+   "sha1": "84c30d9747d1906dee76ce2793a345af587b2cca",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Clock Tower of Faisalabad Pakistan.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Clock_Tower_of_Faisalabad_Pakistan.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower_of_Faisalabad_Pakistan.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "Hussain kevin",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Clock Tower of Faisalabad Pakistan\" by Hussain kevin — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Clock Tower of Faisalabad Pakistan",
+   "focal_point": null,
+   "width": 1704,
+   "height": 2272,
+   "sha1": "3f53e3a3d0e0c9b3fae7d3f6592ef663bb2c28c3",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Clock Tower in Faisalabad-1.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Clock_Tower_in_Faisalabad-1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower_in_Faisalabad-1.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Mzafaratal",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Clock Tower in Faisalabad-1\" by Mzafaratal — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Clock Tower in Faisalabad — 1",
+   "focal_point": null,
+   "width": 2448,
+   "height": 3264,
+   "sha1": "a987b9213fc0a99c9bf107e2ec890f121b9a738b",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Clock Tower in Faisalabad-2.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Clock_Tower_in_Faisalabad-2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower_in_Faisalabad-2.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Mzafaratal",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Clock Tower in Faisalabad-2\" by Mzafaratal — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Clock Tower in Faisalabad — 2",
+   "focal_point": null,
+   "width": 2448,
+   "height": 3264,
+   "sha1": "68de8ace3762606634fd7a10993abde26944ec38",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Clock Tower, Faisalabad.jpeg",
+   "reason": "licence not freely reusable: 'CC SA 1.0'"
+  },
+  {
+   "title": "Clock Tower in Faisalabad.jpg",
+   "reason": "resolution too low (810px wide)"
+  },
+  {
+   "title": "Lyallpur (Now Faisalabad) Clock Tower (Ghanta Ghar) in 1903.jpg",
+   "reason": "resolution too low (400px wide)"
+  }
+ ]
+}

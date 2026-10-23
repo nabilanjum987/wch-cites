@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/shared/Navbar'
 import TickerBar from '@/components/shared/TickerBar'
+import { getMarketTickerItems } from '@/lib/tickers'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://worldcityhub.vercel.app'),
@@ -15,13 +16,14 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const tickerItems = await getMarketTickerItems().catch(() => []);
   return (
     <html lang='en'>
       <body>
         {/* Fixed top bar: ticker + navbar */}
         <div className="fixed top-0 left-0 right-0 z-50">
-          <TickerBar />
+          <TickerBar items={tickerItems} />
           <Navbar />
         </div>
         {/* Spacer: ticker ~28px + navbar 64px */}

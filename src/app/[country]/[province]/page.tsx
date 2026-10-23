@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ProvincePage from './ProvinceClient';
+import { fetchWorldBankLatest, countrySlugToIso2 } from '@/lib/apis/worldbank';
 
 // Server wrapper: the interactive province page lives in
 // ProvinceClient.tsx. Metadata must be exported from a server component,
@@ -28,6 +29,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function Page() {
-  return <ProvincePage />;
+export default async function Page({ params }: PageProps) {
+  const p = await params;
+  // FIX-POP1: the province share math divides by the World Bank's latest
+  // SP.POP.TOTL for the country (same worldbank.ts path as the economy
+  // data). Null when the WB is unreachable; the client then uses its
+  // dated Pakistan fallback or hides the share.
+  const iso2 = countrySlugToIso2(p.country);
+  const wb = await fetchWorldBankLatest([iso2]);
+  return <ProvincePage wbCountryPopulation={wb[iso2]?.population ?? null} />;
 }

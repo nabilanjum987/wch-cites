@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import WorldRatesPage from './RatesClient';
-import { fetchGoldRates, fetchCryptoData, fetchCurrencyPairs } from '@/lib/apis/rates';
+import { fetchGoldRates, fetchSilverRates, fetchCryptoData, fetchCurrencyPairs } from '@/lib/apis/rates';
 
 // Server wrapper: the interactive world rates page lives in
 // RatesClient.tsx. Static metadata lives here (Page 7A — World Rates).
@@ -23,14 +23,16 @@ export const metadata: Metadata = {
 export default async function Page() {
   // Server-fetch the real USD gold, crypto and FX data so the raw HTML
   // carries live rates; the client still refreshes on mount as before.
-  const [initialRates, initialCrypto, initialPairs] = await Promise.all([
+  const [initialRates, initialSilver, initialCrypto, initialPairs] = await Promise.all([
     fetchGoldRates(1, 'USD', '$'),
+    fetchSilverRates(1, 'USD', '$'),
     fetchCryptoData(1, 'USD', '$'),
     fetchCurrencyPairs(),
   ]);
   return (
     <WorldRatesPage
       initialRates={initialRates}
+      initialSilver={initialSilver}
       initialCrypto={initialCrypto}
       initialPairs={initialPairs}
     />

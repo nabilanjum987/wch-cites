@@ -1,0 +1,96 @@
+{
+ "subject": "Cairo",
+ "type": "city",
+ "package": "Batch 2 countries (capital)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified (batch 2, 2026-10-22). The subject's data package belongs to the batch-2 streams and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Cairo skyline, Nile River, Egypt.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/54/Cairo_skyline%2C_Nile_River%2C_Egypt.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Cairo_skyline,_Nile_River,_Egypt.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Vyacheslav Argenberg",
+   "licence": "CC BY 4.0",
+   "attribution": "\"Cairo skyline, Nile River, Egypt\" by Vyacheslav Argenberg — CC BY 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Cairo skyline, Nile River, Egypt",
+   "focal_point": null,
+   "width": 3072,
+   "height": 2048,
+   "sha1": "1686f5bc0dc652d81e597b72102fc59b6bced996",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Cairo skyline, Panoramic view, Egypt.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/71/Cairo_skyline%2C_Panoramic_view%2C_Egypt.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Cairo_skyline,_Panoramic_view,_Egypt.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Vyacheslav Argenberg",
+   "licence": "CC BY 4.0",
+   "attribution": "\"Cairo skyline, Panoramic view, Egypt\" by Vyacheslav Argenberg — CC BY 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Cairo skyline, Panoramic view, Egypt",
+   "focal_point": null,
+   "width": 3072,
+   "height": 2048,
+   "sha1": "cc5cd5b2c46e03b3e613db469ef41e433595379a",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Cairo Skyline (2020).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Cairo_Skyline_%282020%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Cairo_Skyline_(2020).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Faris El-Gwely",
+   "licence": "CC BY 4.0",
+   "attribution": "\"Cairo Skyline (2020)\" by Faris El-Gwely — CC BY 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Cairo Skyline (2020)",
+   "focal_point": null,
+   "width": 1150,
+   "height": 678,
+   "sha1": "32d0e19c73b88d09c7f085a0bfe3881404e2af18",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Nile in Cairo.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Nile_in_Cairo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Nile_in_Cairo.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Ghaly",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Nile in Cairo\" by Ghaly — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Nile in Cairo",
+   "focal_point": null,
+   "width": 2592,
+   "height": 1944,
+   "sha1": "0d4ff482f77933711ccde8e81d1e85485f7e6b98",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Cairo and Nile Skyline.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Cairo_and_Nile_Skyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Cairo_and_Nile_Skyline.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Staeiou",
+   "licence": "CC BY-SA 2.0",
+   "attribution": "\"Cairo and Nile Skyline\" by Staeiou — CC BY-SA 2.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Cairo and Nile Skyline",
+   "focal_point": null,
+   "width": 2304,
+   "height": 1728,
+   "sha1": "b154e7ab876501818d01d5a524f5861eddb28a95",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Cairo Skyline Vivid.png",
+   "reason": "resolution too low (369px wide)"
+  }
+ ]
+}

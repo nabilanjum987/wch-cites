@@ -4,6 +4,7 @@ import type {
   ChineseAnimalData, ChineseZodiacResult, VedicPanchangData, MoonPhaseDay
 } from '../../types/horoscope';
 import { ZODIAC_SIGNS, CHINESE_ANIMALS, CHINESE_ELEMENT_COLORS } from '../../types/horoscope';
+import { deriveDaily, SIGN_RULERS } from '../transits';
 
 // ─── moon phase calculation (astronomical approximation) ─────────────────────
 
@@ -334,53 +335,46 @@ function seededRandom(seed: number): number {
 }
 
 export function fetchDailyReading(sign: ZodiacSign): DailyReading {
-  const now = new Date();
-  const daySeed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
-  const signIndex = ZODIAC_SIGNS.findIndex(s => s.key === sign);
-  const seed = daySeed + signIndex * 31;
-
-  const r = (offset: number) => seededRandom(seed + offset);
-
-  const overall = Math.max(1, Math.min(5, Math.round(r(1) * 4 + 1)));
-  const love = Math.max(1, Math.min(5, Math.round(r(2) * 4 + 1)));
-  const career = Math.max(1, Math.min(5, Math.round(r(3) * 4 + 1)));
-  const health = Math.max(1, Math.min(5, Math.round(r(4) * 4 + 1)));
-  const finance = Math.max(1, Math.min(5, Math.round(r(5) * 4 + 1)));
-  const spirituality = Math.max(1, Math.min(5, Math.round(r(6) * 4 + 1)));
-
+  // Round 2, R8: the daily reading is DERIVED from computed planetary
+  // positions (src/lib/transits.ts) — the previous Math.sin seeded
+  // pseudo-random generator is gone. Every number below is a documented
+  // function of today's real longitudes and aspects; the derivation is
+  // written out in transits.ts and summarised on the sign page itself.
+  const derived = deriveDaily(sign);
   const narratives = NARRATIVES[sign];
-  const narrative = narratives[Math.floor(r(7) * narratives.length)];
-
-  const luckyNumber = Math.floor(r(8) * 99) + 1;
-  const COLORS_SHORT = ['Red', 'Blue', 'Green', 'Gold', 'Silver', 'Purple', 'Orange', 'Turquoise', 'Coral', 'Ivory', 'Navy', 'Amber'];
-  const luckyColor = COLORS_SHORT[Math.floor(r(9) * COLORS_SHORT.length)];
-  const luckyGemstone = GEMSTONES[sign];
-  const luckyDirection = DIRECTIONS[Math.floor(r(10) * DIRECTIONS.length)];
-  const bestHour = 6 + Math.floor(r(11) * 12);
-  const ampm = bestHour >= 12 ? 'PM' : 'AM';
-  const displayHour = bestHour > 12 ? bestHour - 12 : bestHour || 12;
-  const bestTime = `${displayHour}:00 ${ampm}`;
-
-  const MOODS = ['Energetic', 'Reflective', 'Passionate', 'Calm', 'Curious', 'Determined', 'Playful', 'Introspective', 'Bold', 'Harmonious'];
-  const mood = MOODS[Math.floor(r(12) * MOODS.length)];
-
-  const compatIndex = Math.floor(r(13) * 12);
-  const compatibility = ZODIAC_SIGNS[compatIndex].key;
-  const challengeIndex = Math.floor(r(14) * 12);
-  const challenging = ZODIAC_SIGNS[challengeIndex].key;
+  const narrative = narratives[derived.narrativeIndex % narratives.length];
+  const byPlanet = new Map(derived.positions.map((p) => [p.planet, p]));
+  const label = (k: string) => derived.positions.find((p) => p.planet === k)?.label ?? k;
+  const rulerAspects = derived.aspects
+    .filter((a) => a.a === SIGN_RULERS[sign] || a.b === SIGN_RULERS[sign])
+    .slice(0, 4)
+    .map((a) => `${label(a.a)} ${a.kind} ${label(a.b)} (orb ${a.orb.toFixed(1)}\u00B0)`);
 
   return {
-    overall, love, career, health, finance, spirituality,
+    overall: derived.meters.overall,
+    love: derived.meters.love,
+    career: derived.meters.career,
+    health: derived.meters.health,
+    finance: derived.meters.finance,
+    spirituality: derived.meters.spirituality,
     summary: narrative.slice(0, 150) + '...',
     narrative,
-    lucky_number: luckyNumber,
-    lucky_color: luckyColor,
-    lucky_gemstone: luckyGemstone,
-    lucky_direction: luckyDirection,
-    best_time: bestTime,
-    mood,
-    compatibility,
-    challenging,
+    lucky_number: derived.luckyNumber,
+    lucky_color: derived.luckyColor,
+    lucky_gemstone: GEMSTONES[sign],
+    lucky_direction: derived.luckyDirection,
+    best_time: derived.bestTime,
+    mood: derived.mood,
+    compatibility: derived.compatibility as ZodiacSign,
+    challenging: derived.challenging as ZodiacSign,
+    transits: derived.positions.map((p) => ({
+      planet: p.label,
+      sign: p.sign,
+      degree: Math.round(p.degreeInSign * 10) / 10,
+      retrograde: p.retrograde,
+    })),
+    transit_aspects: rulerAspects,
+    transit_method: derived.method,
   };
 }
 

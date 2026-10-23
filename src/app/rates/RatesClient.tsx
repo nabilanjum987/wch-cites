@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp, TrendingDown, RefreshCw, Globe, Calculator, Info, Droplet, Coins, DollarSign, TrendingUp as TrendUp, TrendingDown as TrendDown, BarChart3, Percent, ArrowUpRight, ArrowDownRight, Banknote, PiggyBank, Home, Wheat, Flame, Factory, Newspaper, AlertTriangle } from 'lucide-react';
-import { fetchGoldRates, fetchOilPrices, fetchCryptoData, fetchCurrencyPairs, fetchStockIndices, fetchCommodities, calculateLoan, calculateSavings, type GoldRates, type OilPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type StockIndex, type Commodity, type FinancialStressData, type MiseryIndex } from '../../lib/apis/rates';
+import { fetchGoldRates, fetchSilverRates, fetchOilPrices, fetchCryptoData, fetchCurrencyPairs, fetchStockIndices, fetchCommodities, calculateLoan, calculateSavings, type GoldRates, type SilverRates, type OilPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type StockIndex, type Commodity, type FinancialStressData, type MiseryIndex } from '../../lib/apis/rates';
 import { fetchWorldBankLatest, buildMiseryIndex, computeStressScore, stressLevel, MISERY_META, type WBValues } from '../../lib/apis/worldbank';
 
 const KARATS = [
@@ -207,14 +207,16 @@ function ZakatCalculator({ nisabValue, nisabGrams, symbol, perGram }: ZakatCalcu
   );
 }
 
-export default function WorldRatesPage({ initialRates, initialCrypto, initialPairs }: {
+export default function WorldRatesPage({ initialRates, initialSilver, initialCrypto, initialPairs }: {
   // Real data fetched on the server (CoinGecko + ExchangeRate-API) so the
   // raw HTML carries live rates instead of a loading skeleton.
   initialRates?: GoldRates | null;
+  initialSilver?: SilverRates | null;
   initialCrypto?: { cryptos: CryptoData[]; market: CryptoMarket } | null;
   initialPairs?: CurrencyPair[];
 } = {}) {
   const [rates, setRates] = useState<GoldRates | null>(initialRates ?? null);
+  const [silver, setSilver] = useState<SilverRates | null>(initialSilver ?? null);
   // World Bank real data (Batch 3b) — replaces the static INTEREST_RATES /
   // FINANCIAL_STRESS_DATA / MISERY_INDEX_DATA tables (undated snapshots
   // presented as current). Sections hide until real data arrives.
@@ -259,8 +261,9 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
   const loadRates = useCallback(async (showRefreshing = false) => {
     if (showRefreshing) setRefreshing(true);
     try {
-      const [goldData, oilData, crypto, currencies, stocks, commods] = await Promise.all([
+      const [goldData, silverData, oilData, crypto, currencies, stocks, commods] = await Promise.all([
         fetchGoldRates(1, 'USD', '$'),
+        fetchSilverRates(1, 'USD', '$'),
         fetchOilPrices(),
         fetchCryptoData(1, 'USD', '$'),
         fetchCurrencyPairs(),
@@ -268,6 +271,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
         Promise.resolve(fetchCommodities()),
       ]);
       setRates(goldData);
+      setSilver(silverData);
       setOilPrices(oilData);
       setCryptoData(crypto);
       setCurrencyPairs(currencies);
@@ -327,7 +331,7 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
                 One page for the numbers people check every day: the live gold price in every karat, oil and
                 the wider commodity board, the top cryptocurrencies, exchange rates for the currencies
                 Pakistan trades and remits in, world stock indices and the World Bank&apos;s country
-                indicators. Every figure is fetched from a named public source — every figure is fetched from a named source —{' '}
+                indicators. Every figure is fetched from a named public source —{' '}
                 <a href="/sources" className="text-amber-300 underline">the full list is published here</a> — and when a
                 feed is down, its section is left out or reports itself unavailable instead of showing
                 yesterday&apos;s number as today&apos;s.
@@ -647,6 +651,57 @@ export default function WorldRatesPage({ initialRates, initialCrypto, initialPai
               </p>
             </div>
           </div>
+
+          {/* SECTION 1B — SILVER (anchor target of Ticker 1's silver item) */}
+          {silver && (
+            <div id="silver" className="mt-10 scroll-mt-28">
+              <div className="section-title">
+                <div className="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center">
+                  <Coins className="w-5 h-5 text-slate-600" />
+                </div>
+                Silver Rates — Live Spot (XAG)
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+                <div className="card card-hover p-5">
+                  <p className="text-sm font-semibold text-gray-700 mb-3">Spot — per Troy Oz</p>
+                  <p className="text-2xl font-bold text-gray-900 tabular-nums">{fmt(silver.per_oz, silver.currency_symbol)}</p>
+                  <p className="text-xs text-gray-500 mt-1">Fine silver (.999), live spot</p>
+                </div>
+                <div className="card card-hover p-5">
+                  <p className="text-sm font-semibold text-gray-700 mb-3">Per Gram</p>
+                  <p className="text-2xl font-bold text-gray-900 tabular-nums">{fmt(silver.per_gram, silver.currency_symbol)}</p>
+                  <p className="text-xs text-gray-500 mt-1">Fine silver (.999)</p>
+                </div>
+                <div className="card card-hover p-5">
+                  <p className="text-sm font-semibold text-gray-700 mb-3">Per Tola (11.664g)</p>
+                  <p className="text-2xl font-bold text-gray-900 tabular-nums">{fmt(silver.per_tola, silver.currency_symbol)}</p>
+                  <p className="text-xs text-gray-500 mt-1">The unit Pakistani jewellers quote</p>
+                </div>
+                <div className="card card-hover p-5">
+                  <p className="text-sm font-semibold text-gray-700 mb-3">Per Kilogram</p>
+                  <p className="text-2xl font-bold text-gray-900 tabular-nums">{fmt(silver.per_kg, silver.currency_symbol)}</p>
+                  <p className="text-xs text-gray-500 mt-1">Fine silver (.999)</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div className="card p-5">
+                  <p className="text-sm font-semibold text-gray-700 mb-2">Sterling Silver (.925) — per Gram</p>
+                  <p className="text-xl font-bold text-gray-900 tabular-nums">{fmt(silver.sterling_per_gram, silver.currency_symbol)}</p>
+                  <p className="text-xs text-gray-500 mt-1">Derived from the live spot price at .925 fineness — the melt value of sterling jewellery and tableware before any making charges.</p>
+                </div>
+                {rates && (
+                  <div className="card p-5">
+                    <p className="text-sm font-semibold text-gray-700 mb-2">Gold : Silver Ratio</p>
+                    <p className="text-xl font-bold text-gray-900 tabular-nums">{(rates.per_oz / silver.per_oz).toFixed(1)} : 1</p>
+                    <p className="text-xs text-gray-500 mt-1">Computed from the two live spot prices on this page — how many ounces of silver one ounce of gold buys right now.</p>
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-4">
+                Spot silver (XAG) via gold-api.com — the same source as the homepage ticker — updated {new Date(silver.last_updated).toLocaleTimeString()} UTC. The source publishes spot only, so no daily-change figure is shown rather than an invented one.
+              </p>
+            </div>
+          )}
 
           {/* SECTION 2 — OIL & ENERGY */}
           <div className="mt-10">
