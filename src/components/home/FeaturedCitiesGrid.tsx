@@ -13,7 +13,11 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const CITIES = [
-  { name: 'Lahore', province: 'Punjab', flag: '🇵🇰', color: '#01411C', href: '/pakistan/punjab/lahore', lat: 31.5204, lng: 74.3587 },
+  { name: 'Lahore', province: 'Punjab', flag: '🇵🇰', color: '#01411C', href: '/pakistan/punjab/lahore', lat: 31.5204, lng: 74.3587,
+    // Polish Card 4: the flagship city's card carries a real photo
+    // (image bank: "Badshahi Mosque in Lahore, Pakistan 03",
+    // Harvinder Chandigarh, CC BY 4.0).
+    img: '/images/home/lahore-city.webp', imgAlt: 'The Badshahi Mosque in Lahore', credit: 'Photo: Harvinder Chandigarh · CC BY 4.0' },
   { name: 'Karachi', province: 'Sindh', flag: '🇵🇰', color: '#0e5a8a', href: '/pakistan/sindh/karachi', lat: 24.8607, lng: 67.0011 },
   { name: 'Islamabad', province: 'Capital Territory', flag: '🇵🇰', color: '#7a5c14', href: '/pakistan/islamabad-capital-territory/islamabad', lat: 33.7294, lng: 73.0931 },
 ];
@@ -75,9 +79,17 @@ export default function FeaturedCitiesGrid() {
           <Link key={city.name} href={city.href} className="no-underline group">
             <div className="relative h-44 rounded-2xl overflow-hidden border transition-all group-hover:scale-[1.02]"
               style={{ borderColor: `${city.color}50`, background: `linear-gradient(160deg, ${city.color}33, var(--bg))` }}>
-              <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none" style={{ fontSize: '84px', opacity: 0.15 }}>
-                {city.flag}
-              </div>
+              {'img' in city && city.img ? (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={city.img} alt={city.imgAlt} width={832} height={624} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,15,30,0.92) 0%, rgba(10,15,30,0.25) 55%, rgba(10,15,30,0.30) 100%)' }} />
+                </>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none" style={{ fontSize: '84px', opacity: 0.15 }}>
+                  {city.flag}
+                </div>
+              )}
               <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
                 <div className="flex items-center justify-between">
                   <span className="text-2xl">{city.flag}</span>
@@ -87,6 +99,7 @@ export default function FeaturedCitiesGrid() {
                   <div className="t-text font-bold text-lg leading-tight">{city.name}</div>
                   <div className="sub-desc">{city.province} · Pakistan</div>
                   {figs[i].prayer && <div className="t-emerald text-xs mt-1 font-medium">Next prayer · {figs[i].prayer}</div>}
+                  {'credit' in city && city.credit && <div className="t-force-dark text-[9px] t-text-50 mt-1">{city.credit}</div>}
                 </div>
               </div>
             </div>

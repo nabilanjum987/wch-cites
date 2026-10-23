@@ -17,7 +17,10 @@ const WONDERS = [
   { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', color: '#D9A028', desc: 'Inca citadel in the Andes' },
   { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Mayan pyramid city' },
   { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Amphitheatre from 80 AD' },
-  { name: 'Taj Mahal',              country: 'India',  emoji: '🕌', color: '#FF9933', desc: 'Marble tomb in Agra', href: '/wonders/taj-mahal' },
+  { name: 'Taj Mahal',              country: 'India',  emoji: '🕌', color: '#FF9933', desc: 'Marble tomb in Agra', href: '/wonders/taj-mahal',
+    // Polish Card 4: the published wonder's card carries its real photo
+    // (image bank: "Taj Mahal (Edited).jpeg", Yann Forget, CC BY-SA 4.0).
+    img: '/images/home/taj.webp', imgAlt: 'The Taj Mahal seen from the Yamuna river side, its white marble dome and minarets above the garden wall', credit: 'Photo: Yann Forget · CC BY-SA 4.0' },
 ];
 
 export default function FeaturedWonders() {
@@ -65,13 +68,22 @@ export default function FeaturedWonders() {
             const card = (
               <div className="relative h-44 rounded-2xl overflow-hidden border"
                 style={{ borderColor: `${w.color}40`, background: `linear-gradient(135deg, ${w.color}20, var(--bg))` }}>
-                <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-15 select-none pointer-events-none">{w.emoji}</div>
+                {'img' in w && w.img ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={w.img} alt={w.imgAlt} width={640} height={421} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,15,30,0.92) 0%, rgba(10,15,30,0.35) 55%, rgba(10,15,30,0.15) 100%)' }} />
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-15 select-none pointer-events-none">{w.emoji}</div>
+                )}
                 <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
                   <div className="text-3xl">{w.emoji}</div>
                   <div>
                     <div className="t-text font-bold text-sm leading-tight">{w.name}</div>
                     <div className="sub-desc mt-0.5">{w.country}</div>
                     <div className="sub-desc mt-1">{w.desc}</div>
+                    {'credit' in w && w.credit && <div className="t-force-dark text-[9px] t-text-50 mt-1">{w.credit}</div>}
                   </div>
                 </div>
               </div>

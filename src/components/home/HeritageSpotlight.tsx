@@ -23,6 +23,22 @@ const CARD_LINES: Record<string, string> = {
   'multan-blue-pottery': 'Cobalt-blue Kashigari pottery of Multan',
 };
 
+// Polish Card 4: ONE verified real photo for the panel — Multan's own
+// potters, c. 1902 (Fred Bremner, public domain, via Wikimedia Commons;
+// licence record: docs/media-registry/subjects/multan-blue-pottery.json).
+// The registry's unrecorded Unsplash URLs are NOT used. The Lahori
+// Khussa card gets no photo: the only verified Commons khussa image
+// found is a Sindhi khussa stall (Kandhkot) — wrong city, rejected in
+// the record file rather than mislabelled.
+const PHOTOS: Record<string, { img: string; alt: string; caption: string; credit: string }> = {
+  'multan-blue-pottery': {
+    img: '/images/home/multan-pottery.webp',
+    alt: 'Potters in Multan with their decorated plates and vases outside their shop, photographed by Fred Bremner around 1902',
+    caption: 'Multan potters with their ware, c. 1902',
+    credit: 'Fred Bremner · public domain',
+  },
+};
+
 const COUNTRY_FLAGS: Record<string, string> = {
   Pakistan: '🇵🇰',
   India: '🇮🇳',
@@ -45,6 +61,17 @@ export default function HeritageSpotlight() {
                 className="rounded-2xl border p-5 flex flex-col gap-3 h-full"
                 style={{ background: `linear-gradient(135deg, ${style.color}15, var(--bg))`, borderColor: `${style.color}30` }}
               >
+                {PHOTOS[p.slug] && (
+                  <figure>
+                    <div className="relative h-36 overflow-hidden rounded-xl">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={PHOTOS[p.slug].img} alt={PHOTOS[p.slug].alt} width={768} height={420} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+                    </div>
+                    <figcaption className="text-[11px] t-text-40 mt-1.5">
+                      {PHOTOS[p.slug].caption} · Photo: {PHOTOS[p.slug].credit}
+                    </figcaption>
+                  </figure>
+                )}
                 <div className="flex items-center justify-between">
                   <span className="text-4xl">{style.emoji}</span>
                   <span
