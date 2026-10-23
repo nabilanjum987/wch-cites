@@ -1,0 +1,96 @@
+{
+ "subject": "Multan",
+ "type": "city",
+ "package": "Round 2 R4 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Shah Rukn-e-Alam Shrine.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Shah_Rukn-e-Alam_Shrine.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Shah_Rukn-e-Alam_Shrine.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Tahsin Shah",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Shah Rukn-e-Alam Shrine\" by Tahsin Shah — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Shah Rukn — e — Alam Shrine",
+   "focal_point": null,
+   "width": 5760,
+   "height": 3840,
+   "sha1": "a0802c08dbec00eb16e73a68d908b3ed4b1fb24a",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Multan - Tomb of Shah Rukn-e-Alam 2014.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Multan_-_Tomb_of_Shah_Rukn-e-Alam_2014.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Multan_-_Tomb_of_Shah_Rukn-e-Alam_2014.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Amirshafiquemughal",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Multan - Tomb of Shah Rukn-e-Alam 2014\" by Amirshafiquemughal — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Multan  —  Tomb of Shah Rukn — e — Alam 2014",
+   "focal_point": null,
+   "width": 3264,
+   "height": 2448,
+   "sha1": "505814e86c5f0106831c15b3fcf9050f1eb9b8d4",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Tomb of Shah Rukn-e-Alam, Multan, Pakistan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Tomb_of_Shah_Rukn-e-Alam%2C_Multan%2C_Pakistan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Tomb_of_Shah_Rukn-e-Alam,_Multan,_Pakistan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Nabzula",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Tomb of Shah Rukn-e-Alam, Multan, Pakistan\" by Nabzula — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Tomb of Shah Rukn — e — Alam, Multan, Pakistan",
+   "focal_point": null,
+   "width": 1024,
+   "height": 694,
+   "sha1": "fa4b4f14af12568b1a00bd857c4bdcfad5d174ac",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Shrine Shah Rukn-e-Alam.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Shrine_Shah_Rukn-e-Alam.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Shrine_Shah_Rukn-e-Alam.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Yaarahmadd",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Shrine Shah Rukn-e-Alam\" by Yaarahmadd — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Shrine Shah Rukn — e — Alam",
+   "focal_point": null,
+   "width": 1600,
+   "height": 1199,
+   "sha1": "4852ad99e2f98d8ee13b68493a1d04bb827b532b",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Tomb of Shah Rukn-e-Alam 2 Multan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Tomb_of_Shah_Rukn-e-Alam_2_Multan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Tomb_of_Shah_Rukn-e-Alam_2_Multan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Junaidahmadj",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Tomb of Shah Rukn-e-Alam 2 Multan\" by Junaidahmadj — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Tomb of Shah Rukn — e — Alam 2 Multan",
+   "focal_point": null,
+   "width": 3000,
+   "height": 2000,
+   "sha1": "b388561c296a5f545e84bd137739dad8b4b48ef1",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Shah Rukn e Alam Shrine.JPG",
+   "reason": "resolution too low (960px wide)"
+  }
+ ]
+}

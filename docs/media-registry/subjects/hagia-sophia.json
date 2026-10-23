@@ -1,0 +1,96 @@
+{
+ "subject": "Hagia Sophia",
+ "type": "place",
+ "package": "Round 3 S3 (batch 1)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Hagia Sophia Mars 2013.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Hagia_Sophia_Mars_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hagia_Sophia_Mars_2013.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Arild Vågen",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Hagia Sophia Mars 2013\" by Arild Vågen — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Hagia Sophia Mars 2013",
+   "focal_point": null,
+   "width": 5514,
+   "height": 3681,
+   "sha1": "8ba5744aa4e1f3ae80c534405c8eda4a53f00dc2",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Gaspare Fossati - Louis Haghe - Vue générale de la grande nef, en regardant l'occident (Hagia Sophia - Ayasofya Mosque nave).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Gaspare_Fossati_-_Louis_Haghe_-_Vue_g%C3%A9n%C3%A9rale_de_la_grande_nef%2C_en_regardant_l%27occident_%28Hagia_Sophia_-_Ayasofya_Mosque_nave%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Gaspare_Fossati_-_Louis_Haghe_-_Vue_g%C3%A9n%C3%A9rale_de_la_grande_nef,_en_regardant_l%27occident_(Hagia_Sophia_-_Ayasofya_Mosque_nave).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Gaspare Fossati (artist, 1809-1883) Louis Haghe (lithographer, 1806-1885) Adam Cuerden (restoration)",
+   "licence": "Public domain",
+   "attribution": "\"Gaspare Fossati - Louis Haghe - Vue générale de la grande nef, en regardant l'occident (Hagia Sophia - Ayasofya Mosque nave)\" by Gaspare Fossati (artist, 1809-1883) Louis Haghe (lithographer, 1806-1885) Adam Cuerden (restoration) — Public domain, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Gaspare Fossati  —  Louis Haghe  —  Vue générale de la grande nef, en regardant l'occident (Hagia Sophia  —  Ayasofya Mosque nave)",
+   "focal_point": null,
+   "width": 2106,
+   "height": 2846,
+   "sha1": "ca97b078cb07e38e38d439546b63d396f95b80d2",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Hagia Sophia - coupole.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/33/Hagia_Sophia_-_coupole.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hagia_Sophia_-_coupole.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Eusebius",
+   "licence": "CC BY 3.0",
+   "attribution": "\"Hagia Sophia - coupole\" by Eusebius — CC BY 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Hagia Sophia  —  coupole",
+   "focal_point": null,
+   "width": 3271,
+   "height": 3271,
+   "sha1": "0e8a5488722857dcd3cfe0622ac75d651850be5a",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Deesis mosaic Hagia Sophia.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Deesis_mosaic_Hagia_Sophia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Deesis_mosaic_Hagia_Sophia.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Photograph: Myrabella",
+   "licence": "Public domain",
+   "attribution": "\"Deesis mosaic Hagia Sophia\" by Photograph: Myrabella — Public domain, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Deesis mosaic Hagia Sophia",
+   "focal_point": null,
+   "width": 4176,
+   "height": 2429,
+   "sha1": "1bf80add7dddc9df60a01f61e10f9602615c9032",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Apse mosaic Hagia Sophia Virgin and Child.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Apse_mosaic_Hagia_Sophia_Virgin_and_Child.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Apse_mosaic_Hagia_Sophia_Virgin_and_Child.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Photograph: Myrabella",
+   "licence": "Public domain",
+   "attribution": "\"Apse mosaic Hagia Sophia Virgin and Child\" by Photograph: Myrabella — Public domain, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Apse mosaic Hagia Sophia Virgin and Child",
+   "focal_point": null,
+   "width": 2078,
+   "height": 2948,
+   "sha1": "c69700ad5c4b2ed9dbe902217b5ab2b2e7a55b43",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Hagia-Sophia-Laengsschnitt.jpg",
+   "reason": "no creator recorded in file metadata"
+  }
+ ]
+}

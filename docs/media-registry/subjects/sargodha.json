@@ -1,0 +1,112 @@
+{
+ "subject": "Sargodha",
+ "type": "city",
+ "package": "Batch 2 PK cities",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified (batch 2, 2026-10-22). The subject's data package belongs to the batch-2 streams and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Sargodha City Flag.png",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/48/Sargodha_City_Flag.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Sargodha_City_Flag.png",
+   "source": "Wikimedia Commons",
+   "creator": "Aml-401",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Sargodha City Flag\" by Aml-401 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Sargodha City Flag",
+   "focal_point": null,
+   "width": 1500,
+   "height": 1000,
+   "sha1": "218fffc84aa21eab31793d068b0e23095ab3f109",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Niaz Ali. Patwari. Sargodha. Punjab.1946.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Niaz_Ali._Patwari._Sargodha._Punjab.1946.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Niaz_Ali._Patwari._Sargodha._Punjab.1946.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Amarjit Chandan",
+   "licence": "Public domain",
+   "attribution": "\"Niaz Ali. Patwari. Sargodha. Punjab.1946\" by Amarjit Chandan — Public domain, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Niaz Ali. Patwari. Sargodha. Punjab.1946",
+   "focal_point": null,
+   "width": 2645,
+   "height": 1860,
+   "sha1": "7e382ebf74190377747baeee5d9a0c547823939a",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Sargodha District, Punjab, Pakistan.png",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Sargodha_District%2C_Punjab%2C_Pakistan.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Sargodha_District,_Punjab,_Pakistan.png",
+   "source": "Wikimedia Commons",
+   "creator": "User:Abbasi786786",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Sargodha District, Punjab, Pakistan\" by User:Abbasi786786 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Sargodha District, Punjab, Pakistan",
+   "focal_point": null,
+   "width": 3880,
+   "height": 4000,
+   "sha1": "ec5790daba8fc684d970b8a225171a8bec27f176",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Motorway Sargodha.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Motorway_Sargodha.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Motorway_Sargodha.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Unknown author Unknown author",
+   "licence": "CC0",
+   "attribution": "\"Motorway Sargodha\" by Unknown author Unknown author — CC0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Motorway Sargodha",
+   "focal_point": null,
+   "width": 1024,
+   "height": 768,
+   "sha1": "bba270bc8d24dfed25682a48eba02be43c9c8c38",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Sargodha, Pakistan - panoramio.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/64/Sargodha%2C_Pakistan_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Sargodha,_Pakistan_-_panoramio.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Sikandar Sajid",
+   "licence": "CC BY 3.0",
+   "attribution": "\"Sargodha, Pakistan - panoramio\" by Sikandar Sajid — CC BY 3.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Sargodha, Pakistan  —  panoramio",
+   "focal_point": null,
+   "width": 4000,
+   "height": 3000,
+   "sha1": "a1c7d2d519885e0f1483ef0310a5c77108602e56",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Mainentry Sargodha public school.jpg",
+   "reason": "resolution too low (400px wide)"
+  },
+  {
+   "title": "Wapda Town Sargodha Main Gate .jpg",
+   "reason": "resolution too low (960px wide)"
+  },
+  {
+   "title": "Johar Coloney Sargodha 03.jpg",
+   "reason": "resolution too low (720px wide)"
+  },
+  {
+   "title": "Johar Coloney Sargodha 01.jpg",
+   "reason": "resolution too low (720px wide)"
+  },
+  {
+   "title": "Johar Coloney Sargodha 02.jpg",
+   "reason": "resolution too low (720px wide)"
+  }
+ ]
+}

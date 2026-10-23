@@ -1,0 +1,108 @@
+{
+ "subject": "Sukkur",
+ "type": "city",
+ "package": "Batch 2 PK cities",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified (batch 2, 2026-10-22). The subject's data package belongs to the batch-2 streams and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Indus river Sukkur barrage sunset.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/38/Indus_river_Sukkur_barrage_sunset.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Indus_river_Sukkur_barrage_sunset.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Ghulamrasoolshar",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Indus river Sukkur barrage sunset\" by Ghulamrasoolshar — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Indus river Sukkur barrage sunset",
+   "focal_point": null,
+   "width": 3383,
+   "height": 5632,
+   "sha1": "3b139ddd88eb7c50ed3cfdad0b49a6393b86faed",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Artificial island near Sukkur Barrage.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/59/Artificial_island_near_Sukkur_Barrage.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Artificial_island_near_Sukkur_Barrage.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "مھتاب احمد",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Artificial island near Sukkur Barrage\" by مھتاب احمد — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Artificial island near Sukkur Barrage",
+   "focal_point": null,
+   "width": 2560,
+   "height": 1920,
+   "sha1": "f72276dd9dfba64fbea64814c5ec988988d6c2e7",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Shah Sukkur (16312547387).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Shah_Sukkur_%2816312547387%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Shah_Sukkur_(16312547387).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "USAID Pakistan",
+   "licence": "Public domain",
+   "attribution": "\"Shah Sukkur (16312547387)\" by USAID Pakistan — Public domain, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Shah Sukkur (16312547387)",
+   "focal_point": null,
+   "width": 1632,
+   "height": 2464,
+   "sha1": "1bda8b8d12b7bc49aea39a5930bf964e364db7f7",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "'Sukkur barrage bungalows' (8091143684).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/%27Sukkur_barrage_bungalows%27_%288091143684%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:%27Sukkur_barrage_bungalows%27_(8091143684).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Mike",
+   "licence": "CC BY-SA 2.0",
+   "attribution": "\"'Sukkur barrage bungalows' (8091143684)\" by Mike — CC BY-SA 2.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "'Sukkur barrage bungalows' (8091143684)",
+   "focal_point": null,
+   "width": 1024,
+   "height": 345,
+   "sha1": "ca67d8e7f45cf30b5b7c5325a87bc082e9260cd6",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Sunset view at Indus river sindh pakistan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Sunset_view_at_Indus_river_sindh_pakistan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Sunset_view_at_Indus_river_sindh_pakistan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Ghulamrasoolshar",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Sunset view at Indus river sindh pakistan\" by Ghulamrasoolshar — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Sunset view at Indus river sindh pakistan",
+   "focal_point": null,
+   "width": 2662,
+   "height": 3496,
+   "sha1": "7050aa784820f37926ef2538e6aca0e2f68c58e6",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Sukkur Barrage in daylight.jpg",
+   "reason": "resolution too low (960px wide)"
+  },
+  {
+   "title": "Plaque at the Lloyd-Barrage (Sukkur-Barrage).jpg",
+   "reason": "resolution too low (504px wide)"
+  },
+  {
+   "title": "Sukkur Barrage (Night View) - panoramio.jpg",
+   "reason": "resolution too low (500px wide)"
+  },
+  {
+   "title": "Nara Canal.jpg",
+   "reason": "resolution too low (809px wide)"
+  }
+ ]
+}

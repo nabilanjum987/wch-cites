@@ -1,0 +1,96 @@
+{
+ "subject": "Statue of Liberty",
+ "type": "place",
+ "package": "Round 3 S3 (batch 1)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Statue of Liberty, NY.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Statue_of_Liberty%2C_NY.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty,_NY.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "William Warby",
+   "licence": "CC BY 2.0",
+   "attribution": "\"Statue of Liberty, NY\" by William Warby — CC BY 2.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Statue of Liberty, NY",
+   "focal_point": null,
+   "width": 3558,
+   "height": 2668,
+   "sha1": "8b0c7fe1fb849953de21b98e33a210beb54a7015",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Statue of Liberty frontal 2.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Statue_of_Liberty_frontal_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_frontal_2.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Daniel Schwen",
+   "licence": "Public domain",
+   "attribution": "\"Statue of Liberty frontal 2\" by Daniel Schwen — Public domain, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Statue of Liberty frontal 2",
+   "focal_point": null,
+   "width": 3249,
+   "height": 8048,
+   "sha1": "753dd1a843f5809ab7632bfb90205397097eeaac",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Statue of Liberty frontal 2 crop.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Statue_of_Liberty_frontal_2_crop.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_frontal_2_crop.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "Daniel Schwen",
+   "licence": "Public domain",
+   "attribution": "\"Statue of Liberty frontal 2 crop\" by Daniel Schwen — Public domain, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Statue of Liberty frontal 2 crop",
+   "focal_point": null,
+   "width": 3185,
+   "height": 4805,
+   "sha1": "d4f4d8068c6d8da1d6b957f02adffdf4b9a50d69",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Statue of Liberty Paris 2007-05-29.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Statue_of_Liberty_Paris_2007-05-29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_Paris_2007-05-29.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "H. Zell",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Statue of Liberty Paris 2007-05-29\" by H. Zell — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Statue of Liberty Paris 2007 — 05 — 29",
+   "focal_point": null,
+   "width": 1255,
+   "height": 1673,
+   "sha1": "7252369c17655e16c4d5e43ae9eee0a2166b12f8",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Liberty Island photo Don Ramey Logan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Liberty_Island_photo_Don_Ramey_Logan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Liberty_Island_photo_Don_Ramey_Logan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Don Ramey Logan",
+   "licence": "CC BY 4.0",
+   "attribution": "\"Liberty Island photo Don Ramey Logan\" by Don Ramey Logan — CC BY 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Liberty Island photo Don Ramey Logan",
+   "focal_point": null,
+   "width": 4800,
+   "height": 3200,
+   "sha1": "c22910b0f9c77cf3653dcd412aec25c5cae9e9d0",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "National Park Service 9-11 Statue of Liberty and WTC fire.jpg",
+   "reason": "resolution too low (350px wide)"
+  }
+ ]
+}

@@ -1,0 +1,96 @@
+{
+ "subject": "Sialkot",
+ "type": "city",
+ "package": "Round 2 R4 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Clock Tower, Sialkot 15.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Clock_Tower%2C_Sialkot_15.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower,_Sialkot_15.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "PakGuru99",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Clock Tower, Sialkot 15\" by PakGuru99 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Clock Tower, Sialkot 15",
+   "focal_point": null,
+   "width": 4608,
+   "height": 3456,
+   "sha1": "51ce4f1b3d5c8c78a05d441425acb11d4cf71f51",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Clock Tower, Sialkot - illuminated .jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Clock_Tower%2C_Sialkot_-_illuminated_.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower,_Sialkot_-_illuminated_.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Sheryking",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Clock Tower, Sialkot - illuminated \" by Sheryking — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Clock Tower, Sialkot  —  illuminated ",
+   "focal_point": null,
+   "width": 3024,
+   "height": 4032,
+   "sha1": "964a6b9d2f96ec6606767d77987997e283f1cdbf",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Clock Tower, Sialkot 21.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Clock_Tower%2C_Sialkot_21.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower,_Sialkot_21.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "PakGuru99",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Clock Tower, Sialkot 21\" by PakGuru99 — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Clock Tower, Sialkot 21",
+   "focal_point": null,
+   "width": 4608,
+   "height": 3456,
+   "sha1": "07e849519e012a1c1313c1b835d2e356330a02dd",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Clock Tower, Sialkot 12.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Clock_Tower%2C_Sialkot_12.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower,_Sialkot_12.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "PakGuru99",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Clock Tower, Sialkot 12\" by PakGuru99 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Clock Tower, Sialkot 12",
+   "focal_point": null,
+   "width": 4608,
+   "height": 3456,
+   "sha1": "c5a29f99d35bc35d7a3aabe8d105bda4a5ea0eb5",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Clock Tower, Sialkot 19.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Clock_Tower%2C_Sialkot_19.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Clock_Tower,_Sialkot_19.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "PakGuru99",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Clock Tower, Sialkot 19\" by PakGuru99 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Clock Tower, Sialkot 19",
+   "focal_point": null,
+   "width": 4608,
+   "height": 3456,
+   "sha1": "b58072349710da55a63c1213473afbac2d93afd6",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Clock Tower, Sialkot 2007.jpg",
+   "reason": "resolution too low (640px wide)"
+  }
+ ]
+}

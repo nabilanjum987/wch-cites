@@ -9,7 +9,6 @@ import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
-import { PERSONALITIES_SEED } from '@/lib/data/personalities-seed';
 import { generateCityMeta, generateCitySchema } from '@/lib/seo/cityMeta';
 import {
   generateCityIntro,
@@ -796,15 +795,9 @@ export default async function CityPage({
                 {generatePersonalitiesParagraph(city)}
               </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              {/* R9 audit fix: this strip hard-coded four Lahore names, three
-                  of which (Faiz, Nusrat, Wasim) had no profile page — dead
-                  links on every city page. It now derives from the actual
-                  personalities pool (seed/DB via PERSONALITIES_SEED), so a
-                  card exists only when its profile does. */}
-              {Object.values(PERSONALITIES_SEED)
-                .filter((p) => p.citySlug === citySlug)
-                .map((p) => ({ name: p.name, role: p.title.split(/[&,]/)[0].trim(), slug: p.slug }))
-                .map((p) => (
+              {(citySlug === 'lahore' ? [
+                { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal' },
+              ] : []).map((p) => (
                 <a
                   key={p.slug}
                   href={`/personalities/${p.slug}`}
@@ -833,12 +826,8 @@ export default async function CityPage({
               </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {(citySlug === 'lahore' ? [
-                { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque-lahore' },
+                { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque' },
                 { name: 'Lahore Fort', type: 'UNESCO Heritage', slug: 'lahore-fort' },
-                { name: 'Shalimar Gardens', type: 'Mughal Gardens', slug: 'shalimar-gardens-lahore' },
-                { name: 'Data Darbar', type: 'Sufi Shrine', slug: 'data-darbar-lahore' },
-                { name: 'Walled City', type: 'Historic District', slug: 'walled-city-lahore' },
-                { name: 'Lahore Museum', type: 'Museum', slug: 'lahore-museum' },
               ] : []).map((place) => (
                 <a
                   key={place.slug}

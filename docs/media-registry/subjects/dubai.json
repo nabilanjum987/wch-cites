@@ -1,0 +1,96 @@
+{
+ "subject": "Dubai",
+ "type": "city",
+ "package": "Round 3 S2 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Dubai Marina Skyline 93.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Dubai_Marina_Skyline_93.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Dubai_Marina_Skyline_93.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Khanshahab06",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Dubai Marina Skyline 93\" by Khanshahab06 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Dubai Marina Skyline 93",
+   "focal_point": null,
+   "width": 3293,
+   "height": 2195,
+   "sha1": "54cc29c374639818cc3c20c12eafd441f3210992",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Dubai Marina Skyline (3to4).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Dubai_Marina_Skyline_%283to4%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Dubai_Marina_Skyline_(3to4).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Norlando Pobre",
+   "licence": "CC BY 2.0",
+   "attribution": "\"Dubai Marina Skyline (3to4)\" by Norlando Pobre — CC BY 2.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Dubai Marina Skyline (3to4)",
+   "focal_point": null,
+   "width": 2009,
+   "height": 2680,
+   "sha1": "efe537c70ba079e763c60184f5b338fe2791e0fb",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Dubai Marina Skyline on 16 April 2007.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Dubai_Marina_Skyline_on_16_April_2007.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Dubai_Marina_Skyline_on_16_April_2007.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Imre Solt",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Dubai Marina Skyline on 16 April 2007\" by Imre Solt — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Dubai Marina Skyline on 16 April 2007",
+   "focal_point": null,
+   "width": 1037,
+   "height": 624,
+   "sha1": "fc6bae2b6efea8ec8a63bc246ea4693040453bc4",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Evening Skyline Marina.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Evening_Skyline_Marina.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Evening_Skyline_Marina.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Gokul Venugopal",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Evening Skyline Marina\" by Gokul Venugopal — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Evening Skyline Marina",
+   "focal_point": null,
+   "width": 8229,
+   "height": 1857,
+   "sha1": "ede8feefd0566d733f71b3e618a8c791b16f0067",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Dubai Marina Skyline.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Dubai_Marina_Skyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Dubai_Marina_Skyline.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Norlando Pobre",
+   "licence": "CC BY 2.0",
+   "attribution": "\"Dubai Marina Skyline\" by Norlando Pobre — CC BY 2.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Dubai Marina Skyline",
+   "focal_point": null,
+   "width": 6000,
+   "height": 4000,
+   "sha1": "ac4446370e5b4bd1cd9857a4a3e5beced2cf18e3",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "View of Dubai Marina Skyline on a foggy day.png",
+   "reason": "resolution too low (482px wide)"
+  }
+ ]
+}
