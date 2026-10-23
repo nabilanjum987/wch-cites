@@ -9,7 +9,8 @@ import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
-import { generateCityMeta, generateCitySchema } from '@/lib/seo/cityMeta';
+import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
+import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
 import {
   generateCityIntro,
   generateCityIntroAfter,
@@ -312,14 +313,27 @@ export default async function CityPage({
     .slice(0, 5);
 
   // ── JSON-LD Schemas ──
-  const schemas = generateCitySchema({
+  // ── Batch 4 Item 2: AEO answer layer ──────────────────────────────────
+  // faqProps feeds BOTH the FAQPage schema (generateCitySchema) and the
+  // visible FAQ block (generateCityFaqs) — one source, no drift. The
+  // direct-answer block's first sentence answers the template's primary
+  // mined question ("What is the population of {city}?"); every figure in
+  // it comes from the same data this page already renders (GLANCE dataset
+  // + live weather) — nothing new is hard-coded.
+  const faqProps = {
     city: city,
     country: country,
     province: province,
     temp, weatherDesc, fajr: timings?.Fajr, maghrib: timings?.Maghrib,
     goldPerGram,
     population: glance?.population ?? null,
-  });
+  };
+  const schemas = generateCitySchema(faqProps);
+  const cityFaqs = generateCityFaqs(faqProps);
+  const todayStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const directAnswer = glance
+    ? `${city} has a population of ${glance.population} and is one of the principal cities of ${province}, ${country}. The city covers about ${glance.area} km² at roughly ${glance.elevation} metres above sea level, and its main languages are ${glance.languages}.${temp ? ` Right now it is ${Math.round(temp)}°C in ${city}${weatherDesc ? ` with ${weatherDesc}` : ''}.` : ''} The sections below cover its live weather, prayer times, gold rates, news, events and economy in full.`
+    : `${city} is a city of ${province}, ${country}, and this page is its complete guide.${temp ? ` Right now it is ${Math.round(temp)}°C in ${city}${weatherDesc ? ` with ${weatherDesc}` : ''}.` : ''} The sections below cover its live weather, prayer times, gold rates, news, events, famous places and people, and economy in full, each with a dedicated page of its own, plus the city's at-a-glance facts, emergency numbers and comparisons with other cities.`;
 
 
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -428,6 +442,13 @@ export default async function CityPage({
         </section>
 
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-10 relative z-10">
+          {/* ── Batch 4 Item 2: direct-answer block, directly under the hero/heading ── */}
+          <DirectAnswer
+            answer={directAnswer}
+            source={glance
+              ? `Population, area & elevation: WorldCityHub city dataset · Weather & prayer times: live, ${todayStr}`
+              : `Weather & prayer times: live, ${todayStr}`}
+          />
 
           {/* ══ SECTION 3: WEATHER ════════════════════════════════════════════ */}
           <section id="weather" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
@@ -1075,6 +1096,12 @@ export default async function CityPage({
               Start Chat →
             </button>
           </section>
+
+          {/* ── Batch 4 Item 2: visible FAQ block — same data as the FAQPage schema in the head ── */}
+          <FaqBlock
+            faqs={cityFaqs}
+            source={`Figures: WorldCityHub city dataset (population) · Weather, prayer times & gold rate: live, ${todayStr}`}
+          />
 
           {/* ══ SECTION 23: FOOTER NAV ════════════════════════════════════════ */}
           <section className="text-center py-6 text-sm text-gray-600">

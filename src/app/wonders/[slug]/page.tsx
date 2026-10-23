@@ -16,6 +16,7 @@ import {
   haversineKm,
 } from '@/lib/wonders';
 import WonderClock from './WonderClock';
+import { DirectAnswer } from '@/components/aeo/AnswerLayer';
 import MapEmbed from './MapEmbed';
 
 // Golden Wonder template (WP4 / marathon Q9) — SERVER component.
@@ -110,6 +111,25 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
     ],
   };
 
+  // ── Batch 4 Item 2: direct-answer block ────────────────────────────────
+  // First sentences answer the wonder template's primary mined question
+  // ("What time does it open, and what does a ticket cost?"), composed
+  // entirely from this wonder's own verified record — visitor hours,
+  // closing days and official fees — never hard-coded figures. The
+  // template's FAQ block + FAQPage schema already exist (wonder.faqs) and
+  // are rendered further down; this item only adds the missing prose
+  // direct answer under the heading.
+  const visitorFees = wonder.visitor.fees;
+  const wonderAnswer = [
+    `${wonder.name} ${wonder.visitor.hoursText.charAt(0).toLowerCase()}${wonder.visitor.hoursText.slice(1)}${wonder.visitor.closedDays ? ` ${wonder.visitor.closedDays}` : ''}`,
+    visitorFees && visitorFees.length > 0
+      ? `Tickets cost ${visitorFees.slice(0, 3).map((f) => `${f.amount} for ${f.visitor.toLowerCase()}`).join(', ')}${visitorFees.some((f) => /free/i.test(f.amount)) ? ', and children below 15 enter free' : ''}.`
+      : `The visitor panel on this page carries today's opening status, weather and golden-hour windows for the site, checked live.`,
+    wonder.unescoId
+      ? `It has been a UNESCO World Heritage Site since ${wonder.unescoYear} (site ${wonder.unescoId}).`
+      : `The key facts, history and verified visitor information for ${wonder.name} are set out below.`,
+  ].join(' ');
+
   return (
     <main className="min-h-screen bg-[#0a0e1a] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -141,6 +161,14 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
               {Math.round(live.tempNow)}°C · {weatherLabel(live.weatherCode)} at the site now
             </span>
           )}
+        </div>
+
+        {/* 1b — Batch 4 Item 2: direct-answer block, directly under the heading */}
+        <div className="mt-6">
+          <DirectAnswer
+            answer={wonderAnswer}
+            source={`Visitor facts: ${wonder.visitor.sourceName} — verified ${wonder.visitor.lastVerified}${wonder.unescoId ? ` · UNESCO listing: World Heritage Centre, site ${wonder.unescoId}` : ''}`}
+          />
         </div>
 
         {/* 2 — Hero gallery */}

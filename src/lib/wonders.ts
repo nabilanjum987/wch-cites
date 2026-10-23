@@ -279,23 +279,23 @@ const TAJ_MAHAL: Wonder = {
   faqs: [
     {
       q: 'What are the Taj Mahal opening hours?',
-      a: 'The Taj Mahal opens 30 minutes before sunrise and closes 30 minutes before sunset, and it is closed on Fridays for general viewing (official site, tajmahal.gov.in). Today\u2019s exact opening and closing times, from live sunrise and sunset data, are shown in the Quick Answer box at the top of this page.',
+      a: 'The Taj Mahal opens 30 minutes before sunrise and closes 30 minutes before sunset, and it is closed on Fridays for general viewing (official site, tajmahal.gov.in). Today\u2019s exact opening and closing times, from live sunrise and sunset data, are shown in the Quick Answer box at the top of this page. Arrive before opening time for the quietest hour of the day, before the tour groups reach the complex.',
     },
     {
       q: 'How much is a Taj Mahal ticket?',
-      a: 'Per the official site: foreign tourists ₹1,100, citizens of SAARC and BIMSTEC countries ₹540, and Indian/domestic visitors (including OCI cardholders) ₹50 — with an optional ₹200 extra for the main mausoleum. Children under 15 enter free. Fees include ASI and ADA charges.',
+      a: 'Per the official site: foreign tourists ₹1,100, citizens of SAARC and BIMSTEC countries ₹540, and Indian/domestic visitors (including OCI cardholders) ₹50 — with an optional ₹200 extra for the main mausoleum. Children under 15 enter free. Fees include ASI and ADA charges. Buying online through the Archaeological Survey of India discounts the foreign ticket by \u20B950 and the Indian ticket by \u20B95.',
     },
     {
       q: 'When is the best time to visit the Taj Mahal?',
-      a: 'At opening time, just before sunrise: the marble glows pinkish in the first light, the crowds are thinnest, and temperatures are at their coolest. This page shows today\u2019s sunrise, sunset and golden-hour windows live, plus what to wear for today\u2019s weather at the site.',
+      a: 'At opening time, just before sunrise: the marble glows pinkish in the first light, the crowds are thinnest, and temperatures are at their coolest. This page shows today\u2019s sunrise, sunset and golden-hour windows live, plus what to wear for today\u2019s weather at the site. UNESCO notes the monument appears in \u201Cever changing tints and moods\u201D through the day, which is why photographers plan their visit around those golden-hour windows.',
     },
     {
       q: 'Who built the Taj Mahal, and why?',
-      a: 'The Mughal emperor Shah Jahan commissioned it in 1631 as the tomb of his wife Mumtaz Mahal; Shah Jahan himself is also buried there. The main architect was Ustad Ahmad Lahori, and craftsmen were drawn from across the empire, Central Asia and Iran (UNESCO).',
+      a: 'The Mughal emperor Shah Jahan commissioned it in 1631 as the tomb of his wife Mumtaz Mahal; Shah Jahan himself is also buried there. The main architect was Ustad Ahmad Lahori, and craftsmen were drawn from across the empire, Central Asia and Iran (UNESCO). The tomb is the centrepiece of a 17-hectare complex on the Yamuna\u2019s right bank, with a mosque and a guest house set in formal gardens.',
     },
     {
       q: 'Is the Taj Mahal a UNESCO World Heritage Site?',
-      a: 'Yes — it was inscribed in 1983 as World Heritage Site 252, under criterion (i), and UNESCO calls it the greatest architectural achievement in the whole range of Indo-Islamic architecture.',
+      a: 'Yes — it was inscribed in 1983 as World Heritage Site 252, under criterion (i), and UNESCO calls it the greatest architectural achievement in the whole range of Indo-Islamic architecture. UNESCO also describes it as \u201Cthe jewel of Muslim art in India and one of the universally admired masterpieces of the world\u2019s heritage\u201D. The listing covers the tomb, its mosque and guest house, and the formal gardens.',
     },
   ],
   nearby: [

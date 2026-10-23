@@ -11,6 +11,7 @@ import { PersonalityBreadcrumb } from '@/components/personality/PersonalityBread
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import { getPersonalityBySlug, getAllPersonalitySlugs } from '@/lib/personalities';
 import { PersonalityDescription } from '@/components/personality/PersonalityDescription';
+import { DirectAnswer, FaqBlock, type AeoFaq } from '@/components/aeo/AnswerLayer';
 import {
   generateTimelineParagraph, generateTimelineAfter,
   generateAchievementsParagraph, generateAchievementsAfter,
@@ -58,10 +59,120 @@ export async function generateStaticParams() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+// ─── Batch 4 Item 2: AEO answer layer ─────────────────────────────────────
+// Direct-answer block + FAQ block for the personalities template, composed
+// ONLY from the profile record's own fields (description, birth/death
+// dates, timeline, achievements, works, quotes) — no new facts. Questions
+// follow the mined phrasings (see evidence/batch4-item2/question-bank.md:
+// "Who is Imran Khan?", "Where was Allama Muhammad Iqbal born?", "What is
+// the meaning of Khudi…?"). This template previously emitted no FAQPage
+// schema, so the FAQ block emits it from the same array (emitSchema).
+type Profile = Awaited<ReturnType<typeof getPersonalityBySlug>>;
+
+function sOf(text: string): string[] {
+  return (text.match(/[^.!?]+[.!?]+/g) ?? [text]).map((s) => s.trim()).filter(Boolean);
+}
+function wcOf(s: string): number {
+  return s.split(/\s+/).filter(Boolean).length;
+}
+function acc(base: string, extra: string[], min = 50): string {
+  let out = base;
+  for (const s of extra) {
+    if (wcOf(out) >= min) break;
+    if (!s) continue;
+    // Max-guard: skip a sentence that would overshoot the 70-word band
+    // when the answer is already close, and try a shorter later one.
+    if (wcOf(out) + wcOf(s) > 70 && wcOf(out) >= 42) continue;
+    out += ` ${s}`;
+  }
+  return out;
+}
+
+function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; faqs: AeoFaq[] } {
+  const descSentences = sOf(p.description ?? '');
+  const timeline = p.timeline ?? [];
+  const achievements = p.achievements ?? [];
+  const works = p.works ?? [];
+  const quotes = p.quotes ?? [];
+  const past = Boolean(p.deathDate);
+  const achLine = (i: number) =>
+    achievements[i] ? `${achievements[i].title}: ${achievements[i].description}` : '';
+
+  const directParts = [
+    descSentences[0] ?? p.description ?? '',
+    `Born on ${p.birthDate}${past ? `, died ${p.deathDate}` : ''} — a life anchored in ${p.city}, ${p.country}.`,
+    achLine(0),
+  ].filter(Boolean);
+  if (wcOf(directParts.join(' ')) < 50) {
+    directParts.push(`The timeline, works and quotes on this profile tell the full story of the life.`);
+  }
+  const directAnswer = directParts.join(' ');
+
+  const bornEntry = timeline.find((t) => /born/i.test(t.title));
+  const bornIdx = bornEntry ? timeline.indexOf(bornEntry) : -1;
+  const afterBorn = bornIdx >= 0 ? timeline.slice(bornIdx + 1).map((t) => t.description) : timeline.map((t) => t.description);
+
+  const faqs: AeoFaq[] = [
+    {
+      q: `Who ${past ? 'was' : 'is'} ${p.name}?`,
+      a: acc(descSentences.join(' '), [achLine(0), achLine(1)], 55),
+    },
+    {
+      q: bornEntry ? `When and where was ${p.name} born?` : `When was ${p.name} born?`,
+      a: bornEntry
+        ? acc(`${p.name} was born on ${p.birthDate}. ${bornEntry.description}`, afterBorn)
+        : acc(
+            `${p.name} was born on ${p.birthDate}. A ${p.nationality} figure — ${p.title} — connected with ${p.city}, ${p.country}.`,
+            afterBorn,
+          ),
+    },
+    {
+      q: `What is ${p.name} famous for?`,
+      a: acc(achLine(0), [achLine(1), achLine(2), achLine(3), ...descSentences.slice(1)]),
+    },
+  ];
+  if (works.length > 0) {
+    faqs.push({
+      q: `What are ${p.name}'s best-known works?`,
+      a: acc(
+        works
+          .slice(0, 3)
+          .map((w) => `${w.title} (${w.year}) — ${w.description}`)
+          .join(' '),
+        [`The works section of this profile lists ${works.length} works in full, each with its year and a note on why it matters.`, descSentences[1] ?? ''],
+      ),
+    });
+  }
+  if (past) {
+    faqs.push({
+      q: `When did ${p.name} die?`,
+      a: acc(`${p.name} died on ${p.deathDate}.`, [
+        timeline[timeline.length - 1]?.description ?? '',
+        timeline[timeline.length - 2]?.description ?? '',
+        descSentences[0] ?? '',
+      ]),
+    });
+  } else if (quotes.length > 0) {
+    faqs.push({
+      q: `What is a famous quote by ${p.name}?`,
+      a: acc(`"${quotes[0].text}"${quotes[0].context ? ` — ${quotes[0].context}.` : ''}`, [
+        `More of ${p.name}'s words are collected in the Famous Quotes section of this profile, alongside the timeline, achievements and works that made the name.`,
+        quotes[1] ? `Also widely quoted: "${quotes[1].text}"` : '',
+        achLine(0),
+      ]),
+    });
+  }
+  return { directAnswer, faqs: faqs.filter((f) => f.a.trim().length > 0) };
+}
+
 export default async function PersonalityPage({ params }: PageProps) {
   const { slug } = await params;
   const p = await getPersonalityBySlug(slug);
   if (!p) notFound();
+
+  // Batch 4 Item 2: AEO answer layer data (from this profile's own record).
+  const { directAnswer: personalityDirectAnswer, faqs: personalityFaqs } = buildPersonalityAeo(p);
+  const personalityAeoSource = `Profile facts: WorldCityHub personalities dataset${p.wikiUrl ? ' · Wikipedia article linked on this page' : ''} · Full timeline, works & quotes on this profile`;
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
@@ -116,6 +227,11 @@ export default async function PersonalityPage({ params }: PageProps) {
 
       {/* Main content */}
       <div className="max-w-5xl mx-auto px-4 pb-16">
+
+        {/* Batch 4 Item 2: direct-answer block, first block under the hero/heading */}
+        <div className="mb-8">
+          <DirectAnswer answer={personalityDirectAnswer} source={personalityAeoSource} />
+        </div>
 
         {/* Description sections */}
         <PersonalityDescription sections={p.descriptionSections} />
@@ -194,6 +310,11 @@ export default async function PersonalityPage({ params }: PageProps) {
             </a>
           </div>
         )}
+
+        {/* Batch 4 Item 2: FAQ block + FAQPage schema (this template had none before) */}
+        <div className="mt-12">
+          <FaqBlock faqs={personalityFaqs} source={personalityAeoSource} emitSchema />
+        </div>
 
         <PersonalityBreadcrumb name={p.name} birthYear={p.birthDate?.split(' ').pop()} />
       </div>
