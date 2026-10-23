@@ -780,7 +780,7 @@ export default async function CityPage({
                 {generateSportsAfter(city)}
               </p>
             </p>
-            <a href={`/${resolvedParams.country}/sports`}
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/sports`}
               className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
               Full sports page — live scores, PSL standings, schedules →
             </a>
@@ -1085,7 +1085,7 @@ export default async function CityPage({
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`} className="hover:text-green-400 transition-colors">News</a>
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`} className="hover:text-green-400 transition-colors">Events</a>
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`} className="hover:text-green-400 transition-colors">Economy</a>
-              <a href={`/${resolvedParams.country}/sports`} className="hover:text-green-400 transition-colors">Sports</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/sports`} className="hover:text-green-400 transition-colors">Sports</a>
             </div>
             <p className="text-xs text-gray-600">
               Data updates every hour. Prayer times: Karachi method. Gold: LBMA + SBP rate.

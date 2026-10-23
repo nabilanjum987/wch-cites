@@ -49,7 +49,7 @@ export function FamousWorksSection({
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h4 className="text-xl font-bold text-white">{work.title}</h4>
+                    <h3 className="text-xl font-bold text-white">{work.title}</h3>
                     {work.type && (
                       <span className="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded-full">
                         {work.type}

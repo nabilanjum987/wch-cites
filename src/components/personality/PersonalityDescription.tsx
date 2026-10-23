@@ -29,7 +29,7 @@ export function PersonalityDescription({ sections }: PersonalityDescriptionProps
           transition={{ delay: idx * 0.1 }}
         >
           <GlassCard variant="default" className="p-8">
-            <h3 className="text-2xl font-bold text-white mb-4">{section.title}</h3>
+            <h2 className="text-2xl font-bold text-white mb-4">{section.title}</h2>
             <p className="text-gray-300 leading-relaxed text-lg">{section.content}</p>
           </GlassCard>
         </motion.div>

@@ -189,10 +189,50 @@ export default async function FamousPlacePage({ params }: PageProps) {
   const place = await getPlace(slug);
   if (!place) notFound();
 
+  // ── Schema (SEO completion, Batch 4 Item 1): TouristAttraction +
+  // BreadcrumbList, built ONLY from this record's fields. No FAQPage
+  // node here (merge prep, billi's merge rule): on place pages the
+  // surviving FAQPage is the one emitted from PR #85's visible answer
+  // layer, so exactly one FAQPage remains after the merge.
+  const placeUrl = `https://worldcityhub.vercel.app/places/${place.slug}`;
+  const descText = (typeof place.description === 'string' ? place.description.trim() : '') || `${place.name} — ${place.city}`;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'TouristAttraction',
+        name: place.name,
+        description: descText,
+        url: placeUrl,
+        geo: { '@type': 'GeoCoordinates', latitude: place.lat, longitude: place.lng },
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: place.address,
+          addressLocality: place.city,
+          addressRegion: place.province,
+          addressCountry: place.country,
+        },
+        ...(place.imageUrl ? { image: place.imageUrl } : {}),
+        ...(place.wikiUrl ? { sameAs: [place.wikiUrl] } : {}),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://worldcityhub.vercel.app' },
+          { '@type': 'ListItem', position: 2, name: place.country, item: `https://worldcityhub.vercel.app/${place.countrySlug}` },
+          { '@type': 'ListItem', position: 3, name: place.province, item: `https://worldcityhub.vercel.app/${place.countrySlug}/${place.provinceSlug}` },
+          { '@type': 'ListItem', position: 4, name: place.city, item: `https://worldcityhub.vercel.app/${place.countrySlug}/${place.provinceSlug}/${place.citySlug}` },
+          { '@type': 'ListItem', position: 5, name: place.name, item: placeUrl },
+        ],
+      },
+    ],
+  };
+
   const mapsUrl = `https://www.google.com/maps?q=${place.lat},${place.lng}`;
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Flag background symbol */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
         <FlagSymbolBackground countrySlug={place.countrySlug} />
@@ -329,16 +369,33 @@ export default async function FamousPlacePage({ params }: PageProps) {
                   {generateNearbyParagraph(place.name, place.city)}
                 </p>
                 <div className="space-y-2">
-                  {place.nearbyPlaces.map(nearby => (
-                    <Link key={nearby.slug} href={`/places/${nearby.slug}`}
-                      className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition group">
-                      <div className="flex items-center gap-2">
-                        <MapPin size={14} style={{ color: place.primaryColor }} />
-                        <span className="text-sm font-medium text-gray-800 group-hover:underline">{nearby.name}</span>
+                  {place.nearbyPlaces.map(nearby => {
+                    // Link only to places that exist today (L1): a nearby
+                    // name whose page is not published renders as a plain
+                    // row — name + distance, no dead link. (Link audit,
+                    // Batch 4 Item 1: allama-iqbal-tomb, hazuri-bagh and
+                    // walled-city-lahore were linked here and 404'd.)
+                    const rowInner = (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <MapPin size={14} style={{ color: place.primaryColor }} />
+                          <span className="text-sm font-medium text-gray-800">{nearby.name}</span>
+                        </div>
+                        <span className="text-xs text-gray-400">{nearby.distance}</span>
+                      </>
+                    );
+                    return PLACES[nearby.slug] ? (
+                      <Link key={nearby.slug} href={`/places/${nearby.slug}`}
+                        className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition group">
+                        {rowInner}
+                      </Link>
+                    ) : (
+                      <div key={nearby.slug}
+                        className="flex items-center justify-between p-3 rounded-xl border border-gray-100">
+                        {rowInner}
                       </div>
-                      <span className="text-xs text-gray-400">{nearby.distance}</span>
-                    </Link>
-                  ))}
+                    );
+                  })}
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mt-4">
                   {generateNearbyAfter(place.name, place.city)}

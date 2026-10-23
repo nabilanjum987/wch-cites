@@ -48,7 +48,7 @@ export function LifeTimeline({ events, title = 'Life Timeline' }: LifeTimelinePr
 
             <GlassCard variant="premium" glowColor="orange" className="p-6">
               <p className="text-orange-400 font-bold text-lg mb-2">{event.year}</p>
-              <h4 className="text-white font-bold text-lg mb-2">{event.title}</h4>
+              <h3 className="text-white font-bold text-lg mb-2">{event.title}</h3>
               <p className="text-gray-400 text-sm">{event.description}</p>
             </GlassCard>
           </motion.div>
