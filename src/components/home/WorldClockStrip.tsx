@@ -57,8 +57,8 @@ function AnalogClock({ timezone, color, name, flag }: { timezone: string; color:
       </svg>
       <div className="text-center">
         <div className="text-lg">{flag}</div>
-        <div className="text-white font-bold text-sm">{name}</div>
-        <div className="text-white/40 text-xs font-mono">{time.str}</div>
+        <div className="t-text font-bold text-sm">{name}</div>
+        <div className="t-text-40 text-xs font-mono">{time.str}</div>
       </div>
     </div>
   );

@@ -9,13 +9,13 @@
 import Link from 'next/link';
 
 const FAITHS = [
-  { name: 'Islam',       emoji: '☪️',  followers: '≈1.9B followers', color: '#01411C', desc: 'Prayer times, Quran, Hajj guidance' },
-  { name: 'Christianity',emoji: '✝️',  followers: '≈2.4B followers', color: '#1e3a8a', desc: 'Churches, masses, Christian calendar' },
-  { name: 'Hinduism',    emoji: '🕉️',  followers: '≈1.2B followers', color: '#FF6B00', desc: 'Temples, puja times, festivals' },
-  { name: 'Buddhism',    emoji: '☸️',  followers: '≈535M followers', color: '#8B5CF6', desc: 'Meditation, temples, Buddhist calendar' },
-  { name: 'Judaism',     emoji: '✡️',  followers: '≈15M followers',  color: '#2563EB', desc: 'Synagogues, Shabbat, Hebrew calendar' },
-  { name: 'Sikhism',     emoji: '🪯',  followers: '≈25M followers',  color: '#F59E0B', desc: 'Gurdwaras, Nitnem, Sikh calendar' },
-  { name: 'Others',      emoji: '🌀',  followers: '≈1.2B followers', color: '#6B7280', desc: 'Indigenous, folk and other traditions' },
+  { name: 'Islam',       emoji: '☪️',  followers: '≈1.9B followers', color: '#01411C', desc: 'Prayer times & Hajj' },
+  { name: 'Christianity',emoji: '✝️',  followers: '≈2.4B followers', color: '#1e3a8a', desc: 'Mass & calendar' },
+  { name: 'Hinduism',    emoji: '🕉️',  followers: '≈1.2B followers', color: '#FF6B00', desc: 'Puja & festivals' },
+  { name: 'Buddhism',    emoji: '☸️',  followers: '≈535M followers', color: '#8B5CF6', desc: 'Meditation times' },
+  { name: 'Judaism',     emoji: '✡️',  followers: '≈15M followers',  color: '#2563EB', desc: 'Shabbat & calendar' },
+  { name: 'Sikhism',     emoji: '🪯',  followers: '≈25M followers',  color: '#F59E0B', desc: 'Nitnem & calendar' },
+  { name: 'Others',      emoji: '🌀',  followers: '≈1.2B followers', color: '#6B7280', desc: 'Folk traditions' },
 ];
 
 const PRAYER_LINKS = [
@@ -31,14 +31,14 @@ export default function ExploreByReligion() {
         {FAITHS.map((f) => (
           <div key={f.name}>
             <div className="rounded-2xl border p-4 h-28 flex flex-col justify-between"
-              style={{ background: `linear-gradient(135deg, ${f.color}20, #0a0f1e)`, borderColor: `${f.color}30` }}>
+              style={{ background: `linear-gradient(135deg, ${f.color}20, var(--bg))`, borderColor: `${f.color}30` }}>
               <div className="flex items-center justify-between">
                 <span className="text-3xl">{f.emoji}</span>
-                <span className="text-xs text-white/40">{f.followers}</span>
+                <span className="text-xs t-text-40">{f.followers}</span>
               </div>
               <div>
-                <div className="text-white font-bold text-sm">{f.name}</div>
-                <div className="sub-desc mt-0.5 line-clamp-1">{f.desc}</div>
+                <div className="t-text font-bold text-sm">{f.name}</div>
+                <div className="sub-desc mt-0.5">{f.desc}</div>
               </div>
             </div>
           </div>
@@ -47,7 +47,7 @@ export default function ExploreByReligion() {
       <div className="flex flex-wrap gap-2">
         {PRAYER_LINKS.map((l) => (
           <Link key={l.href} href={l.href}
-            className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/25 text-emerald-300 text-sm font-medium hover:bg-emerald-500/20 transition-colors no-underline">
+            className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/25 t-emerald text-sm font-medium hover:bg-emerald-500/20 transition-colors no-underline">
             {l.label} →
           </Link>
         ))}

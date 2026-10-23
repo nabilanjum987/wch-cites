@@ -50,37 +50,37 @@ export default function HoroscopeSection() {
   return (
     <div className="space-y-6">
       {/* Today's cosmic snapshot */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link href={`/horoscope/${todaySign.slug}`} className="no-underline group">
-          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01]"
-            style={{ background: `linear-gradient(135deg, ${todaySign.color}20, #0a0f1e)`, borderColor: `${todaySign.color}40` }}>
+          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01] h-full"
+            style={{ background: `linear-gradient(135deg, ${todaySign.color}20, var(--bg))`, borderColor: `${todaySign.color}40` }}>
             <div className="text-4xl mb-3">{todaySign.emoji}</div>
-            <div className="text-white/40 text-xs uppercase tracking-wider mb-1">Today's Western Sign</div>
-            <div className="text-white font-bold text-xl">{todaySign.name}</div>
+            <div className="t-text-40 text-xs uppercase tracking-wider mb-1">Today's Western Sign</div>
+            <div className="t-text font-bold text-xl">{todaySign.name}</div>
             <div className="sub-desc mt-1">{todaySign.dates}</div>
-            <div className="text-white/30 text-xs mt-2">{todaySign.element} sign · Full reading →</div>
+            <div className="t-text-30 text-xs mt-2">{todaySign.element} sign · Full reading →</div>
           </div>
         </Link>
 
         <Link href="/horoscope" className="no-underline group">
-          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01]"
-            style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), #0a0f1e)', borderColor: 'rgba(245,158,11,0.3)' }}>
+          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01] h-full"
+            style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), var(--bg))', borderColor: 'rgba(245,158,11,0.3)' }}>
             <div className="text-4xl mb-3">{chineseYear.emoji}</div>
-            <div className="text-white/40 text-xs uppercase tracking-wider mb-1">Chinese Zodiac {year}</div>
-            <div className="text-white font-bold text-xl">Year of the {chineseYear.animal}</div>
+            <div className="t-text-40 text-xs uppercase tracking-wider mb-1">Chinese Zodiac {year}</div>
+            <div className="t-text font-bold text-xl">Year of the {chineseYear.animal}</div>
             <div className="sub-desc mt-1">木 Wood element</div>
-            <div className="text-white/30 text-xs mt-2">Chinese traditions & forecast →</div>
+            <div className="t-text-30 text-xs mt-2">Chinese traditions & forecast →</div>
           </div>
         </Link>
 
         <Link href="/horoscope" className="no-underline group">
-          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01]"
-            style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), #0a0f1e)', borderColor: 'rgba(16,185,129,0.3)' }}>
+          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01] h-full"
+            style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), var(--bg))', borderColor: 'rgba(16,185,129,0.3)' }}>
             <div className="text-4xl mb-3">☪️</div>
-            <div className="text-white/40 text-xs uppercase tracking-wider mb-1">Islamic Calendar</div>
-            <div className="text-white font-bold text-lg">{hijriDate}</div>
+            <div className="t-text-40 text-xs uppercase tracking-wider mb-1">Islamic Calendar</div>
+            <div className="t-text font-bold text-lg">{hijriDate}</div>
             <div className="sub-desc mt-1">Hijri date · Moon sighting</div>
-            <div className="text-white/30 text-xs mt-2">Full Islamic & Hebrew calendar →</div>
+            <div className="t-text-30 text-xs mt-2">Full Islamic & Hebrew calendar →</div>
           </div>
         </Link>
       </div>
@@ -92,8 +92,8 @@ export default function HoroscopeSection() {
             <div className="rounded-xl border p-3 text-center transition-all group-hover:scale-[1.03]"
               style={{ backgroundColor: `${s.color}10`, borderColor: `${s.color}30` }}>
               <div className="text-2xl mb-1">{s.emoji}</div>
-              <div className="text-white text-xs font-semibold">{s.name}</div>
-              <div className="text-white/30 text-xs">{s.element}</div>
+              <div className="t-text text-xs font-semibold">{s.name}</div>
+              <div className="t-text-30 text-xs">{s.element}</div>
             </div>
           </Link>
         ))}
@@ -101,8 +101,8 @@ export default function HoroscopeSection() {
 
       <div className="text-center">
         <Link href="/horoscope"
-          className="inline-block px-6 py-2.5 rounded-full border text-sm font-medium text-white/70 hover:text-white transition-all no-underline"
-          style={{ borderColor: 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.04)' }}>
+          className="inline-block px-6 py-2.5 rounded-full border text-sm font-medium t-text-70 t-hover-text transition-all no-underline"
+          style={{ borderColor: 'var(--border-15)', backgroundColor: 'var(--card)' }}>
           Full Horoscope — All Traditions →
         </Link>
       </div>

@@ -36,7 +36,7 @@ export default function FeaturedCountries() {
   return (
     <div className="mb-4">
       <div className="flex justify-end mb-4">
-        <Link href="/countries" className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors no-underline">
+        <Link href="/countries" className="t-link text-sm font-medium transition-colors no-underline">
           View all countries →
         </Link>
       </div>
@@ -44,11 +44,11 @@ export default function FeaturedCountries() {
         {visible.map((c) => {
           const cardInner = (
             <div className="relative rounded-2xl overflow-hidden border p-4 h-28 flex flex-col justify-between transition-all"
-              style={{ background: `linear-gradient(135deg, ${c.color}25, #0a0f1e)`, borderColor: `${c.color}40` }}>
+              style={{ background: `linear-gradient(135deg, ${c.color}25, var(--bg))`, borderColor: `${c.color}40` }}>
               <span className="text-3xl">{c.flag}</span>
               <div>
-                <div className="text-white font-bold text-sm">{c.name}</div>
-                <div className="sub-desc mt-0.5">{c.live ? 'Country page is live' : 'Country page in preparation'}</div>
+                <div className="t-text font-bold text-sm">{c.name}</div>
+                <div className="sub-desc mt-0.5">{c.live ? 'Country page is live' : 'Page in preparation'}</div>
               </div>
             </div>
           );

@@ -44,20 +44,20 @@ export default async function SportsPanel() {
   return (
     <div>
       {fixtures.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
           {fixtures.map((f, i) => (
-            <div key={i} className="rounded-xl bg-white/5 border border-white/10 px-4 py-3">
-              <div className="text-emerald-300 text-xs font-semibold uppercase tracking-wide">{fmtDate(f.date)}{f.league ? ` · ${f.league}` : ''}</div>
-              <div className="text-white font-semibold text-sm mt-1">{f.event}</div>
+            <div key={i} className="rounded-xl t-card border t-border px-4 py-3">
+              <div className="t-emerald text-xs font-semibold uppercase tracking-wide">{fmtDate(f.date)}{f.league ? ` · ${f.league}` : ''}</div>
+              <div className="t-text font-semibold text-sm mt-1">{f.event}</div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="sub-desc mb-5">
+        <p className="sub-desc">
           No upcoming fixtures are listed for Pakistan's national teams in the sports feed right now — the panel fills itself the moment the next match is scheduled.
         </p>
       )}
-      <Link href="/pakistan/punjab/lahore/sports" className="inline-flex items-center gap-2 text-cyan-300 hover:text-cyan-200 text-sm font-medium no-underline">
+      <Link href="/pakistan/punjab/lahore/sports" className="inline-flex items-center gap-2 t-link text-sm font-medium no-underline">
         Sport in Lahore — teams, grounds and fixtures →
       </Link>
     </div>
