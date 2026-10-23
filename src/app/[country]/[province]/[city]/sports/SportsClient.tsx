@@ -656,10 +656,12 @@ function StadiumCard({ stadium }: { stadium: Stadium }) {
           <p className="font-semibold text-white truncate">{stadium.team}</p>
         </div>
       </div>
-      <div className="mt-3 pt-3 border-t border-white/8">
-        <p className="text-xs text-gray-400">Current Weather</p>
-        <p className="text-sm font-medium text-white">{weather ?? 'Loading...'}</p>
-      </div>
+      {weather && (
+        <div className="mt-3 pt-3 border-t border-white/8">
+          <p className="text-xs text-gray-400">Current Weather</p>
+          <p className="text-sm font-medium text-white">{weather}</p>
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -752,7 +754,7 @@ function NewsCard({ article }: { article: SportsNews }) {
     >
       {article.image && (
         <div className="aspect-video bg-transparent/5">
-          <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+          <img loading="lazy" decoding="async" src={article.image} alt={article.title} className="w-full h-full object-cover" />
         </div>
       )}
       <div className="p-4">

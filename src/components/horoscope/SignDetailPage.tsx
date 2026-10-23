@@ -185,6 +185,42 @@ export default function SignDetailPage({ sign, onBack, primaryColor }: Props) {
                 </div>
               </div>
 
+              {/* Today's Computed Transits (R8) */}
+              {reading.transits && (
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles size={18} style={{ color: primaryColor }} />
+                    <h2 className="font-bold text-gray-900 text-sm">Today's Computed Transits</h2>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Real planetary positions for today (12:00 UTC), computed — not generated text. Your lucky
+                    number, colour, time, direction and the meters above are derived from these longitudes and
+                    their aspects by the fixed rules noted below.
+                  </p>
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-4">
+                    {reading.transits.map((t) => (
+                      <div key={t.planet} className="bg-gray-50 rounded-xl p-2 text-center">
+                        <p className="text-[10px] font-semibold text-gray-500">{t.planet}{t.retrograde ? ' ℞' : ''}</p>
+                        <p className="text-xs font-bold text-gray-900">{t.sign}</p>
+                        <p className="text-[10px] text-gray-500">{t.degree.toFixed(1)}°</p>
+                      </div>
+                    ))}
+                  </div>
+                  {reading.transit_aspects && reading.transit_aspects.length > 0 && (
+                    <p className="text-xs text-gray-600 mb-2">
+                      <span className="font-semibold">Key aspects to your ruler:</span>{' '}
+                      {reading.transit_aspects.join(' · ')}
+                    </p>
+                  )}
+                  <p className="text-[11px] leading-relaxed text-gray-400">
+                    {reading.transit_method} Lucky number from the Moon's and your ruler's longitudes; lucky
+                    colour from the planet in tightest aspect to your ruler; best time from the Moon's elongation
+                    from the Sun; meters from harmonious vs tense aspect strength per life area. Horoscope
+                    readings are for entertainment.
+                  </p>
+                </div>
+              )}
+
               {/* Compatibility Today */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5">
                 <div className="flex items-center gap-2 mb-4">

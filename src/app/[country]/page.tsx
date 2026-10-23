@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import CountryPage from './CountryClient';
 import CountryInventory from '@/components/shared/CountryInventory';
 import ImproveCTA from '@/components/shared/ImproveCTA';
+import { fetchWorldBankLatest, countrySlugToIso2 } from '@/lib/apis/worldbank';
 
 // Server wrapper: the interactive country page lives in CountryClient.tsx.
 // Metadata must be exported from a server component, so it lives here —
@@ -30,9 +31,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const p = await params;
+  // FIX-POP1: population comes from the World Bank (SP.POP.TOTL, latest
+  // year) via the same worldbank.ts path as the economy data — never a
+  // hard-coded figure. Null when the WB is unreachable; the client then
+  // falls back to its dated static value.
+  const iso2 = countrySlugToIso2(p.country);
+  const wb = await fetchWorldBankLatest([iso2]);
+  const wbPopulation = wb[iso2]?.population ?? null;
   return (
     <>
-      <CountryPage />
+      <CountryPage wbPopulation={wbPopulation} />
       <CountryInventory countrySlug={p.country} />
       <ImproveCTA country={p.country} label={titleCase(p.country)} />
     </>

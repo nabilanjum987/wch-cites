@@ -1,0 +1,100 @@
+{
+ "subject": "Quetta",
+ "type": "city",
+ "package": "Round 2 R4 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Hanna Orak Lake in Quetta.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Hanna_Orak_Lake_in_Quetta.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hanna_Orak_Lake_in_Quetta.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Rgrft",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Hanna Orak Lake in Quetta\" by Rgrft — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Hanna Orak Lake in Quetta",
+   "focal_point": null,
+   "width": 1042,
+   "height": 1042,
+   "sha1": "9a167e233df0a2df2b0516613f3457e7af8df125",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Quetta Hanna Lake.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/49/Quetta_Hanna_Lake.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Quetta_Hanna_Lake.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "Sherbaz jamaldini",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Quetta Hanna Lake\" by Sherbaz jamaldini — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Quetta Hanna Lake",
+   "focal_point": null,
+   "width": 3405,
+   "height": 5065,
+   "sha1": "56374deefe90867b86e3cc67a500e810bdace895",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Hanna Lake Quetta Pano.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Hanna_Lake_Quetta_Pano.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hanna_Lake_Quetta_Pano.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Areeb sattar",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Hanna Lake Quetta Pano\" by Areeb sattar — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Hanna Lake Quetta Pano",
+   "focal_point": null,
+   "width": 13376,
+   "height": 2304,
+   "sha1": "50ccdb04ba29e7b7fc71e7ba9e3b38ef21e6a379",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Hanna Lake, Quetta.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Hanna_Lake%2C_Quetta.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hanna_Lake,_Quetta.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Maham Saadat",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Hanna Lake, Quetta\" by Maham Saadat — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Hanna Lake, Quetta",
+   "focal_point": null,
+   "width": 3648,
+   "height": 2736,
+   "sha1": "41c03b9f1a90242b2916298167b9d6fe9a75d104",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Hanna lake Quetta.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Hanna_lake_Quetta.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Hanna_lake_Quetta.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Dr. Fariha Iftikhar",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Hanna lake Quetta\" by Dr. Fariha Iftikhar — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Hanna lake Quetta",
+   "focal_point": null,
+   "width": 4032,
+   "height": 3024,
+   "sha1": "86b3816768992425fe9337106aec386c89cbc370",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Hanna Lake Quetta by zakir - panoramio.jpg",
+   "reason": "resolution too low (500px wide)"
+  },
+  {
+   "title": "Hanna Lake Quetta P1140271.jpg",
+   "reason": "no creator recorded in file metadata"
+  }
+ ]
+}

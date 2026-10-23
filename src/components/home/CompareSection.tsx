@@ -1,40 +1,23 @@
 'use client';
+
+// Compare panel (§22) — the featured pair card and the pair picker
+// only offer PUBLISHED pairings (link map §22 — READY, billi-verified
+// real comparisons). The old picker listed twelve cities and eleven
+// countries and happily routed to pair pages that do not exist; the
+// city list is now the three published cities (whose three pairings
+// are all published), and the country picker is removed until country
+// pairings are published.
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-const COMPARE_CITIES = [
-  'Lahore, Pakistan', 'Karachi, Pakistan', 'Islamabad, Pakistan',
-  'Mumbai, India', 'Delhi, India', 'Dubai, UAE',
-  'London, UK', 'Istanbul, Turkey', 'Cairo, Egypt',
-  'New York, USA', 'Tokyo, Japan', 'Mecca, Saudi Arabia',
-];
+const COMPARE_CITIES = ['Lahore, Pakistan', 'Karachi, Pakistan', 'Islamabad, Pakistan'];
 
 const CITY_SLUGS: Record<string, string> = {
-  'Lahore, Pakistan':      'lahore',
-  'Karachi, Pakistan':     'karachi',
-  'Islamabad, Pakistan':   'islamabad',
-  'Mumbai, India':         'mumbai',
-  'Delhi, India':          'delhi',
-  'Dubai, UAE':            'dubai',
-  'London, UK':            'london',
-  'Istanbul, Turkey':      'istanbul',
-  'Cairo, Egypt':          'cairo',
-  'New York, USA':         'new-york',
-  'Tokyo, Japan':          'tokyo',
-  'Mecca, Saudi Arabia':   'mecca',
-};
-
-const COMPARE_COUNTRIES = [
-  'Pakistan', 'India', 'Saudi Arabia', 'UAE',
-  'United States', 'United Kingdom', 'Turkey', 'Egypt',
-  'Indonesia', 'Nigeria', 'Brazil', 'Japan',
-];
-
-const COUNTRY_SLUGS: Record<string, string> = {
-  'Pakistan': 'pakistan', 'India': 'india', 'Saudi Arabia': 'saudi-arabia',
-  'UAE': 'united-arab-emirates', 'United States': 'united-states',
-  'United Kingdom': 'united-kingdom', 'Turkey': 'turkey', 'Egypt': 'egypt',
-  'Indonesia': 'indonesia', 'Nigeria': 'nigeria', 'Brazil': 'brazil', 'Japan': 'japan',
+  'Lahore, Pakistan': 'lahore',
+  'Karachi, Pakistan': 'karachi',
+  'Islamabad, Pakistan': 'islamabad',
 };
 
 function Select({ options, value, onChange, placeholder }: {
@@ -54,57 +37,55 @@ export default function CompareSection() {
   const router = useRouter();
   const [cityA, setCityA] = useState('');
   const [cityB, setCityB] = useState('');
-  const [countryA, setCountryA] = useState('');
-  const [countryB, setCountryB] = useState('');
+
+  // Pair slugs are directional on this site — only these three
+  // orderings are published (verified against the live sitemap).
+  const PAIRS: Record<string, string> = {
+    'karachi|lahore': 'lahore-vs-karachi',
+    'islamabad|lahore': 'lahore-vs-islamabad',
+    'islamabad|karachi': 'karachi-vs-islamabad',
+  };
 
   const handleCityCompare = () => {
     if (!cityA || !cityB) return;
-    const slugA = CITY_SLUGS[cityA];
-    const slugB = CITY_SLUGS[cityB];
-    router.push(`/compare/${slugA}-vs-${slugB}`);
-  };
-
-  const handleCountryCompare = () => {
-    if (!countryA || !countryB) return;
-    const slugA = COUNTRY_SLUGS[countryA];
-    const slugB = COUNTRY_SLUGS[countryB];
-    router.push(`/compare/${slugA}-vs-${slugB}`);
+    const key = [CITY_SLUGS[cityA], CITY_SLUGS[cityB]].sort().join('|');
+    const pair = PAIRS[key];
+    if (pair) router.push(`/compare/${pair}`);
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Compare Cities */}
+      {/* Featured pair */}
+      <Link href="/compare/lahore-vs-karachi" className="no-underline group">
+        <div className="rounded-2xl border p-6 h-full transition-all group-hover:scale-[1.01]"
+          style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), #0a0f1e)', borderColor: 'rgba(99,102,241,0.25)' }}>
+          <div className="text-white/40 text-xs uppercase tracking-wider mb-2">Featured comparison</div>
+          <div className="text-white font-bold text-2xl mb-2">Lahore vs Karachi</div>
+          <p className="text-white/50 text-sm leading-relaxed">
+            The cultural capital against the port metropolis — live weather, air quality, prayer times and a measured verdict, side by side.
+          </p>
+          <div className="text-cyan-300 text-sm font-medium mt-4">See the full comparison →</div>
+        </div>
+      </Link>
+
+      {/* Pair picker — published cities only */}
       <div className="rounded-2xl border p-6 space-y-4"
-        style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), #0a0f1e)', borderColor: 'rgba(99,102,241,0.25)' }}>
+        style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.10), #0a0f1e)', borderColor: 'rgba(16,185,129,0.25)' }}>
         <div>
-          <div className="text-white font-bold text-lg mb-1">🏙️ Compare Two Cities</div>
-          <div className="text-white/40 text-sm">Weather, cost of living, prayer times, economy — side by side</div>
+          <div className="text-white font-bold text-lg mb-1">Compare two cities</div>
+          <div className="text-white/40 text-sm">Live weather, air quality, prayer times — side by side</div>
         </div>
         <Select options={COMPARE_CITIES} value={cityA} onChange={setCityA} placeholder="Select first city" />
         <div className="text-center text-white/30 text-sm font-bold">VS</div>
-        <Select options={COMPARE_CITIES.filter(c => c !== cityA)} value={cityB} onChange={setCityB} placeholder="Select second city" />
+        <Select options={COMPARE_CITIES.filter((c) => c !== cityA)} value={cityB} onChange={setCityB} placeholder="Select second city" />
         <button onClick={handleCityCompare} disabled={!cityA || !cityB}
           className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
           style={{ background: cityA && cityB ? 'linear-gradient(90deg, #6366f1, #06b6d4)' : 'rgba(255,255,255,0.08)' }}>
           Compare Cities →
         </button>
-      </div>
-
-      {/* Compare Countries */}
-      <div className="rounded-2xl border p-6 space-y-4"
-        style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.12), #0a0f1e)', borderColor: 'rgba(16,185,129,0.25)' }}>
-        <div>
-          <div className="text-white font-bold text-lg mb-1">🌍 Compare Two Countries</div>
-          <div className="text-white/40 text-sm">GDP, population, inflation, trade, culture — head to head</div>
-        </div>
-        <Select options={COMPARE_COUNTRIES} value={countryA} onChange={setCountryA} placeholder="Select first country" />
-        <div className="text-center text-white/30 text-sm font-bold">VS</div>
-        <Select options={COMPARE_COUNTRIES.filter(c => c !== countryA)} value={countryB} onChange={setCountryB} placeholder="Select second country" />
-        <button onClick={handleCountryCompare} disabled={!countryA || !countryB}
-          className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
-          style={{ background: countryA && countryB ? 'linear-gradient(90deg, #10b981, #06b6d4)' : 'rgba(255,255,255,0.08)' }}>
-          Compare Countries →
-        </button>
+        <Link href="/compare" className="block text-center text-cyan-300 hover:text-cyan-200 text-sm font-medium no-underline">
+          All published comparisons →
+        </Link>
       </div>
     </div>
   );

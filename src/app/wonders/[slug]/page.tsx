@@ -1,825 +1,593 @@
-'use client';
-
-import { useParams } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { MapPin, Clock, Sun, Cloud, Camera, Calendar, Info, ExternalLink, Shirt, DollarSign, AlertCircle, Car, Building, Sunset, Lightbulb, Star, BookOpen } from 'lucide-react';
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import {
-  generateVisitorGuideParagraph, generateVisitorGuideAfter,
-  generateStoryParagraph, generateStoryAfter,
-  generateArchitectureParagraph, generateArchitectureAfter,
-  generateFactsParagraph, generateFactsAfter,
-  generatePhotographyParagraph, generatePhotographyAfter,
-  generateNearbyParagraph, generateNearbyAfter,
-} from '@/lib/paragraphs/wonders';
+  PUBLISHED_WONDERS,
+  getWonder,
+  getWonderLive,
+  heroMedia,
+  wonderMedia,
+  weatherLabel,
+  whatToWear,
+  openStatus,
+  formatLocalTime,
+  formatLocalDate,
+  haversineKm,
+} from '@/lib/wonders';
+import WonderClock from './WonderClock';
+import MapEmbed from './MapEmbed';
 
-interface Wonder {
-  name: string;
-  slug: string;
-  category: string;
-  image: string;
-  location: {
-    city: string;
-    country: string;
-    coordinates: { lat: number; lng: number };
-  };
-  unescoStatus: string;
-  established: string;
-  isOpen: boolean;
-  openingHours: string;
-  currentWeather: {
-    temp: number;
-    condition: string;
-    humidity: number;
-    wind: number;
-    icon: string;
-  };
-  bestVisitingTime: {
-    recommendation: string;
-    goldenHour: { morning: string; evening: string };
-    tip: string;
-  };
-  visitorGuide: {
-    whatToWear: string[];
-    fees: { type: string; price: string }[];
-    rules: string[];
-    gettingThere: { method: string; details: string }[];
-  };
-  history: {
-    wikipedia: string;
-    fullStory: string;
-  };
-  architecture: {
-    uniqueFeatures: string[];
-    dimensions: { aspect: string; value: string }[];
-    materials: string[];
-    geniusMoments: string[];
-  };
-  surprisingFacts: string[];
-  photographyGuide: {
-    bestSpots: { spot: string; description: string }[];
-    bestTimeToday: string;
-    tips: string[];
-  };
-  nearbyWonders: {
-    name: string;
-    slug: string;
-    image: string;
-    distance: string;
-  }[];
-  allWonders: {
-    name: string;
-    slug: string;
-    image: string;
-  }[];
+// Golden Wonder template (WP4 / marathon Q9) — SERVER component.
+// Data: src/lib/wonders.ts (DB-first after migration 0001, baked
+// verified dataset until then) + Open-Meteo live layer, revalidated
+// every 30 minutes. No mock values anywhere; a block whose source is
+// unavailable simply does not render.
+export const revalidate = 1800;
+
+const BASE = 'https://worldcityhub.vercel.app';
+
+export function generateStaticParams() {
+  return PUBLISHED_WONDERS.map((w) => ({ slug: w.slug }));
 }
 
-const mockWonder: Wonder = {
-  name: 'Taj Mahal',
-  slug: 'taj-mahal',
-  category: 'New Seven Wonder',
-  image: 'https://images.unsplash.com/photo-1564507592333-fa34c3f8e56d?w=1600',
-  location: {
-    city: 'Agra',
-    country: 'India',
-    coordinates: { lat: 27.1751, lng: 78.0421 },
-  },
-  unescoStatus: 'UNESCO World Heritage Site (1983)',
-  established: '1632-1653',
-  isOpen: true,
-  openingHours: '6:00 AM - 6:30 PM (Closed Fridays)',
-  currentWeather: {
-    temp: 32,
-    condition: 'Partly Cloudy',
-    humidity: 45,
-    wind: 12,
-    icon: '⛅',
-  },
-  bestVisitingTime: {
-    recommendation: 'Visit early morning (6-8 AM) or late afternoon (4-6 PM) for best lighting and fewer crowds',
-    goldenHour: { morning: '6:15 AM - 7:00 AM', evening: '5:30 PM - 6:15 PM' },
-    tip: 'Full moon nights offer special viewing experiences (tickets required)',
-  },
-  visitorGuide: {
-    whatToWear: [
-      'Comfortable walking shoes',
-      'Light, breathable clothing (respectful dress)',
-      'Hat and sunglasses',
-      'Sunscreen recommended',
-    ],
-    fees: [
-      { type: 'Foreign Tourist', price: '₹1100 ($13)' },
-      { type: 'Domestic Tourist', price: '₹50 ($0.60)' },
-      { type: 'Moonlight Viewing', price: '₹2000 ($24)' },
-    ],
-    rules: [
-      'No tripods or professional cameras without permit',
-      'No food inside the mausoleum',
-      'No touching of marble surfaces',
-      'Maintain silence in inner chambers',
-      'Drones strictly prohibited',
-    ],
-    gettingThere: [
-      { method: 'Train', details: 'Agra Cantt Railway Station - 20 mins auto ride' },
-      { method: 'Flight', details: 'Delhi Airport (DEL) - 3 hour drive or 2 hour train' },
-      { method: 'Road', details: 'Yamuna Expressway from Delhi - 230 km, well-maintained' },
-    ],
-  },
-  history: {
-    wikipedia: 'https://en.wikipedia.org/wiki/Taj_Mahal',
-    fullStory: 'The Taj Mahal was commissioned in 1632 by the Mughal Emperor Shah Jahan to house the tomb of his favorite wife, Mumtaz Mahal, who died during childbirth. The tomb is the central focus of the entire complex, a large, white marble structure standing on a square plinth, consisting of a symmetrical building with an arch-shaped doorway topped by a large dome. Construction employed 20,000 artisans under the guidance of a board of architects led by Ustad Ahmad Lahauri. The Taj Mahal complex took 22 years to complete, with the mausoleum itself finished in 1648 and the surrounding buildings completed in 1653. A project that exemplified the Mughal Empire\'s cultural sophistication, the Taj Mahal influenced the design of numerous later buildings, both in India and abroad.',
-  },
-  architecture: {
-    uniqueFeatures: [
-      'Perfect symmetry in all directions',
-      'Minarets tilt outward to protect the tomb from earthquake damage',
-      'Pietra dura inlay work with 28 types of gemstones',
-      'Calligraphy that appears to change size when viewed from below',
-      'Self-cleaning marble that repels dirt',
-    ],
-    dimensions: [
-      { aspect: 'Height', value: '73 meters (240 feet)' },
-      { aspect: 'Dome Diameter', value: '17 meters (56 feet)' },
-      { aspect: 'Minaret Height', value: '41 meters (135 feet)' },
-      { aspect: 'Complex Area', value: '17 hectares (42 acres)' },
-    ],
-    materials: [
-      'White Makrana marble from Rajasthan',
-      'Jasper from Punjab',
-      'Jade from China',
-      'Turquoise from Tibet',
-      'Lapis lazuli from Afghanistan',
-      'Sapphires from Sri Lanka',
-    ],
-    geniusMoments: [
-      'The dome changes color based on daylight - pink at dawn, white at noon, golden at dusk',
-      'Optical illusions make the calligraphy appear proportional from ground level',
-      'Self-supporting double dome structure - outer for beauty, inner for height',
-      'Reflecting pool designed to create mirror image of the entire monument',
-      'Acoustic design allows whispers to travel clearly in the inner dome',
-    ],
-  },
-  surprisingFacts: [
-    'The Taj Mahal cost approximately 32 million rupees in 1653, equivalent to about $1 billion today',
-    'British soldiers defaced the Taj during the Indian Rebellion of 1857, chipping off precious stones',
-    'A full-scale replica exists in Bangladesh, built in 8 years for $58 million',
-    'During WWII and India-Pakistan wars, the dome was covered with bamboo scaffolding to disguise it',
-    'The Taj is a solar aligned monument - the central arch frames the rising sun at summer solstice',
-  ],
-  photographyGuide: {
-    bestSpots: [
-      { spot: 'Diana Bench', description: 'Iconic view from the reflecting pool with perfect symmetry' },
-      { spot: 'Mehtab Bagh', description: 'Across the Yamuna River for the classic back view at sunset' },
-      { spot: 'Mosque Side', description: 'Morning light illuminates the red sandstone mosque beautifully' },
-      { spot: 'Garden Level', description: 'Eye-level shots capturing geometric garden patterns' },
-    ],
-    bestTimeToday: 'Today\'s best photography window: 5:30 PM - 6:15 PM (evening golden hour with good light)',
-    tips: [
-      'Use the reflecting pool for mirror shots',
-      'Include people in foreground for scale',
-      'Walk around the monument for changing perspectives',
-      'Capture details of the pietra dura inlay work',
-      'Sunrise shots require arriving before 6 AM',
-    ],
-  },
-  nearbyWonders: [
-    { name: 'Agra Fort', slug: 'agra-fort', image: 'https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?w=400', distance: '2.5 km' },
-    { name: 'Fatehpur Sikri', slug: 'fatehpur-sikri', image: 'https://images.unsplash.com/photo-1587474f7f31-6cb5-88e1-c7a076b0c39b?w=400', distance: '36 km' },
-    { name: 'Tomb of Akbar', slug: 'tomb-of-akbar', image: 'https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?w=400', distance: '10 km' },
-    { name: 'Mehtab Bagh', slug: 'mehtab-bagh', image: 'https://images.unsplash.com/photo-1564507592333-fa34c3f8e56d?w=400', distance: '500 m' },
-  ],
-  allWonders: [
-    { name: 'Great Wall of China', slug: 'great-wall-of-china', image: 'https://images.unsplash.com/photo-1508804185872-e7a4e4c21e23?w=300' },
-    { name: 'Petra', slug: 'petra', image: 'https://images.unsplash.com/photo-1579606042132-f7f4f4f4e4f1?w=300' },
-    { name: 'Colosseum', slug: 'colosseum', image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=300' },
-    { name: 'Chichen Itza', slug: 'chichen-itza', image: 'https://images.unsplash.com/photo-1603401058959-4d67c5a48e7c?w=300' },
-    { name: 'Machu Picchu', slug: 'machu-picchu', image: 'https://images.unsplash.com/photo-1587595437289-3e4a5f8c0f1b?w=300' },
-    { name: 'Christ the Redeemer', slug: 'christ-the-redeemer', image: 'https://images.unsplash.com/photo-1483729558449-99ef8e12f8f5?w=300' },
-    { name: 'Taj Mahal', slug: 'taj-mahal', image: 'https://images.unsplash.com/photo-1564507592333-fa34c3f8e56d?w=300' },
-  ],
-};
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const wonder = await getWonder(slug);
+  if (!wonder) return { title: 'Wonder not found' };
+  const hero = heroMedia(wonder);
+  const canonical = `${BASE}/wonders/${wonder.slug}`;
+  return {
+    title: wonder.seoTitle,
+    description: wonder.seoDescription,
+    alternates: { canonical },
+    openGraph: {
+      title: wonder.seoTitle,
+      description: wonder.seoDescription,
+      url: canonical,
+      type: 'article',
+      images: [{ url: hero.fileUrl, width: hero.width, height: hero.height, alt: hero.alt }],
+    },
+  };
+}
 
-const WONDERS: Record<string, Wonder> = {
-  'taj-mahal': mockWonder,
-};
-
-function WonderComingSoon({ slug }: { slug: string }) {
-  const name = slug
-    .split('-')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
+function Section({ title, children, id }: { title: string; children: React.ReactNode; id?: string }) {
   return (
-    <div
-      style={{ backgroundColor: '#0a0f1e', minHeight: '100vh' }}
-      className="flex flex-col items-center justify-center text-white px-6 text-center"
-    >
-      <p className="text-amber-400 text-sm font-semibold uppercase tracking-wide mb-3">
-        Wonder Guide
-      </p>
-      <h1 className="text-4xl md:text-5xl font-bold mb-4">{name}</h1>
-      <p className="text-white/60 text-lg mb-8 max-w-md">
-        The full visitor guide for {name} is coming soon.
-      </p>
-      <a
-        href="/wonders/taj-mahal"
-        className="inline-block px-6 py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-semibold transition-colors"
-      >
-        See Taj Mahal guide
-      </a>
-    </div>
+    <section id={id} className="mt-12">
+      <h2 className="text-2xl font-bold text-white">{title}</h2>
+      <div className="mt-4">{children}</div>
+    </section>
   );
 }
 
-export default function WonderPage() {
-  const params = useParams();
-  const slug = params.slug as string;
+export default async function WonderPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const wonder = await getWonder(slug);
+  if (!wonder) notFound();
 
-  const [wonder, setWonder] = useState<Wonder | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const live = await getWonderLive(wonder.lat, wonder.lng, wonder.timezone);
+  const hero = heroMedia(wonder);
+  const gallery = wonder.media.filter((m) => m.role === 'gallery' || m.role === 'detail');
+  const status = live ? openStatus(live, wonder.timezone) : { open: null as boolean | null, text: '' };
+  const localTime = formatLocalTime(wonder.timezone);
+  const localDate = formatLocalDate(wonder.timezone);
+  const googleKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || null;
 
-  useEffect(() => {
-    setTimeout(() => {
-      const match = WONDERS[slug];
-      if (match) {
-        setWonder(match);
-      } else {
-        setNotFound(true);
-      }
-      setLoading(false);
-    }, 600);
-  }, [slug]);
-
-  if (loading) {
-    return <LoadingSkeleton />;
-  }
-
-  if (notFound || !wonder) {
-    return <WonderComingSoon slug={slug} />;
-  }
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'TouristAttraction',
+        name: wonder.name,
+        description: wonder.seoDescription,
+        url: `${BASE}/wonders/${wonder.slug}`,
+        geo: { '@type': 'GeoCoordinates', latitude: wonder.lat, longitude: wonder.lng },
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: wonder.cityName,
+          addressRegion: wonder.regionName,
+          addressCountry: wonder.countryName,
+        },
+        image: { '@type': 'ImageObject', url: hero.fileUrl, width: hero.width, height: hero.height, caption: hero.attribution },
+        sameAs: [`https://www.wikidata.org/wiki/${wonder.wikidataQid}`, wonder.officialUrl],
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: BASE },
+          { '@type': 'ListItem', position: 2, name: 'Wonders', item: `${BASE}/wonders` },
+          { '@type': 'ListItem', position: 3, name: wonder.name, item: `${BASE}/wonders/${wonder.slug}` },
+        ],
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: wonder.faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+    ],
+  };
 
   return (
-    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
-      {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="relative h-[70vh] overflow-hidden"
-      >
-        <img
-          src={wonder.image}
-          alt={wonder.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-
-        <div className="absolute top-4 left-4 flex gap-2">
-          <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
-            <span className="font-semibold text-gray-900">{wonder.category}</span>
-          </div>
+    <main className="min-h-screen bg-[#0a0e1a] text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
+        {/* 1 — Breadcrumb + H1 + chips */}
+        <nav aria-label="Breadcrumb" className="text-sm text-gray-400">
+          <Link href="/" className="hover:text-white">Home</Link>
+          <span className="mx-2">/</span>
+          <Link href="/wonders" className="hover:text-white">Wonders</Link>
+          <span className="mx-2">/</span>
+          <span className="text-gray-200">{wonder.name}</span>
+        </nav>
+        <h1 className="mt-3 text-4xl font-bold sm:text-5xl">{wonder.name}</h1>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <span className="rounded-full bg-amber-500/15 px-3.5 py-1.5 text-xs font-semibold text-amber-300">{wonder.category}</span>
+          {wonder.unescoId && (
+            <span className="rounded-full bg-sky-500/15 px-3.5 py-1.5 text-xs font-semibold text-sky-300">
+              UNESCO World Heritage Site {wonder.unescoId} · since {wonder.unescoYear}
+            </span>
+          )}
+          <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-gray-200">
+            {wonder.cityName}, {wonder.countryName}
+          </span>
+          <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-gray-200">
+            Local time: <WonderClock timezone={wonder.timezone} initial={localTime} /> · {localDate}
+          </span>
+          {live && (
+            <span className="rounded-full bg-emerald-500/15 px-3.5 py-1.5 text-xs font-semibold text-emerald-300">
+              {Math.round(live.tempNow)}°C · {weatherLabel(live.weatherCode)} at the site now
+            </span>
+          )}
         </div>
 
-        {wonder.unescoStatus && (
-          <div className="absolute top-4 right-4 bg-amber-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
-            <Star className="w-5 h-5" />
-            <span className="font-semibold">{wonder.unescoStatus}</span>
+        {/* 2 — Hero gallery */}
+        <figure className="mt-6">
+          <div className="relative overflow-hidden rounded-2xl border border-white/10">
+            <Image
+              src={hero.fileUrl}
+              alt={hero.alt}
+              width={hero.width}
+              height={hero.height}
+              priority
+              sizes="(max-width: 1152px) 100vw, 1152px"
+              className="h-auto w-full object-cover"
+            />
+          </div>
+          <figcaption className="mt-2 text-xs text-gray-400">
+            {hero.attribution} ·{' '}
+            <a href={hero.pageUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-200">
+              View on Wikimedia Commons
+            </a>
+          </figcaption>
+        </figure>
+        {gallery.length > 0 && (
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {gallery.map((m) => (
+              <figure key={m.fileTitle}>
+                <div className="relative aspect-[3/2] overflow-hidden rounded-xl border border-white/10">
+                  <Image src={m.fileUrl} alt={m.alt} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover" loading="lazy" />
+                </div>
+                <figcaption className="mt-1 text-[11px] leading-snug text-gray-500">
+                  Photo: {m.author} ·{' '}
+                  <a href={m.licenceUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                    {m.licence}
+                  </a>
+                </figcaption>
+              </figure>
+            ))}
           </div>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
-          <div className="max-w-7xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 drop-shadow-lg">
-              {wonder.name}
-            </h1>
-            <div className="flex flex-wrap items-center gap-4 text-white">
-              <div className="flex items-center gap-2 backdrop-blur-sm bg-white/20 rounded-lg px-4 py-2">
-                <MapPin className="w-5 h-5" />
-                <span className="font-medium">{wonder.location.city}, {wonder.location.country}</span>
+        {/* 3 — QUICK ANSWER */}
+        {live && (
+          <div className="mt-8 rounded-2xl border border-amber-400/25 bg-amber-400/5 p-5">
+            <h2 className="text-lg font-bold text-amber-200">Visiting today — the quick answer</h2>
+            <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-gray-400">Status</p>
+                <p className="mt-1 text-sm font-semibold text-white">{status.open === null ? wonder.visitor.closedDays : status.text}</p>
+                <p className="mt-1 text-xs text-gray-400">{wonder.visitor.hoursText}</p>
               </div>
-              <div className="flex items-center gap-2 backdrop-blur-sm bg-white/20 rounded-lg px-4 py-2">
-                <Calendar className="w-5 h-5" />
-                <span>Built {wonder.established}</span>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-gray-400">Weather at the site</p>
+                <p className="mt-1 text-sm font-semibold text-white">
+                  {Math.round(live.tempNow)}°C · {weatherLabel(live.weatherCode)}
+                </p>
+                <p className="mt-1 text-xs text-gray-400">
+                  Feels {Math.round(live.feelsLike)}°C · today {Math.round(live.today.tempMin)}–{Math.round(live.today.tempMax)}°C
+                </p>
               </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-
-        {/* Is Open Today + Current Weather */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
-        >
-          {/* Live Status */}
-          <div className={`rounded-2xl p-6 border ${wonder.isOpen ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Is Open Today</h2>
-              <div className={`px-4 py-2 rounded-full font-semibold ${wonder.isOpen ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
-                {wonder.isOpen ? 'OPEN NOW' : 'CLOSED'}
+              <div>
+                <p className="text-xs uppercase tracking-wide text-gray-400">Best light today</p>
+                <p className="mt-1 text-sm font-semibold text-white">
+                  {live.goldenMorning.start}–{live.goldenMorning.end} · {live.goldenEvening.start}–{live.goldenEvening.end}
+                </p>
+                <p className="mt-1 text-xs text-gray-400">
+                  Sunrise {live.today.sunrise} · sunset {live.today.sunset} (local)
+                </p>
               </div>
-            </div>
-            <div className="flex items-center gap-2 text-gray-700">
-              <Clock className="w-5 h-5" />
-              <span>{wonder.openingHours}</span>
-            </div>
-          </div>
-
-          {/* Current Weather */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Current Weather at Wonder</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-3">
-                <span className="text-4xl">{wonder.currentWeather.icon}</span>
-                <div>
-                  <div className="text-3xl font-bold text-gray-900">{wonder.currentWeather.temp}°C</div>
-                  <div className="text-gray-600">{wonder.currentWeather.condition}</div>
-                </div>
-              </div>
-              <div className="space-y-2 text-gray-700">
-                <div className="flex items-center gap-2">
-                  <Cloud className="w-4 h-4" />
-                  <span>Humidity: {wonder.currentWeather.humidity}%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Sun className="w-4 h-4" />
-                  <span>Wind: {wonder.currentWeather.wind} km/h</span>
-                </div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-gray-400">Entry (official)</p>
+                <p className="mt-1 text-sm font-semibold text-white">
+                  {wonder.visitor.fees
+                    ? wonder.visitor.fees
+                        .slice(0, 3)
+                        .map((f) => `${f.visitor.includes('Foreign') ? 'Foreign' : f.visitor.includes('SAARC') ? 'SAARC/BIMSTEC' : 'Indian'} ${f.amount}`)
+                        .join(' · ')
+                    : 'See visitor guide'}
+                </p>
+                <p className="mt-1 text-xs text-gray-400">Verified {wonder.visitor.lastVerified} · {wonder.visitor.sourceName}</p>
               </div>
             </div>
           </div>
-        </motion.section>
+        )}
 
-        {/* Best Visiting Time */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200 p-6"
-        >
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Sunset className="w-6 h-6 text-amber-600" />
-            Best Visiting Time
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
-              <p className="text-gray-800 text-lg mb-4">{wonder.bestVisitingTime.recommendation}</p>
-              <div className="bg-white rounded-lg p-4 border border-amber-200">
-                <div className="font-semibold text-gray-900 mb-2">Golden Hours Today</div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center gap-2">
-                    <Sun className="w-5 h-5 text-amber-600" />
-                    <span>Morning: {wonder.bestVisitingTime.goldenHour.morning}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Sunset className="w-5 h-5 text-orange-600" />
-                    <span>Evening: {wonder.bestVisitingTime.goldenHour.evening}</span>
-                  </div>
-                </div>
+        {/* 4 — Key facts */}
+        <Section title="Key facts">
+          <dl className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+            {wonder.facts.map((f) => (
+              <div key={f.label} className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <dt className="text-[11px] uppercase tracking-wide text-gray-400">{f.label}</dt>
+                <dd className="mt-1 text-sm font-semibold leading-snug text-white">{f.value}</dd>
+                <dd className="mt-1 text-[11px] text-gray-500">Source: {f.source}</dd>
               </div>
-            </div>
-            <div className="bg-white rounded-lg p-4 border border-amber-200">
-              <div className="flex items-start gap-2">
-                <Lightbulb className="w-5 h-5 text-amber-600 flex-shrink-0" />
-                <div>
-                  <div className="font-semibold text-gray-900 mb-1">Pro Tip</div>
-                  <p className="text-gray-700 text-sm">{wonder.bestVisitingTime.tip}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Visitor Guide Today */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <Info className="w-7 h-7 text-blue-600" />
-            Visitor Guide Today
-          </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-6">
-            {generateVisitorGuideParagraph(wonder.name)}
-          </p>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-            {/* What to Wear */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Shirt className="w-5 h-5 text-purple-600" />
-                What to Wear
-              </h3>
-              <ul className="space-y-2">
-                {wonder.visitorGuide.whatToWear.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-700 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-purple-600 mt-2"></div>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Fees */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-green-600" />
-                Entrance Fees
-              </h3>
-              <div className="space-y-2">
-                {wonder.visitorGuide.fees.map((fee, i) => (
-                  <div key={i} className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-sm text-gray-600">{fee.type}</div>
-                    <div className="font-bold text-gray-900">{fee.price}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Rules */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-                Important Rules
-              </h3>
-              <ul className="space-y-2">
-                {wonder.visitorGuide.rules.map((rule, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-700 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-600 mt-2"></div>
-                    {rule}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Getting There */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Car className="w-5 h-5 text-blue-600" />
-                Getting There
-              </h3>
-              <div className="space-y-2">
-                {wonder.visitorGuide.gettingThere.map((route, i) => (
-                  <div key={i} className="bg-gray-50 rounded-lg p-3">
-                    <div className="font-semibold text-gray-900 text-sm">{route.method}</div>
-                    <div className="text-xs text-gray-600 mt-1">{route.details}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <p className="text-gray-600 leading-relaxed text-sm mt-6">
-            {generateVisitorGuideAfter(wonder.name)}
-          </p>
-        </motion.section>
-
-        {/* The Story */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <BookOpen className="w-7 h-7 text-indigo-600" />
-            The Story
-          </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-4">
-            {generateStoryParagraph(wonder.name, wonder.location.city)}
-          </p>
-          <div className="prose prose-lg max-w-none text-gray-700">
-            <p className="leading-relaxed">{wonder.history.fullStory}</p>
-          </div>
-          <a
-            href={wonder.history.wikipedia}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 mt-4 text-indigo-600 hover:text-indigo-700 font-medium"
-          >
-            Read more on Wikipedia
-            <ExternalLink className="w-4 h-4" />
-          </a>
-          <p className="text-gray-600 leading-relaxed text-sm mt-4">
-            {generateStoryAfter(wonder.name)}
-          </p>
-        </motion.section>
-
-        {/* Architecture */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 p-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <Building className="w-7 h-7 text-gray-700" />
-            Architecture
-          </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-6">
-            {generateArchitectureParagraph(wonder.name)}
-          </p>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Unique Features */}
-            <div className="bg-white rounded-lg p-5 border border-gray-200">
-              <h3 className="font-semibold text-gray-900 mb-4">Unique Features</h3>
-              <ul className="space-y-2">
-                {wonder.architecture.uniqueFeatures.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-700">
-                    <Star className="w-4 h-4 text-amber-500 flex-shrink-0 mt-1" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Dimensions */}
-            <div className="bg-white rounded-lg p-5 border border-gray-200">
-              <h3 className="font-semibold text-gray-900 mb-4">Dimensions</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {wonder.architecture.dimensions.map((dim, i) => (
-                  <div key={i} className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-600">{dim.aspect}</div>
-                    <div className="font-bold text-gray-900">{dim.value}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Materials */}
-          <div className="bg-white rounded-lg p-5 border border-gray-200 mb-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Materials Used</h3>
-            <div className="flex flex-wrap gap-2">
-              {wonder.architecture.materials.map((material, i) => (
-                <span key={i} className="px-3 py-2 bg-indigo-50 text-indigo-900 rounded-lg text-sm font-medium border border-indigo-200">
-                  {material}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Genius Moments */}
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-5">
-            <h3 className="font-semibold text-amber-900 mb-4 flex items-center gap-2">
-              <Lightbulb className="w-5 h-5" />
-              Genius Moments
-            </h3>
-            <ul className="space-y-3">
-              {wonder.architecture.geniusMoments.map((moment, i) => (
-                <li key={i} className="flex items-start gap-3 text-amber-900">
-                  <div className="w-2 h-2 rounded-full bg-amber-600 mt-2"></div>
-                  {moment}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <p className="text-gray-600 leading-relaxed text-sm mt-6">
-            {generateArchitectureAfter(wonder.name)}
-          </p>
-        </motion.section>
-
-        {/* 5 Surprising Facts */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <Lightbulb className="w-7 h-7 text-amber-500" />
-            5 Surprising Facts
-          </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-6">
-            {generateFactsParagraph(wonder.name)}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            {wonder.surprisingFacts.map((fact, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + i * 0.1 }}
-                className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-5 hover:shadow-lg transition-shadow cursor-pointer"
-              >
-                <div className="text-3xl font-bold text-indigo-300 mb-3">{i + 1}</div>
-                <p className="text-gray-800 text-sm leading-relaxed">{fact}</p>
-              </motion.div>
             ))}
-          </div>
-          <p className="text-gray-600 leading-relaxed text-sm mt-6">
-            {generateFactsAfter(wonder.name)}
-          </p>
-        </motion.section>
+          </dl>
+        </Section>
 
-        {/* Photography Guide Today */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl border border-rose-200 p-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <Camera className="w-7 h-7 text-rose-600" />
-            Photography Guide Today
-          </h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-6">
-            {generatePhotographyParagraph(wonder.name)}
-          </p>
-
-          <div className="bg-white rounded-xl p-5 mb-6 border border-rose-200">
-            <div className="flex items-center gap-2 mb-2">
-              <Sun className="w-5 h-5 text-amber-500" />
-              <span className="font-semibold text-gray-900">Best Time Today</span>
-            </div>
-            <p className="text-gray-700">{wonder.photographyGuide.bestTimeToday}</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Best Spots */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Best Photo Spots</h3>
-              <div className="space-y-3">
-                {wonder.photographyGuide.bestSpots.map((spot, i) => (
-                  <div key={i} className="bg-white rounded-lg p-4 border border-rose-200">
-                    <div className="font-semibold text-gray-900">{spot.spot}</div>
-                    <div className="text-sm text-gray-600 mt-1">{spot.description}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Photography Tips */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Tips for Great Shots</h3>
-              <ul className="space-y-2">
-                {wonder.photographyGuide.tips.map((tip, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-700 bg-white rounded-lg p-3 border border-rose-200">
-                    <Camera className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
-                    {tip}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <p className="text-gray-600 leading-relaxed text-sm mt-2">
-            {generatePhotographyAfter(wonder.name)}
-          </p>
-        </motion.section>
-
-        {/* Nearby Wonders */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Nearby Wonders</h2>
-          <p className="text-gray-700 leading-relaxed text-sm mb-6">
-            {generateNearbyParagraph(wonder.name, wonder.location.city)}
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {wonder.nearbyWonders.map((nearby) => (
-              <motion.a
-                key={nearby.slug}
-                href={`/wonders/${nearby.slug}`}
-                whileHover={{ scale: 1.03 }}
-                className="group"
-              >
-                <div className="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="h-40 relative">
-                    <img src={nearby.image} alt={nearby.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                    <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm rounded px-2 py-1 text-xs font-semibold text-gray-700">
-                      {nearby.distance}
+        {/* 5 — THERE TODAY live dashboard */}
+        {live && (
+          <Section title={`There today — live at the ${wonder.name}`}>
+            <div className="grid gap-4 lg:grid-cols-3">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+                <p className="text-sm text-gray-400">Right now</p>
+                <p className="mt-1 text-4xl font-bold">
+                  {Math.round(live.tempNow)}°C <span className="text-base font-medium text-gray-300">{weatherLabel(live.weatherCode)}</span>
+                </p>
+                <ul className="mt-3 space-y-1 text-sm text-gray-300">
+                  <li>Feels like {Math.round(live.feelsLike)}°C</li>
+                  <li>Humidity {Math.round(live.humidity)}%</li>
+                  <li>Wind {Math.round(live.windKmh)} km/h</li>
+                  <li>UV now {live.uvNow.toFixed(1)} · peak today {live.today.uvMax.toFixed(1)}</li>
+                  <li className="text-xs text-gray-500">Open-Meteo, sampled {live.sampledAt.replace('T', ' ')} local</li>
+                </ul>
+                {live.hourly.length > 1 && (
+                  <div className="mt-4">
+                    <p className="text-xs uppercase tracking-wide text-gray-400">Temperature, next hours</p>
+                    <div className="mt-2 flex h-20 items-end gap-1">
+                      {live.hourly.map((h) => {
+                        const temps = live.hourly.map((x) => x.temp);
+                        const min = Math.min(...temps);
+                        const max = Math.max(...temps);
+                        const pct = max > min ? 25 + ((h.temp - min) / (max - min)) * 75 : 50;
+                        return (
+                          <div key={h.time} className="flex flex-1 flex-col items-center gap-1" title={`${h.time.slice(11, 16)} — ${Math.round(h.temp)}°C`}>
+                            <span className="text-[10px] text-gray-400">{Math.round(h.temp)}°</span>
+                            <div className="w-full rounded-t bg-amber-400/70" style={{ height: `${pct}%` }} />
+                            <span className="text-[10px] text-gray-500">{h.time.slice(11, 13)}</span>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                  <div className="p-3">
-                    <div className="font-semibold text-gray-900 text-sm">{nearby.name}</div>
+                )}
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+                <p className="text-sm text-gray-400">Sun path today</p>
+                <ul className="mt-2 space-y-2 text-sm text-gray-200">
+                  <li>🌅 Sunrise — <strong>{live.today.sunrise}</strong></li>
+                  <li>☀️ Golden hour (morning) — <strong>{live.goldenMorning.start}–{live.goldenMorning.end}</strong></li>
+                  <li>🌇 Golden hour (evening) — <strong>{live.goldenEvening.start}–{live.goldenEvening.end}</strong></li>
+                  <li>🌆 Sunset — <strong>{live.today.sunset}</strong></li>
+                </ul>
+                <p className="mt-3 text-xs text-gray-500">All times local to the site ({wonder.timezone.replace('_', ' ')}).</p>
+                <div className="mt-4 border-t border-white/10 pt-3">
+                  <p className="text-xs uppercase tracking-wide text-gray-400">Next days</p>
+                  {live.nextDays.map((d) => (
+                    <p key={d.date} className="mt-1 text-sm text-gray-300">
+                      {d.date}: {Math.round(d.tempMin)}–{Math.round(d.tempMax)}°C · sunrise {d.sunrise} · sunset {d.sunset}
+                    </p>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-xl border border-emerald-400/25 bg-emerald-400/5 p-5">
+                <p className="text-sm font-semibold text-emerald-200">👕 What to wear today</p>
+                <ul className="mt-2 list-disc space-y-2 pl-5 text-sm leading-relaxed text-gray-200">
+                  {whatToWear(live).map((tip) => (
+                    <li key={tip}>{tip}</li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-xs text-gray-500">Generated from today&apos;s live temperature, rain, wind and UV at the site — updated with the weather, never written in advance.</p>
+              </div>
+            </div>
+          </Section>
+        )}
+
+        {/* 6 — The Story */}
+        <Section title="The story">
+          <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
+            {wonder.intro.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+            <p className="text-sm text-gray-400">
+              Read more:{' '}
+              <a href="https://en.wikipedia.org/wiki/Taj_Mahal" target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
+                Wikipedia — {wonder.name}
+              </a>{' '}
+              ·{' '}
+              <a href={wonder.officialUrl} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
+                Official site
+              </a>
+            </p>
+          </div>
+        </Section>
+
+        {/* 7 — Architecture */}
+        <Section title="Architecture">
+          <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
+            {wonder.architecture.paragraphs.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
+          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+              <h3 className="font-semibold text-white">Dimensions &amp; materials</h3>
+              <ul className="mt-3 space-y-2 text-sm text-gray-300">
+                {wonder.architecture.dimensions.map((d) => (
+                  <li key={d.label} className="flex justify-between gap-4 border-b border-white/5 pb-2">
+                    <span className="text-gray-400">{d.label}</span>
+                    <span className="text-right font-medium text-white">{d.value}</span>
+                  </li>
+                ))}
+                <li className="pt-1 text-gray-400">
+                  Materials: <span className="text-gray-200">{wonder.architecture.materials.join(' · ')}</span>
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+              <h3 className="font-semibold text-white">The genius of it</h3>
+              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-gray-300">
+                {wonder.architecture.geniusPoints.map((g) => (
+                  <li key={g}>{g}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Section>
+
+        {/* 8 — Development timeline */}
+        <Section title="Development timeline">
+          <ol className="relative space-y-8 border-l border-white/10 pl-6">
+            {wonder.timeline.map((t) => {
+              const img = wonderMedia(wonder, t.mediaFileTitle);
+              return (
+                <li key={`${t.year}-${t.title}`} className="relative">
+                  <span className="absolute -left-[31px] top-1 h-2.5 w-2.5 rounded-full bg-amber-400" />
+                  <div className="flex flex-col gap-4 sm:flex-row">
+                    <div className="sm:w-40 sm:shrink-0">
+                      <p className="text-xl font-bold text-amber-300">{t.year}</p>
+                      <p className="font-semibold text-white">{t.title}</p>
+                    </div>
+                    <p className="max-w-xl text-sm leading-relaxed text-gray-300">{t.text}</p>
+                    {img && (
+                      <figure className="sm:ml-auto sm:w-56 sm:shrink-0">
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10">
+                          <Image src={img.fileUrl} alt={img.alt} fill sizes="224px" className="object-cover" loading="lazy" />
+                        </div>
+                        <figcaption className="mt-1 text-[11px] text-gray-500">
+                          {img.author} · {img.licence}
+                        </figcaption>
+                      </figure>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </Section>
+
+        {/* 9 — Visitor guide */}
+        <Section title="Visitor guide">
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+              <h3 className="font-semibold text-white">Hours</h3>
+              <p className="mt-2 text-sm leading-relaxed text-gray-300">{wonder.visitor.hoursText}</p>
+              <p className="mt-1 text-sm leading-relaxed text-gray-300">{wonder.visitor.closedDays}</p>
+              {live && (
+                <p className="mt-2 text-sm text-amber-200">
+                  Today: sunrise {live.today.sunrise} → the gates open 30 minutes before it; the monument closes 30 minutes
+                  before the {live.today.sunset} sunset.
+                </p>
+              )}
+              <h3 className="mt-5 font-semibold text-white">Getting in</h3>
+              <p className="mt-2 text-sm leading-relaxed text-gray-300">{wonder.visitor.gatesText}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+              <h3 className="font-semibold text-white">Entry fees (official)</h3>
+              {wonder.visitor.fees ? (
+                <>
+                  <table className="mt-3 w-full text-sm">
+                    <tbody>
+                      {wonder.visitor.fees.map((f) => (
+                        <tr key={f.visitor} className="border-b border-white/5">
+                          <td className="py-2 pr-3 text-gray-300">{f.visitor}</td>
+                          <td className="py-2 text-right font-semibold text-white">{f.amount}</td>
+                          <td className="py-2 pl-3 text-right text-xs text-gray-400">{f.note ?? ''}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {wonder.visitor.feesNote && <p className="mt-3 text-xs leading-relaxed text-gray-400">{wonder.visitor.feesNote}</p>}
+                </>
+              ) : (
+                <p className="mt-2 text-sm text-gray-300">Current fees are published on the official site (link below).</p>
+              )}
+              <p className="mt-4 text-xs text-gray-500">
+                Source: {wonder.visitor.sourceName} · last verified {wonder.visitor.lastVerified}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a href={wonder.visitor.sourceUrl} target="_blank" rel="noopener noreferrer" className="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-amber-400">
+                  Official hours &amp; fees
+                </a>
+                {wonder.ticketUrl && (
+                  <a href={wonder.ticketUrl} target="_blank" rel="noopener noreferrer" className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">
+                    Official e-tickets (ASI)
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        {/* 10 — SEE IT LIVE */}
+        <Section title="See it live">
+          <MapEmbed lat={wonder.lat} lng={wonder.lng} name={wonder.name} googleKey={googleKey} />
+        </Section>
+
+        {/* 11 — Photography */}
+        <Section title="Photography — best spots & today's windows">
+          {live && (
+            <p className="max-w-3xl text-sm leading-relaxed text-gray-300">
+              Today&apos;s best windows at the site: <strong className="text-white">{live.goldenMorning.start}–{live.goldenMorning.end}</strong> after
+              sunrise and <strong className="text-white">{live.goldenEvening.start}–{live.goldenEvening.end}</strong> before sunset. The marble reads
+              pinkish in the first light, white at midday and golden towards evening — plan the shot around the light, not the clock alone.
+            </p>
+          )}
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {wonder.photoSpots.map((s) => {
+              const img = wonderMedia(wonder, s.mediaFileTitle);
+              return (
+                <div key={s.name} className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                  {img && (
+                    <div className="relative aspect-[16/9]">
+                      <Image src={img.fileUrl} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" loading="lazy" />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-white">{s.name}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-gray-300">{s.description}</p>
+                    {img && <p className="mt-2 text-[11px] text-gray-500">Photo: {img.author} · {img.licence}</p>}
                   </div>
                 </div>
-              </motion.a>
+              );
+            })}
+          </div>
+        </Section>
+
+        {/* 12 — Myth vs Fact */}
+        {wonder.myths.length > 0 && (
+          <Section title="Myth vs Fact">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {wonder.myths.map((m) => (
+                <article key={m.claim} className="rounded-xl border border-white/10 bg-white/5 p-5">
+                  <p className="text-sm font-semibold leading-snug text-white">“{m.claim}”</p>
+                  <p
+                    className={`mt-3 inline-block rounded-full px-3 py-1 text-xs font-bold ${
+                      m.verdict === 'TRUE'
+                        ? 'bg-emerald-500/20 text-emerald-300'
+                        : m.verdict === 'FALSE'
+                          ? 'bg-red-500/20 text-red-300'
+                          : 'bg-amber-500/20 text-amber-300'
+                    }`}
+                  >
+                    Verdict: {m.verdict}
+                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-gray-300">{m.evidence}</p>
+                  <p className="mt-3 text-xs text-gray-500">
+                    Source: {m.sourceName} ·{' '}
+                    <a href={m.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-300">
+                      read it
+                    </a>
+                  </p>
+                </article>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {/* 13 — Nearby */}
+        <Section title="Nearby — same heritage zone">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {wonder.nearby.map((n) => (
+              <div key={n.name} className="rounded-xl border border-white/10 bg-white/5 p-5">
+                <h3 className="font-semibold text-white">{n.name}</h3>
+                <p className="mt-1 text-sm text-gray-300">{n.relation}</p>
+                <p className="mt-2 text-sm text-gray-400">
+                  {haversineKm(wonder.lat, wonder.lng, n.lat, n.lng).toFixed(1)} km from the {wonder.name} (straight line, from
+                  Wikidata coordinates)
+                </p>
+                <a href={n.url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm text-amber-300 underline">
+                  {n.urlLabel} →
+                </a>
+              </div>
             ))}
           </div>
-          <p className="text-gray-600 leading-relaxed text-sm mt-6">
-            {generateNearbyAfter(wonder.name, wonder.location.city)}
+          <p className="mt-3 text-sm text-gray-400">
+            Our full {wonder.cityName} city guide is in preparation — it will link from here the day it publishes.
           </p>
-        </motion.section>
+        </Section>
 
-        {/* All 7 Wonders Navigation */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
-          className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white"
-        >
-          <h2 className="text-2xl font-bold mb-6">All 7 Wonders</h2>
-          <div className="grid grid-cols-3 md:grid-cols-7 gap-3">
-            {wonder.allWonders.map((w) => (
-              <motion.a
-                key={w.slug}
-                href={`/wonders/${w.slug}`}
-                whileHover={{ scale: 1.05 }}
-                className={`${w.slug === wonder.slug ? 'ring-4 ring-amber-400' : ''} rounded-lg overflow-hidden`}
-              >
-                <div className="h-24 relative">
-                  <img src={w.image} alt={w.name} className="w-full h-full object-cover" />
-                  {w.slug === wonder.slug && (
-                    <div className="absolute inset-0 bg-amber-400/30"></div>
-                  )}
-                </div>
-                <div className="p-2 bg-white/10 backdrop-blur-sm">
-                  <div className="text-xs font-semibold text-center truncate">{w.name}</div>
-                </div>
-              </motion.a>
+        {/* 14 — FAQs + sources & credits + related */}
+        <Section title="Frequently asked questions">
+          <div className="space-y-3">
+            {wonder.faqs.map((f) => (
+              <details key={f.q} className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <summary className="cursor-pointer font-semibold text-white">{f.q}</summary>
+                <p className="mt-2 text-sm leading-relaxed text-gray-300">{f.a}</p>
+              </details>
             ))}
           </div>
-        </motion.section>
+        </Section>
 
-        {/* Book Visit */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Book Your Visit</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <motion.a
-              href={`https://www.viator.com/searchResults/all?text=${encodeURIComponent(wonder.name)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-gradient-to-br from-orange-600 to-red-600 rounded-xl p-6 text-white hover:shadow-lg transition-all"
-            >
-              <div className="font-semibold text-lg mb-1">Book Tour</div>
-              <div className="text-orange-100 text-sm mb-4">Viator</div>
-              <ExternalLink className="w-5 h-5" />
-            </motion.a>
+        <Section title="Sources & credits">
+          <ul className="space-y-2 text-sm text-gray-300">
+            {wonder.sources.map((s) => (
+              <li key={s.claim}>
+                <span className="text-gray-400">{s.claim} — </span>
+                <a href={s.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
+                  {s.sourceName}
+                </a>{' '}
+                <span className="text-xs text-gray-500">(checked {s.checkedAt})</span>
+              </li>
+            ))}
+          </ul>
+          <h3 className="mt-6 font-semibold text-white">Photo credits</h3>
+          <ul className="mt-2 space-y-1 text-xs leading-relaxed text-gray-400">
+            {wonder.media.map((m) => (
+              <li key={m.fileTitle}>
+                {m.attribution} ·{' '}
+                <a href={m.pageUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                  file page
+                </a>{' '}
+                ·{' '}
+                <a href={m.licenceUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                  licence
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Section>
 
-            <motion.a
-              href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(wonder.location.city)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-6 text-white hover:shadow-lg transition-all"
-            >
-              <div className="font-semibold text-lg mb-1">Book Hotel</div>
-              <div className="text-blue-100 text-sm mb-4">Booking.com</div>
-              <ExternalLink className="w-5 h-5" />
-            </motion.a>
-
-            <motion.a
-              href={`https://www.skyscanner.com/transport/flights/to/${wonder.location.city.toLowerCase()}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-gradient-to-br from-sky-600 to-blue-700 rounded-xl p-6 text-white hover:shadow-lg transition-all"
-            >
-              <div className="font-semibold text-lg mb-1">Search Flights</div>
-              <div className="text-sky-100 text-sm mb-4">Skyscanner</div>
-              <ExternalLink className="w-5 h-5" />
-            </motion.a>
+        <Section title="More wonders">
+          <p className="max-w-3xl text-sm leading-relaxed text-gray-300">
+            The {wonder.name} is the first WorldCityHub wonder guide built to the golden standard — every fact sourced,
+            every photo licensed and credited, and a live layer (weather, sun, golden hour) that no static encyclopedia
+            page can offer. The other New7Wonders — the Great Wall of China, Petra, Christ the Redeemer, Machu Picchu,
+            Chichen Itza and the Colosseum — are being built to the same standard, one verified wonder at a time.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link href="/wonders" className="rounded-full bg-amber-500 px-5 py-2 text-sm font-semibold text-black transition hover:bg-amber-400">
+              All wonders
+            </Link>
+            <Link href="/news" className="rounded-full bg-white/10 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/20">
+              Follow world news on WorldCityHub
+            </Link>
           </div>
-        </motion.section>
-
-        {/* Link to Country Page */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-center pb-12"
-        >
-          <a
-            href={`/${wonder.location.country.toLowerCase().replace(/\s+/g, '-')}`}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all"
-          >
-            <MapPin className="w-5 h-5" />
-            Explore {wonder.location.country}
-          </a>
-        </motion.div>
-
+        </Section>
       </div>
-    </div>
-  );
-}
-
-function LoadingSkeleton() {
-  return (
-    <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="animate-pulse">
-      <div className="h-[70vh] bg-gray-300"></div>
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-          <div key={i} className="bg-white rounded-2xl p-6 h-40"></div>
-        ))}
-      </div>
-    </div>
+    </main>
   );
 }

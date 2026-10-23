@@ -1,0 +1,112 @@
+{
+ "subject": "Islamabad",
+ "type": "city",
+ "package": "Round 1 (published)",
+ "coverage": "complete",
+ "coverage_note": "Subject is live; imagery complete.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Ali Mujtaba WLM2015 FAISAL MOSQUE m 10.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Ali_Mujtaba_WLM2015_FAISAL_MOSQUE_m_10.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Ali_Mujtaba_WLM2015_FAISAL_MOSQUE_m_10.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Ali Mujtaba",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Ali Mujtaba WLM2015 FAISAL MOSQUE m 10\" by Ali Mujtaba — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Ali Mujtaba WLM2015 FAISAL MOSQUE m 10",
+   "focal_point": null,
+   "width": 2743,
+   "height": 1908,
+   "sha1": "11c4d22a9fa4f685e90d769741c8a7429d3697bf",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Faisal Mosque - fountain area.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Faisal_Mosque_-_fountain_area.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Faisal_Mosque_-_fountain_area.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Shahzaib Damn Cruze",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Faisal Mosque - fountain area\" by Shahzaib Damn Cruze — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Faisal Mosque  —  fountain area",
+   "focal_point": null,
+   "width": 4375,
+   "height": 1734,
+   "sha1": "d6b83e7ae3295cba70188602a9e025f25fc60c6d",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Faisal Mosque in Islamabad.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/52/Faisal_Mosque_in_Islamabad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Faisal_Mosque_in_Islamabad.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Guilhem Vellut",
+   "licence": "CC BY 2.0",
+   "attribution": "\"Faisal Mosque in Islamabad\" by Guilhem Vellut — CC BY 2.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Faisal Mosque in Islamabad",
+   "focal_point": null,
+   "width": 1600,
+   "height": 1200,
+   "sha1": "98df8631111e2944c9a45f45f3bfccc88a98ade8",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "National Faisal Mosque Islamabad.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/62/National_Faisal_Mosque_Islamabad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:National_Faisal_Mosque_Islamabad.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Marsmux",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"National Faisal Mosque Islamabad\" by Marsmux — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "National Faisal Mosque Islamabad",
+   "focal_point": null,
+   "width": 4377,
+   "height": 2918,
+   "sha1": "a3f63011fd4d5c066f313d4680a1a84aeda8c499",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Faisal mashid, Islamabad.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Faisal_mashid%2C_Islamabad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Faisal_mashid,_Islamabad.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Moazam Azeem",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Faisal mashid, Islamabad\" by Moazam Azeem — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Faisal mashid, Islamabad",
+   "focal_point": null,
+   "width": 4032,
+   "height": 3024,
+   "sha1": "4714cf9c297e651665211478c680f9e5e04abdab",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Faisal Mosque, Islamabad III.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Faisal_Mosque%2C_Islamabad_III.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Faisal_Mosque,_Islamabad_III.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Fassifarooq",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Faisal Mosque, Islamabad III\" by Fassifarooq — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Faisal Mosque, Islamabad III",
+   "focal_point": null,
+   "width": 4618,
+   "height": 3464,
+   "sha1": "4382e2dc154aba43179edf0c75450b742fe487c1",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Islamabad,Faisal mosque.jpg",
+   "reason": "resolution too low (750px wide)"
+  }
+ ]
+}

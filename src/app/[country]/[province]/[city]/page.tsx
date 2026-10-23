@@ -797,9 +797,6 @@ export default async function CityPage({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {(citySlug === 'lahore' ? [
                 { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal' },
-                { name: 'Faiz Ahmed Faiz', role: 'Poet', slug: 'faiz-ahmed-faiz' },
-                { name: 'Nusrat Fateh Ali Khan', role: 'Qawwali Singer', slug: 'nusrat-fateh-ali-khan' },
-                { name: 'Wasim Akram', role: 'Cricketer', slug: 'wasim-akram' },
               ] : []).map((p) => (
                 <a
                   key={p.slug}
@@ -829,12 +826,8 @@ export default async function CityPage({
               </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {(citySlug === 'lahore' ? [
-                { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque-lahore' },
+                { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque' },
                 { name: 'Lahore Fort', type: 'UNESCO Heritage', slug: 'lahore-fort' },
-                { name: 'Shalimar Gardens', type: 'Mughal Gardens', slug: 'shalimar-gardens-lahore' },
-                { name: 'Data Darbar', type: 'Sufi Shrine', slug: 'data-darbar-lahore' },
-                { name: 'Walled City', type: 'Historic District', slug: 'walled-city-lahore' },
-                { name: 'Lahore Museum', type: 'Museum', slug: 'lahore-museum' },
               ] : []).map((place) => (
                 <a
                   key={place.slug}
@@ -1089,7 +1082,7 @@ export default async function CityPage({
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`} className="hover:text-green-400 transition-colors">News</a>
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`} className="hover:text-green-400 transition-colors">Events</a>
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`} className="hover:text-green-400 transition-colors">Economy</a>
-              <a href={`/${resolvedParams.country}/sports`} className="hover:text-green-400 transition-colors">Sports</a>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/sports`} className="hover:text-green-400 transition-colors">Sports</a>
             </div>
             <p className="text-xs text-gray-600">
               Data updates every hour. Prayer times: Karachi method. Gold: LBMA + SBP rate.
