@@ -797,7 +797,6 @@ export default async function CityPage({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {(citySlug === 'lahore' ? [
                 { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal' },
-                { name: 'Faiz Ahmed Faiz', role: 'Poet', slug: 'faiz-ahmed-faiz' },
               ] : []).map((p) => (
                 <a
                   key={p.slug}
