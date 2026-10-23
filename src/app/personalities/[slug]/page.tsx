@@ -124,6 +124,29 @@ function usableBirthDate(p: NonNullable<Profile>): string | null {
   return null;
 }
 
+// ─── Work-year guard (billi, 2026-10-24) ──────────────────────────────
+// The works FAQ composes each work as "Title (year) — …". A work whose
+// record carries NO year renders by title alone — no parentheses, no
+// placeholder: unguarded, an absent year prints literally as
+// "Title (undefined)". The year part appears only when the record holds
+// a real value: a non-empty string/number, never undefined, null, an
+// empty string or the literal text "undefined". One guard for every
+// composition site; it returns the record's original string when the
+// year is usable, so works WITH a year render byte-identically. (The
+// page body's works section needs no guard: FamousWorksSection renders
+// its year line only when a year is present — {work.year && …}.)
+function usableWorkYear(w: { year?: string | number | null }): string | null {
+  const y = w.year;
+  if (typeof y === 'number') return Number.isFinite(y) ? String(y) : null;
+  if (typeof y !== 'string') return null;
+  const t = y.trim().toLowerCase();
+  return t && t !== 'undefined' && t !== 'null' ? y : null;
+}
+function formatWorkTitle(w: { title: string; year?: string | number | null }): string {
+  const y = usableWorkYear(w);
+  return y ? `${w.title} (${y})` : w.title;
+}
+
 function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; faqs: AeoFaq[] } {
   const descSentences = sOf(p.description ?? '');
   const timeline = p.timeline ?? [];
@@ -187,7 +210,7 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
       a: acc(
         works
           .slice(0, 3)
-          .map((w) => `${w.title} (${w.year}) — ${w.description}`)
+          .map((w) => `${formatWorkTitle(w)} — ${w.description}`)
           .join(' '),
         [`The works section of this profile lists ${works.length} works in full, each with its year and a note on why it matters.`, descSentences[1] ?? ''],
       ),
