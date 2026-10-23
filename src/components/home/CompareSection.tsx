@@ -66,14 +66,14 @@ export default function CompareSection() {
             <div className="relative h-32 sm:h-36 flex-1 overflow-hidden rounded-xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/images/home/compare-lahore.webp" alt="Badshahi Mosque front picture, Lahore" width={640} height={426} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
-              <span className="absolute bottom-0 left-0 bg-black/60 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-tr-md">Lahore</span>
-              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Romero Maia · CC BY-SA 4.0</span>
+              <span className="t-force-dark absolute bottom-0 left-0 bg-black/60 t-text text-[10px] font-semibold px-1.5 py-0.5 rounded-tr-md">Lahore</span>
+              <span className="t-force-dark absolute bottom-0 right-0 bg-black/60 t-text-70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Romero Maia · CC BY-SA 4.0</span>
             </div>
             <div className="relative h-32 sm:h-36 flex-1 overflow-hidden rounded-xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/images/home/compare-karachi.webp" alt="Mazar-e-Quaid, the heart of Karachi" width={640} height={360} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
-              <span className="absolute bottom-0 left-0 bg-black/60 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-tr-md">Karachi</span>
-              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Ibrahim Janjua · CC BY-SA 4.0</span>
+              <span className="t-force-dark absolute bottom-0 left-0 bg-black/60 t-text text-[10px] font-semibold px-1.5 py-0.5 rounded-tr-md">Karachi</span>
+              <span className="t-force-dark absolute bottom-0 right-0 bg-black/60 t-text-70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Ibrahim Janjua · CC BY-SA 4.0</span>
             </div>
           </div>
           <div className="t-text-40 text-xs uppercase tracking-wider mb-2">Featured comparison</div>

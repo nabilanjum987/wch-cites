@@ -21,7 +21,7 @@
 // so London, Dubai, Tokyo and Sydney clocks render WITHOUT links
 // until those country pages pass the QA gate.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
 import { useVisitorCity } from './useVisitorCity';
@@ -94,16 +94,19 @@ function AnalogClock({ now, tz, color, size }: { now: Date; tz: string; color: s
 function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number }) {
   const { str12, date } = parts(now, def.tz);
   const inner = (
-    <div className="relative overflow-hidden rounded-2xl px-2 py-3">
+    <div className="t-force-dark relative overflow-hidden rounded-2xl px-2 py-3">
       {/* Flag backdrop (owner izafa): this clock's own country flag —
           the vendored file at 50% opacity, object-cover, decorative.
           Scrim over it: linear-gradient(180deg, rgba(8,12,24,0.55),
           rgba(8,12,24,0.74)) — the hero's own dark tones, so the dial,
           hands and labels keep exactly their previous contrast. The
           card is an always-dark island (its scrim is fixed dark in
-          both themes, like Ticker 2's emerald band), so its labels
-          keep their white classes; the dial itself stays tokenised
-          (var(--card) / var(--text) inside AnalogClock). */}
+          both themes, like Ticker 2's emerald band): the t-force-dark
+          wrapper re-declares the dark token values on the card, so the
+          labels and the dial use the same t-* / var(--…) token classes
+          as the themed page (t-text / t-text-80 / t-text-40 — main's
+          own themed lines for this block) and resolve to the dark
+          palette in both themes. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={`/images/flags/${def.code}.png`} alt="" aria-hidden="true" width={160} height={107} loading="lazy" decoding="async"
         className="absolute inset-0 h-full w-full object-cover opacity-50" />
@@ -114,10 +117,11 @@ function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number 
         <div className="text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`/images/flags/${def.code}.png`} alt={`Flag of ${def.country}`} width={36} height={24} loading="lazy" decoding="async"
-            className="mx-auto h-6 w-9 rounded-[4px] object-cover shadow ring-1 ring-white/25" />
-          <div className="text-white font-bold text-sm mt-1.5">{def.name}</div>
-          <div className="text-white/80 font-mono text-sm">{str12}</div>
-          <div className="text-white/40 text-xs">{date}</div>
+            style={{ '--tw-ring-color': 'var(--border-25)' } as CSSProperties}
+            className="mx-auto h-6 w-9 rounded-[4px] object-cover shadow ring-1" />
+          <div className="t-text font-bold text-sm mt-1.5">{def.name}</div>
+          <div className="t-text-80 font-mono text-sm">{str12}</div>
+          <div className="t-text-40 text-xs">{date}</div>
         </div>
       </div>
     </div>

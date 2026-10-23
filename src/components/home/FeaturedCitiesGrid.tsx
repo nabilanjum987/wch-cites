@@ -99,7 +99,7 @@ export default function FeaturedCitiesGrid() {
                   <div className="t-text font-bold text-lg leading-tight">{city.name}</div>
                   <div className="sub-desc">{city.province} · Pakistan</div>
                   {figs[i].prayer && <div className="t-emerald text-xs mt-1 font-medium">Next prayer · {figs[i].prayer}</div>}
-                  {'credit' in city && city.credit && <div className="text-[9px] text-white/50 mt-1">{city.credit}</div>}
+                  {'credit' in city && city.credit && <div className="t-force-dark text-[9px] t-text-50 mt-1">{city.credit}</div>}
                 </div>
               </div>
             </div>

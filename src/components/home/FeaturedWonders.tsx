@@ -83,7 +83,7 @@ export default function FeaturedWonders() {
                     <div className="t-text font-bold text-sm leading-tight">{w.name}</div>
                     <div className="sub-desc mt-0.5">{w.country}</div>
                     <div className="sub-desc mt-1">{w.desc}</div>
-                    {'credit' in w && w.credit && <div className="text-[9px] text-white/50 mt-1">{w.credit}</div>}
+                    {'credit' in w && w.credit && <div className="t-force-dark text-[9px] t-text-50 mt-1">{w.credit}</div>}
                   </div>
                 </div>
               </div>

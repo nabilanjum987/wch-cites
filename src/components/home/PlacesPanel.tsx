@@ -41,7 +41,7 @@ export default function PlacesPanel() {
             <div className="relative mb-3 h-36 overflow-hidden rounded-xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={p.img} alt={p.imgAlt} width={768} height={506} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
-              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">{p.credit}</span>
+              <span className="t-force-dark absolute bottom-0 right-0 bg-black/60 t-text-70 text-[9px] px-1.5 py-0.5 rounded-tl-md">{p.credit}</span>
             </div>
           )}
           <div className="flex items-start justify-between gap-2">

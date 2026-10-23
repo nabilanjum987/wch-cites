@@ -226,6 +226,45 @@ html, body {
 .t-green { color: var(--accent-green); }
 .t-red { color: var(--accent-red); }
 
+/* ─── ALWAYS-DARK ISLANDS (PR #87 merge-prep round 2, 2026-10-23) ──────────
+   Purely additive: surfaces that are dark BY DESIGN in both themes — the
+   hero clock flag-backdrop cards, the day/night diagram band, on-photo
+   caption chips — carry this class on the island root (or on the chip
+   itself). It re-declares the DARK token values scoped to the island, so
+   the island's content uses the SAME t-* classes as the themed page and
+   resolves to the dark palette in both themes. Every value below is
+   copied verbatim from the :root (dark) set above — parity is exact. */
+.t-force-dark {
+  color-scheme: dark;
+  --bg: #0a0f1e;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.04);
+  --card-strong: rgba(255, 255, 255, 0.06);
+  --text: #ffffff;
+  --text-95: rgba(255, 255, 255, 0.95);
+  --text-90: rgba(255, 255, 255, 0.9);
+  --text-85: rgba(255, 255, 255, 0.85);
+  --text-80: rgba(255, 255, 255, 0.8);
+  --text-75: rgba(255, 255, 255, 0.75);
+  --text-70: rgba(255, 255, 255, 0.7);
+  --text-60: rgba(255, 255, 255, 0.6);
+  --text-50: rgba(255, 255, 255, 0.5);
+  --text-40: rgba(255, 255, 255, 0.4);
+  --text-35: rgba(255, 255, 255, 0.35);
+  --text-30: rgba(255, 255, 255, 0.3);
+  --text-25: rgba(255, 255, 255, 0.25);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-5: rgba(255, 255, 255, 0.05);
+  --border-6: rgba(255, 255, 255, 0.06);
+  --border-8: rgba(255, 255, 255, 0.08);
+  --border-15: rgba(255, 255, 255, 0.15);
+  --border-20: rgba(255, 255, 255, 0.2);
+  --border-25: rgba(255, 255, 255, 0.25);
+  --border-30: rgba(255, 255, 255, 0.3);
+  --accent-amber: #fcd34d;
+  --shadow: none;
+}
+
 /* ─── LEGACY CLASS COMPAT (tokenised) ───────────────────────────────────────
    The old "DARK THEME OVERRIDE" block is REMOVED as a force-dark hack and
    re-expressed here on the theme tokens. These rules are load-bearing for

@@ -10,6 +10,10 @@
 // city dots are the same six cities as the hero clocks above. No map
 // tiles, no external assets, no new API: the whole band is a few KB of
 // SVG + math, so it costs the speed budget almost nothing.
+// The band is an always-dark island by design (a night diagram): the
+// section carries .t-force-dark, so its text/border/card use the same
+// t-* token classes as the themed page, resolved to the dark palette
+// in both themes (merge-prep round 2, 2026-10-23).
 // ─────────────────────────────────────────────────────────────────────────
 
 import { useEffect, useState } from 'react';
@@ -74,12 +78,12 @@ export default function DayNightBand() {
   const utcLabel = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')} UTC`;
 
   return (
-    <section className="px-4 pt-10" style={{ backgroundColor: '#0a0f1e' }} aria-label="Day and night across the world right now">
+    <section className="t-force-dark px-4 pt-10" style={{ backgroundColor: 'var(--bg)' }} aria-label="Day and night across the world right now">
       <div className="max-w-6xl mx-auto">
-        <div className="rounded-3xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-6">
+        <div className="rounded-3xl border t-border t-card px-4 py-4 sm:px-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-amber-300">Day &amp; Night — Live</h2>
-            <p className="text-xs text-white/50 tabular-nums">{utcLabel} · the shaded half of the planet is in night right now</p>
+            <h2 className="text-sm font-bold uppercase tracking-[0.18em] t-amber">Day &amp; Night — Live</h2>
+            <p className="text-xs t-text-50 tabular-nums">{utcLabel} · the shaded half of the planet is in night right now</p>
           </div>
           <svg viewBox="0 30 720 300" className="mt-2 block h-52 w-full sm:h-64" role="img"
             aria-label={`World map showing the day and night halves of the Earth at ${utcLabel}`}>
@@ -114,7 +118,7 @@ export default function DayNightBand() {
               );
             })}
           </svg>
-          <p className="mt-1 text-[11px] leading-relaxed text-white/35">
+          <p className="mt-1 text-[11px] leading-relaxed t-text-35">
             Diagram computed live from the UTC clock: the sun&apos;s position uses the subsolar longitude and today&apos;s solar
             declination; gold dots are in daylight, blue dots in night. The six cities match the world clocks above. Simplified
             coastline — a diagram, not a survey map.

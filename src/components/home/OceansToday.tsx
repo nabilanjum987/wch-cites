@@ -45,7 +45,7 @@ export default function OceansToday() {
           <div className="relative h-24 sm:h-28 w-32 sm:w-44 shrink-0 overflow-hidden rounded-xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/home/arabian-sea.webp" alt="Waves rolling in the Arabian Sea under a bright sky" width={720} height={450} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
-            <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Galib Tufan · CC BY-SA 4.0</span>
+            <span className="t-force-dark absolute bottom-0 right-0 bg-black/60 t-text-70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Galib Tufan · CC BY-SA 4.0</span>
           </div>
           <div className="flex-1">
             <div className="t-text font-semibold text-sm">Featured sea · Arabian Sea</div>
