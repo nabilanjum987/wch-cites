@@ -4,11 +4,14 @@ import { Globe } from 'lucide-react';
 // Footer links (WP2 Slice 6 / Q6, link map §24): only routes that
 // exist and render today. The previous footer linked shell pages
 // (/wonders, /oceans), unpublished city pages (Dubai, Istanbul,
-// London, Tokyo) and four pages that do not exist yet (/privacy,
+// London, Tokyo) and four pages that did not exist yet (/privacy,
 // /terms, /sources, /contact). About / Contact / Privacy / Sources
-// are built by the homepage-related-pages card (WP3/Q8) — their links
-// switch on in that release (L5/L6), so the Company column carries a
-// plain note until then, not links.
+// were built by the homepage-related-pages card (WP3/Q8) — their links
+// were held until those pages went live (L5/L6). SWITCHED ON in the
+// Batch 4 Item 1 link audit: all four pages are live and in the
+// sitemap, but nothing on the site linked to About or Contact — they
+// were published orphans. The Company column now carries the real
+// links like every other column.
 const footerLinks = {
   Explore: [
     { label: 'All Countries', href: '/countries' },
@@ -25,6 +28,12 @@ const footerLinks = {
     { label: 'Lahore', href: '/pakistan/punjab/lahore' },
     { label: 'Karachi', href: '/pakistan/sindh/karachi' },
     { label: 'Islamabad', href: '/pakistan/islamabad-capital-territory/islamabad' },
+  ],
+  Company: [
+    { label: 'About', href: '/about' },
+    { label: 'Contact', href: '/contact' },
+    { label: 'Privacy', href: '/privacy' },
+    { label: 'Data Sources', href: '/sources' },
   ],
 };
 
@@ -93,12 +102,7 @@ export default function AboutAndFooter() {
                 </ul>
               </div>
             ))}
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-4">Company</h4>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                About, Contact, Privacy and our Data Sources pages are in preparation — they will be linked here the moment they are live.
-              </p>
-            </div>
+
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5">
