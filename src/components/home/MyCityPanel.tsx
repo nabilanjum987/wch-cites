@@ -190,6 +190,15 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                   {data.name} <span className="text-white/50 text-xl font-medium">· {data.country}</span>
                 </h2>
                 <p className="text-white/50 text-sm mt-1">{gregorian}{data.hijri ? ` · ${data.hijri}` : ''}</p>
+                {/* Polish Card 2: the Full City Page CTA also sits at the
+                    TOP of the rail (lg only — mobile keeps its single
+                    bottom CTA and single flow), so the full page is one
+                    click from the panel's always-reachable top. The
+                    bottom CTA below stays as it was. */}
+                <Link href={data.path}
+                  className="hidden lg:inline-flex items-center gap-2 rounded-full bg-emerald-500/90 hover:bg-emerald-400 px-6 py-3 text-sm font-semibold text-white transition-colors no-underline mt-3">
+                  Full {data.name} Page <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
               <div className="text-right lg:text-left">
                 <div className="text-white font-mono text-2xl md:text-3xl lg:text-xl font-semibold">{localTime}</div>
