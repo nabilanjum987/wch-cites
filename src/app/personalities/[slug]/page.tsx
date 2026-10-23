@@ -88,6 +88,42 @@ function acc(base: string, extra: string[], min = 50): string {
   return out;
 }
 
+// ─── Birth-date guard (billi merge prep, 2026-10-23) ─────────────────────
+// The "Born on …" sentence (direct answer) and the "… was born on …" lead
+// (born FAQ) may only be composed when the record carries a COMPLETE,
+// cleanly-formed birth date — display form "9 November 1877" or ISO
+// "1877-11-09". A record whose birthDate is missing, empty or partial
+// (e.g. a bare year) emits NO born line at all: unguarded, an absent date
+// renders literally as "Born on undefined". One guard, used by every
+// composition site below. Returns the record's original string when the
+// date is usable, so records with a clean date render byte-identically.
+const BIRTH_MONTHS = [
+  'january', 'february', 'march', 'april', 'may', 'june',
+  'july', 'august', 'september', 'october', 'november', 'december',
+];
+function usableBirthDate(p: NonNullable<Profile>): string | null {
+  const raw = typeof p.birthDate === 'string' ? p.birthDate.trim() : '';
+  if (!raw) return null;
+  const disp = raw.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{3,4})$/);
+  if (disp) {
+    const day = parseInt(disp[1], 10);
+    return day >= 1 && day <= 31 && BIRTH_MONTHS.includes(disp[2].toLowerCase())
+      ? (p.birthDate as string)
+      : null;
+  }
+  const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (iso) {
+    const d = new Date(`${raw}T00:00:00Z`);
+    return !Number.isNaN(d.getTime()) &&
+      d.getUTCFullYear() === Number(iso[1]) &&
+      d.getUTCMonth() + 1 === Number(iso[2]) &&
+      d.getUTCDate() === Number(iso[3])
+      ? (p.birthDate as string)
+      : null;
+  }
+  return null;
+}
+
 function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; faqs: AeoFaq[] } {
   const descSentences = sOf(p.description ?? '');
   const timeline = p.timeline ?? [];
@@ -95,12 +131,15 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
   const works = p.works ?? [];
   const quotes = p.quotes ?? [];
   const past = Boolean(p.deathDate);
+  const born = usableBirthDate(p);
   const achLine = (i: number) =>
     achievements[i] ? `${achievements[i].title}: ${achievements[i].description}` : '';
 
   const directParts = [
     descSentences[0] ?? p.description ?? '',
-    `Born on ${p.birthDate}${past ? `, died ${p.deathDate}` : ''} — a life anchored in ${p.city}, ${p.country}.`,
+    ...(born
+      ? [`Born on ${born}${past ? `, died ${p.deathDate}` : ''} — a life anchored in ${p.city}, ${p.country}.`]
+      : []),
     achLine(0),
   ].filter(Boolean);
   if (wcOf(directParts.join(' ')) < 50) {
@@ -112,20 +151,31 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
   const bornIdx = bornEntry ? timeline.indexOf(bornEntry) : -1;
   const afterBorn = bornIdx >= 0 ? timeline.slice(bornIdx + 1).map((t) => t.description) : timeline.map((t) => t.description);
 
+  // Born FAQ — guarded by usableBirthDate like the direct answer. With a
+  // usable date the composition is exactly as before. Without one, the
+  // timeline's own birth entry (when the record carries it) answers a
+  // "Where … born?" question with no date claim; with neither, the
+  // question cannot be answered from the record and is omitted.
+  const bornFaq: AeoFaq | null = born
+    ? {
+        q: bornEntry ? `When and where was ${p.name} born?` : `When was ${p.name} born?`,
+        a: bornEntry
+          ? acc(`${p.name} was born on ${born}. ${bornEntry.description}`, afterBorn)
+          : acc(
+              `${p.name} was born on ${born}. A ${p.nationality} figure — ${p.title} — connected with ${p.city}, ${p.country}.`,
+              afterBorn,
+            ),
+      }
+    : bornEntry
+      ? { q: `Where was ${p.name} born?`, a: acc(bornEntry.description, afterBorn) }
+      : null;
+
   const faqs: AeoFaq[] = [
     {
       q: `Who ${past ? 'was' : 'is'} ${p.name}?`,
       a: acc(descSentences.join(' '), [achLine(0), achLine(1)], 55),
     },
-    {
-      q: bornEntry ? `When and where was ${p.name} born?` : `When was ${p.name} born?`,
-      a: bornEntry
-        ? acc(`${p.name} was born on ${p.birthDate}. ${bornEntry.description}`, afterBorn)
-        : acc(
-            `${p.name} was born on ${p.birthDate}. A ${p.nationality} figure — ${p.title} — connected with ${p.city}, ${p.country}.`,
-            afterBorn,
-          ),
-    },
+    ...(bornFaq ? [bornFaq] : []),
     {
       q: `What is ${p.name} famous for?`,
       a: acc(achLine(0), [achLine(1), achLine(2), achLine(3), ...descSentences.slice(1)]),
