@@ -25,10 +25,10 @@ function Select({ options, value, onChange, placeholder }: {
 }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-xl px-4 py-3 text-white text-sm font-medium border outline-none"
-      style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}>
+      className="w-full rounded-xl px-4 py-3 t-text text-sm font-medium border outline-none"
+      style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-12)' }}>
       <option value="" disabled>{placeholder}</option>
-      {options.map((o) => <option key={o} value={o} style={{ backgroundColor: '#0a0f1e' }}>{o}</option>)}
+      {options.map((o) => <option key={o} value={o} style={{ backgroundColor: 'var(--bg)' }}>{o}</option>)}
     </select>
   );
 }
@@ -54,36 +54,36 @@ export default function CompareSection() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Featured pair */}
       <Link href="/compare/lahore-vs-karachi" className="no-underline group">
-        <div className="rounded-2xl border p-6 transition-all group-hover:scale-[1.01]"
-          style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), #0a0f1e)', borderColor: 'rgba(99,102,241,0.25)' }}>
-          <div className="text-white/40 text-xs uppercase tracking-wider mb-2">Featured comparison</div>
-          <div className="text-white font-bold text-2xl mb-2">Lahore vs Karachi</div>
+        <div className="rounded-2xl border p-6 transition-all group-hover:scale-[1.01] h-full"
+          style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), var(--bg))', borderColor: 'rgba(99,102,241,0.25)' }}>
+          <div className="t-text-40 text-xs uppercase tracking-wider mb-2">Featured comparison</div>
+          <div className="t-text font-bold text-2xl mb-2">Lahore vs Karachi</div>
           <p className="sub-desc">
-            The cultural capital against the port metropolis — live weather, air quality, prayer times and a measured verdict, side by side.
+            Weather, air quality, prayer times compared
           </p>
-          <div className="text-cyan-300 text-sm font-medium mt-4">See the full comparison →</div>
+          <div className="t-cyan text-sm font-medium mt-4">See the full comparison →</div>
         </div>
       </Link>
 
       {/* Pair picker — published cities only */}
       <div className="rounded-2xl border p-6 space-y-4"
-        style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.10), #0a0f1e)', borderColor: 'rgba(16,185,129,0.25)' }}>
+        style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.10), var(--bg))', borderColor: 'rgba(16,185,129,0.25)' }}>
         <div>
-          <div className="text-white font-bold text-lg mb-1">Compare two cities</div>
-          <div className="sub-desc">Live weather, air quality, prayer times — side by side</div>
+          <div className="t-text font-bold text-lg mb-1">Compare two cities</div>
+          <div className="sub-desc">Pick two published cities to compare live</div>
         </div>
         <Select options={COMPARE_CITIES} value={cityA} onChange={setCityA} placeholder="Select first city" />
-        <div className="text-center text-white/30 text-sm font-bold">VS</div>
+        <div className="text-center t-text-30 text-sm font-bold">VS</div>
         <Select options={COMPARE_CITIES.filter((c) => c !== cityA)} value={cityB} onChange={setCityB} placeholder="Select second city" />
         <button onClick={handleCityCompare} disabled={!cityA || !cityB}
-          className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
+          className="w-full py-3 rounded-xl font-semibold t-onbrand text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
           style={{ background: cityA && cityB ? 'linear-gradient(90deg, #6366f1, #06b6d4)' : 'rgba(255,255,255,0.08)' }}>
           Compare Cities →
         </button>
-        <Link href="/compare" className="block text-center text-cyan-300 hover:text-cyan-200 text-sm font-medium no-underline">
+        <Link href="/compare" className="block text-center t-link text-sm font-medium no-underline">
           All published comparisons →
         </Link>
       </div>

@@ -63,18 +63,18 @@ function AnalogClock({ now, tz, color, size }: { now: Date; tz: string; color: s
   const sE = end(s * 6 - 90, r * 0.85);
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`Clock for ${tz}`}>
-      <circle cx={cx} cy={cy} r={r} fill="rgba(255,255,255,0.04)" stroke={color} strokeWidth="2" />
+      <circle cx={cx} cy={cy} r={r} fill="var(--card)" stroke={color} strokeWidth="2" />
       {[...Array(12)].map((_, i) => {
         const a = (i * 30 - 90) * Math.PI / 180;
         return (
           <line key={i}
             x1={cx + (r - 5) * Math.cos(a)} y1={cy + (r - 5) * Math.sin(a)}
             x2={cx + r * Math.cos(a)} y2={cy + r * Math.sin(a)}
-            stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+            stroke="var(--text-25)" strokeWidth="1.5" />
         );
       })}
       <line x1={cx} y1={cy} x2={hE.x} y2={hE.y} stroke={color} strokeWidth="3.5" strokeLinecap="round" />
-      <line x1={cx} y1={cy} x2={mE.x} y2={mE.y} stroke="white" strokeWidth="2" strokeLinecap="round" />
+      <line x1={cx} y1={cy} x2={mE.x} y2={mE.y} stroke="var(--text)" strokeWidth="2" strokeLinecap="round" />
       <line x1={cx} y1={cy} x2={sE.x} y2={sE.y} stroke="#ef4444" strokeWidth="1" strokeLinecap="round" />
       <circle cx={cx} cy={cy} r="3.5" fill={color} />
     </svg>
@@ -88,9 +88,9 @@ function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number 
       <AnalogClock now={now} tz={def.tz} color={def.primary} size={size} />
       <div className="text-center">
         <div className="text-base" aria-hidden="true">{def.flag}</div>
-        <div className="text-white font-bold text-sm">{def.name}</div>
-        <div className="text-white/80 font-mono text-sm">{str12}</div>
-        <div className="text-white/40 text-xs">{date}</div>
+        <div className="t-text font-bold text-sm">{def.name}</div>
+        <div className="t-text-80 font-mono text-sm">{str12}</div>
+        <div className="t-text-40 text-xs">{date}</div>
       </div>
     </div>
   );
@@ -111,14 +111,14 @@ export default function HeroClocks() {
       <div className="mb-10 flex flex-col items-center">
         {visitor ? (
           <>
-            <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300 mb-3">
+            <div className="text-[11px] font-bold uppercase tracking-[0.2em] t-cyan mb-3">
               Your time{visitor.source === 'ip' ? ' · approximate, from your connection' : ''}
             </div>
             <AnalogClock now={now} tz={visitor.tz} color="#22d3ee" size={168} />
             <div className="mt-3 text-center">
-              <div className="text-white font-bold text-2xl">{visitor.name}</div>
-              <div className="text-white/90 font-mono text-xl">{parts(now, visitor.tz).str12}</div>
-              <div className="text-white/40 text-sm">{parts(now, visitor.tz).date}</div>
+              <div className="t-text font-bold text-2xl">{visitor.name}</div>
+              <div className="t-text-90 font-mono text-xl">{parts(now, visitor.tz).str12}</div>
+              <div className="t-text-40 text-sm">{parts(now, visitor.tz).date}</div>
             </div>
           </>
         ) : (
@@ -126,7 +126,7 @@ export default function HeroClocks() {
             <button
               onClick={request}
               disabled={locating}
-              className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 disabled:opacity-60 px-6 py-3 text-sm font-semibold text-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 disabled:opacity-60 px-6 py-3 text-sm font-semibold t-onbrand transition-colors"
             >
               <MapPin className="w-4 h-4" />
               {locating ? 'Finding your city…' : 'My Location'}

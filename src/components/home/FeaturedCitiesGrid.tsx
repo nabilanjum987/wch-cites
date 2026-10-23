@@ -74,19 +74,19 @@ export default function FeaturedCitiesGrid() {
         {CITIES.map((city, i) => (
           <Link key={city.name} href={city.href} className="no-underline group">
             <div className="relative h-44 rounded-2xl overflow-hidden border transition-all group-hover:scale-[1.02]"
-              style={{ borderColor: `${city.color}50`, background: `linear-gradient(160deg, ${city.color}33, #0a0f1e)` }}>
+              style={{ borderColor: `${city.color}50`, background: `linear-gradient(160deg, ${city.color}33, var(--bg))` }}>
               <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none" style={{ fontSize: '84px', opacity: 0.15 }}>
                 {city.flag}
               </div>
               <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
                 <div className="flex items-center justify-between">
                   <span className="text-2xl">{city.flag}</span>
-                  {figs[i].temp != null && <span className="text-white font-bold text-xl">{figs[i].temp}°C</span>}
+                  {figs[i].temp != null && <span className="t-text font-bold text-xl">{figs[i].temp}°C</span>}
                 </div>
                 <div>
-                  <div className="text-white font-bold text-lg leading-tight">{city.name}</div>
+                  <div className="t-text font-bold text-lg leading-tight">{city.name}</div>
                   <div className="sub-desc">{city.province} · Pakistan</div>
-                  {figs[i].prayer && <div className="text-emerald-300 text-xs mt-1 font-medium">Next prayer · {figs[i].prayer}</div>}
+                  {figs[i].prayer && <div className="t-emerald text-xs mt-1 font-medium">Next prayer · {figs[i].prayer}</div>}
                 </div>
               </div>
             </div>

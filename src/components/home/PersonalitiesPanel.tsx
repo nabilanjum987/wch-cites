@@ -10,27 +10,27 @@ const PROFILES = [
   {
     slug: 'allama-iqbal',
     name: 'Allama Iqbal',
-    line: 'Poet-philosopher of the East — the thinker whose 1930 address first mapped a homeland for South Asia\'s Muslims.',
+    line: 'Poet-philosopher of the East',
     tag: 'Lahore · 1877–1938',
   },
   {
     slug: 'imran-khan',
     name: 'Imran Khan',
-    line: 'Cricket World Cup-winning captain turned politician — still the most talked-about Lahori of his generation.',
+    line: 'World Cup-winning captain & politician',
     tag: 'Lahore · born 1952',
   },
 ];
 
 export default function PersonalitiesPanel() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {PROFILES.map((p) => (
         <Link key={p.slug} href={`/personalities/${p.slug}`} className="no-underline group">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 transition-all group-hover:border-white/25">
-            <div className="text-white/40 text-xs uppercase tracking-wide mb-1">{p.tag}</div>
-            <div className="text-white font-bold text-lg">{p.name}</div>
+          <div className="rounded-2xl border t-border t-card p-5 transition-all t-group-border-hover-25 h-full">
+            <div className="t-text-40 text-xs uppercase tracking-wide mb-1">{p.tag}</div>
+            <div className="t-text font-bold text-lg">{p.name}</div>
             <p className="sub-desc mt-1">{p.line}</p>
-            <div className="text-cyan-300 text-sm font-medium mt-3">Read the full profile →</div>
+            <div className="t-cyan text-sm font-medium mt-3">Read the full profile →</div>
           </div>
         </Link>
       ))}

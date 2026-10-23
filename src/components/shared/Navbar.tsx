@@ -5,6 +5,14 @@
 // · Faiths → /#faiths (homepage anchor; the anchor itself is added by
 // the Faiths panel slice) · Live Updates → /news · Compare → /compare
 // · Rates → /rates.
+// Polish Card 5 (2026-10-23, owner decision supersedes the freeze for
+// these points): Cities → /#cities (the homepage §10 cities section —
+// Countries keeps /countries); the theme toggle is REAL (it switches
+// the CSS-variable theme on <html data-theme>, persisted in
+// localStorage 'wch-theme'; the old toggle flipped a 'dark' class
+// nothing used); the nav no longer hides on scroll or carries its
+// own fixed positioning — it sits inside the layout's fixed wrapper
+// so ticker + nav stick as ONE attached bar.
 // Changes from the previous header: the full frozen link set replaces
 // the two-link version; the language toggle is REMOVED (the site is
 // English-only under the frozen language policy — no Urdu identity in
@@ -18,7 +26,7 @@ import { motion } from 'framer-motion';
 import { COLORS } from '@/lib/design-system';
 
 const NAV_LINKS = [
-  { label: 'Cities', href: '/countries' },
+  { label: 'Cities', href: '/#cities' },
   { label: 'Countries', href: '/countries' },
   { label: 'Faiths', href: '/#faiths' },
   { label: 'Live Updates', href: '/news' },
@@ -27,52 +35,50 @@ const NAV_LINKS = [
 ];
 
 const linkStyle: React.CSSProperties = {
-  backgroundColor: 'rgba(99, 102, 241, 0.05)',
-  color: COLORS.accent,
+  backgroundColor: 'var(--nav-chip-bg)',
+  color: 'var(--nav-link)',
   border: `1px solid ${COLORS.border}`,
 };
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [scrolled, setScrolled] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState('up');
-  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setScrollDirection('down');
-      } else {
-        setScrollDirection('up');
-      }
-      setScrolled(currentScrollY > 10);
-      setLastScrollY(currentScrollY);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+  // The layout's inline script sets data-theme from localStorage
+  // before first paint. On mount, re-assert the stored choice (in dev,
+  // hydration recovery can regenerate the tree and drop the attribute)
+  // and mirror it into state.
+  useEffect(() => {
+    let stored: string | null = null;
+    try { stored = localStorage.getItem('wch-theme'); } catch { /* private mode */ }
+    const t = stored === 'light' || stored === 'dark'
+      ? stored
+      : (document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+    document.documentElement.dataset.theme = t;
+    setTheme(t);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('wch-theme', next); } catch { /* private mode */ }
   };
 
   return (
     <motion.nav
-      initial={{ y: 0 }}
-      animate={{ y: scrollDirection === 'down' ? -100 : 0 }}
-      transition={{ duration: 0.3 }}
-      className="fixed top-0 z-50 w-full transition-all duration-300"
+      className="w-full transition-all duration-300"
       style={{
         backdropFilter: 'blur(20px)',
-        backgroundColor: 'rgba(3, 7, 18, 0.85)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        backgroundColor: 'var(--header-bg)',
+        borderBottom: '1px solid var(--border)',
         boxShadow: scrolled ? '0 4px 20px rgba(0, 0, 0, 0.5)' : 'none',
       }}
     >
@@ -130,25 +136,26 @@ export default function Navbar() {
           >
             <Link
               href="/my-location"
-              className="p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30 no-underline"
+              className="p-2 rounded-lg transition-all backdrop-blur-md t-card border t-border-20 t-card-hover t-border-hover-30 no-underline"
               title="My Location"
             >
               <MapPin className="w-5 h-5 text-cyan-400" />
             </Link>
             <motion.button
-              onClick={toggleDarkMode}
+              onClick={toggleTheme}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30"
-              title="Toggle dark mode"
+              className="p-2 rounded-lg transition-all backdrop-blur-md t-card border t-border-20 t-card-hover t-border-hover-30"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
-              {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-cyan-400" />}
+              {theme === 'dark' ? <Sun className="w-5 h-5 t-gold" /> : <Moon className="w-5 h-5 text-cyan-400" />}
             </motion.button>
           </motion.div>
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="lg:hidden p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30"
+            className="lg:hidden p-2 rounded-lg transition-all backdrop-blur-md t-card border t-border-20 t-card-hover t-border-hover-30"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -167,7 +174,7 @@ export default function Navbar() {
         style={{ borderTop: `1px solid ${COLORS.border}` }}
       >
         {mobileMenuOpen && (
-          <div className="px-4 py-4 space-y-2" style={{ backgroundColor: 'rgba(10, 15, 30, 0.95)' }}>
+          <div className="px-4 py-4 space-y-2" style={{ backgroundColor: 'var(--menu-bg)' }}>
             <Link
               href="/"
               className="block px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline hover:bg-indigo-500/15"
@@ -196,13 +203,13 @@ export default function Navbar() {
               <MapPin className="w-4 h-4" /> My Location
             </Link>
             <motion.button
-              onClick={toggleDarkMode}
+              onClick={toggleTheme}
               whileHover={{ x: 5 }}
               className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all"
-              style={{ backgroundColor: 'rgba(99, 102, 241, 0.1)', border: `1px solid ${COLORS.border}`, color: COLORS.accent }}
+              style={{ backgroundColor: 'var(--glass-card)', border: `1px solid ${COLORS.border}`, color: 'var(--nav-link)' }}
             >
-              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              {darkMode ? 'Light Mode' : 'Dark Mode'}
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
             </motion.button>
           </div>
         )}

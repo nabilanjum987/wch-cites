@@ -47,7 +47,7 @@ export default function LivePrayerTimesStrip() {
                 style={{ backgroundColor: 'rgba(16,185,129,0.08)', borderColor: 'rgba(16,185,129,0.2)' }}>
                 <span className="text-2xl">{city.flag}</span>
                 <div>
-                  <div className="text-white font-semibold text-sm">{city.name}</div>
+                  <div className="t-text font-semibold text-sm">{city.name}</div>
                   <div className="flex items-center gap-1 text-xs text-emerald-400">
                     <Moon size={10} />
                     <span>{city.nextPrayer}: {city.time}</span>

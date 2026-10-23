@@ -18,10 +18,10 @@ export default async function TodaysWorld() {
     );
   }
 
-  const line = 'flex items-start gap-3 rounded-xl bg-white/5 border border-white/10 px-4 py-3';
+  const line = 'flex items-start gap-3 rounded-xl t-card border t-border px-4 py-3';
   const wrap = (href: string | null, inner: React.ReactNode, key: string) =>
     href ? (
-      <Link key={key} href={href} className={`${line} hover:border-white/25 transition-colors no-underline`}>{inner}</Link>
+      <Link key={key} href={href} className={`${line} t-border-hover-25 transition-colors no-underline`}>{inner}</Link>
     ) : (
       <div key={key} className={line}>{inner}</div>
     );
@@ -30,9 +30,9 @@ export default async function TodaysWorld() {
   if (d.sunrise) {
     lines.push(wrap(d.sunrise.city.href, (
       <>
-        <Sunrise className="w-5 h-5 text-amber-300 shrink-0 mt-0.5" />
+        <Sunrise className="w-5 h-5 t-amber shrink-0 mt-0.5" />
         <div>
-          <div className="text-white font-semibold text-sm">First sunrise — {d.sunrise.city.name}, {d.sunrise.city.country}</div>
+          <div className="t-text font-semibold text-sm">First sunrise — {d.sunrise.city.name}, {d.sunrise.city.country}</div>
           <div className="sub-desc">The sun rises there next, at {d.sunrise.localTime} local (in about {d.sunrise.inHours}h).</div>
         </div>
       </>
@@ -41,9 +41,9 @@ export default async function TodaysWorld() {
   if (d.hottest) {
     lines.push(wrap(d.hottest.city.href, (
       <>
-        <Thermometer className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+        <Thermometer className="w-5 h-5 t-red shrink-0 mt-0.5" />
         <div>
-          <div className="text-white font-semibold text-sm">Hottest right now — {d.hottest.city.name}, {d.hottest.city.country}</div>
+          <div className="t-text font-semibold text-sm">Hottest right now — {d.hottest.city.name}, {d.hottest.city.country}</div>
           <div className="sub-desc">{d.hottest.temp}°C at the latest reading in our world sample.</div>
         </div>
       </>
@@ -52,9 +52,9 @@ export default async function TodaysWorld() {
   if (d.coldest) {
     lines.push(wrap(d.coldest.city.href, (
       <>
-        <Snowflake className="w-5 h-5 text-sky-300 shrink-0 mt-0.5" />
+        <Snowflake className="w-5 h-5 t-sky shrink-0 mt-0.5" />
         <div>
-          <div className="text-white font-semibold text-sm">Coldest right now — {d.coldest.city.name}, {d.coldest.city.country}</div>
+          <div className="t-text font-semibold text-sm">Coldest right now — {d.coldest.city.name}, {d.coldest.city.country}</div>
           <div className="sub-desc">{d.coldest.temp}°C at the latest reading in our world sample.</div>
         </div>
       </>
@@ -63,9 +63,9 @@ export default async function TodaysWorld() {
   if (d.event) {
     lines.push(wrap(d.event.href, (
       <>
-        <CalendarDays className="w-5 h-5 text-emerald-300 shrink-0 mt-0.5" />
+        <CalendarDays className="w-5 h-5 t-emerald shrink-0 mt-0.5" />
         <div>
-          <div className="text-white font-semibold text-sm">Today in {d.event.country} — {d.event.name}</div>
+          <div className="t-text font-semibold text-sm">Today in {d.event.country} — {d.event.name}</div>
           <div className="sub-desc">A public holiday today in {d.event.country}.</div>
         </div>
       </>
