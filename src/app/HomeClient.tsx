@@ -92,7 +92,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
           stays in the hero; the rail is an <aside> with its own
           labelled heading (the panel's §4 h2). */}
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
-        <aside aria-label="My City" className="lg:col-start-2 lg:row-start-1 lg:self-start lg:sticky lg:top-20 lg:z-30">
+        <aside aria-label="My City" className="rail-scroll lg:col-start-2 lg:row-start-1 lg:self-start lg:sticky lg:top-20 lg:z-30 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto">
           {myCitySlot}
         </aside>
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
