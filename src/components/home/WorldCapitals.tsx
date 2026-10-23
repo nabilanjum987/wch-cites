@@ -42,7 +42,7 @@ export default function WorldCapitals() {
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 h-32 flex flex-col justify-between transition-all group-hover:border-white/25 group-hover:scale-[1.02]">
               <div className="flex items-center justify-between">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`https://flagcdn.com/w160/${c.code}.png`} alt={`Flag of ${c.country}`} width={40} height={27} className="rounded shadow" loading="lazy" />
+                <img src={`https://flagcdn.com/w160/${c.code}.png`} alt={`Flag of ${c.country}`} width={40} height={27} className="rounded shadow" loading="lazy" decoding="async" />
                 {temps[i] != null && <span className="text-white font-bold text-lg">{temps[i]}°C</span>}
               </div>
               <div>

@@ -437,7 +437,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       <div className="sm:flex">
                         <div className="sm:w-1/2 h-64 sm:h-80 relative overflow-hidden">
                           {urduArticles[0].image ? (
-                            <img src={urduArticles[0].image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <img loading="lazy" decoding="async" src={urduArticles[0].image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center">
                               <Newspaper className="w-12 h-12 text-emerald-300" />
@@ -473,7 +473,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                       >
                         <div className="h-40 relative overflow-hidden">
                           {article.image ? (
-                            <img src={article.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <img loading="lazy" decoding="async" src={article.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center">
                               <Newspaper className="w-8 h-8 text-emerald-300" />
@@ -563,7 +563,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                           <div className="sm:flex">
                             <div className="sm:w-1/2 h-64 sm:h-80 relative overflow-hidden">
                               {topStories[0].image ? (
-                                <img src={topStories[0].image} alt={topStories[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <img loading="lazy" decoding="async" src={topStories[0].image} alt={topStories[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                               ) : (
                                 <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center">
                                   <Newspaper className="w-12 h-12 text-emerald-300" />
@@ -610,7 +610,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                           >
                             <div className="h-40 relative overflow-hidden">
                               {article.image ? (
-                                <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <img loading="lazy" decoding="async" src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                               ) : (
                                 <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center">
                                   <Newspaper className="w-8 h-8 text-emerald-300" />
@@ -664,7 +664,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                           >
                             <div className="w-28 sm:w-36 flex-shrink-0 h-24 sm:h-28 relative overflow-hidden">
                               {article.image ? (
-                                <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <img loading="lazy" decoding="async" src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                               ) : (
                                 <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center">
                                   <Newspaper className="w-6 h-6 text-emerald-300" />
@@ -946,7 +946,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                     >
                       <div className="w-24 sm:w-32 flex-shrink-0 h-20 sm:h-24 relative overflow-hidden">
                         {article.image ? (
-                          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          <img loading="lazy" decoding="async" src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center">
                             <Newspaper className="w-5 h-5 text-emerald-300" />

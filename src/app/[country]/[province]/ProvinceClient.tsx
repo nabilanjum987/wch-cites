@@ -581,7 +581,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
       </div>
       {/* Hero */}
       <div className="relative z-10 h-64 md:h-80 overflow-hidden">
-        <img src={province.heroImage} alt={province.name} className="w-full h-full object-cover" />
+        <img src={province.heroImage} alt={province.name} fetchPriority="high" className="w-full h-full object-cover" />
         <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${bg} 30%, transparent 70%)` }} />
         <div className="absolute inset-0" style={{ background: `linear-gradient(100deg, ${accent}22, transparent 60%)` }} />
         <div className="absolute bottom-6 left-6 md:left-8">
@@ -999,7 +999,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
               <div key={lm.name} className="group rounded-2xl overflow-hidden border hover:border-opacity-60 transition-all"
                 style={{ borderColor: cardBorder }}>
                 <div className="relative h-36 overflow-hidden">
-                  <img src={lm.image} alt={lm.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img loading="lazy" decoding="async" src={lm.image} alt={lm.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,15,30,0.85), transparent)' }} />
                   {lm.unesco && <div className="absolute top-3 left-3 bg-amber-500/90 text-black text-xs font-bold px-2 py-0.5 rounded-full">UNESCO</div>}
                   <div className="absolute bottom-3 left-3">
