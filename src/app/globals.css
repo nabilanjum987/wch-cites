@@ -115,3 +115,25 @@ input::placeholder, textarea::placeholder {
 @media (prefers-reduced-motion: reduce) {
   .ticker-track { animation: none; }
 }
+
+/* My City rail internal scroll (Polish Card 2): on lg+ the sticky rail is
+   capped at the viewport height under the header and scrolls internally,
+   with a slim, subtle scrollbar. No overscroll-behavior is set, so scroll
+   chaining to the page stays on — the page scroll is never trapped. */
+.rail-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.rail-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.rail-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.rail-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+.rail-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
