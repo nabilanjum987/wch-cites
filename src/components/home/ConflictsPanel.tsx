@@ -14,7 +14,7 @@ export default async function ConflictsPanel() {
   return (
     <div>
       {t ? (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5 items-start">
           {[
             { label: 'Refugees', value: fmt(t.refugees) },
             { label: 'Internally displaced', value: fmt(t.idps) },
@@ -23,12 +23,12 @@ export default async function ConflictsPanel() {
           ].map((s) => (
             <div key={s.label} className="rounded-xl bg-white/5 border border-white/10 px-4 py-3">
               <div className="text-white font-bold text-xl">{s.value}</div>
-              <div className="text-white/40 text-xs mt-0.5">{s.label} · UNHCR {t.year}</div>
+              <div className="sub-desc mt-0.5">{s.label} · UNHCR {t.year}</div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-white/50 text-sm mb-5">
+        <p className="sub-desc mb-5">
           The UNHCR figures feed is unreachable right now — the conflicts hub carries the full picture.
         </p>
       )}

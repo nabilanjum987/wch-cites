@@ -12,7 +12,7 @@ export default async function TodaysWorld() {
   const d = await getTodaysWorld().catch(() => null);
   if (!d || (!d.sunrise && !d.hottest && !d.coldest)) {
     return (
-      <p className="text-white/50 text-sm">
+      <p className="sub-desc">
         The world sample is unreachable right now, so this panel shows nothing rather than yesterday's numbers.
       </p>
     );
@@ -33,7 +33,7 @@ export default async function TodaysWorld() {
         <Sunrise className="w-5 h-5 text-amber-300 shrink-0 mt-0.5" />
         <div>
           <div className="text-white font-semibold text-sm">First sunrise — {d.sunrise.city.name}, {d.sunrise.city.country}</div>
-          <div className="text-white/50 text-sm">The sun rises there next, at {d.sunrise.localTime} local (in about {d.sunrise.inHours}h).</div>
+          <div className="sub-desc">The sun rises there next, at {d.sunrise.localTime} local (in about {d.sunrise.inHours}h).</div>
         </div>
       </>
     ), 'sunrise'));
@@ -44,7 +44,7 @@ export default async function TodaysWorld() {
         <Thermometer className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
         <div>
           <div className="text-white font-semibold text-sm">Hottest right now — {d.hottest.city.name}, {d.hottest.city.country}</div>
-          <div className="text-white/50 text-sm">{d.hottest.temp}°C at the latest reading in our world sample.</div>
+          <div className="sub-desc">{d.hottest.temp}°C at the latest reading in our world sample.</div>
         </div>
       </>
     ), 'hot'));
@@ -55,7 +55,7 @@ export default async function TodaysWorld() {
         <Snowflake className="w-5 h-5 text-sky-300 shrink-0 mt-0.5" />
         <div>
           <div className="text-white font-semibold text-sm">Coldest right now — {d.coldest.city.name}, {d.coldest.city.country}</div>
-          <div className="text-white/50 text-sm">{d.coldest.temp}°C at the latest reading in our world sample.</div>
+          <div className="sub-desc">{d.coldest.temp}°C at the latest reading in our world sample.</div>
         </div>
       </>
     ), 'cold'));
@@ -66,7 +66,7 @@ export default async function TodaysWorld() {
         <CalendarDays className="w-5 h-5 text-emerald-300 shrink-0 mt-0.5" />
         <div>
           <div className="text-white font-semibold text-sm">Today in {d.event.country} — {d.event.name}</div>
-          <div className="text-white/50 text-sm">A public holiday today in {d.event.country}.</div>
+          <div className="sub-desc">A public holiday today in {d.event.country}.</div>
         </div>
       </>
     ), 'event'));

@@ -189,7 +189,7 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                 <h2 className="text-3xl md:text-4xl lg:text-2xl font-bold text-white">
                   {data.name} <span className="text-white/50 text-xl font-medium">· {data.country}</span>
                 </h2>
-                <p className="text-white/50 text-sm mt-1">{gregorian}{data.hijri ? ` · ${data.hijri}` : ''}</p>
+                <p className="sub-desc mt-1">{gregorian}{data.hijri ? ` · ${data.hijri}` : ''}</p>
                 {/* Polish Card 2: the Full City Page CTA also sits at the
                     TOP of the rail (lg only — mobile keeps its single
                     bottom CTA and single flow), so the full page is one
@@ -202,7 +202,7 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
               </div>
               <div className="text-right lg:text-left">
                 <div className="text-white font-mono text-2xl md:text-3xl lg:text-xl font-semibold">{localTime}</div>
-                <div className="text-white/40 text-xs">local time in {data.name}</div>
+                <div className="sub-desc">local time in {data.name}</div>
               </div>
             </div>
 
@@ -212,7 +212,7 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                 <Link href={`${data.path}/weather`} className={card}>
                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><CloudSun className="w-4 h-4" /> Weather now</div>
                   <div className="text-white font-bold text-xl">{data.weather.temp}°C · {data.weather.condition}</div>
-                  <div className="text-white/50 text-sm">Feels like {data.weather.feels}°C</div>
+                  <div className="sub-desc">Feels like {data.weather.feels}°C</div>
                 </Link>
               )}
               {data.nextPrayer && (
@@ -226,7 +226,7 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                 <Link href={`${data.path}/rates`} className={card}>
                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><Coins className="w-4 h-4" /> Gold in {data.name}</div>
                   <div className="text-white font-bold text-xl">Rs {data.goldTola.toLocaleString('en-US')} <span className="text-sm font-medium text-white/60">/ tola</span></div>
-                  <div className="text-white/50 text-sm">{data.silverOz != null ? `Silver $${data.silverOz.toFixed(2)} / oz` : ''}</div>
+                  <div className="sub-desc">{data.silverOz != null ? `Silver $${data.silverOz.toFixed(2)} / oz` : ''}</div>
                 </Link>
               )}
             </div>
@@ -240,13 +240,13 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                     <span>↑ {data.sunrise}</span><span className="text-white/30">·</span>
                     <span className="flex items-center gap-1"><Sunset className="w-3.5 h-3.5" /> {data.sunset}</span>
                   </div>
-                  <div className="text-white/50 text-sm">{data.dayLength}</div>
+                  <div className="sub-desc">{data.dayLength}</div>
                 </Link>
               )}
               <div className={`${card} cursor-default`}>
                 <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><Moon className="w-4 h-4" /> Moon tonight</div>
                 <div className="text-white font-semibold text-sm">{data.moonPhase}</div>
-                <div className="text-white/50 text-sm">phase of the moon, worldwide</div>
+                <div className="sub-desc">phase of the moon, worldwide</div>
               </div>
               {data.facts.length > 0 && (
                 <div className={`${card} cursor-default`}>

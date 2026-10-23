@@ -131,7 +131,7 @@ export default function HeroClocks() {
               <MapPin className="w-4 h-4" />
               {locating ? 'Finding your city…' : 'My Location'}
             </button>
-            <p className="mt-2 text-xs text-white/40">
+            <p className="sub-desc mt-2">
               {unavailable
                 ? 'Location is unavailable right now — the world clocks below are all yours.'
                 : 'See your own city as the big clock. Location stays on your device — never saved.'}
@@ -146,7 +146,7 @@ export default function HeroClocks() {
           <ClockFace key={def.name} now={now} def={def} size={84} />
         ))}
       </div>
-      <p className="mt-6 text-center text-white/40 text-sm max-w-xl mx-auto">
+      <p className="sub-desc mt-6 text-center max-w-xl mx-auto">
         Six cities. Six time zones. One planet turning — somewhere on earth it is already tomorrow.
       </p>
     </div>

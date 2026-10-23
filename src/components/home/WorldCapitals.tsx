@@ -47,7 +47,7 @@ export default function WorldCapitals() {
               </div>
               <div>
                 <div className="text-white font-bold text-sm leading-tight">{c.capital}</div>
-                <div className="text-white/40 text-xs">{c.country}</div>
+                <div className="sub-desc">{c.country}</div>
                 <div className="text-cyan-300 font-mono text-sm mt-0.5">{time}</div>
               </div>
             </div>

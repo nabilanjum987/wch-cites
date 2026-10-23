@@ -116,6 +116,10 @@ input::placeholder, textarea::placeholder {
   .ticker-track { animation: none; }
 }
 
+/* Homepage sub-description standard (Polish Card 3): ONE size/leading/colour
+   for every panel/card sub-description on the homepage. */
+.sub-desc { font-size: 0.875rem; line-height: 1.625; color: rgba(255, 255, 255, 0.4); }
+
 /* My City rail internal scroll (Polish Card 2): on lg+ the sticky rail is
    capped at the viewport height under the header and scrolls internally,
    with a slim, subtle scrollbar. No overscroll-behavior is set, so scroll

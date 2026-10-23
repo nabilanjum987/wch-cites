@@ -48,7 +48,7 @@ export default function FeaturedCountries() {
               <span className="text-3xl">{c.flag}</span>
               <div>
                 <div className="text-white font-bold text-sm">{c.name}</div>
-                <div className="text-white/40 text-xs mt-0.5">{c.live ? 'Country page is live' : 'Country page in preparation'}</div>
+                <div className="sub-desc mt-0.5">{c.live ? 'Country page is live' : 'Country page in preparation'}</div>
               </div>
             </div>
           );
@@ -59,7 +59,7 @@ export default function FeaturedCountries() {
           );
         })}
       </div>
-      <p className="text-white/40 text-sm">
+      <p className="sub-desc">
         Pakistan's full country page is live today — provinces, cities, economy and culture. Every other country joins it as its page passes review →
       </p>
     </div>

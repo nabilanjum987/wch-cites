@@ -28,7 +28,7 @@ export default function ExploreByContinent() {
               <span className="text-2xl">{c.emoji}</span>
               <div>
                 <div className="text-white font-bold text-sm">{c.name}</div>
-                <div className="text-white/40 text-xs mt-0.5 line-clamp-1">{c.desc}</div>
+                <div className="sub-desc mt-0.5 line-clamp-1">{c.desc}</div>
               </div>
             </div>
           </Link>

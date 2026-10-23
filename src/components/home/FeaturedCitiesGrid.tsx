@@ -85,7 +85,7 @@ export default function FeaturedCitiesGrid() {
                 </div>
                 <div>
                   <div className="text-white font-bold text-lg leading-tight">{city.name}</div>
-                  <div className="text-white/50 text-xs">{city.province} · Pakistan</div>
+                  <div className="sub-desc">{city.province} · Pakistan</div>
                   {figs[i].prayer && <div className="text-emerald-300 text-xs mt-1 font-medium">Next prayer · {figs[i].prayer}</div>}
                 </div>
               </div>
@@ -93,7 +93,7 @@ export default function FeaturedCitiesGrid() {
           </Link>
         ))}
       </div>
-      <p className="text-white/40 text-sm mt-4">
+      <p className="sub-desc mt-4">
         Three full city guides are live today — weather, prayer times, rates, news and events for each. More cities join as they pass review →
       </p>
     </div>

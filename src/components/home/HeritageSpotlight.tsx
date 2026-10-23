@@ -27,14 +27,14 @@ export default function HeritageSpotlight() {
 
   return (
     <div className="mb-4">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
         {products.map((p) => {
           const style = STYLE[p.slug] ?? DEFAULT_STYLE;
           const flag = COUNTRY_FLAGS[p.origin.country] ?? '🌍';
           return (
             <div key={p.slug}>
               <div
-                className="rounded-2xl border p-5 h-full flex flex-col gap-3"
+                className="rounded-2xl border p-5 flex flex-col gap-3"
                 style={{ background: `linear-gradient(135deg, ${style.color}15, #0a0f1e)`, borderColor: `${style.color}30` }}
               >
                 <div className="flex items-center justify-between">
@@ -48,18 +48,18 @@ export default function HeritageSpotlight() {
                 </div>
                 <div>
                   <div className="text-white font-bold">{p.name}</div>
-                  <div className="flex items-center gap-1 text-white/40 text-xs mt-0.5">
+                  <div className="flex items-center gap-1 sub-desc mt-0.5">
                     <span>{flag}</span>
                     <span>{p.origin.city}, {p.origin.country}</span>
                   </div>
                 </div>
-                <p className="text-white/50 text-xs leading-relaxed flex-1 line-clamp-3">{p.description}</p>
+                <p className="sub-desc flex-1 line-clamp-3">{p.description}</p>
               </div>
             </div>
           );
         })}
       </div>
-      <p className="text-white/40 text-sm mt-4">
+      <p className="sub-desc mt-4">
         Full product stories — the makers, the method, where to buy fairly — open as each product page passes review →
       </p>
     </div>

@@ -54,14 +54,14 @@ export default function CompareSection() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
       {/* Featured pair */}
       <Link href="/compare/lahore-vs-karachi" className="no-underline group">
-        <div className="rounded-2xl border p-6 h-full transition-all group-hover:scale-[1.01]"
+        <div className="rounded-2xl border p-6 transition-all group-hover:scale-[1.01]"
           style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), #0a0f1e)', borderColor: 'rgba(99,102,241,0.25)' }}>
           <div className="text-white/40 text-xs uppercase tracking-wider mb-2">Featured comparison</div>
           <div className="text-white font-bold text-2xl mb-2">Lahore vs Karachi</div>
-          <p className="text-white/50 text-sm leading-relaxed">
+          <p className="sub-desc">
             The cultural capital against the port metropolis — live weather, air quality, prayer times and a measured verdict, side by side.
           </p>
           <div className="text-cyan-300 text-sm font-medium mt-4">See the full comparison →</div>
@@ -73,7 +73,7 @@ export default function CompareSection() {
         style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.10), #0a0f1e)', borderColor: 'rgba(16,185,129,0.25)' }}>
         <div>
           <div className="text-white font-bold text-lg mb-1">Compare two cities</div>
-          <div className="text-white/40 text-sm">Live weather, air quality, prayer times — side by side</div>
+          <div className="sub-desc">Live weather, air quality, prayer times — side by side</div>
         </div>
         <Select options={COMPARE_CITIES} value={cityA} onChange={setCityA} placeholder="Select first city" />
         <div className="text-center text-white/30 text-sm font-bold">VS</div>

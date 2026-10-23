@@ -31,7 +31,7 @@ export default function OceansToday() {
               <div className="z-10">
                 <div className="text-white font-semibold text-xs leading-tight">{o.name}</div>
                 <div className="text-white/40 text-xs mt-0.5">{o.area}</div>
-                <div className="text-white/50 text-[11px] mt-1 leading-snug">{o.note}</div>
+                <div className="sub-desc mt-1">{o.note}</div>
               </div>
             </div>
           </div>
@@ -42,12 +42,12 @@ export default function OceansToday() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="text-white font-semibold text-sm">Featured sea · Arabian Sea</div>
-            <div className="text-white/50 text-xs mt-0.5">3,862,000 km² of the Indian Ocean — live waves, monsoon pattern and Karachi coastal weather</div>
+            <div className="sub-desc mt-0.5">3,862,000 km² of the Indian Ocean — live waves, monsoon pattern and Karachi coastal weather</div>
           </div>
           <div className="text-white/60 text-sm whitespace-nowrap">Explore →</div>
         </div>
       </Link>
-      <p className="text-white/40 text-sm mt-4">
+      <p className="sub-desc mt-4">
         Full ocean pages — live conditions, marine life and the cities on their shores — open as each passes review.{' '}
         <Link href="/oceans" className="text-white/70 underline underline-offset-4 hover:text-white">Explore Oceans &amp; Seas →</Link>
       </p>
