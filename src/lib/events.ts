@@ -36,11 +36,12 @@ export interface WchEvent {
   source_url: string;
   verified: boolean;
   status: 'draft' | 'approved' | 'rejected';
+  last_verified_at: string | null;
   created_at: string;
 }
 
 const SELECT_COLS =
-  'id,title,slug,city_slug,venue,starts_at,ends_at,category,description,source_name,source_url,verified,status,created_at';
+  'id,title,slug,city_slug,venue,starts_at,ends_at,category,description,source_name,source_url,verified,status,last_verified_at,created_at';
 
 // ── Server-side read via PostgREST (same pattern as the suggest route) ─────
 
@@ -163,6 +164,7 @@ export async function fetchPslFixtures(season: string): Promise<WchEvent[]> {
       source_url: 'https://www.thesportsdb.com/league/5067-Pakistan-Super-League',
       verified: true,
       status: 'approved' as const,
+      last_verified_at: null,
       created_at: new Date().toISOString(),
     }));
   } catch {
