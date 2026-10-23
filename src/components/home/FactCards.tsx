@@ -27,11 +27,11 @@ function Card({ label, value, sub, source }: {
   label: string; value: React.ReactNode; sub?: React.ReactNode; source: string;
 }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
-      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/45">{label}</p>
-      <p className="mt-2 text-2xl font-extrabold text-white">{value}</p>
-      {sub && <p className="mt-1 text-xs text-white/50">{sub}</p>}
-      <p className="mt-2 text-[11px] text-white/35">Source: {source}</p>
+    <div className="rounded-3xl border t-border t-card p-5">
+      <p className="text-[11px] font-bold uppercase tracking-[0.18em] t-text-50">{label}</p>
+      <p className="mt-2 text-2xl font-extrabold t-text">{value}</p>
+      {sub && <p className="mt-1 text-xs t-text-50">{sub}</p>}
+      <p className="mt-2 text-[11px] t-text-35">Source: {source}</p>
     </div>
   );
 }

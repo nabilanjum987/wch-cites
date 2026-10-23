@@ -95,20 +95,20 @@ function ChartCard({ title, series, format, source }: {
   title: string; series: Series; format: (n: number) => string; source: string;
 }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
-      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/45">{title}</p>
+    <div className="rounded-3xl border t-border t-card p-5">
+      <p className="text-[11px] font-bold uppercase tracking-[0.18em] t-text-50">{title}</p>
       {series === 'loading' && (
-        <div className="mt-3 flex h-20 items-center text-sm text-white/40">Loading live series…</div>
+        <div className="mt-3 flex h-20 items-center text-sm t-text-40">Loading live series…</div>
       )}
       {series === 'failed' && (
-        <div className="mt-3 flex h-20 items-center text-sm text-white/50">
-          Live series unavailable right now — <Link href="/rates" className="ml-1 text-amber-300 hover:underline">see the Rates page</Link>
+        <div className="mt-3 flex h-20 items-center text-sm t-text-50">
+          Live series unavailable right now — <Link href="/rates" className="ml-1 t-amber hover:underline">see the Rates page</Link>
         </div>
       )}
       {typeof series === 'object' && (
         <>
           <div className="mt-2 flex flex-wrap items-baseline gap-x-3">
-            <span className="text-2xl font-extrabold tabular-nums text-white">{format(series.pts[series.pts.length - 1].price)}</span>
+            <span className="text-2xl font-extrabold tabular-nums t-text">{format(series.pts[series.pts.length - 1].price)}</span>
             {(() => {
               const chg = ((series.pts[series.pts.length - 1].price - series.pts[0].price) / series.pts[0].price) * 100;
               return (
@@ -119,12 +119,12 @@ function ChartCard({ title, series, format, source }: {
             })()}
           </div>
           <div className="mt-2"><Spark pts={series.pts} /></div>
-          <p className="mt-1 text-[11px] tabular-nums text-white/35">
+          <p className="mt-1 text-[11px] tabular-nums t-text-35">
             {series.pts[0].date} → {series.pts[series.pts.length - 1].date} · {series.pts.length} daily points
           </p>
         </>
       )}
-      <p className="mt-2 text-[11px] leading-relaxed text-white/35">{source}</p>
+      <p className="mt-2 text-[11px] leading-relaxed t-text-35">{source}</p>
     </div>
   );
 }
@@ -149,7 +149,7 @@ export default function TrendCharts() {
   const usd0 = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-bold text-white">30-Day Trends</h3>
+      <h3 className="text-lg font-bold t-text">30-Day Trends</h3>
       <p className="sub-desc mt-1">Live series drawn from the same feeds as the Rates page — fetched when you open this page, never cached or invented.</p>
       <div className="mt-4 grid gap-4 md:grid-cols-3">
         <ChartCard title="Gold — per troy ounce (USD)" series={gold} format={usd0}
