@@ -167,38 +167,38 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
   const card = 'rounded-xl bg-white/5 border border-white/10 px-4 py-3 block hover:border-white/25 transition-colors no-underline';
 
   return (
-    <section className="py-14 px-4" style={{ backgroundColor: '#080c18' }} aria-label="My City">
+    <section className="py-14 px-4 lg:py-6" style={{ backgroundColor: '#080c18' }} aria-label="My City">
       <div className="max-w-6xl mx-auto">
         <div className="rounded-3xl overflow-hidden border border-white/10" style={{ background: `linear-gradient(135deg, ${data.color}33, #0a0f1e 55%)` }}>
           {data.image && (
             <figure className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={data.image.url} alt={data.image.alt} className="w-full h-52 md:h-64 object-cover" loading="lazy" />
+              <img src={data.image.url} alt={data.image.alt} className="w-full h-52 md:h-64 lg:h-36 object-cover" loading="lazy" />
               <figcaption className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[11px] px-2.5 py-1 rounded-tl-lg">
                 {data.image.credit}
               </figcaption>
             </figure>
           )}
-          <div className="p-6 md:p-8">
+          <div className="p-6 md:p-8 lg:p-5">
             {/* Header */}
-            <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
+            <div className="flex flex-wrap items-end justify-between gap-3 mb-6 lg:flex-col lg:items-start lg:gap-1">
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-300 mb-1">
                   My City{substituted ? ' · chosen from your location' : ''}
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white">
+                <h2 className="text-3xl md:text-4xl lg:text-2xl font-bold text-white">
                   {data.name} <span className="text-white/50 text-xl font-medium">· {data.country}</span>
                 </h2>
                 <p className="text-white/50 text-sm mt-1">{gregorian}{data.hijri ? ` · ${data.hijri}` : ''}</p>
               </div>
-              <div className="text-right">
-                <div className="text-white font-mono text-2xl md:text-3xl font-semibold">{localTime}</div>
+              <div className="text-right lg:text-left">
+                <div className="text-white font-mono text-2xl md:text-3xl lg:text-xl font-semibold">{localTime}</div>
                 <div className="text-white/40 text-xs">local time in {data.name}</div>
               </div>
             </div>
 
             {/* Block 1 — Right now */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3 mb-3">
               {data.weather && (
                 <Link href={`${data.path}/weather`} className={card}>
                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><CloudSun className="w-4 h-4" /> Weather now</div>
@@ -223,7 +223,7 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
             </div>
 
             {/* Block 2 — Today */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3 mb-3">
               {(data.sunrise || data.sunset) && (
                 <Link href={`${data.path}/weather`} className={card}>
                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><Sunrise className="w-4 h-4" /> Sun today</div>
