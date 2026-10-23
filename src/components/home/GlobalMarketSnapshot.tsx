@@ -39,7 +39,7 @@ async function fetchJson(url: string): Promise<any> {
 function Change({ value }: { value: number | null }) {
   if (value == null) return null;
   return (
-    <span className={`text-sm font-medium ${value >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+    <span className={`text-sm font-medium ${value >= 0 ? 't-green' : 't-red'}`}>
       {value >= 0 ? '▲' : '▼'} {Math.abs(value).toFixed(2)}%
     </span>
   );
@@ -103,7 +103,7 @@ export default function GlobalMarketSnapshot() {
     <div className="mb-4">
       {/* Explore link — no duplicate title */}
       <div className="flex justify-end mb-4">
-        <Link href="/rates" className="flex items-center gap-1 text-yellow-400 hover:text-yellow-300 text-sm font-medium transition-colors no-underline">
+        <Link href="/rates" className="flex items-center gap-1 t-yellow text-sm font-medium transition-colors no-underline">
           Full rates page <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
@@ -112,31 +112,31 @@ export default function GlobalMarketSnapshot() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div className="bg-gradient-to-br from-yellow-500/20 to-amber-500/20 backdrop-blur-sm rounded-xl p-5 border border-yellow-400/30">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2"><Coins className="w-5 h-5 text-yellow-400" /><span className="font-semibold text-white">Gold</span></div>
+            <div className="flex items-center gap-2"><Coins className="w-5 h-5 t-gold" /><span className="font-semibold t-text">Gold</span></div>
             <Change value={m.goldChange} />
           </div>
-          <div className="text-2xl font-bold text-white">
-            {m.goldPerGram != null ? <>${m.goldPerGram.toFixed(2)}<span className="text-gray-400 text-sm ml-1">/gram</span></> : <span className="text-base text-gray-400">{'Live on the Rates page'}</span>}
+          <div className="text-2xl font-bold t-text">
+            {m.goldPerGram != null ? <>${m.goldPerGram.toFixed(2)}<span className="t-g400 text-sm ml-1">/gram</span></> : <span className="text-base t-g400">{'Live on the Rates page'}</span>}
           </div>
         </div>
 
         <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-sm rounded-xl p-5 border border-orange-400/30">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2"><BarChart3 className="w-5 h-5 text-orange-400" /><span className="font-semibold text-white">Bitcoin</span></div>
+            <div className="flex items-center gap-2"><BarChart3 className="w-5 h-5 text-orange-400" /><span className="font-semibold t-text">Bitcoin</span></div>
             <Change value={m.btcChange} />
           </div>
-          <div className="text-2xl font-bold text-white">
-            {m.btc != null ? `$${Math.round(m.btc).toLocaleString()}` : <span className="text-base text-gray-400">{'Live on the Rates page'}</span>}
+          <div className="text-2xl font-bold t-text">
+            {m.btc != null ? `$${Math.round(m.btc).toLocaleString()}` : <span className="text-base t-g400">{'Live on the Rates page'}</span>}
           </div>
         </div>
 
         <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 backdrop-blur-sm rounded-xl p-5 border border-emerald-400/30">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2"><DollarSign className="w-5 h-5 text-emerald-400" /><span className="font-semibold text-white">USD / PKR</span></div>
+            <div className="flex items-center gap-2"><DollarSign className="w-5 h-5 text-emerald-400" /><span className="font-semibold t-text">USD / PKR</span></div>
             <Change value={m.usdPkrChange} />
           </div>
-          <div className="text-2xl font-bold text-white">
-            {m.usdPkr != null ? `Rs ${m.usdPkr.toFixed(2)}` : <span className="text-base text-gray-400">{'Live on the Rates page'}</span>}
+          <div className="text-2xl font-bold t-text">
+            {m.usdPkr != null ? `Rs ${m.usdPkr.toFixed(2)}` : <span className="text-base t-g400">{'Live on the Rates page'}</span>}
           </div>
         </div>
       </div>
@@ -144,13 +144,13 @@ export default function GlobalMarketSnapshot() {
       {/* Currency table — real rates; daily change is not available from
           the free feed, so it is not shown rather than invented. */}
       {m.fx && (
-        <div className="rounded-xl border border-white/8 overflow-hidden mb-4">
+        <div className="rounded-xl border t-border-8 overflow-hidden mb-4">
           <div className="grid grid-cols-2 md:grid-cols-4">
             {m.fx.map((c) => (
-              <div key={c.pair} className="p-3 border-b border-r border-white/6 last:border-r-0">
-                <div className="text-gray-400 text-xs mb-1">{c.pair}</div>
+              <div key={c.pair} className="p-3 border-b border-r t-border-6 last:border-r-0">
+                <div className="t-g400 text-xs mb-1">{c.pair}</div>
                 <div className="flex items-center justify-between">
-                  <span className="text-white font-semibold">{c.rate.toFixed(c.rate > 10 ? 2 : 4)}</span>
+                  <span className="t-text font-semibold">{c.rate.toFixed(c.rate > 10 ? 2 : 4)}</span>
                 </div>
               </div>
             ))}
@@ -160,11 +160,11 @@ export default function GlobalMarketSnapshot() {
 
       {/* Fear & Greed */}
       {m.fng && (
-        <div className="flex items-center gap-4 p-4 rounded-xl border border-white/8">
-          <div className="text-gray-400 text-sm">Fear &amp; Greed Index</div>
-          <div className={`text-2xl font-bold ${m.fng.value > 50 ? 'text-green-400' : 'text-red-400'}`}>{m.fng.value}</div>
-          <div className="text-gray-400 text-sm">{m.fng.label}</div>
-          <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+        <div className="flex items-center gap-4 p-4 rounded-xl border t-border-8">
+          <div className="t-g400 text-sm">Fear &amp; Greed Index</div>
+          <div className={`text-2xl font-bold ${m.fng.value > 50 ? 't-green' : 't-red'}`}>{m.fng.value}</div>
+          <div className="t-g400 text-sm">{m.fng.label}</div>
+          <div className="flex-1 h-2 t-card rounded-full overflow-hidden">
             <div className="h-full rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500" style={{ width: `${m.fng.value}%` }} />
           </div>
         </div>

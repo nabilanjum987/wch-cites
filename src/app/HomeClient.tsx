@@ -58,7 +58,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}
                 className="max-w-2xl mx-auto mb-10">
                 <div className="backdrop-blur-md border rounded-2xl p-4"
-                  style={{ backgroundColor: 'rgba(10,15,30,0.6)', borderColor: COLORS.border }}>
+                  style={{ backgroundColor: 'var(--hero-panel-bg)', borderColor: COLORS.border }}>
                   <SearchBar onCitySelect={handleCitySelect} />
                 </div>
               </motion.div>
@@ -138,11 +138,14 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
         <WorldCapitals />
       </Section>
 
-      {/* ── §10 CITIES (Q5 — published cities only) ── */}
+      {/* ── §10 CITIES (Q5 — published cities only; anchor added by
+          Polish Card 5 so the navbar's Cities link lands here) ── */}
+      <div id="cities">
       <Section bg="dark" title="Cities of the World — Live"
         desc="Every published city on WorldCityHub carries live weather, prayer times, gold and currency rates, local news and events — the same figures you see on these cards, updated through the day. Click any city to go deep.">
         <FeaturedCitiesGrid />
       </Section>
+      </div>
 
       {/* ═══ PANELS II (Q6) — frozen order §11–§24 ═══
           Removed in this pass (not in the frozen 24): "Global Pulse"
@@ -233,7 +236,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       <Section bg="darker" title="Your City, Your Page"
         desc="Everything on this homepage becomes personal on the My Location page: your nearest published city, its weather, its prayers, its rates — computed on your device, never saved anywhere. One tap is the last invitation.">
         <Link href="/my-location"
-          className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 px-6 py-3 text-sm font-semibold text-white transition-colors no-underline">
+          className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 px-6 py-3 text-sm font-semibold t-onbrand transition-colors no-underline">
           Open My Location →
         </Link>
       </Section>
@@ -252,19 +255,18 @@ function Section({ bg, title, desc, children }: {
 }) {
   return (
     <ScrollAnimation>
-      <section className="py-14 px-4" style={{ backgroundColor: bg === 'dark' ? '#0a0f1e' : '#080c18' }}>
+      <section className={`py-14 px-4 ${bg === 'dark' ? 't-bg' : 't-bg-2'}`}>
         <div className="max-w-6xl mx-auto">
           {title && (
             <motion.h2
               initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }} viewport={{ once: true }}
-              className="text-2xl md:text-3xl font-bold text-white mb-3">
+              className="text-2xl md:text-3xl font-bold t-text mb-3">
               {title}
             </motion.h2>
           )}
           {desc && (
-            <p className="sub-desc mb-6 max-w-3xl"
-              style={{ hyphens: 'none', wordBreak: 'keep-all' }}>
+            <p className="sub-desc max-w-3xl">
               {desc}
             </p>
           )}

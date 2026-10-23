@@ -38,18 +38,18 @@ export default function TickerBar({ items }: { items: MarketItem[] }) {
         href={item.href}
         aria-hidden={hidden || undefined}
         tabIndex={hidden ? -1 : undefined}
-        className="flex items-baseline gap-1.5 text-gray-300 transition-colors hover:text-white"
+        className="flex items-baseline gap-1.5 t-g300 transition-colors t-hover-text"
       >
-        <span className="text-[11px] font-medium uppercase tracking-wider text-gray-500">{item.label}</span>
-        <span className="font-semibold text-white">{value}</span>
-        <span className="pl-4 text-gray-700">•</span>
+        <span className="text-[11px] font-medium uppercase tracking-wider t-g500">{item.label}</span>
+        <span className="font-semibold t-text">{value}</span>
+        <span className="pl-4 t-g700">•</span>
       </a>
     );
   };
 
   return (
     <div
-      className="relative z-40 overflow-hidden border-b border-white/10 bg-[#0b1120]"
+      className="relative z-40 overflow-hidden border-b t-border t-bg-3"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}

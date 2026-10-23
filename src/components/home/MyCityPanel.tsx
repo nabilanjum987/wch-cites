@@ -164,17 +164,17 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
     }
   };
 
-  const card = 'rounded-xl bg-white/5 border border-white/10 px-4 py-3 block hover:border-white/25 transition-colors no-underline';
+  const card = 'rounded-xl t-card border t-border px-4 py-3 block t-border-hover-25 transition-colors no-underline';
 
   return (
-    <section className="py-14 px-4 lg:py-6" style={{ backgroundColor: '#080c18' }} aria-label="My City">
+    <section className="py-14 px-4 lg:py-6 t-bg-2" aria-label="My City">
       <div className="max-w-6xl mx-auto">
-        <div className="rounded-3xl overflow-hidden border border-white/10" style={{ background: `linear-gradient(135deg, ${data.color}33, #0a0f1e 55%)` }}>
+        <div className="rounded-3xl overflow-hidden border t-border" style={{ background: `linear-gradient(135deg, ${data.color}33, var(--bg) 55%)` }}>
           {data.image && (
             <figure className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={data.image.url} alt={data.image.alt} className="w-full h-52 md:h-64 lg:h-36 object-cover" loading="lazy" />
-              <figcaption className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[11px] px-2.5 py-1 rounded-tl-lg">
+              <figcaption className="absolute bottom-0 right-0 bg-black/60 t-text-70 text-[11px] px-2.5 py-1 rounded-tl-lg">
                 {data.image.credit}
               </figcaption>
             </figure>
@@ -183,11 +183,11 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
             {/* Header */}
             <div className="flex flex-wrap items-end justify-between gap-3 mb-6 lg:flex-col lg:items-start lg:gap-1">
               <div>
-                <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-300 mb-1">
+                <div className="text-[11px] font-bold uppercase tracking-[0.2em] t-emerald mb-1">
                   My City{substituted ? ' · chosen from your location' : ''}
                 </div>
-                <h2 className="text-3xl md:text-4xl lg:text-2xl font-bold text-white">
-                  {data.name} <span className="text-white/50 text-xl font-medium">· {data.country}</span>
+                <h2 className="text-3xl md:text-4xl lg:text-2xl font-bold t-text">
+                  {data.name} <span className="t-text-50 text-xl font-medium">· {data.country}</span>
                 </h2>
                 <p className="sub-desc mt-1">{gregorian}{data.hijri ? ` · ${data.hijri}` : ''}</p>
                 {/* Polish Card 2: the Full City Page CTA also sits at the
@@ -196,12 +196,12 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                     click from the panel's always-reachable top. The
                     bottom CTA below stays as it was. */}
                 <Link href={data.path}
-                  className="hidden lg:inline-flex items-center gap-2 rounded-full bg-emerald-500/90 hover:bg-emerald-400 px-6 py-3 text-sm font-semibold text-white transition-colors no-underline mt-3">
+                  className="hidden lg:inline-flex items-center gap-2 rounded-full bg-emerald-500/90 hover:bg-emerald-400 px-6 py-3 text-sm font-semibold t-onbrand transition-colors no-underline mt-3">
                   Full {data.name} Page <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
               <div className="text-right lg:text-left">
-                <div className="text-white font-mono text-2xl md:text-3xl lg:text-xl font-semibold">{localTime}</div>
+                <div className="t-text font-mono text-2xl md:text-3xl lg:text-xl font-semibold">{localTime}</div>
                 <div className="sub-desc">local time in {data.name}</div>
               </div>
             </div>
@@ -210,22 +210,22 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
             <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3 mb-3">
               {data.weather && (
                 <Link href={`${data.path}/weather`} className={card}>
-                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><CloudSun className="w-4 h-4" /> Weather now</div>
-                  <div className="text-white font-bold text-xl">{data.weather.temp}°C · {data.weather.condition}</div>
+                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide t-g400 mb-1"><CloudSun className="w-4 h-4" /> Weather now</div>
+                  <div className="t-text font-bold text-xl">{data.weather.temp}°C · {data.weather.condition}</div>
                   <div className="sub-desc">Feels like {data.weather.feels}°C</div>
                 </Link>
               )}
               {data.nextPrayer && (
                 <Link href={`${data.path}/prayer-times`} className={card}>
-                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><Moon className="w-4 h-4" /> Next prayer</div>
-                  <div className="text-white font-bold text-xl">{data.nextPrayer.name} · {data.nextPrayer.time}</div>
-                  <div className="text-emerald-300 text-sm font-medium">{countdown ? `in ${countdown}` : ''}</div>
+                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide t-g400 mb-1"><Moon className="w-4 h-4" /> Next prayer</div>
+                  <div className="t-text font-bold text-xl">{data.nextPrayer.name} · {data.nextPrayer.time}</div>
+                  <div className="t-emerald text-sm font-medium">{countdown ? `in ${countdown}` : ''}</div>
                 </Link>
               )}
               {data.goldTola != null && (
                 <Link href={`${data.path}/rates`} className={card}>
-                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><Coins className="w-4 h-4" /> Gold in {data.name}</div>
-                  <div className="text-white font-bold text-xl">Rs {data.goldTola.toLocaleString('en-US')} <span className="text-sm font-medium text-white/60">/ tola</span></div>
+                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide t-g400 mb-1"><Coins className="w-4 h-4" /> Gold in {data.name}</div>
+                  <div className="t-text font-bold text-xl">Rs {data.goldTola.toLocaleString('en-US')} <span className="text-sm font-medium t-text-60">/ tola</span></div>
                   <div className="sub-desc">{data.silverOz != null ? `Silver $${data.silverOz.toFixed(2)} / oz` : ''}</div>
                 </Link>
               )}
@@ -235,23 +235,23 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
             <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3 mb-3">
               {(data.sunrise || data.sunset) && (
                 <Link href={`${data.path}/weather`} className={card}>
-                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><Sunrise className="w-4 h-4" /> Sun today</div>
-                  <div className="text-white font-semibold text-sm flex items-center gap-2 flex-wrap">
-                    <span>↑ {data.sunrise}</span><span className="text-white/30">·</span>
+                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide t-g400 mb-1"><Sunrise className="w-4 h-4" /> Sun today</div>
+                  <div className="t-text font-semibold text-sm flex items-center gap-2 flex-wrap">
+                    <span>↑ {data.sunrise}</span><span className="t-text-30">·</span>
                     <span className="flex items-center gap-1"><Sunset className="w-3.5 h-3.5" /> {data.sunset}</span>
                   </div>
                   <div className="sub-desc">{data.dayLength}</div>
                 </Link>
               )}
               <div className={`${card} cursor-default`}>
-                <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-1"><Moon className="w-4 h-4" /> Moon tonight</div>
-                <div className="text-white font-semibold text-sm">{data.moonPhase}</div>
+                <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide t-g400 mb-1"><Moon className="w-4 h-4" /> Moon tonight</div>
+                <div className="t-text font-semibold text-sm">{data.moonPhase}</div>
                 <div className="sub-desc">phase of the moon, worldwide</div>
               </div>
               {data.facts.length > 0 && (
                 <div className={`${card} cursor-default`}>
-                  <div className="text-[11px] uppercase tracking-wide text-gray-400 mb-1">Did you know</div>
-                  <div className="text-white font-medium text-sm leading-snug">{data.facts[factIdx % data.facts.length]}</div>
+                  <div className="text-[11px] uppercase tracking-wide t-g400 mb-1">Did you know</div>
+                  <div className="t-text font-medium text-sm leading-snug">{data.facts[factIdx % data.facts.length]}</div>
                 </div>
               )}
             </div>
@@ -259,10 +259,10 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
             {/* Block 3 — City voice */}
             {data.headlines.length > 0 && (
               <Link href={`${data.path}/news`} className={`${card} mb-6`}>
-                <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-gray-400 mb-2"><Newspaper className="w-4 h-4" /> {data.name} is talking about</div>
+                <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide t-g400 mb-2"><Newspaper className="w-4 h-4" /> {data.name} is talking about</div>
                 <ul className="space-y-1.5">
                   {data.headlines.map((h, i) => (
-                    <li key={i} className="text-white/90 text-sm font-medium leading-snug">• {h}</li>
+                    <li key={i} className="t-text-90 text-sm font-medium leading-snug">• {h}</li>
                   ))}
                 </ul>
               </Link>
@@ -271,10 +271,10 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
             {/* Footer */}
             <div className="flex flex-wrap items-center gap-4">
               <Link href={data.path}
-                className="inline-flex items-center gap-2 rounded-full bg-emerald-500/90 hover:bg-emerald-400 px-6 py-3 text-sm font-semibold text-white transition-colors no-underline">
+                className="inline-flex items-center gap-2 rounded-full bg-emerald-500/90 hover:bg-emerald-400 px-6 py-3 text-sm font-semibold t-onbrand transition-colors no-underline">
                 Full {data.name} Page <ArrowRight className="w-4 h-4" />
               </Link>
-              <button onClick={openSearch} className="inline-flex items-center gap-1.5 text-sm text-cyan-300 hover:text-cyan-200 font-medium">
+              <button onClick={openSearch} className="inline-flex items-center gap-1.5 text-sm t-link font-medium">
                 <MapPin className="w-4 h-4" /> Change city
               </button>
             </div>

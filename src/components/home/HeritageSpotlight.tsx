@@ -15,6 +15,14 @@ const STYLE: Record<string, { emoji: string; color: string; category: string }> 
 
 const DEFAULT_STYLE = { emoji: '🎨', color: '#8B5CF6', category: 'Heritage Product' };
 
+// Polish Card 5: homepage cards carry ONE short line per product.
+// The full catalogue descriptions (lib/data/products) stay untouched
+// for the product pages; these are the card summaries.
+const CARD_LINES: Record<string, string> = {
+  'lahori-khussa': 'Hand-stitched leather shoe of Lahore',
+  'multan-blue-pottery': 'Cobalt-blue Kashigari pottery of Multan',
+};
+
 const COUNTRY_FLAGS: Record<string, string> = {
   Pakistan: '🇵🇰',
   India: '🇮🇳',
@@ -27,15 +35,15 @@ export default function HeritageSpotlight() {
 
   return (
     <div className="mb-4">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {products.map((p) => {
           const style = STYLE[p.slug] ?? DEFAULT_STYLE;
           const flag = COUNTRY_FLAGS[p.origin.country] ?? '🌍';
           return (
             <div key={p.slug}>
               <div
-                className="rounded-2xl border p-5 flex flex-col gap-3"
-                style={{ background: `linear-gradient(135deg, ${style.color}15, #0a0f1e)`, borderColor: `${style.color}30` }}
+                className="rounded-2xl border p-5 flex flex-col gap-3 h-full"
+                style={{ background: `linear-gradient(135deg, ${style.color}15, var(--bg))`, borderColor: `${style.color}30` }}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-4xl">{style.emoji}</span>
@@ -47,13 +55,13 @@ export default function HeritageSpotlight() {
                   </span>
                 </div>
                 <div>
-                  <div className="text-white font-bold">{p.name}</div>
+                  <div className="t-text font-bold">{p.name}</div>
                   <div className="flex items-center gap-1 sub-desc mt-0.5">
                     <span>{flag}</span>
                     <span>{p.origin.city}, {p.origin.country}</span>
                   </div>
                 </div>
-                <p className="sub-desc flex-1 line-clamp-3">{p.description}</p>
+                <p className="sub-desc flex-1">{CARD_LINES[p.slug] ?? p.caption}</p>
               </div>
             </div>
           );

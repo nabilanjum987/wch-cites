@@ -29,8 +29,8 @@ export default function NewsTabs({ categories }: { categories: NewsCategoryData[
             onClick={() => setActive(i)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               i === active
-                ? 'bg-cyan-500/90 text-white'
-                : 'bg-white/5 border border-white/15 text-white/70 hover:bg-white/10'
+                ? 'bg-cyan-500/90 t-onbrand'
+                : 't-card border t-border-15 t-text-70 t-card-hover'
             }`}
           >
             {c.label}
@@ -38,10 +38,10 @@ export default function NewsTabs({ categories }: { categories: NewsCategoryData[
         ))}
       </div>
       {current && current.headlines.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {current.headlines.map((h, i) => (
-            <Link key={i} href="/news" className="rounded-xl bg-white/5 border border-white/10 px-4 py-3 hover:border-white/25 transition-colors no-underline block">
-              <div className="text-white/90 font-medium text-sm leading-snug">{h.title}</div>
+            <Link key={i} href="/news" className="rounded-xl t-card border t-border px-4 py-3 t-border-hover-25 transition-colors no-underline block">
+              <div className="t-text-90 font-medium text-sm leading-snug">{h.title}</div>
               <div className="sub-desc mt-1">{h.source} · read on the news page</div>
             </Link>
           ))}

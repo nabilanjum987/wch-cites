@@ -43,16 +43,16 @@ export default async function EconomyPanel() {
   }
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5 items-start">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
         {shown.map((r) => (
-          <div key={r.id} className="rounded-xl bg-white/5 border border-white/10 px-4 py-3">
-            <div className="text-[11px] uppercase tracking-wide text-gray-500">{r.label}</div>
-            <div className="text-white font-bold text-xl mt-0.5">{r.format(r.data!.value)}</div>
+          <div key={r.id} className="rounded-xl t-card border t-border px-4 py-3">
+            <div className="text-[11px] uppercase tracking-wide t-g500">{r.label}</div>
+            <div className="t-text font-bold text-xl mt-0.5">{r.format(r.data!.value)}</div>
             <div className="sub-desc">Pakistan · {r.data!.year}</div>
           </div>
         ))}
       </div>
-      <Link href="/pakistan" className="inline-flex items-center gap-2 text-cyan-300 hover:text-cyan-200 text-sm font-medium no-underline">
+      <Link href="/pakistan" className="inline-flex items-center gap-2 t-link text-sm font-medium no-underline">
         Pakistan's full economy dashboard →
       </Link>
     </div>
