@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import { DirectAnswer, FaqBlock, type AeoFaq } from '@/components/aeo/AnswerLayer';
 import {
   AreaChart,
   Area,
@@ -306,6 +307,67 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
   const isPositive = rates ? rates.change_percent >= 0 : true;
   const isYTDPositive = rates ? rates.ytd_change_percent >= 0 : true;
 
+  // ── Batch 4 Item 2: AEO answer layer ────────────────────────────────────
+  // Direct-answer block + FAQ block for the rates template. Questions are
+  // the mined competitor-FAQ phrasings (see evidence/batch4-item2/
+  // question-bank.md). Every PKR figure is computed from THIS page's own
+  // two live inputs — the gold spot feed and the USD/PKR pair in the FX
+  // table below — never hard-coded; the answers say so, and distinguish
+  // the spot-derived figure from the APSGJA Sarafa bazaar rate, exactly
+  // as the mined sources do. Rendered only when both live inputs exist.
+  const pkrPair = currencyPairs.find((pr) => pr.code === 'PKR') ?? null;
+  const pkrOf = (usd: number) => (pkrPair ? Math.round(usd * pkrPair.rate).toLocaleString('en-US') : '');
+  const usdOz = rates ? `$${Math.round(rates.per_oz).toLocaleString('en-US')}` : '';
+  const fxText = pkrPair ? pkrPair.rate.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '';
+  const todayStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const ratesAeoSource = `Spot gold: this page's live feed (gold-api.com) · Conversion: this page's USD/PKR pair (ExchangeRate-API) · Live, ${todayStr} · The APSGJA Sarafa bazaar rate is announced separately and can differ`;
+  const ratesDirectAnswer =
+    rates && pkrPair
+      ? `The gold rate in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola for 24-karat gold — the live international spot price converted at this page's USD to PKR rate of ${fxText}. Gold is ${usdOz} per troy ounce and PKR ${pkrOf(rates.per_gram)} per gram right now. The Sarafa bazaar rate announced by the APSGJA can differ slightly, and jewellers add making charges on top.`
+      : null;
+  const ratesFaqs: AeoFaq[] =
+    rates && pkrPair
+      ? [
+          {
+            q: 'What is the gold rate in Pakistan today?',
+            a: `Gold in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola for 24-karat gold — the live spot price of ${usdOz} per troy ounce converted at this page's USD to PKR rate of ${fxText}, the same two live figures published in the tables below. That works out to PKR ${pkrOf(rates.per_gram)} per gram.${silver ? ` Silver is $${Math.round(silver.per_oz).toLocaleString('en-US')} per ounce.` : ''} The Sarafa bazaar rate announced by the APSGJA is set separately and can differ.`,
+          },
+          {
+            // Bank Q2 — the 24K per-tola phrasing mined verbatim from the
+            // competitor FAQ sections (see question bank); figures are
+            // this page's own live values, as everywhere in this block.
+            q: 'What is the 24K gold rate per tola in Pakistan today?',
+            a: `The 24-karat gold rate in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola, converted from the live spot price of ${usdOz} per troy ounce at this page's USD to PKR rate of ${fxText}. Per gram that is PKR ${pkrOf(rates.per_gram)}, and per 10 grams PKR ${pkrOf(rates.per_10g)}. The APSGJA Sarafa bazaar rate is announced separately and can differ; jewellers add making charges on top.`,
+          },
+          {
+            q: 'What is the 22K gold price per tola in Pakistan?',
+            a: `The 22-karat gold rate in Pakistan today is about PKR ${pkrOf(rates.by_karat.k22 * 11.664)} per tola, converted from the live spot price at USD to PKR ${fxText}. 22K gold is 91.7% pure — 22 parts gold in 24 — against 99.9% for 24K, which is why it costs less per tola. Jewellers favour 22K for jewellery because the alloyed metal is harder and holds stones and designs better than soft, pure gold.`,
+          },
+          {
+            q: 'How many grams are in 1 tola of gold?',
+            a: `One tola equals 11.664 grams — the traditional South Asian unit in which gold is weighed and priced across Pakistan's Sarafa bazaars. A troy ounce, the international unit, is 31.1035 grams, so one tola is 0.375 troy ounces. This page prices gold per gram, per 10 grams and per tola side by side, and the converters on it switch between the units at the live rate.`,
+          },
+          {
+            q: 'What is the difference between 24K and 22K gold?',
+            a: `24-karat gold is 99.9% pure gold; 22-karat is 91.7% pure, with the remaining share made of alloy metals such as copper or silver. That is why 24K costs more per gram — today about PKR ${pkrOf(rates.by_karat.k24)} against PKR ${pkrOf(rates.by_karat.k22)} — and why jewellers prefer 22K for jewellery: the alloy makes it harder and more durable, while 24K is the standard for investment bars and coins.`,
+          },
+          {
+            q: 'How is the Pakistani gold rate calculated?',
+            a: `Pakistan's gold rate follows the international market: the spot price in US dollars per troy ounce is converted into rupees at the USD to PKR exchange rate, then into grams and tolas — 31.1035 grams to the ounce, 11.664 grams to the tola. On this page that works out to about PKR ${pkrOf(rates.per_tola)} per tola today. Local premiums and jewellers' making charges are added on top of the bullion rate.`,
+          },
+          {
+            q: 'How much is 1 gram of gold in Pakistan?',
+            a: `One gram of 24-karat gold in Pakistan costs about PKR ${pkrOf(rates.per_gram)} right now — the live spot price converted at USD to PKR ${fxText}. Ten grams cost about PKR ${pkrOf(rates.per_10g)}, and one tola (11.664 grams) about PKR ${pkrOf(rates.per_tola)}. These are bullion rates before jewellers' making charges; the tables on this page also price the same gold in dollars and other currencies.`,
+          },
+          {
+            // Bank Q8 — why prices move; built from the same two live
+            // inputs (spot + FX) the whole page is priced from.
+            q: 'Why do gold prices change in Pakistan?',
+            a: `Gold prices in Pakistan change because the local rate is built from two moving parts: the international spot price in US dollars — ${usdOz} per troy ounce right now, ${rates.change_percent >= 0 ? '+' : ''}${rates.change_percent}% on the day — and the USD to PKR exchange rate, ${fxText} on this page. When either part moves, the rupee price per tola moves with it, before local premiums and jewellers' making charges are added.`,
+          },
+        ]
+      : [];
+
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }}>
       {/* Hero Header */}
@@ -361,6 +423,13 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
               </button>
             </div>
           </div>
+
+          {/* Batch 4 Item 2: direct-answer block, directly under the heading */}
+          {ratesDirectAnswer && (
+            <div className="mt-8">
+              <DirectAnswer answer={ratesDirectAnswer} source={ratesAeoSource} />
+            </div>
+          )}
 
           {/* Live Price Strip */}
           {rates && (
@@ -1131,6 +1200,12 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             </div>
             <p className="text-xs text-gray-400 mt-2">Misery Index = Inflation Rate + Unemployment Rate — latest World Bank values for each country.</p>
           </div>
+          {/* Batch 4 Item 2: FAQ block + FAQPage schema (this template had none before) */}
+          {ratesFaqs.length > 0 && (
+            <div className="mt-12">
+              <FaqBlock faqs={ratesFaqs} source={ratesAeoSource} emitSchema />
+            </div>
+          )}
           </>
         ) : (
           <div className="flex items-center justify-center py-24">

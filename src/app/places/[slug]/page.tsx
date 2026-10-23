@@ -13,6 +13,7 @@ import {
   generateNearbyParagraph, generateNearbyAfter,
   generateVisitorInfoParagraph, generateVisitorInfoAfter,
 } from '@/lib/paragraphs/places';
+import { DirectAnswer, FaqBlock, type AeoFaq } from '@/components/aeo/AnswerLayer';
 
 // ── Place data ────────────────────────────────────────────────────────────────
 
@@ -184,6 +185,122 @@ export async function generateStaticParams() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+// ─── Batch 4 Item 2: AEO answer layer ─────────────────────────────────────
+// Direct-answer block + FAQ block for the places template, composed ONLY
+// from the place's own record fields above (description, history,
+// significance, hours, fee, best time, tips, nearby) — no new facts are
+// introduced. Questions are the mined guide phrasings (see
+// evidence/batch4-item2/question-bank.md). Answers accumulate whole
+// record sentences until they reach the 50–70 word band. This template
+// previously emitted NO JSON-LD at all, so the FAQ block also emits
+// FAQPage schema from the same array (emitSchema).
+function sentencesOf(text: string): string[] {
+  return (text.match(/[^.!?]+[.!?]+/g) ?? [text]).map((s) => s.trim()).filter(Boolean);
+}
+function wc(s: string): number {
+  return s.split(/\s+/).filter(Boolean).length;
+}
+function asSentence(s: string): string {
+  const t = s.trim();
+  return /[.!?]$/.test(t) ? t : `${t}.`;
+}
+function accumulate(base: string, extra: string[], min = 50): string {
+  let out = base;
+  for (const s of extra) {
+    if (wc(out) >= min) break;
+    // Max-guard: skip a sentence that would overshoot the 70-word band
+    // when the answer is already close, and try a shorter later one.
+    if (wc(out) + wc(s) > 70 && wc(out) >= 42) continue;
+    out += ` ${s}`;
+  }
+  return out;
+}
+function lowerFirst(s: string): string {
+  // Lowercase a leading capital only for ordinary words ("Free…" → "free…"),
+  // never for acronyms ("PKR…" stays "PKR…").
+  return s.length > 1 && /[a-z]/.test(s.charAt(1)) ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+}
+
+function buildPlaceAeo(place: Place): { directAnswer: string; faqs: AeoFaq[] } {
+  const desc = sentencesOf(place.description);
+  const hist = sentencesOf(place.history);
+  const sig = sentencesOf(place.significance);
+  const openClean = place.openHours.replace(/\.$/, '');
+  const feeClean = place.entryFee.replace(/\.$/, '');
+  const openSentence = asSentence(`${place.name} is open ${openClean}`);
+  const visitSentence = `A typical visit takes ${place.averageVisit}.`;
+  const bestSentence = asSentence(`The best time to visit is ${place.bestTimeToVisit.replace(/\.$/, '')}`);
+  const tipSentences = place.tips.map((t) => asSentence(t.charAt(0).toUpperCase() + t.slice(1)));
+  const nearbySentence = place.nearbyPlaces[0]
+    ? `${place.nearbyPlaces[0].name} is just ${place.nearbyPlaces[0].distance} away, so the two are usually visited together.`
+    : '';
+
+  const directAnswer = [
+    desc[0] ?? place.description,
+    asSentence(`You will find it at ${place.address.replace(/\.$/, '')}`),
+    asSentence(`It is open ${openClean}`),
+    asSentence(`Entry: ${lowerFirst(feeClean)}`),
+    bestSentence,
+  ].join(' ');
+
+  const faqs: AeoFaq[] = [
+    {
+      q: `Who built ${place.name}, and when?`,
+      a: accumulate(hist[0] ?? '', [hist[1] ?? '', hist[2] ?? '', sig[0] ?? '']),
+    },
+    {
+      q: `What are the opening hours of ${place.name}?`,
+      a: accumulate(`${openSentence} ${visitSentence}`, [bestSentence, ...tipSentences]),
+    },
+    {
+      q: `How much is the entry fee for ${place.name}?`,
+      a: accumulate(asSentence(`The entry fee for ${place.name}: ${feeClean}`), [
+        openSentence,
+        `Plan ${place.averageVisit} for the visit.`,
+        bestSentence,
+        nearbySentence,
+      ]),
+    },
+    {
+      q: `What is the best time to visit ${place.name}?`,
+      a: accumulate(`${bestSentence} ${openSentence} ${visitSentence}`, tipSentences),
+    },
+    {
+      q: `Why is ${place.name} famous?`,
+      a: accumulate(sig.join(' '), desc),
+    },
+  ];
+
+  // Bank Q6 (capacity) — emitted only when the record's own significance
+  // text states a capacity, and composed from those sentences alone.
+  // (thingsToKnow is deliberately NOT used: the Badshahi record's
+  // thingsToKnow capacity figure contradicts its significance text —
+  // that contradiction is the F1 card's, not this generator's.)
+  const capSentences = sig.filter((s) => /worshippers|accommodate|holds|capacity/i.test(s));
+  if (capSentences.length > 0) {
+    faqs.push({
+      q: `How many people can ${place.name} hold?`,
+      a: accumulate(capSentences.join(' '), [sig[0] ?? '', desc[0] ?? '', desc[1] ?? '']),
+    });
+  }
+
+  // Bank Q7 (dress code) — emitted only when the record's own tips carry
+  // one; a place whose record has no dress guidance gets no dress FAQ.
+  const dressTips = tipSentences.filter((s) => /dress|modest|scarf|wear|clothing/i.test(s));
+  if (dressTips.length > 0) {
+    faqs.push({
+      q: `What should visitors wear at ${place.name}?`,
+      a: accumulate(dressTips.join(' '), [
+        ...tipSentences.filter((s) => !dressTips.includes(s)),
+        openSentence,
+        bestSentence,
+      ]),
+    });
+  }
+
+  return { directAnswer, faqs };
+}
+
 export default async function FamousPlacePage({ params }: PageProps) {
   const { slug } = await params;
   const place = await getPlace(slug);
@@ -229,6 +346,10 @@ export default async function FamousPlacePage({ params }: PageProps) {
   };
 
   const mapsUrl = `https://www.google.com/maps?q=${place.lat},${place.lng}`;
+
+  // Batch 4 Item 2: AEO answer layer data (from this place's own record).
+  const { directAnswer: placeDirectAnswer, faqs: placeFaqs } = buildPlaceAeo(place);
+  const placeAeoSource = `Hours, fees & facts: WorldCityHub place record — the same values shown in the visitor panel on this page`;
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
@@ -287,6 +408,9 @@ export default async function FamousPlacePage({ params }: PageProps) {
 
           {/* Left: Main content */}
           <div className="lg:col-span-2 space-y-6">
+
+            {/* Batch 4 Item 2: direct-answer block, first card under the heading */}
+            <DirectAnswer answer={placeDirectAnswer} source={placeAeoSource} />
 
             {/* Tagline */}
             <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
@@ -402,6 +526,8 @@ export default async function FamousPlacePage({ params }: PageProps) {
                 </p>
               </div>
             )}
+            {/* Batch 4 Item 2: FAQ block + FAQPage schema (this template had no JSON-LD before) */}
+            <FaqBlock faqs={placeFaqs} source={placeAeoSource} emitSchema />
           </div>
 
           {/* Right: Info sidebar */}

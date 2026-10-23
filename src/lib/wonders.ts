@@ -92,6 +92,9 @@ export interface Wonder {
     fees: { visitor: string; amount: string; note?: string }[] | null;
     feesNote: string | null;
     gatesText: string;
+    // Verified night-viewing rule (official Taj Mahal site FAQs; only
+    // where the monument runs a night programme) — null elsewhere.
+    nightText?: string | null;
     lastVerified: string;
     sourceName: string;
     sourceUrl: string;
@@ -217,6 +220,11 @@ const TAJ_MAHAL: Wonder = {
       'Fees are inclusive of ASI & ADA charges, as published on the official site. Online tickets are discounted ₹5 (Indian) / ₹50 (foreigner) per ticket.',
     gatesText:
       'Entry tickets are sold at the Western Gate (near Saheli Burj) and the Eastern Gate, from one hour before sunrise until 45 minutes before sunset. The Southern Gate is exit only. There are separate queues for foreign and domestic tourists.',
+    // Night viewing: official Taj Mahal site FAQs (tajmahal.gov.in),
+    // cross-checked 2026-10-23 — five nights around the full moon, eight
+    // batches of at most 50 visitors, separate ticket, report at Shilpgram.
+    nightText:
+      'Night viewing is offered on five nights around the full moon — the full-moon night and two nights before and after — except Fridays and during Ramadan. Viewing runs in eight batches of at most 50 visitors, 30 minutes each, on a separate ticket; visitors report at Shilpgram, near the Eastern Gate, for security checks.',
     lastVerified: CHECKED,
     sourceName: 'Official Taj Mahal website (tajmahal.gov.in)',
     sourceUrl: 'https://www.tajmahal.gov.in/visiting-hours.aspx',
@@ -279,23 +287,43 @@ const TAJ_MAHAL: Wonder = {
   faqs: [
     {
       q: 'What are the Taj Mahal opening hours?',
-      a: 'The Taj Mahal opens 30 minutes before sunrise and closes 30 minutes before sunset, and it is closed on Fridays for general viewing (official site, tajmahal.gov.in). Today\u2019s exact opening and closing times, from live sunrise and sunset data, are shown in the Quick Answer box at the top of this page.',
+      a: 'The Taj Mahal opens 30 minutes before sunrise and closes 30 minutes before sunset, and it is closed on Fridays for general viewing (official site, tajmahal.gov.in). Today\u2019s exact opening and closing times, from live sunrise and sunset data, are shown in the Quick Answer box at the top of this page. Arrive before opening time for the quietest hour of the day, before the tour groups reach the complex.',
     },
     {
+      // Fallback text only — at render the page replaces this answer with
+      // feesAnswerText() (Fix 3, billi audit), which composes the answer
+      // from the structured fee rows in visitor.fees above, category by
+      // category. No category (e.g. free entry for children) may be
+      // hard-coded here; it appears only when the record carries the row.
       q: 'How much is a Taj Mahal ticket?',
-      a: 'Per the official site: foreign tourists ₹1,100, citizens of SAARC and BIMSTEC countries ₹540, and Indian/domestic visitors (including OCI cardholders) ₹50 — with an optional ₹200 extra for the main mausoleum. Children under 15 enter free. Fees include ASI and ADA charges.',
+      a: 'Per the official site: foreign tourists ₹1,100, citizens of SAARC and BIMSTEC countries ₹540, and Indian/domestic visitors (including OCI cardholders) ₹50 — with an optional ₹200 extra for the main mausoleum. Fees include ASI and ADA charges. Buying online through the Archaeological Survey of India discounts the foreign ticket by \u20B950 and the Indian ticket by \u20B95.',
     },
     {
       q: 'When is the best time to visit the Taj Mahal?',
-      a: 'At opening time, just before sunrise: the marble glows pinkish in the first light, the crowds are thinnest, and temperatures are at their coolest. This page shows today\u2019s sunrise, sunset and golden-hour windows live, plus what to wear for today\u2019s weather at the site.',
+      a: 'At opening time, just before sunrise: the marble glows pinkish in the first light, the crowds are thinnest, and temperatures are at their coolest. This page shows today\u2019s sunrise, sunset and golden-hour windows live, plus what to wear for today\u2019s weather at the site. UNESCO notes the monument appears in \u201Cever changing tints and moods\u201D through the day, which is why photographers plan their visit around those golden-hour windows.',
     },
     {
       q: 'Who built the Taj Mahal, and why?',
-      a: 'The Mughal emperor Shah Jahan commissioned it in 1631 as the tomb of his wife Mumtaz Mahal; Shah Jahan himself is also buried there. The main architect was Ustad Ahmad Lahori, and craftsmen were drawn from across the empire, Central Asia and Iran (UNESCO).',
+      a: 'The Mughal emperor Shah Jahan commissioned it in 1631 as the tomb of his wife Mumtaz Mahal; Shah Jahan himself is also buried there. The main architect was Ustad Ahmad Lahori, and craftsmen were drawn from across the empire, Central Asia and Iran (UNESCO). The tomb is the centrepiece of a 17-hectare complex on the Yamuna\u2019s right bank, with a mosque and a guest house set in formal gardens.',
     },
     {
       q: 'Is the Taj Mahal a UNESCO World Heritage Site?',
-      a: 'Yes — it was inscribed in 1983 as World Heritage Site 252, under criterion (i), and UNESCO calls it the greatest architectural achievement in the whole range of Indo-Islamic architecture.',
+      a: 'Yes — it was inscribed in 1983 as World Heritage Site 252, under criterion (i), and UNESCO calls it the greatest architectural achievement in the whole range of Indo-Islamic architecture. UNESCO also describes it as \u201Cthe jewel of Muslim art in India and one of the universally admired masterpieces of the world\u2019s heritage\u201D. The listing covers the tomb, its mosque and guest house, and the formal gardens.',
+    },
+    {
+      // Bank Q2 — composed from visitor.closedDays + visitor.hoursText.
+      q: 'Is the Taj Mahal open on Fridays?',
+      a: 'No — the Taj Mahal is closed on Fridays for general viewing, as the official site states. On all other days it opens 30 minutes before sunrise and closes 30 minutes before sunset, and today’s exact opening and closing times, from live sunrise and sunset data, are shown in the Quick Answer box at the top of this page.',
+    },
+    {
+      // Bank Q7 — composed from visitor.gatesText.
+      q: 'Which gate should I use to enter the Taj Mahal?',
+      a: 'Entry tickets are sold at the Western Gate, near Saheli Burj, and at the Eastern Gate, from one hour before sunrise until 45 minutes before sunset. The Southern Gate is exit only. There are separate queues for foreign and domestic tourists at the gates, and this page’s visitor panel carries the official gate, hours and fee information for the site.',
+    },
+    {
+      // Bank Q5 — composed from visitor.nightText (official site FAQs).
+      q: 'Can I visit the Taj Mahal at night?',
+      a: 'Yes — night viewing is offered on five nights around the full moon: the full-moon night and two nights before and after, except Fridays and during Ramadan. Viewing runs in eight batches of at most 50 visitors, 30 minutes each, on a separate ticket, and visitors report at Shilpgram, near the Eastern Gate, for security checks before their batch.',
     },
   ],
   nearby: [
@@ -4852,6 +4880,65 @@ const GREAT_BARRIER_REEF: Wonder = {
 export const BUILT_WONDERS: Wonder[] = [GREAT_WALL_OF_CHINA, EIFFEL_TOWER, PYRAMIDS_OF_GIZA, BURJ_KHALIFA, CHRIST_THE_REDEEMER, COLOSSEUM, MACHU_PICCHU, STATUE_OF_LIBERTY, ACROPOLIS_ATHENS, STONEHENGE, SYDNEY_OPERA_HOUSE, HAGIA_SOPHIA, ST_PETERS_BASILICA, SAGRADA_FAMILIA, NEUSCHWANSTEIN_CASTLE, GRAND_CANYON, GREAT_BARRIER_REEF];
 
 export const PUBLISHED_WONDERS: Wonder[] = [TAJ_MAHAL];
+
+/**
+ * Fix 3 (billi audit, Batch 4 Item 2 follow-up): the ticket-fee FAQ answer
+ * is COMPOSED from the wonder record's own structured fee rows
+ * (visitor.fees) — every visitor category the record carries, priced from
+ * its row, and nothing else. A category the record does not carry (for
+ * example a free-children row) never appears in the text: the record is
+ * the truth. A note shared by every paid row (the optional mausoleum
+ * extra) is stated once; the record's own feesNote first sentence closes
+ * the answer. Returns null when the record carries no verified fees, in
+ * which case the stored FAQ answer is used unchanged.
+ */
+export function feesAnswerText(wonder: Wonder): string | null {
+  const fees = wonder.visitor.fees;
+  if (!fees || fees.length === 0) return null;
+  const parts = fees.map((f) => {
+    if (/free/i.test(f.amount)) {
+      return `free entry for ${f.visitor.toLowerCase()}${f.note ? ` (${f.note.toLowerCase()})` : ''}`;
+    }
+    return `${f.amount} for ${f.visitor.toLowerCase()}`;
+  });
+  const joined =
+    parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0];
+  const paidNotes = fees
+    .filter((f) => !/free/i.test(f.amount))
+    .map((f) => f.note)
+    .filter((n): n is string => Boolean(n));
+  const sharedNote =
+    paidNotes.length > 0 && paidNotes.every((n) => n === paidNotes[0]) ? paidNotes[0] : null;
+  let extra = '';
+  if (sharedNote) {
+    const amt = sharedNote.match(/₹[\d,]+/)?.[0];
+    const what = /mausoleum/i.test(sharedNote) ? 'the main mausoleum' : 'the optional extra it covers';
+    extra = ` An optional ${amt ? `${amt} ` : ''}extra covers ${what} on each paid ticket.`;
+  }
+  const noteFirst = wonder.visitor.feesNote
+    ? wonder.visitor.feesNote.split(/(?<=\.)\s/)[0]
+    : '';
+  return `Per the official site, entry to the ${wonder.name} costs ${joined}.${extra}${noteFirst ? ` ${noteFirst}` : ''}`;
+}
+
+/**
+ * The wonder FAQ list as rendered: the record's FAQs with the ticket-fee
+ * answer replaced by the derived feesAnswerText() whenever the record
+ * carries structured fees (see above). Single source for both the visible
+ * FAQ block and the FAQPage schema on the wonder page.
+ */
+export function getWonderFaqs(wonder: Wonder): { q: string; a: string }[] {
+  const derived = feesAnswerText(wonder);
+  if (!derived) return wonder.faqs;
+  let replaced = false;
+  return wonder.faqs.map((f) => {
+    if (!replaced && /ticket|fee|cost/i.test(f.q)) {
+      replaced = true;
+      return { ...f, a: derived };
+    }
+    return f;
+  });
+}
 
 // The other New7Wonders — listed on the index as content only (no links)
 // until each one's own golden build is verified and published.

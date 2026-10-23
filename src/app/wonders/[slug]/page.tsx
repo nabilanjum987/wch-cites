@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import {
   PUBLISHED_WONDERS,
   getWonder,
+  getWonderFaqs,
   getWonderLive,
   heroMedia,
   wonderMedia,
@@ -16,6 +17,7 @@ import {
   haversineKm,
 } from '@/lib/wonders';
 import WonderClock from './WonderClock';
+import { DirectAnswer } from '@/components/aeo/AnswerLayer';
 import MapEmbed from './MapEmbed';
 
 // Golden Wonder template (WP4 / marathon Q9) — SERVER component.
@@ -65,6 +67,9 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
   const wonder = await getWonder(slug);
   if (!wonder) notFound();
 
+  // Fix 3 (billi audit): FAQ list with the fee answer derived from the
+  // record's structured fee rows — single source for schema + visible block.
+  const faqs = getWonderFaqs(wonder);
   const live = await getWonderLive(wonder.lat, wonder.lng, wonder.timezone);
   const hero = heroMedia(wonder);
   const gallery = wonder.media.filter((m) => m.role === 'gallery' || m.role === 'detail');
@@ -101,7 +106,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
       },
       {
         '@type': 'FAQPage',
-        mainEntity: wonder.faqs.map((f) => ({
+        mainEntity: faqs.map((f) => ({
           '@type': 'Question',
           name: f.q,
           acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -109,6 +114,31 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
       },
     ],
   };
+
+  // ── Batch 4 Item 2: direct-answer block ────────────────────────────────
+  // First sentences answer the wonder template's primary mined question
+  // ("What time does it open, and what does a ticket cost?"), composed
+  // entirely from this wonder's own verified record — visitor hours,
+  // closing days and official fees — never hard-coded figures. The
+  // template's FAQ block + FAQPage schema already exist (wonder.faqs) and
+  // are rendered further down; this item only adds the missing prose
+  // direct answer under the heading.
+  const visitorFees = wonder.visitor.fees;
+  // Free-entry categories come from the fee rows themselves (Fix 3): the
+  // clause names the record's own free rows, so a record without a free
+  // row never claims one.
+  const freeFeeVisitors = (visitorFees ?? [])
+    .filter((f) => /free/i.test(f.amount))
+    .map((f) => f.visitor.toLowerCase());
+  const wonderAnswer = [
+    `${wonder.name} ${wonder.visitor.hoursText.charAt(0).toLowerCase()}${wonder.visitor.hoursText.slice(1)}${wonder.visitor.closedDays ? ` ${wonder.visitor.closedDays}` : ''}`,
+    visitorFees && visitorFees.length > 0
+      ? `Tickets cost ${visitorFees.filter((f) => !/free/i.test(f.amount)).slice(0, 3).map((f) => `${f.amount} for ${f.visitor.toLowerCase()}`).join(', ')}${freeFeeVisitors.length > 0 ? `, and ${freeFeeVisitors.join(' and ')} enter free` : ''}.`
+      : `The visitor panel on this page carries today's opening status, weather and golden-hour windows for the site, checked live.`,
+    wonder.unescoId
+      ? `It has been a UNESCO World Heritage Site since ${wonder.unescoYear} (site ${wonder.unescoId}).`
+      : `The key facts, history and verified visitor information for ${wonder.name} are set out below.`,
+  ].join(' ');
 
   return (
     <main className="min-h-screen bg-[#0a0e1a] text-white">
@@ -141,6 +171,14 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
               {Math.round(live.tempNow)}°C · {weatherLabel(live.weatherCode)} at the site now
             </span>
           )}
+        </div>
+
+        {/* 1b — Batch 4 Item 2: direct-answer block, directly under the heading */}
+        <div className="mt-6">
+          <DirectAnswer
+            answer={wonderAnswer}
+            source={`Visitor facts: ${wonder.visitor.sourceName} — verified ${wonder.visitor.lastVerified}${wonder.unescoId ? ` · UNESCO listing: World Heritage Centre, site ${wonder.unescoId}` : ''}`}
+          />
         </div>
 
         {/* 2 — Hero gallery */}
@@ -533,7 +571,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
         {/* 14 — FAQs + sources & credits + related */}
         <Section title="Frequently asked questions">
           <div className="space-y-3">
-            {wonder.faqs.map((f) => (
+            {faqs.map((f) => (
               <details key={f.q} className="rounded-xl border border-white/10 bg-white/5 p-4">
                 <summary className="cursor-pointer font-semibold text-white">{f.q}</summary>
                 <p className="mt-2 text-sm leading-relaxed text-gray-300">{f.a}</p>

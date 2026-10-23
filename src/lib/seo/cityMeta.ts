@@ -51,6 +51,13 @@ interface CityMetaProps {
   maghrib?: string | null;
   goldPerGram?: number | null;
   population?: string | null;
+  // Fix 4 (billi audit, Batch 4 Item 2 follow-up): the city's own dataset
+  // languages list (the GLANCE record the city page already renders in its
+  // at-a-glance panel) and the country emergency numbers the city page
+  // itself fetches — the language/emergency FAQs are built from these,
+  // never from country-shaped assumptions baked into the generator.
+  languages?: string | null;
+  emergency?: { police?: string | null; ambulance?: string | null; fire?: string | null } | null;
 }
 
 export function generateCityMeta(props: CityMetaProps) {
@@ -80,91 +87,130 @@ export function generateCityMeta(props: CityMetaProps) {
   return { title, description, canonical };
 }
 
-export function generateCitySchema(props: CityMetaProps) {
-  const { city, country, province, temp, fajr, maghrib, goldPerGram } = props;
-  const { month, year } = now();
+// ─── City FAQs (Batch 4, Item 2) ────────────────────────────────────────────
+// Single source for the city page's FAQ data: generateCitySchema() emits
+// these as FAQPage JSON-LD and the city page renders the SAME array as a
+// visible FAQ block, so visible text and schema can never drift apart.
+// Questions are real mined phrasings (see evidence/batch4-item2/
+// question-bank.md); answers are 50–70 words, built only from the data
+// this page already has (live props + the city dataset population).
+export function generateCityFaqs(props: CityMetaProps): { q: string; a: string }[] {
+  const { city, country, province, temp, weatherDesc, fajr, maghrib, goldPerGram, population } = props;
+  const { year } = now();
+  // Fix 4 (billi audit, Batch 4 Item 2 follow-up): this generator runs for
+  // EVERY city, so no claim may be baked in just because it is true of the
+  // Pakistani cities live today. Country-specific content is gated on the
+  // city's own country; the language and emergency answers are built from
+  // the city's own data (dataset languages list + the emergency numbers
+  // the page itself fetches, with Pakistan's national numbers as the
+  // fallback for Pakistani cities only); and the best-time answer makes no
+  // climate claims at all, because the city dataset carries no per-city
+  // climate data — an earlier version stated Lahore-shaped claims
+  // (Oct–Mar pleasant, 40°C summers, monsoon months) for every city.
+  const isPakistan = country === 'Pakistan';
+  const faqs: { q: string; a: string }[] = [
+    {
+      q: `What is the weather in ${city} today?`,
+      a: temp
+        ? `The temperature in ${city} right now is ${Math.round(temp)}°C with ${weatherDesc ?? 'mixed conditions'}. The live weather panel at the top of this page also shows the feels-like temperature, humidity, wind speed and UV index for ${city}, refreshed hourly from the same feed, together with today's sunrise and sunset times and a short outlook for the rest of the day.`
+        : `${city}'s weather changes with the seasons, so check the live weather panel at the top of this page for today's temperature, feels-like temperature, humidity, wind speed and UV index in ${city}, refreshed hourly. The panel also shows today's sunrise and sunset times and a short outlook, and the best-time-to-visit answer below helps you plan when to come.`,
+    },
+    {
+      q: `What are today's prayer times in ${city}?`,
+      a: fajr
+        ? `Today's prayer times in ${city} start with Fajr at ${fajr}.${maghrib ? ` Maghrib, the sunset prayer, is at ${maghrib}.` : ''} All five times — Fajr, Dhuhr, Asr, Maghrib and Isha — are calculated for ${city}'s exact coordinates using the Karachi calculation method, shown live at the top of this page with a countdown to the next prayer; the full monthly timetable is on the linked Prayer Times page.`
+        : `Prayer times in ${city} are calculated daily for the city's exact coordinates using the Karachi calculation method, and the live panel at the top of this page shows all five — Fajr, Dhuhr, Asr, Maghrib and Isha — with a countdown to the next one. The linked Prayer Times page carries the full monthly timetable, the Qibla direction from ${city} and today's Hijri date.`,
+    },
+    {
+      q: `What is the gold rate in ${city} today?`,
+      a: goldPerGram
+        ? `The gold rate in ${city} today is PKR ${Math.round(goldPerGram).toLocaleString()} per gram for 24-karat gold, which equals PKR ${Math.round(goldPerGram * 11.664).toLocaleString()} per tola — one tola is 11.664 grams. The rate follows the international bullion market and the rupee's exchange rate, and this page updates it daily from the same live feed. Jewellers in ${city} add making charges on top of this bullion rate.`
+        : `Gold in ${city} is priced per gram and per tola (one tola = 11.664 grams) from the international bullion market, converted into ${isPakistan ? 'Pakistani rupees' : 'the local currency'}. The Gold & Rates section of this page shows today's 24-karat rate with 22K, 21K and 18K beside it, updated daily; the full Rates page tracks the metal in other currencies too. Jewellers add making charges on top.`,
+    },
+    {
+      q: `What is ${city} famous for?`,
+      // Q11: city-neutral — an earlier version hard-coded Lahore's
+      // landmarks and people into every city's schema.
+      a: `${city} is known for its historic landmarks, its food culture, and its people — poets, athletes, scholars and artists who shaped ${country}. The Famous Places and Famous People sections of this page list the highlights for ${city} itself, from its best-known monuments and neighbourhoods to its notable residents; the full guide below covers the city's economy, events, education and daily life in the same depth.`,
+    },
+    {
+      q: `What is the population of ${city} in ${year}?`,
+      a: population
+        ? `${city}'s population is ${population} — the figure held in the WorldCityHub city dataset, and the same number the at-a-glance panel on this page shows. Like most large cities in the region, ${city} continues to grow through rural-to-urban migration and natural increase, and every national census has counted more residents than the one before it.`
+        : `${city}'s population figure is shown in the at-a-glance panel on this page, taken from the WorldCityHub city dataset. Like most large cities in the region, ${city} continues to grow through rural-to-urban migration and natural increase, and every national census has counted more residents than the one before it. Dataset figures are refreshed when new census results are published.`,
+    },
+  ];
 
-  // FAQ Schema — 8 questions with real data injected
+  // Language — built from the city's OWN dataset languages list (the same
+  // GLANCE value the at-a-glance panel renders). The elaboration about
+  // Urdu's national role and English usage is Pakistan-specific and is
+  // emitted only for Pakistani cities; without dataset languages the
+  // question is omitted rather than answered from an assumption.
+  if (props.languages) {
+    faqs.push({
+      q: `What language is spoken in ${city}?`,
+      a: isPakistan
+        ? `The main languages spoken in ${city} are ${props.languages} — the languages listed for the city in the at-a-glance panel on this page. Urdu is Pakistan's national language, used in education, government and media. English is widely used in business, universities and government offices, and many residents are multilingual, switching between these languages and English within a single conversation; signage across ${city} commonly mixes them.`
+        : `The main languages spoken in ${city} are ${props.languages} — the languages listed for the city in the at-a-glance panel on this page. Language shapes daily life in ${city}: the culture, food and Famous People sections of this page reflect the mix, and the full city guide below covers the city's neighbourhoods, education and daily life in more depth.`,
+    });
+  }
+
+  // Emergency numbers — built from the numbers the city page itself
+  // fetches for the country; for Pakistani cities the national numbers
+  // (15 / 1122 / 16, plus the Edhi ambulance and the 1043 women's
+  // helpline, which are Pakistan-only services) are the fallback when the
+  // fetch has no data. A non-Pakistani city with no fetched numbers omits
+  // the question instead of inheriting Pakistan's.
+  const em = props.emergency;
+  const police = em?.police ?? (isPakistan ? '15' : null);
+  const ambulance = em?.ambulance ?? (isPakistan ? '1122' : null);
+  const fire = em?.fire ?? (isPakistan ? '16' : null);
+  const numberParts: string[] = [];
+  if (police) numberParts.push(`${police} for Police`);
+  if (ambulance) {
+    numberParts.push(
+      `${ambulance} for Rescue or an ambulance${isPakistan && ambulance === '1122' ? " (Rescue 1122 is one of Pakistan's best-known emergency services)" : ''}`,
+    );
+  }
+  if (fire) numberParts.push(`${fire} for the Fire Brigade`);
+  if (isPakistan) numberParts.push('115 for the Edhi Foundation ambulance');
+  if (numberParts.length > 0) {
+    const numberList =
+      numberParts.length > 1
+        ? `${numberParts.slice(0, -1).join(', ')}, and ${numberParts[numberParts.length - 1]}`
+        : numberParts[0];
+    faqs.push({
+      q: `What is the emergency number in ${city}?`,
+      a: `In ${city}, call ${numberList}.${isPakistan ? " The women's helpline is 1043." : ''} All of these numbers are free to call from any mobile or landline, and they work around the clock, every day of the year.`,
+    });
+  }
+
+  // Best time to visit — deliberately free of climate claims: the city
+  // dataset carries no per-city climate data, so the answer points at the
+  // page's live conditions and its own place pages instead of repeating
+  // one city's seasons as if they were every city's.
+  faqs.push({
+    q: `What is the best time to visit ${city}?`,
+    a: `The best time to visit ${city} is when its weather suits the trip you want — the live weather panel at the top of this page shows today's temperature, feels-like conditions and outlook for ${city}, updated hourly. The Famous Places, street food and events sections below run year-round, and each place's own page notes its best visiting conditions and opening hours.`,
+  });
+
+  return faqs;
+}
+
+export function generateCitySchema(props: CityMetaProps) {
+  const { city, country, province } = props;
+
+  // FAQ Schema — 8 questions with real data injected (Batch 4 Item 2:
+  // built from generateCityFaqs so schema and the visible FAQ block on
+  // the page are the same text from the same source).
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": `What is the weather in ${city} today?`,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": temp
-            ? `Current temperature in ${city} is ${Math.round(temp)}°C with ${props.weatherDesc ?? 'mixed conditions'}. Check the live weather widget on this page for hourly updates, UV index, humidity, and wind speed.`
-            : `${city} weather today varies by season. This page shows live weather data updated every hour from OpenWeatherMap. Check the weather section above for current temperature, feels-like, humidity, and UV index.`
-        }
-      },
-      {
-        "@type": "Question",
-        "name": `What are today's prayer times in ${city}?`,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": fajr
-            ? `Today's prayer times in ${city}: Fajr at ${fajr}, Maghrib at ${maghrib ?? '--'}. All five prayer times are shown live on this page, calculated using the Karachi method. A full monthly timetable and Qibla compass are on the Prayer Times page.`
-            : `Prayer times in ${city} are calculated daily using the Karachi method (University of Islamic Sciences). Fajr, Zuhr, Asr, Maghrib, and Isha times are shown live on this page with a countdown to the next prayer.`
-        }
-      },
-      {
-        "@type": "Question",
-        "name": `What is the gold rate in ${city} today?`,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": goldPerGram
-            ? `Gold rate in ${city} today is PKR ${Math.round(goldPerGram).toLocaleString()} per gram for 24-karat gold, which equals PKR ${Math.round(goldPerGram * 11.664).toLocaleString()} per tola. Rates are updated daily from international markets.`
-            : `Gold rates in ${city} are updated daily and shown in all karats (24K, 22K, 21K, 18K) in both grams and tolas. Check the Gold & Rates section on this page or visit the full Rates page for detailed charts.`
-        }
-      },
-      {
-        "@type": "Question",
-        "name": `What is ${city} famous for?`,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          // Q11: this answer previously hard-coded LAHORE's landmarks,
-          // people and "cultural capital" claim into every city's
-          // schema. It is now city-neutral and factual for any city.
-          "text": `${city} is known for its historic landmarks, its food culture, and its people — poets, athletes, scholars and artists who shaped ${props.country ?? 'the country'}. The Famous Places and Famous People sections of this page list the highlights for ${city}, and the full city guide covers its economy, events and daily life.`
-        }
-      },
-      {
-        "@type": "Question",
-        "name": `What is the population of ${city} in ${year}?`,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": props.population
-            ? `${city}'s population is ${props.population} (city dataset figure). Like most large cities in the region it continues to grow through rural-to-urban migration and natural increase.`
-            : `${city} is one of the larger cities of ${props.country ?? 'its country'}, and continues to grow through rural-to-urban migration and natural increase.`
-        }
-      },
-      {
-        "@type": "Question",
-        "name": `What language is spoken in ${city}?`,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": `Urdu (the national language, used in education, government and media) and the regional language of ${props.province ?? 'the province'} are the primary languages spoken in ${city}. English is widely used in business, universities and government. Many residents are multilingual and switch between languages in daily life.`
-        }
-      },
-      {
-        "@type": "Question",
-        "name": `What is the emergency number in ${city}?`,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": `In ${city}, call 15 for Police, 1122 for Rescue/Ambulance (Rescue 1122 is one of Pakistan's best emergency services), and 16 for the Fire Brigade. The Edhi Foundation ambulance is reachable at 115. Women's helpline: 1043. All numbers are free to call from any mobile or landline.`
-        }
-      },
-      {
-        "@type": "Question",
-        "name": `What is the best time to visit ${city}?`,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": `The best time to visit ${city} is October to March when temperatures are pleasant (10°C–25°C), the air quality is better, and major cultural festivals take place. Avoid May–July when temperatures regularly exceed 40°C. The monsoon season (July–September) brings heavy rain and high humidity but also green parks and a vibrant street food atmosphere.`
-        }
-      }
-    ]
+    "mainEntity": generateCityFaqs(props).map((f) => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a },
+    })),
   };
 
   // BreadcrumbList schema
