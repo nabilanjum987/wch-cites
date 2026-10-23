@@ -1,0 +1,71 @@
+cluster,subject,signal_type,value_or_observation,grade,source,date
+prayer,Lahore,trends_mean_90d_geo_PK,namaz time lahore 57.6,STRONG,trends_summary.csv (trendspy),2026-10-21
+prayer,Karachi,trends_mean_90d_geo_PK,namaz time karachi 56.1,STRONG,trends_summary.csv (trendspy),2026-10-21
+prayer,Islamabad,trends_mean_90d_geo_PK,namaz time islamabad 21.9,STRONG,trends_summary.csv (trendspy),2026-10-21
+prayer,Faisalabad,trends_mean_90d_geo_PK,namaz time faisalabad 5.2,MEASURED_THIN,trends_summary.csv (trendspy),2026-10-21
+prayer,Multan,trends_mean_90d_geo_PK,namaz time multan 5.0,MEASURED_THIN,trends_summary.csv (trendspy),2026-10-21
+prayer,London,trends_mean_90d_WORLD,prayer times london 64.9,STRONG,trends_summary.csv (trendspy),2026-10-21
+prayer,Dubai,trends_mean_90d_WORLD,prayer times dubai 50.0,STRONG,trends_summary.csv (trendspy),2026-10-21
+prayer,Sydney,trends_mean_90d_WORLD,prayer times sydney 41.2,STRONG,trends_summary.csv (trendspy),2026-10-21
+prayer,Toronto,trends_mean_90d_WORLD,prayer times toronto 36.6,STRONG,trends_summary.csv (trendspy),2026-10-21
+prayer,New York,trends_mean_90d_WORLD,"prayer times new york 9.7 (max 86, spiky)",MEASURED_THIN,trends_summary.csv (trendspy),2026-10-21
+cities,Peshawar,trends_mean_90d_geo_PK,peshawar weather 35.3,STRONG,trends_summary.csv (trendspy),2026-10-21
+cities,Faisalabad,trends_mean_90d_geo_PK,faisalabad weather 32.0,STRONG,trends_summary.csv (trendspy),2026-10-21
+cities,Sialkot,trends_mean_90d_geo_PK,sialkot weather 31.0,STRONG,trends_summary.csv (trendspy),2026-10-21
+cities,Multan,trends_mean_90d_geo_PK,multan weather 25.4,STRONG,trends_summary.csv (trendspy),2026-10-21
+cities,Quetta,trends_mean_90d_geo_PK,quetta weather 6.1,MEASURED_THIN,trends_summary.csv (trendspy),2026-10-21
+gold_fx,USD to PKR,trends_mean_90d_geo_PK,72.8 (strongest PK term measured),STRONG,trends_summary.csv (trendspy),2026-10-21
+gold_fx,Gold rate today,trends_mean_90d_multi_geo,AE 68.9 / SA 64.4 / IN 54.6 / US 54.3 / GB 34.5 / WORLD 32.8,STRONG,trends_summary.csv (trendspy),2026-10-21
+gold_fx,SAR to PKR,trends_mean_90d_geo_SA,36.4 (diaspora market),STRONG,trends_summary.csv (trendspy),2026-10-21
+gold_fx,AED to PKR,trends_mean_90d_geo_AE,13.0 (diaspora market),MEASURED,trends_summary.csv (trendspy),2026-10-21
+gold_fx,USD to PKR (US geo),trends_mean_90d_geo_US,41.6 (diaspora),STRONG,trends_summary.csv (trendspy),2026-10-21
+time,London,trends_mean_90d_WORLD,time in london 36.8,STRONG,trends_summary.csv (trendspy),2026-10-21
+time,New York,trends_mean_90d_WORLD,time in new york 29.0,STRONG,trends_summary.csv (trendspy),2026-10-21
+prayer,Rawalpindi,trends_mean_3m_geo_PK,namaz time rawalpindi 58.1,STRONG,B7 supplementary trendspy pull,2026-10-22
+prayer,Quetta,trends_mean_3m_geo_PK,namaz time quetta 4.9,MEASURED_THIN,B7 supplementary trendspy pull,2026-10-22
+prayer,Sargodha,trends_mean_3m_geo_PK,namaz time sargodha 2.6,MEASURED_THIN,B7 supplementary trendspy pull,2026-10-22
+prayer,Mardan,trends_mean_3m_geo_PK,namaz time mardan 1.2,WEAK,B7 supplementary trendspy pull,2026-10-22
+prayer,Sukkur,trends_mean_3m_geo_PK,namaz time sukkur 0.5,WEAK,B7 supplementary trendspy pull,2026-10-22
+compare,Lahore vs Karachi,trends_mean_3m_WORLD,literal string 0.0; autocomplete tail rich (population/area/gdp/food),INDICATIVE,B7 trendspy pull + B7 autocomplete probes,2026-10-22
+compare,Pakistan vs India,trends_mean_3m_WORLD,literal string 1.5; full autocomplete tails Google+YouTube,INDICATIVE,B7 trendspy pull + B7 autocomplete probes,2026-10-22
+compare,Punjab vs Sindh,trends_mean_3m_WORLD,literal string 0.0; tail asks population/gdp/which is better/area/budget,INDICATIVE,B7 trendspy pull + B7 autocomplete probes,2026-10-22
+compare,Lahore vs Delhi,trends_mean_3m_WORLD,literal string 0.0; tail incl. aqi / aqi today,INDICATIVE,B7 trendspy pull + B7 autocomplete probes,2026-10-22
+horoscope,Horoscope (hub),trends_mean_3m_WORLD,horoscope today 60.4; zodiac signs 49.9,STRONG,B7 supplementary trendspy pull,2026-10-22
+horoscope,Per-sign terms,trends_mean_3m_WORLD,aries horoscope today 3.1; leo horoscope today 5.0,MEASURED_THIN,B7 supplementary trendspy pull,2026-10-22
+horoscope,Compatibility matrix,trends_mean_3m_WORLD,aries compatibility 7.7; autocomplete expands to full sign matrix,MEASURED + INDICATIVE,B7 trendspy pull + B7 autocomplete probes,2026-10-22
+wonders,Taj Mahal,trends_mean_3m_WORLD,46.9,STRONG,B7 supplementary trendspy pull,2026-10-22
+wonders,Eiffel Tower,trends_mean_3m_WORLD,38.4,STRONG,B7 supplementary trendspy pull,2026-10-22
+wonders,Statue of Liberty,trends_mean_3m_WORLD,28.6,STRONG,B7 supplementary trendspy pull,2026-10-22
+wonders,Burj Khalifa,trends_mean_3m_WORLD,24.3,STRONG,B7 supplementary trendspy pull,2026-10-22
+wonders,Great Wall of China,trends_mean_3m_WORLD,11.8,MEASURED,B7 supplementary trendspy pull,2026-10-22
+places,CN Tower,trends_mean_3m_WORLD,49.5,STRONG,B7 supplementary trendspy pull,2026-10-22
+places,Sydney Opera House,trends_mean_3m_WORLD,37.0,STRONG,B7 supplementary trendspy pull,2026-10-22
+places,Hagia Sophia,trends_mean_3m_WORLD,33.1,STRONG,B7 supplementary trendspy pull,2026-10-22
+places,Badshahi Mosque,trends_mean_3m_WORLD,1.8 (world geo; demand is PK-regional),WEAK_WORLD_GEO,B7 supplementary trendspy pull,2026-10-22
+places,Faisal Mosque,trends_mean_3m_WORLD,1.9 (world geo; demand is PK-regional),WEAK_WORLD_GEO,B7 supplementary trendspy pull,2026-10-22
+cities,Lahore,phrase_bank_mentions,102 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Karachi,phrase_bank_mentions,90 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Faisalabad,phrase_bank_mentions,45 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Multan,phrase_bank_mentions,40 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Peshawar,phrase_bank_mentions,38 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Islamabad,phrase_bank_mentions,35 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Dubai,phrase_bank_mentions,34 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Sialkot,phrase_bank_mentions,22 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Rawalpindi,phrase_bank_mentions,14 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,London,phrase_bank_mentions,14 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Hyderabad (PK),phrase_bank_mentions,12 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Riyadh,phrase_bank_mentions,12 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Jeddah,phrase_bank_mentions,12 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Abu Dhabi,phrase_bank_mentions,9 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,New York,phrase_bank_mentions,9 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Sharjah,phrase_bank_mentions,9 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Istanbul,phrase_bank_mentions,2 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Gujranwala,phrase_bank_mentions,2 phrases mention the city (all sources/markets),INDICATIVE,"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Quetta,phrase_bank_mentions,0 phrases mention the city (all sources/markets),ABSENT_IN_BANK (never seeded),"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Sargodha,phrase_bank_mentions,0 phrases mention the city (all sources/markets),ABSENT_IN_BANK (never seeded),"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Bahawalpur,phrase_bank_mentions,0 phrases mention the city (all sources/markets),ABSENT_IN_BANK (never seeded),"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Abbottabad,phrase_bank_mentions,0 phrases mention the city (all sources/markets),ABSENT_IN_BANK (never seeded),"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Sukkur,phrase_bank_mentions,0 phrases mention the city (all sources/markets),ABSENT_IN_BANK (never seeded),"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Mardan,phrase_bank_mentions,0 phrases mention the city (all sources/markets),ABSENT_IN_BANK (never seeded),"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Doha,phrase_bank_mentions,0 phrases mention the city (all sources/markets),ABSENT_IN_BANK (never seeded),"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
+cities,Toronto,phrase_bank_mentions,0 phrases mention the city (all sources/markets),ABSENT_IN_BANK (never seeded),"phrase_bank.csv (Google+YouTube autocomplete, 7 markets)",2026-10-21
