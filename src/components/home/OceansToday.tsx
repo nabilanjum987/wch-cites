@@ -39,8 +39,15 @@ export default function OceansToday() {
       </div>
       <Link href="/oceans/arabian-sea" className="block mt-3 rounded-2xl border p-4 hover:border-sky-400/50 transition-colors"
         style={{ background: 'linear-gradient(160deg, #07598540, var(--bg))', borderColor: '#07598540' }}>
-        <div className="flex items-center justify-between gap-3">
-          <div>
+        <div className="flex items-center gap-4">
+          {/* Polish Card 4: the featured sea carries its real photo
+              (image bank: "Arabian sea waves", Galib Tufan, CC BY-SA 4.0). */}
+          <div className="relative h-24 sm:h-28 w-32 sm:w-44 shrink-0 overflow-hidden rounded-xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/home/arabian-sea.webp" alt="Waves rolling in the Arabian Sea under a bright sky" width={720} height={450} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+            <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Galib Tufan · CC BY-SA 4.0</span>
+          </div>
+          <div className="flex-1">
             <div className="t-text font-semibold text-sm">Featured sea · Arabian Sea</div>
             <div className="sub-desc mt-0.5">3,862,000 km² — waves & monsoon</div>
           </div>

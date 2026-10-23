@@ -59,6 +59,23 @@ export default function CompareSection() {
       <Link href="/compare/lahore-vs-karachi" className="no-underline group">
         <div className="rounded-2xl border p-6 transition-all group-hover:scale-[1.01] h-full"
           style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), var(--bg))', borderColor: 'rgba(99,102,241,0.25)' }}>
+          {/* Polish Card 4: the featured pair carries both cities' real
+              photos (image bank: Lahore — Romero Maia, CC BY-SA 4.0;
+              Karachi, Mazar-e-Quaid — Ibrahim Janjua, CC BY-SA 4.0). */}
+          <div className="flex gap-2 mb-4">
+            <div className="relative h-32 sm:h-36 flex-1 overflow-hidden rounded-xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/home/compare-lahore.webp" alt="Badshahi Mosque front picture, Lahore" width={640} height={426} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+              <span className="absolute bottom-0 left-0 bg-black/60 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-tr-md">Lahore</span>
+              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Romero Maia · CC BY-SA 4.0</span>
+            </div>
+            <div className="relative h-32 sm:h-36 flex-1 overflow-hidden rounded-xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/home/compare-karachi.webp" alt="Mazar-e-Quaid, the heart of Karachi" width={640} height={360} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+              <span className="absolute bottom-0 left-0 bg-black/60 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-tr-md">Karachi</span>
+              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Ibrahim Janjua · CC BY-SA 4.0</span>
+            </div>
+          </div>
           <div className="t-text-40 text-xs uppercase tracking-wider mb-2">Featured comparison</div>
           <div className="t-text font-bold text-2xl mb-2">Lahore vs Karachi</div>
           <p className="sub-desc">

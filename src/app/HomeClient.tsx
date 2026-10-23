@@ -11,6 +11,8 @@ import OceansToday from '@/components/home/OceansToday';
 import GlobalMarketSnapshot from '@/components/home/GlobalMarketSnapshot';
 import FeaturedCountries from '@/components/home/FeaturedCountries';
 import HeroClocks from '@/components/home/HeroClocks';
+import DayNightBand from '@/components/home/DayNightBand';
+import TrendCharts from '@/components/home/TrendCharts';
 import WorldCapitals from '@/components/home/WorldCapitals';
 import AllFaithsToday from '@/components/home/AllFaithsToday';
 import HeritageSpotlight from '@/components/home/HeritageSpotlight';
@@ -26,8 +28,8 @@ import {
 } from '@/components/shared/AnimatedComponents';
 import { COLORS } from '@/lib/design-system';
 
-export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlot, financeSlot, eventsSlot, economySlot, sportsSlot, conflictsSlot }: {
-  newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode; myCitySlot?: React.ReactNode; todaysWorldSlot?: React.ReactNode;
+export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlot, financeSlot, eventsSlot, economySlot, sportsSlot, conflictsSlot, factCardsSlot }: {
+  newsSlot?: React.ReactNode; ticker2Slot?: React.ReactNode; myCitySlot?: React.ReactNode; todaysWorldSlot?: React.ReactNode; factCardsSlot?: React.ReactNode;
   financeSlot?: React.ReactNode; eventsSlot?: React.ReactNode; economySlot?: React.ReactNode; sportsSlot?: React.ReactNode; conflictsSlot?: React.ReactNode;
 }) {
   const handleCitySelect = (city: { country_slug: string; province_slug: string; city_slug: string }) => {
@@ -80,6 +82,11 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
         </section>
       </AuroraBackground>
 
+      {/* ── DAY/NIGHT WORLD BAND (owner addendum 2026-10-23, Polish
+          Card 4) — directly under the hero; the terminator is computed
+          from the live UTC clock, the six dots match the hero clocks. */}
+      <DayNightBand />
+
       {/* ── §4 MY CITY + MAIN FLOW — CARD A RAIL (owner decision
           2026-10-23, supersedes the freeze for this layout): on lg+
           screens My City is a sticky right rail (~340px, sticks under
@@ -106,6 +113,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       <Section bg="dark" title="Today's World"
         desc="One planet, one day. Right now the sun is about to rise somewhere, one city is baking and another is freezing — and somewhere a whole country has the day off. These lines are computed live from weather stations across a sixteen-city world sample, and they change every day.">
         {todaysWorldSlot}
+        {factCardsSlot}
       </Section>
 
       {/* ── §6 WONDERS (Q5 — deep links HOLD per L1) ── */}
@@ -169,6 +177,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
         desc="Gold at London fix. Bitcoin's 24-hour move. Brent crude after OPEC's last decision. Eight major currency pairs against the dollar. The Fear and Greed Index telling you what the market is feeling right now — not what it felt yesterday. Every figure links through to the full rates page where you can convert to local currency, calculate Zakat, and track 30-day price history.">
         <GlobalMarketSnapshot />
         {financeSlot}
+        <TrendCharts />
       </Section>
       </div>
 

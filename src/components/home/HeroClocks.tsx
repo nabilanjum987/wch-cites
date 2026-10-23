@@ -4,6 +4,10 @@
 // Six flag-coloured clocks (London, Dubai, Karachi, New York, Tokyo,
 // Sydney), ticking every second, plus the visitor's own BIG clock when
 // he opts in via the "My Location" button (never forced on load).
+// Polish Card 4 (2026-10-23): each clock also carries its country's
+// REAL flag as a small chip under the dial — flag images from flagcdn,
+// the same source the §9A World Capitals panel already uses (flag
+// artwork is public domain). The flag-colour ring is unchanged.
 // Link rule (link map §3 + L1): a clock links to its city page if the
 // city is published, else to its country page ONLY when that page
 // renders real content. Verified live 2026-10-22: Karachi city page
@@ -20,18 +24,19 @@ import { useVisitorCity } from './useVisitorCity';
 interface ClockDef {
   name: string;
   tz: string;
-  flag: string;
+  code: string; // ISO 3166-1 alpha-2, lowercase — flagcdn flag, as in §9A
+  country: string;
   primary: string; // flag colour used for ring + hands
   href: string | null;
 }
 
 const CLOCKS: ClockDef[] = [
-  { name: 'London', tz: 'Europe/London', flag: '🇬🇧', primary: '#4f7ddf', href: null },
-  { name: 'Dubai', tz: 'Asia/Dubai', flag: '🇦🇪', primary: '#00a651', href: null },
-  { name: 'Karachi', tz: 'Asia/Karachi', flag: '🇵🇰', primary: '#14a44d', href: '/pakistan/sindh/karachi' },
-  { name: 'New York', tz: 'America/New_York', flag: '🇺🇸', primary: '#e05260', href: '/united-states' },
-  { name: 'Tokyo', tz: 'Asia/Tokyo', flag: '🇯🇵', primary: '#e0576b', href: null },
-  { name: 'Sydney', tz: 'Australia/Sydney', flag: '🇦🇺', primary: '#f5c542', href: null },
+  { name: 'London', tz: 'Europe/London', code: 'gb', country: 'United Kingdom', primary: '#4f7ddf', href: null },
+  { name: 'Dubai', tz: 'Asia/Dubai', code: 'ae', country: 'United Arab Emirates', primary: '#00a651', href: null },
+  { name: 'Karachi', tz: 'Asia/Karachi', code: 'pk', country: 'Pakistan', primary: '#14a44d', href: '/pakistan/sindh/karachi' },
+  { name: 'New York', tz: 'America/New_York', code: 'us', country: 'United States', primary: '#e05260', href: '/united-states' },
+  { name: 'Tokyo', tz: 'Asia/Tokyo', code: 'jp', country: 'Japan', primary: '#e0576b', href: null },
+  { name: 'Sydney', tz: 'Australia/Sydney', code: 'au', country: 'Australia', primary: '#f5c542', href: null },
 ];
 
 function useNow() {
@@ -87,8 +92,10 @@ function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number 
     <div className="flex flex-col items-center gap-2">
       <AnalogClock now={now} tz={def.tz} color={def.primary} size={size} />
       <div className="text-center">
-        <div className="text-base" aria-hidden="true">{def.flag}</div>
-        <div className="t-text font-bold text-sm">{def.name}</div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`https://flagcdn.com/w160/${def.code}.png`} alt={`Flag of ${def.country}`} width={36} height={24} loading="lazy" decoding="async"
+          className="mx-auto h-6 w-9 rounded-[4px] object-cover shadow ring-1 ring-white/25" />
+        <div className="t-text font-bold text-sm mt-1.5">{def.name}</div>
         <div className="t-text-80 font-mono text-sm">{str12}</div>
         <div className="t-text-40 text-xs">{date}</div>
       </div>

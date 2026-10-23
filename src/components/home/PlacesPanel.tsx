@@ -8,7 +8,11 @@
 import { useEffect, useState } from 'react';
 
 const PLACES = [
-  { name: 'Badshahi Mosque', city: 'Lahore', lat: 31.5883, lng: 74.3096, note: 'Built 1673 — largest mosque courtyard' },
+  { name: 'Badshahi Mosque', city: 'Lahore', lat: 31.5883, lng: 74.3096, note: 'Built 1673 — largest mosque courtyard',
+    // Polish Card 4: the first place carries its real photo (image bank:
+    // "Courtyard of Badshahi mosque of Lahore, Pakistan", Zapata1000,
+    // CC BY-SA 4.0) — a courtyard view, distinct from the My City image.
+    img: '/images/home/badshahi-places.webp', imgAlt: 'Courtyard of Badshahi mosque of Lahore, Pakistan', credit: 'Zapata1000 · CC BY-SA 4.0' },
   { name: 'Faisal Mosque', city: 'Islamabad', lat: 33.7296, lng: 73.0372, note: 'Tent of marble gifted by King Faisal' },
   { name: 'Mohenjo-daro', city: 'Sindh', lat: 27.3292, lng: 68.1309, note: 'Planned Indus Valley city, from 2600 BC' },
 ];
@@ -33,6 +37,13 @@ export default function PlacesPanel() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {PLACES.map((p, i) => (
         <div key={p.name} className="rounded-2xl border t-border t-card p-5">
+          {'img' in p && p.img && (
+            <div className="relative mb-3 h-36 overflow-hidden rounded-xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.img} alt={p.imgAlt} width={768} height={506} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">{p.credit}</span>
+            </div>
+          )}
           <div className="flex items-start justify-between gap-2">
             <div>
               <div className="t-text font-bold">{p.name}</div>

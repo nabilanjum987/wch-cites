@@ -3,6 +3,7 @@ import HomeClient from './HomeClient';
 import WebsiteTicker from '@/components/home/WebsiteTicker';
 import MyCitySection from '@/components/home/MyCitySection';
 import TodaysWorld from '@/components/home/TodaysWorld';
+import FactCards from '@/components/home/FactCards';
 import NewsPanel from '@/components/home/NewsPanel';
 import FinanceFigures from '@/components/home/FinanceFigures';
 import EventsPanel from '@/components/home/EventsPanel';
@@ -74,6 +75,7 @@ export default function Page() {
       ticker2Slot={<WebsiteTicker />}
       myCitySlot={<MyCitySection />}
       todaysWorldSlot={<TodaysWorld />}
+      factCardsSlot={<FactCards />}
       financeSlot={<FinanceFigures />}
       eventsSlot={<EventsPanel />}
       economySlot={<EconomyPanel />}
