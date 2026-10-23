@@ -81,9 +81,19 @@ const PLACES: Record<string, Place> = {
       { name: 'Walled City of Lahore', slug: 'walled-city-lahore', distance: '0.5 km' },
     ],
     history: 'Commissioned by the sixth Mughal Emperor Aurangzeb in 1671 and completed in 1673, Badshahi Mosque was the largest mosque in the world for over 300 years. It was built to replace the earlier Wazir Khan Mosque as Lahore\'s principal congregational mosque. During the Sikh Empire, the mosque was used as a military garrison. The British used it as a barracks during colonial rule. It was returned to Muslim use after the 1947 partition.',
+    // F1 (Batch 4 findings fix): courtyard capacity unified on 100,000 in
+    // both fields below (significance + thingsToKnow previously disagreed:
+    // 100,000 vs 95,000). Verified 2026-10-23: UNESCO's Tentative List
+    // entry (Ref. 1277) states no capacity; Wikidata Q330872 records
+    // capacity (P1083) = 100,000, and Wikipedia's Courtyard section —
+    // citing Asian Historical Architecture — states the courtyard "can
+    // accommodate 100,000 worshipers when functioning as an Idgah"
+    // (https://en.wikipedia.org/wiki/Badshahi_Mosque#Courtyard). The
+    // 95,000 figure traces to an older hall/courtyard split that no
+    // current strong source reproduces for the courtyard itself.
     significance: 'Badshahi Mosque is the defining symbol of Lahore and one of the finest examples of Mughal architecture in the world. Its grand prayer hall can accommodate 55,000 worshippers. The courtyard alone holds 100,000 people — making it one of the largest open-air prayer spaces on earth.',
     thingsToKnow: [
-      'Capacity: 55,000 inside, 95,000 in the courtyard',
+      'Capacity: 55,000 inside, 100,000 in the courtyard',
       'Built with red Lahori brick and white marble',
       'Four minarets, each 53m tall',
       'Relics of the Prophet Muhammad ﷺ are preserved in the mosque',
