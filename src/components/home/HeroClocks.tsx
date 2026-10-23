@@ -5,9 +5,11 @@
 // Sydney), ticking every second, plus the visitor's own BIG clock when
 // he opts in via the "My Location" button (never forced on load).
 // Polish Card 4 (2026-10-23): each clock also carries its country's
-// REAL flag as a small chip under the dial — flag images from flagcdn,
-// the same source the §9A World Capitals panel already uses (flag
-// artwork is public domain). The flag-colour ring is unchanged.
+// REAL flag as a small chip under the dial (flag artwork is public
+// domain). The flag-colour ring is unchanged.
+// Billi audit fix (2026-10-23): the six flag files are VENDORED
+// locally in public/images/flags/ and referenced same-origin — no
+// remote hotlink from this component.
 // Link rule (link map §3 + L1): a clock links to its city page if the
 // city is published, else to its country page ONLY when that page
 // renders real content. Verified live 2026-10-22: Karachi city page
@@ -24,7 +26,7 @@ import { useVisitorCity } from './useVisitorCity';
 interface ClockDef {
   name: string;
   tz: string;
-  code: string; // ISO 3166-1 alpha-2, lowercase — flagcdn flag, as in §9A
+  code: string; // ISO 3166-1 alpha-2, lowercase — selects the vendored flag file
   country: string;
   primary: string; // flag colour used for ring + hands
   href: string | null;
@@ -93,7 +95,7 @@ function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number 
       <AnalogClock now={now} tz={def.tz} color={def.primary} size={size} />
       <div className="text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`https://flagcdn.com/w160/${def.code}.png`} alt={`Flag of ${def.country}`} width={36} height={24} loading="lazy" decoding="async"
+        <img src={`/images/flags/${def.code}.png`} alt={`Flag of ${def.country}`} width={36} height={24} loading="lazy" decoding="async"
           className="mx-auto h-6 w-9 rounded-[4px] object-cover shadow ring-1 ring-white/25" />
         <div className="t-text font-bold text-sm mt-1.5">{def.name}</div>
         <div className="t-text-80 font-mono text-sm">{str12}</div>
