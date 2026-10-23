@@ -80,9 +80,22 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
         </section>
       </AuroraBackground>
 
-      {/* ── MY CITY PANEL (§4) — frozen order: World Time hero →
-          My City → Ticker 2. Server-rendered slot from page.tsx. */}
-      {myCitySlot}
+      {/* ── §4 MY CITY + MAIN FLOW — CARD A RAIL (owner decision
+          2026-10-23, supersedes the freeze for this layout): on lg+
+          screens My City is a sticky right rail (~340px, sticks under
+          the fixed header); below lg it stays the block right after
+          the hero with Ticker 2 under it — the aside is FIRST in DOM
+          so the mobile order is byte-identical to the frozen layout,
+          and grid placement (not DOM order) puts it on the right on
+          lg. The 340px column is reserved in the server-rendered
+          grid, so the rail causes no layout shift (CLS 0). The H1
+          stays in the hero; the rail is an <aside> with its own
+          labelled heading (the panel's §4 h2). */}
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
+        <aside aria-label="My City" className="lg:col-start-2 lg:row-start-1 lg:self-start lg:sticky lg:top-20 lg:z-30">
+          {myCitySlot}
+        </aside>
+        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
 
       {/* ── TICKER 2 — WEBSITE LIVE (WP2 Slice 1) ──
           Placement LOCKED by the frozen spec: directly under the
@@ -224,6 +237,9 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
           Open My Location →
         </Link>
       </Section>
+
+        </div>
+      </div>
 
       {/* ── §24 FOOTER ── */}
       <AboutAndFooter />
