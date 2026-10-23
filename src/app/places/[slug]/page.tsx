@@ -180,10 +180,10 @@ export default async function FamousPlacePage({ params }: PageProps) {
   if (!place) notFound();
 
   // ── Schema (SEO completion, Batch 4 Item 1): TouristAttraction +
-  // BreadcrumbList + FAQPage, built ONLY from this record's fields —
-  // the FAQ answers are the page's own visitor-info values (opening
-  // hours, entry fee, best time, visit length, address) restated as
-  // Q&A, the same pattern the city template's FAQ generator uses.
+  // BreadcrumbList, built ONLY from this record's fields. No FAQPage
+  // node here (merge prep, billi's merge rule): on place pages the
+  // surviving FAQPage is the one emitted from PR #85's visible answer
+  // layer, so exactly one FAQPage remains after the merge.
   const placeUrl = `https://worldcityhub.vercel.app/places/${place.slug}`;
   const descText = (typeof place.description === 'string' ? place.description.trim() : '') || `${place.name} — ${place.city}`;
   const jsonLd = {
@@ -213,16 +213,6 @@ export default async function FamousPlacePage({ params }: PageProps) {
           { '@type': 'ListItem', position: 3, name: place.province, item: `https://worldcityhub.vercel.app/${place.countrySlug}/${place.provinceSlug}` },
           { '@type': 'ListItem', position: 4, name: place.city, item: `https://worldcityhub.vercel.app/${place.countrySlug}/${place.provinceSlug}/${place.citySlug}` },
           { '@type': 'ListItem', position: 5, name: place.name, item: placeUrl },
-        ],
-      },
-      {
-        '@type': 'FAQPage',
-        mainEntity: [
-          { '@type': 'Question', name: `What are the opening hours of ${place.name}?`, acceptedAnswer: { '@type': 'Answer', text: place.openHours } },
-          { '@type': 'Question', name: `How much is the entry fee for ${place.name}?`, acceptedAnswer: { '@type': 'Answer', text: place.entryFee } },
-          { '@type': 'Question', name: `When is the best time to visit ${place.name}?`, acceptedAnswer: { '@type': 'Answer', text: place.bestTimeToVisit } },
-          { '@type': 'Question', name: `How long does a typical visit to ${place.name} take?`, acceptedAnswer: { '@type': 'Answer', text: `A typical visit lasts ${place.averageVisit}.` } },
-          { '@type': 'Question', name: `Where is ${place.name} located?`, acceptedAnswer: { '@type': 'Answer', text: place.address } },
         ],
       },
     ],
