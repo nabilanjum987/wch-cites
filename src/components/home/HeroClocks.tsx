@@ -10,6 +10,9 @@
 // Billi audit fix (2026-10-23): the six flag files are VENDORED
 // locally in public/images/flags/ and referenced same-origin — no
 // remote hotlink from this component.
+// Owner izafa (2026-10-23): each clock card ALSO carries its own
+// country's flag as a soft backdrop (vendored file at 50% opacity
+// under a dark scrim); the chip and the dial are unchanged.
 // Link rule (link map §3 + L1): a clock links to its city page if the
 // city is published, else to its country page ONLY when that page
 // renders real content. Verified live 2026-10-22: Karachi city page
@@ -91,15 +94,31 @@ function AnalogClock({ now, tz, color, size }: { now: Date; tz: string; color: s
 function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number }) {
   const { str12, date } = parts(now, def.tz);
   const inner = (
-    <div className="flex flex-col items-center gap-2">
-      <AnalogClock now={now} tz={def.tz} color={def.primary} size={size} />
-      <div className="text-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`/images/flags/${def.code}.png`} alt={`Flag of ${def.country}`} width={36} height={24} loading="lazy" decoding="async"
-          className="mx-auto h-6 w-9 rounded-[4px] object-cover shadow ring-1 ring-white/25" />
-        <div className="t-text font-bold text-sm mt-1.5">{def.name}</div>
-        <div className="t-text-80 font-mono text-sm">{str12}</div>
-        <div className="t-text-40 text-xs">{date}</div>
+    <div className="relative overflow-hidden rounded-2xl px-2 py-3">
+      {/* Flag backdrop (owner izafa): this clock's own country flag —
+          the vendored file at 50% opacity, object-cover, decorative.
+          Scrim over it: linear-gradient(180deg, rgba(8,12,24,0.55),
+          rgba(8,12,24,0.74)) — the hero's own dark tones, so the dial,
+          hands and labels keep exactly their previous contrast. The
+          card is an always-dark island (its scrim is fixed dark in
+          both themes, like Ticker 2's emerald band), so its labels
+          keep their white classes; the dial itself stays tokenised
+          (var(--card) / var(--text) inside AnalogClock). */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={`/images/flags/${def.code}.png`} alt="" aria-hidden="true" width={160} height={107} loading="lazy" decoding="async"
+        className="absolute inset-0 h-full w-full object-cover opacity-50" />
+      <div aria-hidden="true" className="absolute inset-0"
+        style={{ background: 'linear-gradient(180deg, rgba(8,12,24,0.55), rgba(8,12,24,0.74))' }} />
+      <div className="relative flex flex-col items-center gap-2">
+        <AnalogClock now={now} tz={def.tz} color={def.primary} size={size} />
+        <div className="text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`/images/flags/${def.code}.png`} alt={`Flag of ${def.country}`} width={36} height={24} loading="lazy" decoding="async"
+            className="mx-auto h-6 w-9 rounded-[4px] object-cover shadow ring-1 ring-white/25" />
+          <div className="text-white font-bold text-sm mt-1.5">{def.name}</div>
+          <div className="text-white/80 font-mono text-sm">{str12}</div>
+          <div className="text-white/40 text-xs">{date}</div>
+        </div>
       </div>
     </div>
   );

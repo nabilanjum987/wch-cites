@@ -21,6 +21,14 @@ interface Meta {
   population: number | null; famousFor: string | null; capitalFact: string | null;
 }
 
+// Large flag backdrops vendored per country code (panel-size artwork
+// for the My City flag backdrop). A code without an entry falls back
+// to the w160 chip file of the same code — small, but only ever shown
+// faintly under the panel's scrim.
+const FLAG_BG_LARGE: Record<string, string> = {
+  pk: '/images/flags/pk-large.png',
+};
+
 const WMO: Record<number, string> = {
   0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
   45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Drizzle',
@@ -91,7 +99,7 @@ async function fetchCityClient(slug: string, meta: Meta, moonPhase: string): Pro
   if (dayLength) facts.push(`Today ${meta.name} gets ${dayLength}.`);
   const pkr = cg?.['pax-gold']?.pkr;
   return {
-    slug, name: meta.name, province: meta.province, country: 'Pakistan', path,
+    slug, name: meta.name, province: meta.province, country: 'Pakistan', countryCode: 'pk', path,
     color: '#01411C', tz: meta.tz,
     weather: typeof temp === 'number' ? { temp: Math.round(temp), feels: Math.round(w.current.apparent_temperature ?? temp), condition: WMO[w.current.weather_code] ?? '' } : null,
     nextPrayer,
@@ -166,10 +174,36 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
 
   const card = 'rounded-xl t-card border t-border px-4 py-3 block t-border-hover-25 transition-colors no-underline';
 
+  // Owner izafa (2026-10-23): the panel city's COUNTRY flag as a soft
+  // backdrop. The country comes from the city data (data.countryCode)
+  // — never a hard-coded country — and the artwork path is generic:
+  // country code -> /images/flags/<code>.png, preferring the large
+  // vendored variant registered in FLAG_BG_LARGE where one exists.
+  // When the panel switches cities, the flag follows the new city.
+  const flagCode = (data.countryCode || '').toLowerCase();
+  const flagBgSrc = flagCode ? (FLAG_BG_LARGE[flagCode] ?? `/images/flags/${flagCode}.png`) : null;
+
   return (
     <section className="py-14 px-4 lg:py-6 t-bg-2" aria-label="My City">
       <div className="max-w-6xl mx-auto">
-        <div className="rounded-3xl overflow-hidden border t-border" style={{ background: `linear-gradient(135deg, ${data.color}33, var(--bg) 55%)` }}>
+        <div className="relative rounded-3xl overflow-hidden border t-border" style={{ background: `linear-gradient(135deg, ${data.color}33, var(--bg) 55%)` }}>
+          {/* Flag backdrop layer (owner izafa): the real flag at 45%
+              opacity, object-cover, aria-hidden (decorative). */}
+          {flagBgSrc && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={flagBgSrc} src={flagBgSrc} alt="" aria-hidden="true" loading="lazy" decoding="async"
+              className="absolute inset-0 h-full w-full object-cover opacity-45" />
+          )}
+          {/* Scrim: the panel's own gradient, deepened (colour stop
+              0x40, base at 88% from 55%) so the flag stays a soft wash
+              and every figure, label and card keeps exactly its
+              previous contrast. Tokenised on var(--bg): in the dark
+              theme --bg IS rgb(10,15,30), so the dark rendering is
+              the izafa's exactly; in the light theme the scrim washes
+              to the light base and the token text stays readable. */}
+          <div aria-hidden="true" className="absolute inset-0"
+            style={{ background: `linear-gradient(135deg, ${data.color}40, var(--bg) 55%)`, opacity: 0.88 }} />
+          <div className="relative">
           {data.image && (
             <figure className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -278,6 +312,7 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                 <MapPin className="w-4 h-4" /> Change city
               </button>
             </div>
+          </div>
           </div>
         </div>
       </div>

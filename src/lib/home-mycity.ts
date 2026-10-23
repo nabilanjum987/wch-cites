@@ -18,6 +18,11 @@ export interface MyCityData {
   name: string;
   province: string;
   country: string;
+  // ISO 3166-1 alpha-2, lowercase — pairs with `country` and selects
+  // the vendored flag artwork (public/images/flags/<code>.png). Every
+  // city record carries its own code, so the My City panel's flag
+  // backdrop follows the city, never a hard-coded country.
+  countryCode: string;
   path: string;
   color: string;
   tz: string;
@@ -155,6 +160,7 @@ export async function getMyCityData(slug: string): Promise<MyCityData> {
     name: meta.name,
     province: meta.province,
     country: 'Pakistan',
+    countryCode: 'pk',
     path,
     color: '#01411C',
     tz: meta.tz,
