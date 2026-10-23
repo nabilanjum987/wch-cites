@@ -9,7 +9,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Privacy Policy | WorldCityHub',
   description:
-    'WorldCityHub privacy: your location is never stored, no analytics trackers are installed, and improvement-form submissions are stored only for human review.',
+    'WorldCityHub privacy: your location is never stored, no analytics trackers are installed, and form submissions are kept only for human review.',
   alternates: { canonical: 'https://worldcityhub.vercel.app/privacy' },
   openGraph: {
     title: 'Privacy Policy | WorldCityHub',
