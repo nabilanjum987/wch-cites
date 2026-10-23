@@ -428,7 +428,7 @@ function SectionHeader({ icon: Icon, title, accent }: { icon: any; title: string
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function ProvincePage() {
+export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulation?: { value: number; year: number } | null } = {}) {
   const params = useParams<{ country: string; province: string }>();
   // Same pattern as the country page: local synchronous template data is
   // initialized up front so the server render is the full page, not a
@@ -539,6 +539,13 @@ export default function ProvincePage() {
   }
 
   const accent = province.primaryColor;
+  // FIX-POP1 (billi audit): the population-share denominator is the World
+  // Bank's latest SP.POP.TOTL for the country (server-fetched, same path
+  // as the economy data). Pakistan's dated fallback — 255,219,554,
+  // WB 2025, verified 2026-10-22 — applies only for PK when the live
+  // value is absent; with no total at all the share is not shown.
+  const countryTotal = wbCountryPopulation?.value ?? (province.countryCode === 'PK' ? 255219554 : null);
+  const countryTotalYear = wbCountryPopulation?.year ?? 2025;
   const bg = '#0a0f1e';
   const cardBg = 'rgba(255,255,255,0.04)';
   const cardBorder = `${accent}30`;
@@ -574,7 +581,7 @@ export default function ProvincePage() {
       </div>
       {/* Hero */}
       <div className="relative z-10 h-64 md:h-80 overflow-hidden">
-        <img src={province.heroImage} alt={province.name} className="w-full h-full object-cover" />
+        <img src={province.heroImage} alt={province.name} fetchPriority="high" className="w-full h-full object-cover" />
         <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${bg} 30%, transparent 70%)` }} />
         <div className="absolute inset-0" style={{ background: `linear-gradient(100deg, ${accent}22, transparent 60%)` }} />
         <div className="absolute bottom-6 left-6 md:left-8">
@@ -864,10 +871,12 @@ export default function ProvincePage() {
               <div>
                 <div className="text-gray-400 text-xs uppercase tracking-wider mb-2">Population Share</div>
                 <div className="text-5xl font-black mb-2" style={{ color: accent }}>
-                  {(province.population / 231000000 * 100).toFixed(1)}%
+                  {countryTotal ? `${(province.population / countryTotal * 100).toFixed(1)}%` : province.population.toLocaleString()}
                 </div>
                 <div className="text-gray-400 text-sm">
-                  of {province.country}'s total population of 231M lives in {province.name}.
+                  {countryTotal
+                    ? <>of {province.country}&rsquo;s total population of {(countryTotal / 1000000).toFixed(1)}M (World Bank, {countryTotalYear}) lives in {province.name}.</>
+                    : <>people live in {province.name}.</>}
                 </div>
               </div>
             </div>
@@ -990,7 +999,7 @@ export default function ProvincePage() {
               <div key={lm.name} className="group rounded-2xl overflow-hidden border hover:border-opacity-60 transition-all"
                 style={{ borderColor: cardBorder }}>
                 <div className="relative h-36 overflow-hidden">
-                  <img src={lm.image} alt={lm.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img loading="lazy" decoding="async" src={lm.image} alt={lm.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,15,30,0.85), transparent)' }} />
                   {lm.unesco && <div className="absolute top-3 left-3 bg-amber-500/90 text-black text-xs font-bold px-2 py-0.5 rounded-full">UNESCO</div>}
                   <div className="absolute bottom-3 left-3">

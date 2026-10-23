@@ -1,37 +1,55 @@
 'use client';
 
-import { Globe, Menu, X, MapPin, Moon, Sun, Globe2 } from 'lucide-react';
+// Header / Nav (WP2 Slice 2 / Q2) — link set frozen by the homepage
+// link map §2: Logo → / · Cities → /countries · Countries → /countries
+// · Faiths → /#faiths (homepage anchor; the anchor itself is added by
+// the Faiths panel slice) · Live Updates → /news · Compare → /compare
+// · Rates → /rates.
+// Changes from the previous header: the full frozen link set replaces
+// the two-link version; the language toggle is REMOVED (the site is
+// English-only under the frozen language policy — no Urdu identity in
+// public UI); the location icon now links to the real /my-location
+// page instead of firing a geolocation prompt that went nowhere.
+
+import { Globe, Menu, X, MapPin, Moon, Sun } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-
 import { COLORS } from '@/lib/design-system';
+
+const NAV_LINKS = [
+  { label: 'Cities', href: '/countries' },
+  { label: 'Countries', href: '/countries' },
+  { label: 'Faiths', href: '/#faiths' },
+  { label: 'Live Updates', href: '/news' },
+  { label: 'Compare', href: '/compare' },
+  { label: 'Rates', href: '/rates' },
+];
+
+const linkStyle: React.CSSProperties = {
+  backgroundColor: 'rgba(99, 102, 241, 0.05)',
+  color: COLORS.accent,
+  border: `1px solid ${COLORS.border}`,
+};
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState<'EN' | 'UR'>('EN');
   const [scrolled, setScrolled] = useState(false);
-  const router = useRouter();
-
   const [scrollDirection, setScrollDirection] = useState('up');
   const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setScrollDirection('down');
       } else {
         setScrollDirection('up');
       }
-      
       setScrolled(currentScrollY > 10);
       setLastScrollY(currentScrollY);
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
@@ -43,34 +61,6 @@ export default function Navbar() {
     } else {
       document.documentElement.classList.remove('dark');
     }
-  };
-
-  const handleMyLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          console.log('User location:', latitude, longitude);
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-          alert('Unable to access your location. Please enable location services.');
-        }
-      );
-    } else {
-      alert('Geolocation is not supported by your browser.');
-    }
-  };
-
-  const handleCitySelect = (city: any) => {
-    if (city) {
-      setMobileMenuOpen(false);
-      router.push(`/${city.country_slug}/${city.province_slug}/${city.city_slug}`);
-    }
-  };
-
-  const toggleLanguage = () => {
-    setLanguage(language === 'EN' ? 'UR' : 'EN');
   };
 
   return (
@@ -89,10 +79,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: 'spring', stiffness: 400 }}
-          >
+          <motion.div whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 400 }}>
             <Link href="/" className="flex items-center gap-2 no-underline flex-shrink-0">
               <motion.div
                 animate={{
@@ -115,68 +102,39 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
-          {/* Navigation Links - Hidden on mobile */}
+          {/* Navigation Links — frozen set (link map §2) */}
           <motion.div
-            className="hidden lg:flex items-center gap-2 mr-6"
+            className="hidden lg:flex items-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.25 }}
           >
-            <Link
-              href="/rates"
-              className="px-3 py-2 text-sm font-medium rounded-lg transition-all no-underline"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.05)`,
-                color: COLORS.accent,
-                border: `1px solid ${COLORS.border}`,
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = `rgba(99, 102, 241, 0.15)`;
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = `rgba(99, 102, 241, 0.05)`;
-              }}
-            >
-              Rates
-            </Link>
-            <Link
-              href="/compare"
-              className="px-3 py-2 text-sm font-medium rounded-lg transition-all no-underline"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.05)`,
-                color: COLORS.accent,
-                border: `1px solid ${COLORS.border}`,
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = `rgba(99, 102, 241, 0.15)`;
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = `rgba(99, 102, 241, 0.05)`;
-              }}
-            >
-              Compare
-            </Link>
+            {NAV_LINKS.map((l) => (
+              <Link
+                key={l.label}
+                href={l.href}
+                className="px-3 py-2 text-sm font-medium rounded-lg transition-all no-underline hover:bg-indigo-500/15"
+                style={linkStyle}
+              >
+                {l.label}
+              </Link>
+            ))}
           </motion.div>
 
-          {/* Right Side Icons - Desktop */}
+          {/* Right Side — Desktop */}
           <motion.div
-            className="hidden md:flex items-center gap-4"
+            className="hidden md:flex items-center gap-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            {/* My Location Button */}
-            <motion.button
-              onClick={handleMyLocation}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30"
-              title="Find my location"
+            <Link
+              href="/my-location"
+              className="p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30 no-underline"
+              title="My Location"
             >
               <MapPin className="w-5 h-5 text-cyan-400" />
-            </motion.button>
-
-            {/* Dark Mode Toggle */}
+            </Link>
             <motion.button
               onClick={toggleDarkMode}
               whileHover={{ scale: 1.1 }}
@@ -186,22 +144,11 @@ export default function Navbar() {
             >
               {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-cyan-400" />}
             </motion.button>
-
-            {/* Language Toggle */}
-            <motion.button
-              onClick={toggleLanguage}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-3 py-2 rounded-lg font-medium text-sm transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30 text-cyan-400"
-              title="Toggle language"
-            >
-              {language}
-            </motion.button>
           </motion.div>
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="md:hidden p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30"
+            className="lg:hidden p-2 rounded-lg transition-all backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 hover:border-white/30"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -220,90 +167,43 @@ export default function Navbar() {
         style={{ borderTop: `1px solid ${COLORS.border}` }}
       >
         {mobileMenuOpen && (
-          <div className="px-4 py-4 space-y-3" style={{ backgroundColor: `rgba(10, 15, 30, 0.95)` }}>
-            {/* Mobile Action Buttons */}
-            <motion.button
-              onClick={handleMyLocation}
-              whileHover={{ x: 5 }}
-              className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-                color: COLORS.accent,
-              }}
-            >
-              <MapPin className="w-4 h-4" />
-              My Location
-            </motion.button>
-
-            <motion.button
-              onClick={toggleDarkMode}
-              whileHover={{ x: 5 }}
-              className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-                color: COLORS.accent,
-              }}
-            >
-              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              {darkMode ? 'Light Mode' : 'Dark Mode'}
-            </motion.button>
-
-            <motion.button
-              onClick={toggleLanguage}
-              whileHover={{ x: 5 }}
-              className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-                color: COLORS.accent,
-              }}
-            >
-              <Globe2 className="w-4 h-4" />
-              {language === 'EN' ? 'اردو' : 'English'}
-            </motion.button>
-
-            <hr style={{ borderColor: COLORS.border }} className="my-2" />
-
+          <div className="px-4 py-4 space-y-2" style={{ backgroundColor: 'rgba(10, 15, 30, 0.95)' }}>
             <Link
               href="/"
-              className="block px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-                color: COLORS.accent,
-              }}
+              className="block px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline hover:bg-indigo-500/15"
+              style={linkStyle}
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
-
+            {NAV_LINKS.map((l) => (
+              <Link
+                key={l.label}
+                href={l.href}
+                className="block px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline hover:bg-indigo-500/15"
+                style={linkStyle}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {l.label}
+              </Link>
+            ))}
             <Link
-              href="/rates"
-              className="block px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-                color: COLORS.accent,
-              }}
+              href="/my-location"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline hover:bg-indigo-500/15"
+              style={linkStyle}
               onClick={() => setMobileMenuOpen(false)}
             >
-              Rates
+              <MapPin className="w-4 h-4" /> My Location
             </Link>
-
-            <Link
-              href="/compare"
-              className="block px-4 py-2 text-sm font-medium rounded-lg transition-all no-underline"
-              style={{
-                backgroundColor: `rgba(99, 102, 241, 0.1)`,
-                border: `1px solid ${COLORS.border}`,
-                color: COLORS.accent,
-              }}
-              onClick={() => setMobileMenuOpen(false)}
+            <motion.button
+              onClick={toggleDarkMode}
+              whileHover={{ x: 5 }}
+              className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all"
+              style={{ backgroundColor: 'rgba(99, 102, 241, 0.1)', border: `1px solid ${COLORS.border}`, color: COLORS.accent }}
             >
-              Compare Cities
-            </Link>
+              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {darkMode ? 'Light Mode' : 'Dark Mode'}
+            </motion.button>
           </div>
         )}
       </motion.div>

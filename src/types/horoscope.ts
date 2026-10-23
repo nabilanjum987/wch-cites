@@ -76,6 +76,11 @@ export interface DailyReading {
   mood: string;
   compatibility: ZodiacSign;
   challenging: ZodiacSign;
+  /** Computed transit table (Round 2, R8): real planetary positions from
+   *  src/lib/transits.ts — present on readings produced by the engine. */
+  transits?: { planet: string; sign: string; degree: number; retrograde: boolean }[];
+  transit_aspects?: string[];
+  transit_method?: string;
 }
 
 export interface WeeklyForecast {

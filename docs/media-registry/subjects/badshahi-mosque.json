@@ -1,0 +1,96 @@
+{
+ "subject": "Badshahi Mosque",
+ "type": "place",
+ "package": "Round 3 S3 (batch 1)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Badshahi Mosque (Lahore).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Badshahi_Mosque_%28Lahore%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Badshahi_Mosque_(Lahore).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Muhammad Umair Mirza",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Badshahi Mosque (Lahore)\" by Muhammad Umair Mirza — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Badshahi Mosque (Lahore)",
+   "focal_point": null,
+   "width": 1911,
+   "height": 3271,
+   "sha1": "4e1d73f19771bf9a3b4da70f848d4c03a2a0e6ed",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Badshahi mosque of Lahore, Pakistan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/de/Badshahi_mosque_of_Lahore%2C_Pakistan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Badshahi_mosque_of_Lahore,_Pakistan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Zapata1000",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Badshahi mosque of Lahore, Pakistan\" by Zapata1000 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Badshahi mosque of Lahore, Pakistan",
+   "focal_point": null,
+   "width": 2558,
+   "height": 1692,
+   "sha1": "34a7773139d9c86af14825c4c0f56beab0fe7f56",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Courtyard of Badshahi mosque of Lahore, Pakistan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/53/Courtyard_of_Badshahi_mosque_of_Lahore%2C_Pakistan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Courtyard_of_Badshahi_mosque_of_Lahore,_Pakistan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Zapata1000",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Courtyard of Badshahi mosque of Lahore, Pakistan\" by Zapata1000 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Courtyard of Badshahi mosque of Lahore, Pakistan",
+   "focal_point": null,
+   "width": 2578,
+   "height": 1699,
+   "sha1": "8496cff9900cb4770d08dfa4b26da5f8eb3035db",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Badshahi Mosque Lahore , Pakistan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Badshahi_Mosque_Lahore_%2C_Pakistan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Badshahi_Mosque_Lahore_,_Pakistan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Harvinder Chandigarh",
+   "licence": "CC BY 4.0",
+   "attribution": "\"Badshahi Mosque Lahore , Pakistan\" by Harvinder Chandigarh — CC BY 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Badshahi Mosque Lahore , Pakistan",
+   "focal_point": null,
+   "width": 2768,
+   "height": 3200,
+   "sha1": "d1b59b4c67e6efdb63b0c3339faf1fe993b311b1",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Badshahi Mosque in Lahore ,Pakistan 03.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Badshahi_Mosque_in_Lahore_%2CPakistan_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Badshahi_Mosque_in_Lahore_,Pakistan_03.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Harvinder Chandigarh",
+   "licence": "CC BY 4.0",
+   "attribution": "\"Badshahi Mosque in Lahore ,Pakistan 03\" by Harvinder Chandigarh — CC BY 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Badshahi Mosque in Lahore ,Pakistan 03",
+   "focal_point": null,
+   "width": 4608,
+   "height": 3456,
+   "sha1": "722ebe810cf6dfe804a7838e84fba5f5aed0f0c4",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Gateway of Badshahi Mosque in the aftermath of the Second-Anglo Sikh War, Lahore, ca.1849.jpg",
+   "reason": "resolution too low (800px wide)"
+  }
+ ]
+}

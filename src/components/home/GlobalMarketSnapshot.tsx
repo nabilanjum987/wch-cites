@@ -98,7 +98,6 @@ export default function GlobalMarketSnapshot() {
     return () => { cancelled = true; };
   }, []);
 
-  const pending = !m.loaded;
 
   return (
     <div className="mb-4">
@@ -117,7 +116,7 @@ export default function GlobalMarketSnapshot() {
             <Change value={m.goldChange} />
           </div>
           <div className="text-2xl font-bold text-white">
-            {m.goldPerGram != null ? <>${m.goldPerGram.toFixed(2)}<span className="text-gray-400 text-sm ml-1">/gram</span></> : <span className="text-base text-gray-400">{pending ? 'Loading…' : 'Live on the Rates page'}</span>}
+            {m.goldPerGram != null ? <>${m.goldPerGram.toFixed(2)}<span className="text-gray-400 text-sm ml-1">/gram</span></> : <span className="text-base text-gray-400">{'Live on the Rates page'}</span>}
           </div>
         </div>
 
@@ -127,7 +126,7 @@ export default function GlobalMarketSnapshot() {
             <Change value={m.btcChange} />
           </div>
           <div className="text-2xl font-bold text-white">
-            {m.btc != null ? `$${Math.round(m.btc).toLocaleString()}` : <span className="text-base text-gray-400">{pending ? 'Loading…' : 'Live on the Rates page'}</span>}
+            {m.btc != null ? `$${Math.round(m.btc).toLocaleString()}` : <span className="text-base text-gray-400">{'Live on the Rates page'}</span>}
           </div>
         </div>
 
@@ -137,7 +136,7 @@ export default function GlobalMarketSnapshot() {
             <Change value={m.usdPkrChange} />
           </div>
           <div className="text-2xl font-bold text-white">
-            {m.usdPkr != null ? `Rs ${m.usdPkr.toFixed(2)}` : <span className="text-base text-gray-400">{pending ? 'Loading…' : 'Live on the Rates page'}</span>}
+            {m.usdPkr != null ? `Rs ${m.usdPkr.toFixed(2)}` : <span className="text-base text-gray-400">{'Live on the Rates page'}</span>}
           </div>
         </div>
       </div>

@@ -1,0 +1,96 @@
+{
+ "subject": "Canberra",
+ "type": "city",
+ "package": "Batch 2 countries (capital)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified (batch 2, 2026-10-22). The subject's data package belongs to the batch-2 streams and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Canberra (AU), Commonwealth Avenue Bridge -- 2019 -- 1811.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Canberra_%28AU%29%2C_Commonwealth_Avenue_Bridge_--_2019_--_1811.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Canberra_(AU),_Commonwealth_Avenue_Bridge_--_2019_--_1811.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Dietmar Rabich",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Canberra (AU), Commonwealth Avenue Bridge -- 2019 -- 1811\" by Dietmar Rabich — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Canberra (AU), Commonwealth Avenue Bridge  —  —  2019  —  —  1811",
+   "focal_point": null,
+   "width": 6647,
+   "height": 4431,
+   "sha1": "e62e61aac7a15bc651860d9c54017d2b7c9dd203",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Parliament House at dusk, Canberra ACT.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Parliament_House_at_dusk%2C_Canberra_ACT.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Parliament_House_at_dusk,_Canberra_ACT.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Thennicke",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Parliament House at dusk, Canberra ACT\" by Thennicke — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Parliament House at dusk, Canberra ACT",
+   "focal_point": null,
+   "width": 5505,
+   "height": 3670,
+   "sha1": "da05a46eb75326e4fe6f2dfbcb504b763414364a",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Australian House of Representatives - Parliament of Australia.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Australian_House_of_Representatives_-_Parliament_of_Australia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Australian_House_of_Representatives_-_Parliament_of_Australia.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "JJ Harrison ( https://www.jjharrison.com.au/ )",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Australian House of Representatives - Parliament of Australia\" by JJ Harrison ( https://www.jjharrison.com.au/ ) — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Australian House of Representatives  —  Parliament of Australia",
+   "focal_point": null,
+   "width": 4202,
+   "height": 2500,
+   "sha1": "cfdebfd2f720d7057a34e309ad73c935f7536042",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Old and new Parliament Houses; Canberra Australia.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/19/Old_and_new_Parliament_Houses%3B_Canberra_Australia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Old_and_new_Parliament_Houses;_Canberra_Australia.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Thennicke",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Old and new Parliament Houses; Canberra Australia\" by Thennicke — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Old and new Parliament Houses; Canberra Australia",
+   "focal_point": null,
+   "width": 5494,
+   "height": 3090,
+   "sha1": "1a81bcb7fee139ce02158377f41d1eaa73a603b6",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Canberra (AU), Parliament House and Old Parliament House -- 2019 -- 1767.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/11/Canberra_%28AU%29%2C_Parliament_House_and_Old_Parliament_House_--_2019_--_1767.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Canberra_(AU),_Parliament_House_and_Old_Parliament_House_--_2019_--_1767.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Dietmar Rabich",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Canberra (AU), Parliament House and Old Parliament House -- 2019 -- 1767\" by Dietmar Rabich — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Canberra (AU), Parliament House and Old Parliament House  —  —  2019  —  —  1767",
+   "focal_point": null,
+   "width": 6623,
+   "height": 4415,
+   "sha1": "2782046bba90eb981ac78d1c7009b40c76825785",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Parliament House, Canberra, Pano jjron 25.9.2008-edit1.jpg",
+   "reason": "licence not freely reusable: 'GFDL 1.2'"
+  }
+ ]
+}

@@ -268,3 +268,186 @@ export function generateTrendingTopics(city: string, _articles: NewsArticle[]): 
 export function generateWeekInReview(articles: NewsArticle[]): NewsArticle[] {
   return articles.slice(0, 7);
 }
+
+// ── Categorized news system (WP8 / marathon Q13) ────────────────────────────
+// Spec: wch-news-system-spec-2026-10-22.md. One deduped, source-labelled
+// feed per category, merged from GNews + The Guardian + verified RSS.
+// Rules: headline + source + link + time only; dedupe across sources by
+// normalized headline AND normalized URL; items older than 72h fall off.
+
+import { fetchRssByCategory, type RssItem } from '../news-rss';
+
+export type WchNewsCategory =
+  | 'world' | 'pakistan' | 'finance' | 'crypto'
+  | 'health' | 'science' | 'technology' | 'sports';
+
+export const NEWS_CATEGORIES: { key: WchNewsCategory; label: string; hubPath: string }[] = [
+  { key: 'world',      label: 'World',                hubPath: '/news/world' },
+  { key: 'pakistan',   label: 'Pakistan',             hubPath: '/news/pakistan' },
+  { key: 'finance',    label: 'Finance',              hubPath: '/news/finance' },
+  { key: 'crypto',     label: 'Crypto',               hubPath: '/news/crypto' },
+  { key: 'health',     label: 'Health',               hubPath: '/news/health' },
+  { key: 'science',    label: 'Discoveries & Science', hubPath: '/news/science' },
+  { key: 'technology', label: 'Technology',           hubPath: '/news/technology' },
+  { key: 'sports',     label: 'Sports',               hubPath: '/news/sports' },
+];
+
+export const NEWS_CATEGORY_KEYS = NEWS_CATEGORIES.map((c) => c.key) as WchNewsCategory[];
+
+const MAX_AGE_MS = 72 * 60 * 60 * 1000;
+
+export function normalizeHeadline(title: string): string {
+  return title.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+export function normalizeUrl(raw: string): string {
+  try {
+    const u = new URL(raw);
+    u.hash = '';
+    for (const k of [...u.searchParams.keys()]) {
+      if (/^utm_/i.test(k) || k === 'fbclid' || k === 'gclid') u.searchParams.delete(k);
+    }
+    return `${u.hostname.replace(/^www\./, '')}${u.pathname.replace(/\/$/, '')}${u.search}`.toLowerCase();
+  } catch {
+    return raw.toLowerCase().trim();
+  }
+}
+
+// The same story from GNews and RSS (or Guardian) appears ONCE: an item
+// is dropped when either its normalized headline or its normalized URL
+// has already been seen. First occurrence wins — callers order sources
+// by trust (RSS direct feeds first, then Guardian, then GNews).
+export function dedupeArticles(articles: NewsArticle[]): NewsArticle[] {
+  const seenTitles = new Set<string>();
+  const seenUrls = new Set<string>();
+  const out: NewsArticle[] = [];
+  for (const a of articles) {
+    const t = normalizeHeadline(a.title);
+    const u = normalizeUrl(a.url);
+    if (!t || seenTitles.has(t) || seenUrls.has(u)) continue;
+    seenTitles.add(t);
+    seenUrls.add(u);
+    out.push(a);
+  }
+  return out;
+}
+
+function rssToArticle(item: RssItem, category: WchNewsCategory): NewsArticle {
+  return {
+    id: item.url,
+    title: item.title,
+    description: '',
+    url: item.url,
+    source: { name: item.source },
+    publishedAt: item.publishedAt,
+    category,
+    language: 'en',
+    country: '',
+    isBreaking: false,
+    sentiment: 'neutral',
+  };
+}
+
+// ── The Guardian (env-gated) ────────────────────────────────────────────────
+// The Guardian Open Platform needs a free API key. GUARDIAN_API_KEY is
+// NOT currently set in the environment — while it is absent this fetcher
+// is INACTIVE and returns [] (the blocker is logged in the Q13 evidence
+// pack). The moment the owner adds the key, Guardian items join the
+// merge with no code change.
+
+const GUARDIAN_BY_CATEGORY: Record<WchNewsCategory, { section?: string; q?: string }> = {
+  world:      { section: 'world' },
+  pakistan:   { q: 'Pakistan' },
+  finance:    { section: 'business' },
+  crypto:     { q: 'cryptocurrency bitcoin' },
+  health:     { q: 'health' },
+  science:    { section: 'science' },
+  technology: { section: 'technology' },
+  sports:     { section: 'sport' },
+};
+
+export async function fetchGuardianCategory(
+  category: WchNewsCategory,
+  limit = 10,
+): Promise<NewsArticle[]> {
+  const key = process.env.GUARDIAN_API_KEY;
+  if (!key) return [];
+  const cfg = GUARDIAN_BY_CATEGORY[category];
+  const params = new URLSearchParams({
+    'api-key': key,
+    'page-size': String(Math.min(limit, 20)),
+    'order-by': 'newest',
+  });
+  if (cfg.section) params.set('section', cfg.section);
+  if (cfg.q) params.set('q', cfg.q);
+  try {
+    const res = await fetch(`https://content.guardianapis.com/search?${params.toString()}`, {
+      signal: AbortSignal.timeout(8000),
+      next: { revalidate: 1800 },
+    } as RequestInit);
+    if (!res.ok) return [];
+    const json = await res.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const results: any[] = json?.response?.results ?? [];
+    return results.map((r) => ({
+      id: r.webUrl ?? r.id ?? '',
+      title: r.webTitle ?? '',
+      description: '',
+      url: r.webUrl ?? '',
+      source: { name: 'The Guardian' },
+      publishedAt: r.webPublicationDate ?? new Date().toISOString(),
+      category,
+      language: 'en',
+      country: '',
+      isBreaking: false,
+      sentiment: 'neutral',
+    } as NewsArticle)).filter((a: NewsArticle) => a.title && a.url);
+  } catch {
+    return [];
+  }
+}
+
+export function guardianConfigured(): boolean {
+  return typeof process.env.GUARDIAN_API_KEY === 'string' && process.env.GUARDIAN_API_KEY.length > 0;
+}
+
+// ── GNews per category ──────────────────────────────────────────────────────
+
+const GNEWS_QUERY_BY_CATEGORY: Record<WchNewsCategory, { q: string; country: string }> = {
+  world:      { q: 'world news', country: '' },
+  pakistan:   { q: 'Pakistan', country: 'PK' },
+  finance:    { q: 'stock market economy finance', country: '' },
+  crypto:     { q: 'bitcoin cryptocurrency', country: '' },
+  health:     { q: 'health medicine', country: '' },
+  science:    { q: 'science discovery research', country: '' },
+  technology: { q: 'technology', country: '' },
+  sports:     { q: 'sports cricket football', country: '' },
+};
+
+// The category feed the /news hub pages consume. Sources merge in trust
+// order (direct RSS → Guardian → GNews), dedupe runs across ALL of
+// them, stale items (>72h) fall off, newest first.
+export async function fetchNewsCategory(
+  category: WchNewsCategory,
+  limit = 20,
+): Promise<NewsArticle[]> {
+  const [rss, guardian, gnews] = await Promise.all([
+    fetchRssByCategory(category).catch(() => [] as RssItem[]),
+    fetchGuardianCategory(category).catch(() => [] as NewsArticle[]),
+    (async () => {
+      const cfg = GNEWS_QUERY_BY_CATEGORY[category];
+      return gnewsSearch(cfg.q, 'en', 10, category, cfg.country, 1800).catch(() => [] as NewsArticle[]);
+    })(),
+  ]);
+  const merged = [
+    ...rss.map((i) => rssToArticle(i, category)),
+    ...guardian,
+    ...gnews,
+  ];
+  const fresh = merged.filter(
+    (a) => Date.now() - new Date(a.publishedAt).getTime() < MAX_AGE_MS,
+  );
+  const deduped = dedupeArticles(fresh);
+  deduped.sort((x, y) => +new Date(y.publishedAt) - +new Date(x.publishedAt));
+  return deduped.slice(0, limit);
+}

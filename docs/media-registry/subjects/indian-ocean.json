@@ -1,0 +1,80 @@
+{
+ "subject": "Indian Ocean",
+ "type": "ocean",
+ "package": "Round 2 R3 (batch 1)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Floatplane at Bathala (Maldives).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Floatplane_at_Bathala_%28Maldives%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Floatplane_at_Bathala_(Maldives).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Gzzz",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Floatplane at Bathala (Maldives)\" by Gzzz — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Floatplane at Bathala (Maldives)",
+   "focal_point": null,
+   "width": 4798,
+   "height": 3088,
+   "sha1": "be1044b18c8ae14f05b5be1f5c3bb13eb9a48761",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Maldives Resort, Indian Ocean.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Maldives_Resort%2C_Indian_Ocean.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Maldives_Resort,_Indian_Ocean.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Dr. Ondřej Havelka (cestovatel)",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Maldives Resort, Indian Ocean\" by Dr. Ondřej Havelka (cestovatel) — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Maldives Resort, Indian Ocean",
+   "focal_point": null,
+   "width": 3564,
+   "height": 1874,
+   "sha1": "83b83d75536a2299ee7993b59b832ddf040bd0f9",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "1 Maldives, Indian Ocean, Asia.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/1_Maldives%2C_Indian_Ocean%2C_Asia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:1_Maldives,_Indian_Ocean,_Asia.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Dr. Ondřej Havelka (cestovatel)",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"1 Maldives, Indian Ocean, Asia\" by Dr. Ondřej Havelka (cestovatel) — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "1 Maldives, Indian Ocean, Asia",
+   "focal_point": null,
+   "width": 2673,
+   "height": 1447,
+   "sha1": "e87779b19a226b60fffdb77c6184ad65a2275593",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Sunset in Indian Ocean (Maldives).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Sunset_in_Indian_Ocean_%28Maldives%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Sunset_in_Indian_Ocean_(Maldives).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Mohamed Malik",
+   "licence": "CC BY 2.0",
+   "attribution": "\"Sunset in Indian Ocean (Maldives)\" by Mohamed Malik — CC BY 2.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Sunset in Indian Ocean (Maldives)",
+   "focal_point": null,
+   "width": 3094,
+   "height": 1968,
+   "sha1": "93af01179d433748bd6bd556b334cbd33e719618",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "2004 Indian Ocean earthquake Maldives tsunami wave.jpg",
+   "reason": "resolution too low (400px wide)"
+  }
+ ]
+}

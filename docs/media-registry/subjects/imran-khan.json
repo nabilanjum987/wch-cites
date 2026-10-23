@@ -1,0 +1,10 @@
+{
+ "subject": "Imran Khan",
+ "type": "personality",
+ "package": "Round 1 (published, PR #8)",
+ "coverage": "pending",
+ "coverage_note": "No image is recorded in the seed data (imageUrl absent) — no registry record created; nothing substituted.",
+ "harvested": "2026-10-22",
+ "records": [],
+ "rejected": []
+}

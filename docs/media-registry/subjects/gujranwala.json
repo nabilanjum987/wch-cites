@@ -1,0 +1,104 @@
+{
+ "subject": "Gujranwala",
+ "type": "city",
+ "package": "Round 2 R4 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Gujranwala flyover.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/26/Gujranwala_flyover.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Gujranwala_flyover.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Faraz Ishfaq Shah",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Gujranwala flyover\" by Faraz Ishfaq Shah — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Gujranwala flyover",
+   "focal_point": null,
+   "width": 4160,
+   "height": 3120,
+   "sha1": "59b776092f1061893117dfae3755ee6ecfcdcc69",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Gujranwala District, Punjab, Pakistan.png",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Gujranwala_District%2C_Punjab%2C_Pakistan.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Gujranwala_District,_Punjab,_Pakistan.png",
+   "source": "Wikimedia Commons",
+   "creator": "User:Abbasi786786",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Gujranwala District, Punjab, Pakistan\" by User:Abbasi786786 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Gujranwala District, Punjab, Pakistan",
+   "focal_point": null,
+   "width": 3880,
+   "height": 4000,
+   "sha1": "cbd475fa84d4cba21bdc81fcc0997de4a31f8b20",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Jamia Masjid Session Court, Gujranwala.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Jamia_Masjid_Session_Court%2C_Gujranwala.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Jamia_Masjid_Session_Court,_Gujranwala.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Tipoo Fawwad",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Jamia Masjid Session Court, Gujranwala\" by Tipoo Fawwad — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Jamia Masjid Session Court, Gujranwala",
+   "focal_point": null,
+   "width": 1590,
+   "height": 895,
+   "sha1": "a235ff741d3abae9f8c0c9fe589ce3d38f03c59b",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Railway Station city Gujranwala.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Railway_Station_city_Gujranwala.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Railway_Station_city_Gujranwala.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Tipoo Fawwad",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Railway Station city Gujranwala\" by Tipoo Fawwad — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Railway Station city Gujranwala",
+   "focal_point": null,
+   "width": 1464,
+   "height": 824,
+   "sha1": "7b21785bab79fa131c1681d7990215d4b11b5cbd",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Unknown Sikh style architecture Parao road Gujranwala.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Unknown_Sikh_style_architecture_Parao_road_Gujranwala.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Unknown_Sikh_style_architecture_Parao_road_Gujranwala.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Tipoo Fawwad",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Unknown Sikh style architecture Parao road Gujranwala\" by Tipoo Fawwad — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Unknown Sikh style architecture Parao road Gujranwala",
+   "focal_point": null,
+   "width": 1591,
+   "height": 896,
+   "sha1": "8f7ddfc167218950236541a5cf697b8477e15d94",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Stereoscopic photograph of the tomb or 'samadhi' (Indic cenotaph) of Mahan Singh at Gujranwala in Punjab, ca.1869.jpg",
+   "reason": "resolution too low (712px wide)"
+  },
+  {
+   "title": "Photograph of the Samadhi (Indic cenotaph or mausoleum) constructed in memory of Hari Singh Nalwa at Gujranwala, his home town, erected in 1892.jpg",
+   "reason": "resolution too low (712px wide)"
+  },
+  {
+   "title": "Gujranwala District.png",
+   "reason": "resolution too low (517px wide)"
+  }
+ ]
+}

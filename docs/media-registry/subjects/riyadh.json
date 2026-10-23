@@ -1,0 +1,88 @@
+{
+ "subject": "Riyadh",
+ "type": "city",
+ "package": "Round 3 S2 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Riyadh Skyline.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Riyadh_Skyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Riyadh_Skyline.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "B.alotaby",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Riyadh Skyline\" by B.alotaby — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Riyadh Skyline",
+   "focal_point": null,
+   "width": 4109,
+   "height": 2311,
+   "sha1": "2a8250488a1dde6d33810906e80495dacef941bf",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Riyadh Skyline New.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Riyadh_Skyline_New.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Riyadh_Skyline_New.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "mo -- ( Talk",
+   "licence": "Public domain",
+   "attribution": "\"Riyadh Skyline New\" by mo -- ( Talk — Public domain, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Riyadh Skyline New",
+   "focal_point": null,
+   "width": 1059,
+   "height": 714,
+   "sha1": "25c821935cbc27993365cd2e8710f4490d63c7b8",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Riyadh Skyline showing the King Abdullah Financial District (KAFD) and the famous Kingdom Tower .jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/98/Riyadh_Skyline_showing_the_King_Abdullah_Financial_District_%28KAFD%29_and_the_famous_Kingdom_Tower_.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Riyadh_Skyline_showing_the_King_Abdullah_Financial_District_(KAFD)_and_the_famous_Kingdom_Tower_.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "B.alotaby",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Riyadh Skyline showing the King Abdullah Financial District (KAFD) and the famous Kingdom Tower \" by B.alotaby — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Riyadh Skyline showing the King Abdullah Financial District (KAFD) and the famous Kingdom Tower ",
+   "focal_point": null,
+   "width": 6000,
+   "height": 4000,
+   "sha1": "40da28e8354d46b4d1b57265efc201abbb9d7aeb",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Riyadh North Skyline .jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Riyadh_North_Skyline_.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Riyadh_North_Skyline_.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "B.alotaby",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Riyadh North Skyline \" by B.alotaby — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Riyadh North Skyline ",
+   "focal_point": null,
+   "width": 1600,
+   "height": 1067,
+   "sha1": "c4592a53870c867cb59fba475f08760ca62ae457",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Riyadh Skyline (Kingdom Center).jpg",
+   "reason": "resolution too low (642px wide)"
+  },
+  {
+   "title": "Kingdom Tower at night.JPG",
+   "reason": "resolution too low (691px wide)"
+  },
+  {
+   "title": "Riyadh-Skyline.jpg",
+   "reason": "resolution too low (760px wide)"
+  }
+ ]
+}
