@@ -44,7 +44,7 @@ export default async function SportsPanel() {
   return (
     <div>
       {fixtures.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5 items-start">
           {fixtures.map((f, i) => (
             <div key={i} className="rounded-xl bg-white/5 border border-white/10 px-4 py-3">
               <div className="text-emerald-300 text-xs font-semibold uppercase tracking-wide">{fmtDate(f.date)}{f.league ? ` · ${f.league}` : ''}</div>
@@ -53,7 +53,7 @@ export default async function SportsPanel() {
           ))}
         </div>
       ) : (
-        <p className="text-white/50 text-sm mb-5">
+        <p className="sub-desc mb-5">
           No upcoming fixtures are listed for Pakistan's national teams in the sports feed right now — the panel fills itself the moment the next match is scheduled.
         </p>
       )}

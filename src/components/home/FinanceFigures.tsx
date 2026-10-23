@@ -37,12 +37,12 @@ export default async function FinanceFigures() {
   const card = 'rounded-2xl bg-white/5 border border-white/10 p-5';
   return (
     <div className="mt-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-start">
         {fng && (
           <div className={card}>
             <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Crypto Fear & Greed</div>
             <div className="text-white font-bold text-2xl">{fng.value}</div>
-            <div className="text-white/40 text-xs mt-1">Alternative.me index, updated daily</div>
+            <div className="sub-desc mt-1">Alternative.me index, updated daily</div>
           </div>
         )}
         {pop?.live?.type === 'population' && (
@@ -51,7 +51,7 @@ export default async function FinanceFigures() {
             <div className="text-white font-bold text-2xl">
               <PopulationCounter base={pop.live.base} perSecond={pop.live.perSecond} at={pop.live.at} />
             </div>
-            <div className="text-white/40 text-xs mt-1">
+            <div className="sub-desc mt-1">
               An estimate: the World Bank's latest counted total, grown at the Bank's published growth rate.
             </div>
           </div>
@@ -60,7 +60,7 @@ export default async function FinanceFigures() {
           <div className={card}>
             <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Life expectancy at birth</div>
             <div className="text-white font-bold text-2xl">{Number(lifeRow.value).toFixed(1)} years</div>
-            <div className="text-white/40 text-xs mt-1">World average, World Bank ({lifeRow.date})</div>
+            <div className="sub-desc mt-1">World average, World Bank ({lifeRow.date})</div>
           </div>
         )}
       </div>

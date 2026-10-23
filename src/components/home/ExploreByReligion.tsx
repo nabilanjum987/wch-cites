@@ -38,7 +38,7 @@ export default function ExploreByReligion() {
               </div>
               <div>
                 <div className="text-white font-bold text-sm">{f.name}</div>
-                <div className="text-white/40 text-xs mt-0.5 line-clamp-1">{f.desc}</div>
+                <div className="sub-desc mt-0.5 line-clamp-1">{f.desc}</div>
               </div>
             </div>
           </div>

@@ -263,7 +263,7 @@ function Section({ bg, title, desc, children }: {
             </motion.h2>
           )}
           {desc && (
-            <p className="text-white/40 text-sm leading-relaxed mb-6 max-w-3xl"
+            <p className="sub-desc mb-6 max-w-3xl"
               style={{ hyphens: 'none', wordBreak: 'keep-all' }}>
               {desc}
             </p>

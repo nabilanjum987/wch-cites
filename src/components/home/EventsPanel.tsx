@@ -62,19 +62,19 @@ export default async function EventsPanel() {
   return (
     <div>
       {upcoming.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5 items-start">
           {upcoming.map((h, i) => (
             <div key={i} className="rounded-xl bg-white/5 border border-white/10 px-4 py-3">
               <div className="text-emerald-300 text-xs font-semibold uppercase tracking-wide">
                 {h.date === todayIso ? 'Today' : fmtDate(h.date)} · {h.country}
               </div>
               <div className="text-white font-semibold text-sm mt-1">{h.name}</div>
-              <div className="text-white/40 text-xs">Public holiday</div>
+              <div className="sub-desc">Public holiday</div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-white/50 text-sm mb-5">
+        <p className="sub-desc mb-5">
           No public holidays this week in the holiday feed's covered countries — the city events pages below carry what is on.
         </p>
       )}

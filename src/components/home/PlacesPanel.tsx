@@ -30,13 +30,13 @@ export default function PlacesPanel() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
       {PLACES.map((p, i) => (
         <div key={p.name} className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <div className="flex items-start justify-between gap-2">
             <div>
               <div className="text-white font-bold">{p.name}</div>
-              <div className="text-white/40 text-xs">{p.city}, Pakistan</div>
+              <div className="sub-desc">{p.city}, Pakistan</div>
             </div>
             {temps[i] != null && (
               <div className="text-right">
@@ -45,7 +45,7 @@ export default function PlacesPanel() {
               </div>
             )}
           </div>
-          <p className="text-white/50 text-sm leading-relaxed mt-2">{p.note}</p>
+          <p className="sub-desc mt-2">{p.note}</p>
         </div>
       ))}
     </div>

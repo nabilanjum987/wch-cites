@@ -55,7 +55,7 @@ export default function FeaturedWonders() {
   return (
     <div className="mb-4">
       {tajTemp != null && (
-        <p className="text-white/60 text-sm mb-4">
+        <p className="sub-desc mb-4">
           Right now at the Taj Mahal in Agra: <span className="text-white font-semibold">{tajTemp}°C</span> — the marble changes colour with the light through the day.
         </p>
       )}
@@ -70,8 +70,8 @@ export default function FeaturedWonders() {
                   <div className="text-3xl">{w.emoji}</div>
                   <div>
                     <div className="text-white font-bold text-sm leading-tight">{w.name}</div>
-                    <div className="text-white/50 text-xs mt-0.5">{w.country}</div>
-                    <div className="text-white/40 text-xs mt-1 line-clamp-2">{w.desc}</div>
+                    <div className="sub-desc mt-0.5">{w.country}</div>
+                    <div className="sub-desc mt-1 line-clamp-2">{w.desc}</div>
                   </div>
                 </div>
               </div>
@@ -84,7 +84,7 @@ export default function FeaturedWonders() {
           })}
         </div>
       </div>
-      <p className="text-white/40 text-sm mt-4">
+      <p className="sub-desc mt-4">
         The Taj Mahal&rsquo;s full page is live now — live visiting conditions, history and photography guides. The other wonders open one by one as each passes review.{' '}
         <Link href="/wonders" className="text-white/70 underline underline-offset-4 hover:text-white">Explore all wonders →</Link>
       </p>

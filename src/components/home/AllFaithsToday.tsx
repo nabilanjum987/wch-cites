@@ -78,7 +78,7 @@ export default function AllFaithsToday() {
   return (
     <div className="mb-4">
       {/* SEO Paragraph */}
-      <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
+      <p className="sub-desc mb-8 max-w-4xl">
         The world runs on many different calendars at the same time. Today in the Islamic world it is
         a date in the Hijri calendar. In Jewish communities, the Hebrew date marks its own cycle of
         observance. Hindu families follow the Panchang for auspicious timings, and Buddhist
@@ -103,11 +103,11 @@ function FaithCard({ f }: { f: typeof faithCalendars[0] }) {
         <span className="text-2xl leading-none">{f.symbol}</span>
         <div>
           <div className="text-white font-semibold text-sm">{f.faith}</div>
-          <div className="text-gray-500 text-xs">{f.calendar}</div>
+          <div className="sub-desc">{f.calendar}</div>
         </div>
       </div>
       <div className="text-sm font-medium mb-1" style={{ color: f.color }}>{f.date}</div>
-      <div className="text-gray-400 text-xs leading-snug">{f.event}</div>
+      <div className="sub-desc">{f.event}</div>
     </div>
   );
 }

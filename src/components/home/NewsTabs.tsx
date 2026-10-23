@@ -38,16 +38,16 @@ export default function NewsTabs({ categories }: { categories: NewsCategoryData[
         ))}
       </div>
       {current && current.headlines.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
           {current.headlines.map((h, i) => (
             <Link key={i} href="/news" className="rounded-xl bg-white/5 border border-white/10 px-4 py-3 hover:border-white/25 transition-colors no-underline block">
               <div className="text-white/90 font-medium text-sm leading-snug">{h.title}</div>
-              <div className="text-white/40 text-xs mt-1">{h.source} · read on the news page</div>
+              <div className="sub-desc mt-1">{h.source} · read on the news page</div>
             </Link>
           ))}
         </div>
       ) : (
-        <p className="text-white/50 text-sm">
+        <p className="sub-desc">
           This category's feed is quiet right now — the news page carries the full wire.
         </p>
       )}

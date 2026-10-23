@@ -31,7 +31,7 @@ export default async function WorldNewsSection() {
   return (
     <div className="mb-4">
       {/* SEO Paragraph */}
-      <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-4xl">
+      <p className="sub-desc mb-8 max-w-4xl">
         Stay on top of what is happening across the world right now. WorldCityHub pulls together
         news from Asia, the Middle East, Europe, the Americas, Africa, and Oceania, covering
         politics, economy, culture, and society. Every headline links to the original publisher,
@@ -40,7 +40,7 @@ export default async function WorldNewsSection() {
 
       {items.length === 0 ? (
         <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-center mb-6">
-          <p className="text-white/60 text-sm">
+          <p className="sub-desc">
             Live headlines are unavailable right now — we never fill this space with placeholder
             stories. City news pages carry the latest local coverage.
           </p>
