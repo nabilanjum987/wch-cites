@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import {
   PUBLISHED_WONDERS,
   getWonder,
+  getWonderFaqs,
   getWonderLive,
   heroMedia,
   wonderMedia,
@@ -66,6 +67,9 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
   const wonder = await getWonder(slug);
   if (!wonder) notFound();
 
+  // Fix 3 (billi audit): FAQ list with the fee answer derived from the
+  // record's structured fee rows — single source for schema + visible block.
+  const faqs = getWonderFaqs(wonder);
   const live = await getWonderLive(wonder.lat, wonder.lng, wonder.timezone);
   const hero = heroMedia(wonder);
   const gallery = wonder.media.filter((m) => m.role === 'gallery' || m.role === 'detail');
@@ -102,7 +106,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
       },
       {
         '@type': 'FAQPage',
-        mainEntity: wonder.faqs.map((f) => ({
+        mainEntity: faqs.map((f) => ({
           '@type': 'Question',
           name: f.q,
           acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -120,10 +124,16 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
   // are rendered further down; this item only adds the missing prose
   // direct answer under the heading.
   const visitorFees = wonder.visitor.fees;
+  // Free-entry categories come from the fee rows themselves (Fix 3): the
+  // clause names the record's own free rows, so a record without a free
+  // row never claims one.
+  const freeFeeVisitors = (visitorFees ?? [])
+    .filter((f) => /free/i.test(f.amount))
+    .map((f) => f.visitor.toLowerCase());
   const wonderAnswer = [
     `${wonder.name} ${wonder.visitor.hoursText.charAt(0).toLowerCase()}${wonder.visitor.hoursText.slice(1)}${wonder.visitor.closedDays ? ` ${wonder.visitor.closedDays}` : ''}`,
     visitorFees && visitorFees.length > 0
-      ? `Tickets cost ${visitorFees.slice(0, 3).map((f) => `${f.amount} for ${f.visitor.toLowerCase()}`).join(', ')}${visitorFees.some((f) => /free/i.test(f.amount)) ? ', and children below 15 enter free' : ''}.`
+      ? `Tickets cost ${visitorFees.filter((f) => !/free/i.test(f.amount)).slice(0, 3).map((f) => `${f.amount} for ${f.visitor.toLowerCase()}`).join(', ')}${freeFeeVisitors.length > 0 ? `, and ${freeFeeVisitors.join(' and ')} enter free` : ''}.`
       : `The visitor panel on this page carries today's opening status, weather and golden-hour windows for the site, checked live.`,
     wonder.unescoId
       ? `It has been a UNESCO World Heritage Site since ${wonder.unescoYear} (site ${wonder.unescoId}).`
@@ -561,7 +571,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
         {/* 14 — FAQs + sources & credits + related */}
         <Section title="Frequently asked questions">
           <div className="space-y-3">
-            {wonder.faqs.map((f) => (
+            {faqs.map((f) => (
               <details key={f.q} className="rounded-xl border border-white/10 bg-white/5 p-4">
                 <summary className="cursor-pointer font-semibold text-white">{f.q}</summary>
                 <p className="mt-2 text-sm leading-relaxed text-gray-300">{f.a}</p>

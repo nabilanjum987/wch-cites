@@ -333,6 +333,13 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             a: `Gold in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola for 24-karat gold — the live spot price of ${usdOz} per troy ounce converted at this page's USD to PKR rate of ${fxText}, the same two live figures published in the tables below. That works out to PKR ${pkrOf(rates.per_gram)} per gram.${silver ? ` Silver is $${Math.round(silver.per_oz).toLocaleString('en-US')} per ounce.` : ''} The Sarafa bazaar rate announced by the APSGJA is set separately and can differ.`,
           },
           {
+            // Bank Q2 — the 24K per-tola phrasing mined verbatim from the
+            // competitor FAQ sections (see question bank); figures are
+            // this page's own live values, as everywhere in this block.
+            q: 'What is the 24K gold rate per tola in Pakistan today?',
+            a: `The 24-karat gold rate in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola, converted from the live spot price of ${usdOz} per troy ounce at this page's USD to PKR rate of ${fxText}. Per gram that is PKR ${pkrOf(rates.per_gram)}, and per 10 grams PKR ${pkrOf(rates.per_10g)}. The APSGJA Sarafa bazaar rate is announced separately and can differ; jewellers add making charges on top.`,
+          },
+          {
             q: 'What is the 22K gold price per tola in Pakistan?',
             a: `The 22-karat gold rate in Pakistan today is about PKR ${pkrOf(rates.by_karat.k22 * 11.664)} per tola, converted from the live spot price at USD to PKR ${fxText}. 22K gold is 91.7% pure — 22 parts gold in 24 — against 99.9% for 24K, which is why it costs less per tola. Jewellers favour 22K for jewellery because the alloyed metal is harder and holds stones and designs better than soft, pure gold.`,
           },
@@ -351,6 +358,12 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
           {
             q: 'How much is 1 gram of gold in Pakistan?',
             a: `One gram of 24-karat gold in Pakistan costs about PKR ${pkrOf(rates.per_gram)} right now — the live spot price converted at USD to PKR ${fxText}. Ten grams cost about PKR ${pkrOf(rates.per_10g)}, and one tola (11.664 grams) about PKR ${pkrOf(rates.per_tola)}. These are bullion rates before jewellers' making charges; the tables on this page also price the same gold in dollars and other currencies.`,
+          },
+          {
+            // Bank Q8 — why prices move; built from the same two live
+            // inputs (spot + FX) the whole page is priced from.
+            q: 'Why do gold prices change in Pakistan?',
+            a: `Gold prices in Pakistan change because the local rate is built from two moving parts: the international spot price in US dollars — ${usdOz} per troy ounce right now, ${rates.change_percent >= 0 ? '+' : ''}${rates.change_percent}% on the day — and the USD to PKR exchange rate, ${fxText} on this page. When either part moves, the rupee price per tola moves with it, before local premiums and jewellers' making charges are added.`,
           },
         ]
       : [];

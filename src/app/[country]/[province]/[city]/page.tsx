@@ -327,6 +327,11 @@ export default async function CityPage({
     temp, weatherDesc, fajr: timings?.Fajr, maghrib: timings?.Maghrib,
     goldPerGram,
     population: glance?.population ?? null,
+    // Fix 4 (billi audit): the language FAQ is built from this city's own
+    // dataset languages list and the emergency FAQ from the emergency
+    // numbers this page itself fetches — not from generator assumptions.
+    languages: glance?.languages ?? null,
+    emergency: { police: policeNum, ambulance: ambulanceNum, fire: fireNum },
   };
   const schemas = generateCitySchema(faqProps);
   const cityFaqs = generateCityFaqs(faqProps);

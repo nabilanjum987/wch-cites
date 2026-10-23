@@ -152,7 +152,11 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
         descSentences[0] ?? '',
       ]),
     });
-  } else if (quotes.length > 0) {
+  }
+  // Fix 2 (billi audit): the quote question was living-profiles-only; a
+  // deceased profile with recorded quotes gets it too — it is a bank
+  // question (Q4) and the record carries the data for every live profile.
+  if (quotes.length > 0) {
     faqs.push({
       q: `What is a famous quote by ${p.name}?`,
       a: acc(`"${quotes[0].text}"${quotes[0].context ? ` — ${quotes[0].context}.` : ''}`, [
@@ -160,6 +164,29 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
         quotes[1] ? `Also widely quoted: "${quotes[1].text}"` : '',
         achLine(0),
       ]),
+    });
+  }
+  // Bank Q6 (impact areas) — gated on the record carrying at least two
+  // achievements; composed from the achievement titles + their own text.
+  if (achievements.length >= 2) {
+    faqs.push({
+      q: `What are the key areas of ${p.name}'s impact?`,
+      a: acc(
+        `Two key areas of ${p.name}'s impact are ${achievements[0].title.toLowerCase()} and ${achievements[1].title.toLowerCase()}.`,
+        [achLine(2), achLine(3), descSentences[1] ?? ''],
+      ),
+    });
+  }
+  // Top-up to the bank count (7): if the structured fields above still
+  // leave the block short, FAQs are derived from the profile's own
+  // narrative sections, one per section, until the count is reached.
+  // (For Imran Khan this yields the bank's verbatim-mined "What is Imran
+  // Khan's cricket career like?" from his "Cricket Career" section.)
+  for (const section of p.descriptionSections ?? []) {
+    if (faqs.length >= 7) break;
+    faqs.push({
+      q: `What is ${p.name}'s ${section.title.toLowerCase()}?`,
+      a: acc(sOf(section.content).join(' '), [descSentences[1] ?? '']),
     });
   }
   return { directAnswer, faqs: faqs.filter((f) => f.a.trim().length > 0) };

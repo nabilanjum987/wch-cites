@@ -19,6 +19,13 @@ interface CityMetaProps {
   maghrib?: string | null;
   goldPerGram?: number | null;
   population?: string | null;
+  // Fix 4 (billi audit, Batch 4 Item 2 follow-up): the city's own dataset
+  // languages list (the GLANCE record the city page already renders in its
+  // at-a-glance panel) and the country emergency numbers the city page
+  // itself fetches — the language/emergency FAQs are built from these,
+  // never from country-shaped assumptions baked into the generator.
+  languages?: string | null;
+  emergency?: { police?: string | null; ambulance?: string | null; fire?: string | null } | null;
 }
 
 export function generateCityMeta(props: CityMetaProps) {
@@ -58,12 +65,23 @@ export function generateCityMeta(props: CityMetaProps) {
 export function generateCityFaqs(props: CityMetaProps): { q: string; a: string }[] {
   const { city, country, province, temp, weatherDesc, fajr, maghrib, goldPerGram, population } = props;
   const { year } = now();
-  return [
+  // Fix 4 (billi audit, Batch 4 Item 2 follow-up): this generator runs for
+  // EVERY city, so no claim may be baked in just because it is true of the
+  // Pakistani cities live today. Country-specific content is gated on the
+  // city's own country; the language and emergency answers are built from
+  // the city's own data (dataset languages list + the emergency numbers
+  // the page itself fetches, with Pakistan's national numbers as the
+  // fallback for Pakistani cities only); and the best-time answer makes no
+  // climate claims at all, because the city dataset carries no per-city
+  // climate data — an earlier version stated Lahore-shaped claims
+  // (Oct–Mar pleasant, 40°C summers, monsoon months) for every city.
+  const isPakistan = country === 'Pakistan';
+  const faqs: { q: string; a: string }[] = [
     {
       q: `What is the weather in ${city} today?`,
       a: temp
         ? `The temperature in ${city} right now is ${Math.round(temp)}°C with ${weatherDesc ?? 'mixed conditions'}. The live weather panel at the top of this page also shows the feels-like temperature, humidity, wind speed and UV index for ${city}, refreshed hourly from the same feed, together with today's sunrise and sunset times and a short outlook for the rest of the day.`
-        : `${city}'s weather changes with the seasons, so check the live weather panel at the top of this page for today's temperature, feels-like temperature, humidity, wind speed and UV index in ${city}, refreshed hourly. The panel also shows today's sunrise and sunset times and a short outlook, and the best-time-to-visit answer below explains which months suit a trip to ${city} best.`,
+        : `${city}'s weather changes with the seasons, so check the live weather panel at the top of this page for today's temperature, feels-like temperature, humidity, wind speed and UV index in ${city}, refreshed hourly. The panel also shows today's sunrise and sunset times and a short outlook, and the best-time-to-visit answer below helps you plan when to come.`,
     },
     {
       q: `What are today's prayer times in ${city}?`,
@@ -75,7 +93,7 @@ export function generateCityFaqs(props: CityMetaProps): { q: string; a: string }
       q: `What is the gold rate in ${city} today?`,
       a: goldPerGram
         ? `The gold rate in ${city} today is PKR ${Math.round(goldPerGram).toLocaleString()} per gram for 24-karat gold, which equals PKR ${Math.round(goldPerGram * 11.664).toLocaleString()} per tola — one tola is 11.664 grams. The rate follows the international bullion market and the rupee's exchange rate, and this page updates it daily from the same live feed. Jewellers in ${city} add making charges on top of this bullion rate.`
-        : `Gold in ${city} is priced per gram and per tola (one tola = 11.664 grams) from the international bullion market, converted into Pakistani rupees. The Gold & Rates section of this page shows today's 24-karat rate with 22K, 21K and 18K beside it, updated daily; the full Rates page tracks the metal in other currencies too. Jewellers add making charges on top.`,
+        : `Gold in ${city} is priced per gram and per tola (one tola = 11.664 grams) from the international bullion market, converted into ${isPakistan ? 'Pakistani rupees' : 'the local currency'}. The Gold & Rates section of this page shows today's 24-karat rate with 22K, 21K and 18K beside it, updated daily; the full Rates page tracks the metal in other currencies too. Jewellers add making charges on top.`,
     },
     {
       q: `What is ${city} famous for?`,
@@ -89,19 +107,62 @@ export function generateCityFaqs(props: CityMetaProps): { q: string; a: string }
         ? `${city}'s population is ${population} — the figure held in the WorldCityHub city dataset, and the same number the at-a-glance panel on this page shows. Like most large cities in the region, ${city} continues to grow through rural-to-urban migration and natural increase, and every national census has counted more residents than the one before it.`
         : `${city}'s population figure is shown in the at-a-glance panel on this page, taken from the WorldCityHub city dataset. Like most large cities in the region, ${city} continues to grow through rural-to-urban migration and natural increase, and every national census has counted more residents than the one before it. Dataset figures are refreshed when new census results are published.`,
     },
-    {
-      q: `What language is spoken in ${city}?`,
-      a: `Urdu (the national language, used in education, government and media) and the regional language of ${province} are the primary languages spoken in ${city}. English is widely used in business, universities and government offices. Many residents are multilingual and switch between Urdu, the regional language and English within a single conversation, and signage across ${city} commonly mixes all three.`,
-    },
-    {
-      q: `What is the emergency number in ${city}?`,
-      a: `In ${city}, call 15 for Police, 1122 for Rescue or an ambulance (Rescue 1122 is one of Pakistan's best-known emergency services), 16 for the Fire Brigade, and 115 for the Edhi Foundation ambulance. The women's helpline is 1043. All of these numbers are free to call from any mobile or landline, and they work around the clock, every day of the year.`,
-    },
-    {
-      q: `What is the best time to visit ${city}?`,
-      a: `The best time to visit ${city} is October to March, when temperatures are pleasant (10°C–25°C), the air quality is better, and major cultural festivals take place. Avoid May–July, when temperatures regularly exceed 40°C. The monsoon season (July–September) brings heavy rain and high humidity but also green parks and a vibrant street food atmosphere; today's live conditions are at the top of this page.`,
-    },
   ];
+
+  // Language — built from the city's OWN dataset languages list (the same
+  // GLANCE value the at-a-glance panel renders). The elaboration about
+  // Urdu's national role and English usage is Pakistan-specific and is
+  // emitted only for Pakistani cities; without dataset languages the
+  // question is omitted rather than answered from an assumption.
+  if (props.languages) {
+    faqs.push({
+      q: `What language is spoken in ${city}?`,
+      a: isPakistan
+        ? `The main languages spoken in ${city} are ${props.languages} — the languages listed for the city in the at-a-glance panel on this page. Urdu is Pakistan's national language, used in education, government and media. English is widely used in business, universities and government offices, and many residents are multilingual, switching between these languages and English within a single conversation; signage across ${city} commonly mixes them.`
+        : `The main languages spoken in ${city} are ${props.languages} — the languages listed for the city in the at-a-glance panel on this page. Language shapes daily life in ${city}: the culture, food and Famous People sections of this page reflect the mix, and the full city guide below covers the city's neighbourhoods, education and daily life in more depth.`,
+    });
+  }
+
+  // Emergency numbers — built from the numbers the city page itself
+  // fetches for the country; for Pakistani cities the national numbers
+  // (15 / 1122 / 16, plus the Edhi ambulance and the 1043 women's
+  // helpline, which are Pakistan-only services) are the fallback when the
+  // fetch has no data. A non-Pakistani city with no fetched numbers omits
+  // the question instead of inheriting Pakistan's.
+  const em = props.emergency;
+  const police = em?.police ?? (isPakistan ? '15' : null);
+  const ambulance = em?.ambulance ?? (isPakistan ? '1122' : null);
+  const fire = em?.fire ?? (isPakistan ? '16' : null);
+  const numberParts: string[] = [];
+  if (police) numberParts.push(`${police} for Police`);
+  if (ambulance) {
+    numberParts.push(
+      `${ambulance} for Rescue or an ambulance${isPakistan && ambulance === '1122' ? " (Rescue 1122 is one of Pakistan's best-known emergency services)" : ''}`,
+    );
+  }
+  if (fire) numberParts.push(`${fire} for the Fire Brigade`);
+  if (isPakistan) numberParts.push('115 for the Edhi Foundation ambulance');
+  if (numberParts.length > 0) {
+    const numberList =
+      numberParts.length > 1
+        ? `${numberParts.slice(0, -1).join(', ')}, and ${numberParts[numberParts.length - 1]}`
+        : numberParts[0];
+    faqs.push({
+      q: `What is the emergency number in ${city}?`,
+      a: `In ${city}, call ${numberList}.${isPakistan ? " The women's helpline is 1043." : ''} All of these numbers are free to call from any mobile or landline, and they work around the clock, every day of the year.`,
+    });
+  }
+
+  // Best time to visit — deliberately free of climate claims: the city
+  // dataset carries no per-city climate data, so the answer points at the
+  // page's live conditions and its own place pages instead of repeating
+  // one city's seasons as if they were every city's.
+  faqs.push({
+    q: `What is the best time to visit ${city}?`,
+    a: `The best time to visit ${city} is when its weather suits the trip you want — the live weather panel at the top of this page shows today's temperature, feels-like conditions and outlook for ${city}, updated hourly. The Famous Places, street food and events sections below run year-round, and each place's own page notes its best visiting conditions and opening hours.`,
+  });
+
+  return faqs;
 }
 
 export function generateCitySchema(props: CityMetaProps) {

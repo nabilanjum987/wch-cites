@@ -260,6 +260,34 @@ function buildPlaceAeo(place: Place): { directAnswer: string; faqs: AeoFaq[] } {
       a: accumulate(sig.join(' '), desc),
     },
   ];
+
+  // Bank Q6 (capacity) — emitted only when the record's own significance
+  // text states a capacity, and composed from those sentences alone.
+  // (thingsToKnow is deliberately NOT used: the Badshahi record's
+  // thingsToKnow capacity figure contradicts its significance text —
+  // that contradiction is the F1 card's, not this generator's.)
+  const capSentences = sig.filter((s) => /worshippers|accommodate|holds|capacity/i.test(s));
+  if (capSentences.length > 0) {
+    faqs.push({
+      q: `How many people can ${place.name} hold?`,
+      a: accumulate(capSentences.join(' '), [sig[0] ?? '', desc[0] ?? '', desc[1] ?? '']),
+    });
+  }
+
+  // Bank Q7 (dress code) — emitted only when the record's own tips carry
+  // one; a place whose record has no dress guidance gets no dress FAQ.
+  const dressTips = tipSentences.filter((s) => /dress|modest|scarf|wear|clothing/i.test(s));
+  if (dressTips.length > 0) {
+    faqs.push({
+      q: `What should visitors wear at ${place.name}?`,
+      a: accumulate(dressTips.join(' '), [
+        ...tipSentences.filter((s) => !dressTips.includes(s)),
+        openSentence,
+        bestSentence,
+      ]),
+    });
+  }
+
   return { directAnswer, faqs };
 }
 
