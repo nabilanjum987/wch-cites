@@ -1,0 +1,96 @@
+{
+ "subject": "Mardan",
+ "type": "city",
+ "package": "Batch 2 PK cities",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified (batch 2, 2026-10-22). The subject's data package belongs to the batch-2 streams and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Ruins of Takht-i-bahi located at Mardan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Ruins_of_Takht-i-bahi_located_at_Mardan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Ruins_of_Takht-i-bahi_located_at_Mardan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Hidayat-ur-Rehman",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Ruins of Takht-i-bahi located at Mardan\" by Hidayat-ur-Rehman — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Ruins of Takht — i — bahi located at Mardan",
+   "focal_point": null,
+   "width": 6000,
+   "height": 4000,
+   "sha1": "a72b02b9b1946c43388e4b4cb3f2cd922dc7503e",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Dawn in Takht-i-Bahi, Khyber Pakhtunkhwa, Pakistan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Dawn_in_Takht-i-Bahi%2C_Khyber_Pakhtunkhwa%2C_Pakistan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Dawn_in_Takht-i-Bahi,_Khyber_Pakhtunkhwa,_Pakistan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Syed Haad",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Dawn in Takht-i-Bahi, Khyber Pakhtunkhwa, Pakistan\" by Syed Haad — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Dawn in Takht — i — Bahi, Khyber Pakhtunkhwa, Pakistan",
+   "focal_point": null,
+   "width": 2448,
+   "height": 3264,
+   "sha1": "b9bd56c20adf267bff8f4a6fc024db4f6b1db671",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Remainings of budhists Takht-i-bahi located at Mardan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Remainings_of_budhists_Takht-i-bahi_located_at_Mardan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Remainings_of_budhists_Takht-i-bahi_located_at_Mardan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Hidayat-ur-Rehman",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Remainings of budhists Takht-i-bahi located at Mardan\" by Hidayat-ur-Rehman — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Remainings of budhists Takht — i — bahi located at Mardan",
+   "focal_point": null,
+   "width": 6000,
+   "height": 4000,
+   "sha1": "44608990ff438c389ff3c1ade02fadd619081a5b",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Ruins of Takht-i-bahi (spring water) located at Mardan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Ruins_of_Takht-i-bahi_%28spring_water%29_located_at_Mardan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Ruins_of_Takht-i-bahi_(spring_water)_located_at_Mardan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Hidayat-ur-Rehman",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Ruins of Takht-i-bahi (spring water) located at Mardan\" by Hidayat-ur-Rehman — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Ruins of Takht — i — bahi (spring water) located at Mardan",
+   "focal_point": null,
+   "width": 5832,
+   "height": 3888,
+   "sha1": "41908cf701bee861f779bd516ffe4f3350cff5b7",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Ruins of Takht-i-bahi and city view located at Mardan.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Ruins_of_Takht-i-bahi_and_city_view_located_at_Mardan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Ruins_of_Takht-i-bahi_and_city_view_located_at_Mardan.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Hidayat-ur-Rehman",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Ruins of Takht-i-bahi and city view located at Mardan\" by Hidayat-ur-Rehman — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Ruins of Takht — i — bahi and city view located at Mardan",
+   "focal_point": null,
+   "width": 6000,
+   "height": 4000,
+   "sha1": "98f65355a164428b992081a587e26d05cc8314b5",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Takht i bahi.jpg",
+   "reason": "resolution too low (720px wide)"
+  }
+ ]
+}

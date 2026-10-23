@@ -1,0 +1,96 @@
+{
+ "subject": "Peshawar",
+ "type": "city",
+ "package": "Round 2 R4 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Islamia College 04.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Islamia_College_04.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Islamia_College_04.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Saadkhan12345",
+   "licence": "CC0",
+   "attribution": "\"Islamia College 04\" by Saadkhan12345 — CC0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Islamia College 04",
+   "focal_point": null,
+   "width": 2592,
+   "height": 1016,
+   "sha1": "24512a151cb70289d672d249a0c385ed0e71741d",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Islamia College Peshawar (Public Sector University), Khyber Pakhtunkhwa, Pakistan cropped.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Islamia_College_Peshawar_%28Public_Sector_University%29%2C_Khyber_Pakhtunkhwa%2C_Pakistan_cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Islamia_College_Peshawar_(Public_Sector_University),_Khyber_Pakhtunkhwa,_Pakistan_cropped.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Zafarmaini",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Islamia College Peshawar (Public Sector University), Khyber Pakhtunkhwa, Pakistan cropped\" by Zafarmaini — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Islamia College Peshawar (Public Sector University), Khyber Pakhtunkhwa, Pakistan cropped",
+   "focal_point": null,
+   "width": 2725,
+   "height": 1356,
+   "sha1": "15e2113d6749bf1ed5e9f3215cc5c9885700a53a",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Islamia College Peshawar 9.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Islamia_College_Peshawar_9.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Islamia_College_Peshawar_9.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Adnanyousafkhalil",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Islamia College Peshawar 9\" by Adnanyousafkhalil — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Islamia College Peshawar 9",
+   "focal_point": null,
+   "width": 6000,
+   "height": 3561,
+   "sha1": "15a7cfa39e4ae425d05128fdcc5f4c58c6aeda20",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Islamia college lawns.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Islamia_college_lawns.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Islamia_college_lawns.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Saadkhan12345",
+   "licence": "CC0",
+   "attribution": "\"Islamia college lawns\" by Saadkhan12345 — CC0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Islamia college lawns",
+   "focal_point": null,
+   "width": 2592,
+   "height": 1593,
+   "sha1": "0e0e2176cd47cab216811931bee04f75f64ae1e7",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Islamia College Peshawar mosque interior.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Islamia_College_Peshawar_mosque_interior.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Islamia_College_Peshawar_mosque_interior.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Adnanyousafkhalil",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Islamia College Peshawar mosque interior\" by Adnanyousafkhalil — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Islamia College Peshawar mosque interior",
+   "focal_point": null,
+   "width": 6000,
+   "height": 4000,
+   "sha1": "105191eb171d0171c0d3091d27a139bd6e13d314",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Islamia College Peshawar 2.jpg",
+   "reason": "resolution too low (700px wide)"
+  }
+ ]
+}

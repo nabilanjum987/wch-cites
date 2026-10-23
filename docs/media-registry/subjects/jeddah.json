@@ -1,0 +1,84 @@
+{
+ "subject": "Jeddah",
+ "type": "city",
+ "package": "Round 3 S2 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Jeddah sea front.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Jeddah_sea_front.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Jeddah_sea_front.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Radosław Botev",
+   "licence": "CC BY 3.0 pl",
+   "attribution": "\"Jeddah sea front\" by Radosław Botev — CC BY 3.0 pl, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Jeddah sea front",
+   "focal_point": null,
+   "width": 4000,
+   "height": 3000,
+   "sha1": "4834fd49d289f762a5a95fd23c2ff5ce936fecda",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Mosque on Water V2.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/Mosque_on_Water_V2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Mosque_on_Water_V2.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Ilmarry",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Mosque on Water V2\" by Ilmarry — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Mosque on Water V2",
+   "focal_point": null,
+   "width": 2955,
+   "height": 1935,
+   "sha1": "34a54a22c5c3d0176a13bc59bcc78b66de90fb8b",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "MOSQUE-ON-WATER.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/MOSQUE-ON-WATER.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:MOSQUE-ON-WATER.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Ilmarry",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"MOSQUE-ON-WATER\" by Ilmarry — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "MOSQUE — ON — WATER",
+   "focal_point": null,
+   "width": 2968,
+   "height": 1948,
+   "sha1": "7c7e4c52322b3f44375d5d62f80fc7508bc36af3",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "MOSQUE-ON-WATER edit.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/47/MOSQUE-ON-WATER_edit.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:MOSQUE-ON-WATER_edit.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Ilmarry",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"MOSQUE-ON-WATER edit\" by Ilmarry — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "MOSQUE — ON — WATER edit",
+   "focal_point": null,
+   "width": 2968,
+   "height": 1948,
+   "sha1": "c918650677def8e089e22026e3067172c7f8f380",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Jeddah Seafront.jpg",
+   "reason": "resolution too low (410px wide)"
+  },
+  {
+   "title": "Jeddah, Saudi Arabia (5670).jpg",
+   "reason": "resolution too low (701px wide)"
+  }
+ ]
+}

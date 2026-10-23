@@ -1,0 +1,96 @@
+{
+ "subject": "Abu Dhabi",
+ "type": "city",
+ "package": "Round 3 S2 (build-only package)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Abu Dhabi Skyline fron Corniche Rd.JPG",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Abu_Dhabi_Skyline_fron_Corniche_Rd.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abu_Dhabi_Skyline_fron_Corniche_Rd.JPG",
+   "source": "Wikimedia Commons",
+   "creator": "FritzDaCat",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Abu Dhabi Skyline fron Corniche Rd\" by FritzDaCat — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Abu Dhabi Skyline fron Corniche Rd",
+   "focal_point": null,
+   "width": 4000,
+   "height": 3000,
+   "sha1": "584ca42486e4a9210330908521401057e49cc2c3",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Abu Dhabi skyline - corniche 2.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Abu_Dhabi_skyline_-_corniche_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abu_Dhabi_skyline_-_corniche_2.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Sabithnav",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Abu Dhabi skyline - corniche 2\" by Sabithnav — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Abu Dhabi skyline  —  corniche 2",
+   "focal_point": null,
+   "width": 6000,
+   "height": 4000,
+   "sha1": "4aafd0cb460e7df4d2d04074eedfacb0a1f10611",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Abu Dhabi skyline - corniche 3.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/48/Abu_Dhabi_skyline_-_corniche_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abu_Dhabi_skyline_-_corniche_3.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Sabithnav",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Abu Dhabi skyline - corniche 3\" by Sabithnav — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Abu Dhabi skyline  —  corniche 3",
+   "focal_point": null,
+   "width": 4975,
+   "height": 4000,
+   "sha1": "c91e286b4af5c1df48a2171a3ec5047f0843aa4e",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Abu Dhabi skyline - corniche.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Abu_Dhabi_skyline_-_corniche.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abu_Dhabi_skyline_-_corniche.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Sabithnav",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Abu Dhabi skyline - corniche\" by Sabithnav — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Abu Dhabi skyline  —  corniche",
+   "focal_point": null,
+   "width": 4584,
+   "height": 4000,
+   "sha1": "794a7415f1004794e84f0b4b260d489875eb4f89",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Abu Dhabi Corniche skyline.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Abu_Dhabi_Corniche_skyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Abu_Dhabi_Corniche_skyline.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "AdnanDekedek",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Abu Dhabi Corniche skyline\" by AdnanDekedek — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Abu Dhabi Corniche skyline",
+   "focal_point": null,
+   "width": 5184,
+   "height": 3456,
+   "sha1": "4b06d4c3663936274fbb0848c0cb83cae38c0990",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Abu Dhabi corniche skyline.jpg",
+   "reason": "resolution too low (720px wide)"
+  }
+ ]
+}

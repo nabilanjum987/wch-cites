@@ -1,0 +1,96 @@
+{
+ "subject": "Muscat",
+ "type": "city",
+ "package": "Batch 2 countries (capital)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified (batch 2, 2026-10-22). The subject's data package belongs to the batch-2 streams and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "Corniche, Muscat, Oman.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Corniche%2C_Muscat%2C_Oman.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Corniche,_Muscat,_Oman.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Karananand2",
+   "licence": "CC0",
+   "attribution": "\"Corniche, Muscat, Oman\" by Karananand2 — CC0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "Corniche, Muscat, Oman",
+   "focal_point": null,
+   "width": 3120,
+   "height": 4160,
+   "sha1": "f14f4e86ba8b5e586aac34c746f21f8fc8b97ee9",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Mutrah Fort, Corniche.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Mutrah_Fort%2C_Corniche.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Mutrah_Fort,_Corniche.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Karananand2",
+   "licence": "CC0",
+   "attribution": "\"Mutrah Fort, Corniche\" by Karananand2 — CC0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Mutrah Fort, Corniche",
+   "focal_point": null,
+   "width": 6120,
+   "height": 8160,
+   "sha1": "b54a6dc266727f52d4b3f9006c5b90d78e277c3e",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Mutrah, Muscat (20130331-DSC04111).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Mutrah%2C_Muscat_%2820130331-DSC04111%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Mutrah,_Muscat_(20130331-DSC04111).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Matti Blume",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Mutrah, Muscat (20130331-DSC04111)\" by Matti Blume — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Mutrah, Muscat (20130331 — DSC04111)",
+   "focal_point": null,
+   "width": 3872,
+   "height": 2592,
+   "sha1": "a89e5de6cbbbe70a3f8b343fae27381aae011428",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Mutrah, Muscat (20130331-DSC04114).jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/36/Mutrah%2C_Muscat_%2820130331-DSC04114%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Mutrah,_Muscat_(20130331-DSC04114).jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Matti Blume",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Mutrah, Muscat (20130331-DSC04114)\" by Matti Blume — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Mutrah, Muscat (20130331 — DSC04114)",
+   "focal_point": null,
+   "width": 3872,
+   "height": 2592,
+   "sha1": "d02b95cb551cd6b4bbb9aed4cfc13343c83cd27e",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Mutrah Corniche in Moonlight, welcome for a walk - panoramio.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Mutrah_Corniche_in_Moonlight%2C_welcome_for_a_walk_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Mutrah_Corniche_in_Moonlight,_welcome_for_a_walk_-_panoramio.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Omar AV",
+   "licence": "CC BY 3.0",
+   "attribution": "\"Mutrah Corniche in Moonlight, welcome for a walk - panoramio\" by Omar AV — CC BY 3.0, via Wikimedia Commons",
+   "role": "panel",
+   "alt": "Mutrah Corniche in Moonlight, welcome for a walk  —  panoramio",
+   "focal_point": null,
+   "width": 3888,
+   "height": 2592,
+   "sha1": "a2bcee1b68940a65b0a2f1179b95c0671923cd4b",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Mutrah Corniche, Muscat.JPG",
+   "reason": "resolution too low (640px wide)"
+  }
+ ]
+}

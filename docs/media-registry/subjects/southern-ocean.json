@@ -1,0 +1,80 @@
+{
+ "subject": "Southern Ocean",
+ "type": "ocean",
+ "package": "Round 2 R3 (batch 1)",
+ "coverage": "partial",
+ "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "harvested": "2026-10-22",
+ "records": [
+  {
+   "file_title": "South Shetland-2016-Southern Ocean (off Elephant Island)–Iceberg 02.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/South_Shetland-2016-Southern_Ocean_%28off_Elephant_Island%29%E2%80%93Iceberg_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:South_Shetland-2016-Southern_Ocean_(off_Elephant_Island)%E2%80%93Iceberg_02.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Godot13",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"South Shetland-2016-Southern Ocean (off Elephant Island)–Iceberg 02\" by Godot13 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "hero",
+   "alt": "South Shetland — 2016 — Southern Ocean (off Elephant Island)–Iceberg 02",
+   "focal_point": null,
+   "width": 5926,
+   "height": 3109,
+   "sha1": "5b0b4fc0a50b91d148a97496e2467c559b4d6b07",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Southern Ocean overturning circulation.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Southern_Ocean_overturning_circulation.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Southern_Ocean_overturning_circulation.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Andrea Kees",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"Southern Ocean overturning circulation\" by Andrea Kees — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Southern Ocean overturning circulation",
+   "focal_point": null,
+   "width": 1390,
+   "height": 965,
+   "sha1": "11dcae26d91c1cb7c7f099c34d2952b7046778c0",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "South Shetland-2016-Southern Ocean (off Elephant Island)–Iceberg 01.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/South_Shetland-2016-Southern_Ocean_%28off_Elephant_Island%29%E2%80%93Iceberg_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:South_Shetland-2016-Southern_Ocean_(off_Elephant_Island)%E2%80%93Iceberg_01.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Godot13",
+   "licence": "CC BY-SA 4.0",
+   "attribution": "\"South Shetland-2016-Southern Ocean (off Elephant Island)–Iceberg 01\" by Godot13 — CC BY-SA 4.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "South Shetland — 2016 — Southern Ocean (off Elephant Island)–Iceberg 01",
+   "focal_point": null,
+   "width": 7688,
+   "height": 5125,
+   "sha1": "09287e7f6d5434a809ef42d6d5af2895ad399bf3",
+   "status": "VERIFIED"
+  },
+  {
+   "file_title": "Antarctica(js) 3.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Antarctica%28js%29_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Antarctica(js)_3.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Jerzy Strzelecki",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Antarctica(js) 3\" by Jerzy Strzelecki — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Antarctica(js) 3",
+   "focal_point": null,
+   "width": 5584,
+   "height": 3678,
+   "sha1": "98df2a77cd2baba0a789fec21ce555e2337717ff",
+   "status": "VERIFIED"
+  }
+ ],
+ "rejected": [
+  {
+   "title": "Southern-ocean sediment hg.png",
+   "reason": "resolution too low (559px wide)"
+  }
+ ]
+}
