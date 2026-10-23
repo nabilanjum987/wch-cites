@@ -99,12 +99,12 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
           }}
           placeholder="Search a city or country — try Lahore or Pakistan"
           aria-label="Search cities and countries"
-          className="w-full pl-14 pr-12 py-4 text-lg rounded-full backdrop-blur-xl bg-white/15 border border-white/30 text-white placeholder-gray-300 focus:bg-white/25 focus:border-cyan-400/50 focus:outline-none transition-all shadow-lg"
+          className="w-full pl-14 pr-12 py-4 text-lg rounded-full backdrop-blur-xl border t-border-30 t-text focus:border-cyan-400/50 focus:outline-none transition-all shadow-lg"
         />
         {query && (
           <button onClick={clear} aria-label="Clear search"
-            className="absolute right-5 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-full transition-colors">
-            <X className="w-5 h-5 text-white/70 hover:text-white" />
+            className="absolute right-5 top-1/2 -translate-y-1/2 p-1 t-card t-card-hover rounded-full transition-colors">
+            <X className="w-5 h-5 t-text-70 t-hover-text" />
           </button>
         )}
       </div>
@@ -114,17 +114,17 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
           <motion.div
             initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
-            className="absolute top-full left-0 right-0 mt-3 backdrop-blur-xl bg-[#030712]/95 border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50 text-left"
+            className="absolute top-full left-0 right-0 mt-3 backdrop-blur-xl t-bg-deep-95 border t-border-20 rounded-2xl shadow-2xl overflow-hidden z-50 text-left"
           >
             {matches.map((m) => (
               <button key={m.name} onClick={() => choose(m)}
-                className="w-full flex items-center justify-between px-5 py-3 hover:bg-white/10 transition-colors">
+                className="w-full flex items-center justify-between px-5 py-3 t-card t-card-hover transition-colors">
                 <span className="flex items-center gap-3">
                   <MapPin className="w-4 h-4 text-cyan-400" />
-                  <span className="font-semibold text-white">{m.name}</span>
-                  <span className="text-gray-400 text-sm">{m.sub}</span>
+                  <span className="font-semibold t-text">{m.name}</span>
+                  <span className="t-g400 text-sm">{m.sub}</span>
                 </span>
-                <span className="text-xs text-gray-500 uppercase tracking-wide">{m.kind}</span>
+                <span className="text-xs t-g500 uppercase tracking-wide">{m.kind}</span>
               </button>
             ))}
           </motion.div>
@@ -136,57 +136,57 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
           <motion.div
             initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.2 }}
-            className="mt-4 rounded-2xl border border-cyan-400/30 bg-[#030712]/90 backdrop-blur-xl p-5 text-left"
+            className="mt-4 rounded-2xl border border-cyan-400/30 t-bg-deep-90 backdrop-blur-xl p-5 text-left"
           >
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
-                <div className="text-white font-bold text-lg leading-tight">{selected.name}</div>
-                <div className="text-gray-400 text-sm">{selected.sub}</div>
+                <div className="t-text font-bold text-lg leading-tight">{selected.name}</div>
+                <div className="t-g400 text-sm">{selected.sub}</div>
               </div>
-              <button onClick={clear} aria-label="Close preview" className="p-1 hover:bg-white/10 rounded-full">
-                <X className="w-4 h-4 text-white/60" />
+              <button onClick={clear} aria-label="Close preview" className="p-1 t-card t-card-hover rounded-full">
+                <X className="w-4 h-4 t-text-60" />
               </button>
             </div>
             {figLoading ? (
-              <p className="text-gray-400 text-sm">Loading live figures…</p>
+              <p className="t-g400 text-sm">Loading live figures…</p>
             ) : figures && Object.keys(figures).length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                 {figures.weather && (
-                  <div className="rounded-xl bg-white/5 border border-white/10 px-3 py-2">
-                    <div className="text-[11px] uppercase tracking-wide text-gray-500">Weather now</div>
-                    <div className="text-white font-semibold text-sm">{figures.weather}</div>
+                  <div className="rounded-xl t-card border t-border px-3 py-2">
+                    <div className="text-[11px] uppercase tracking-wide t-g500">Weather now</div>
+                    <div className="t-text font-semibold text-sm">{figures.weather}</div>
                   </div>
                 )}
                 {figures.nextPrayer && (
-                  <div className="rounded-xl bg-white/5 border border-white/10 px-3 py-2">
-                    <div className="text-[11px] uppercase tracking-wide text-gray-500">Next prayer</div>
-                    <div className="text-white font-semibold text-sm">{figures.nextPrayer}</div>
+                  <div className="rounded-xl t-card border t-border px-3 py-2">
+                    <div className="text-[11px] uppercase tracking-wide t-g500">Next prayer</div>
+                    <div className="t-text font-semibold text-sm">{figures.nextPrayer}</div>
                   </div>
                 )}
                 {figures.goldTola && (
-                  <div className="rounded-xl bg-white/5 border border-white/10 px-3 py-2">
-                    <div className="text-[11px] uppercase tracking-wide text-gray-500">Gold</div>
-                    <div className="text-white font-semibold text-sm">{figures.goldTola}</div>
+                  <div className="rounded-xl t-card border t-border px-3 py-2">
+                    <div className="text-[11px] uppercase tracking-wide t-g500">Gold</div>
+                    <div className="t-text font-semibold text-sm">{figures.goldTola}</div>
                   </div>
                 )}
                 {figures.capital && (
-                  <div className="rounded-xl bg-white/5 border border-white/10 px-3 py-2">
-                    <div className="text-[11px] uppercase tracking-wide text-gray-500">Capital</div>
-                    <div className="text-white font-semibold text-sm">{figures.capital}</div>
+                  <div className="rounded-xl t-card border t-border px-3 py-2">
+                    <div className="text-[11px] uppercase tracking-wide t-g500">Capital</div>
+                    <div className="t-text font-semibold text-sm">{figures.capital}</div>
                   </div>
                 )}
                 {figures.population && (
-                  <div className="rounded-xl bg-white/5 border border-white/10 px-3 py-2">
-                    <div className="text-[11px] uppercase tracking-wide text-gray-500">Population</div>
-                    <div className="text-white font-semibold text-sm">{figures.population}</div>
+                  <div className="rounded-xl t-card border t-border px-3 py-2">
+                    <div className="text-[11px] uppercase tracking-wide t-g500">Population</div>
+                    <div className="t-text font-semibold text-sm">{figures.population}</div>
                   </div>
                 )}
               </div>
             ) : (
-              <p className="text-gray-400 text-sm mb-4">Live figures are unavailable right now — the full page has everything.</p>
+              <p className="t-g400 text-sm mb-4">Live figures are unavailable right now — the full page has everything.</p>
             )}
             <button onClick={go}
-              className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-white transition-colors">
+              className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold t-onbrand transition-colors">
               Open the full {selected.name} page <ArrowRight className="w-4 h-4" />
             </button>
           </motion.div>

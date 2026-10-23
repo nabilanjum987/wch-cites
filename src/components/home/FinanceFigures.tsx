@@ -34,32 +34,32 @@ export default async function FinanceFigures() {
 
   if (!fng && !pop && !lifeRow) return null;
 
-  const card = 'rounded-2xl bg-white/5 border border-white/10 p-5';
+  const card = 'rounded-2xl t-card border t-border p-5';
   return (
     <div className="mt-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {fng && (
           <div className={card}>
-            <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Crypto Fear & Greed</div>
-            <div className="text-white font-bold text-2xl">{fng.value}</div>
+            <div className="text-[11px] uppercase tracking-wide t-g500 mb-1">Crypto Fear & Greed</div>
+            <div className="t-text font-bold text-2xl">{fng.value}</div>
             <div className="sub-desc mt-1">Alternative.me index, updated daily</div>
           </div>
         )}
         {pop?.live?.type === 'population' && (
           <div className={card}>
-            <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">World Population — live estimate</div>
-            <div className="text-white font-bold text-2xl">
+            <div className="text-[11px] uppercase tracking-wide t-g500 mb-1">World Population — live estimate</div>
+            <div className="t-text font-bold text-2xl">
               <PopulationCounter base={pop.live.base} perSecond={pop.live.perSecond} at={pop.live.at} />
             </div>
             <div className="sub-desc mt-1">
-              An estimate: the World Bank's latest counted total, grown at the Bank's published growth rate.
+              World Bank total, grown at its published rate
             </div>
           </div>
         )}
         {lifeRow && (
           <div className={card}>
-            <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Life expectancy at birth</div>
-            <div className="text-white font-bold text-2xl">{Number(lifeRow.value).toFixed(1)} years</div>
+            <div className="text-[11px] uppercase tracking-wide t-g500 mb-1">Life expectancy at birth</div>
+            <div className="t-text font-bold text-2xl">{Number(lifeRow.value).toFixed(1)} years</div>
             <div className="sub-desc mt-1">World average, World Bank ({lifeRow.date})</div>
           </div>
         )}

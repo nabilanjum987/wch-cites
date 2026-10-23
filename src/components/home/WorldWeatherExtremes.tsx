@@ -52,9 +52,9 @@ export default function WorldWeatherExtremes() {
               <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
                 style={{ backgroundColor: `${p.color}20`, color: p.color }}>{p.type}</span>
             </div>
-            <div className="text-white font-bold text-lg">{t != null ? `${Math.round(t)}°C now` : '—'}</div>
-            <div className="text-white/40 text-xs mt-0.5">{p.city}</div>
-            <div className="text-white/30 text-[11px]">{p.caption}</div>
+            <div className="t-text font-bold text-lg">{t != null ? `${Math.round(t)}°C now` : '—'}</div>
+            <div className="t-text-40 text-xs mt-0.5">{p.city}</div>
+            <div className="t-text-30 text-[11px]">{p.caption}</div>
           </div>
         );
       })}
@@ -66,9 +66,9 @@ export default function WorldWeatherExtremes() {
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
               style={{ backgroundColor: `${e.color}20`, color: e.color }}>{e.type}</span>
           </div>
-          <div className="text-white font-bold text-lg">{e.value}</div>
-          <div className="text-white/40 text-xs mt-0.5">{e.city}</div>
-          <div className="text-white/30 text-[11px]">{e.caption}</div>
+          <div className="t-text font-bold text-lg">{e.value}</div>
+          <div className="t-text-40 text-xs mt-0.5">{e.city}</div>
+          <div className="t-text-30 text-[11px]">{e.caption}</div>
         </div>
       ))}
     </div>

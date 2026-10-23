@@ -90,25 +90,25 @@ export default function DidYouKnow() {
       <div className="bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-yellow-500/20 backdrop-blur-sm rounded-2xl p-6 border border-purple-400/30">
         <div className="flex items-start space-x-4">
           <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl p-3">
-            <Lightbulb className="w-6 h-6 text-white" />
+            <Lightbulb className="w-6 h-6 t-text" />
           </div>
 
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-3">
-              <Sparkles className="w-4 h-4 text-yellow-400" />
-              <h2 className="text-xl font-bold text-white">Did You Know?</h2>
+              <Sparkles className="w-4 h-4 t-gold" />
+              <h2 className="text-xl font-bold t-text">Did You Know?</h2>
             </div>
 
             <p 
-              className="text-gray-200 text-lg leading-relaxed mb-4 transition-opacity duration-300"
+              className="t-g200 text-lg leading-relaxed mb-4 transition-opacity duration-300"
               style={{ opacity: fade ? 1 : 0 }}
             >
               {fact.fact}
             </p>
 
-            <button className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-colors">
+            <button className="flex items-center space-x-2 t-card t-card-hover px-4 py-2 rounded-full transition-colors">
               <span className="text-xl">{getCountryFlag(fact.countryCode)}</span>
-              <span className="text-white font-medium">Explore {fact.city}</span>
+              <span className="t-text font-medium">Explore {fact.city}</span>
               <ArrowRight className="w-4 h-4 text-purple-400" />
             </button>
           </div>

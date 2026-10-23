@@ -2,6 +2,38 @@
 // Meta tags + FAQ schema for City Main Page
 // Real data injected - no placeholders
 
+import { CAPITALS } from '../capitals';
+
+// ─── F2 (Batch 4 findings fix): capital-claim gating ──────────────────
+// This generator used to describe EVERY city as "the capital of
+// {province}" — wrong for Faisalabad, Rawalpindi and every other
+// non-capital. The claim is now emitted only when verifiably true:
+//   1. provincial capitals, from the explicit map below (the provinces
+//      the route dataset serves today — extend it only with a verified
+//      province→capital pair);
+//   2. a national capital found in the §9A capitals dataset
+//      (src/lib/capitals.ts), worded "the capital of {country}" —
+//      this is how Islamabad (a federal capital territory, not a
+//      province capital) is described truthfully.
+// Any other city gets no capital claim at all. A dataset city that IS
+// a capital but is missing from both sources also gets no claim —
+// the safe direction is silence, never a fabricated claim.
+const PROVINCE_CAPITALS: Record<string, string> = {
+  Punjab: 'Lahore',
+  Sindh: 'Karachi',
+};
+
+function capitalSentence(city: string, province: string, country: string): string {
+  if (PROVINCE_CAPITALS[province] === city) {
+    return `${city} is the capital of ${province}, ${country}.`;
+  }
+  const isNationalCapital = CAPITALS.some((c) => c.capital === city && c.country === country);
+  if (isNationalCapital) {
+    return `${city} is the capital of ${country}.`;
+  }
+  return `${city} is a city in ${province}, ${country}.`;
+}
+
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 function now() {
@@ -227,8 +259,8 @@ export function generateCitySchema(props: CityMetaProps) {
       }
     },
     "description": props.population
-      ? `${city} is the capital of ${province}, ${country}. A major cultural, economic, and historical centre with a population of ${props.population}.`
-      : `${city} is the capital of ${province}, ${country}. A major cultural, economic, and historical centre.`,
+      ? `${capitalSentence(city, province, country)} A major cultural, economic, and historical centre with a population of ${props.population}.`
+      : `${capitalSentence(city, province, country)} A major cultural, economic, and historical centre.`,
     "url": `https://worldcityhub.vercel.app/${country.toLowerCase()}/${province.toLowerCase().replace(/\s+/g, '-')}/${city.toLowerCase().replace(/\s+/g, '-')}`
   };
 

@@ -104,10 +104,10 @@ export default function LiveGlobalStats() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 animate-pulse">
-            <div className="h-12 w-12 bg-white/20 rounded-full mb-4"></div>
-            <div className="h-4 w-20 bg-white/20 rounded mb-2"></div>
-            <div className="h-6 w-32 bg-white/20 rounded"></div>
+          <div key={i} className="t-card backdrop-blur-sm rounded-2xl p-6 animate-pulse">
+            <div className="h-12 w-12 t-card rounded-full mb-4"></div>
+            <div className="h-4 w-20 t-card rounded mb-2"></div>
+            <div className="h-6 w-32 t-card rounded"></div>
           </div>
         ))}
       </div>
@@ -135,8 +135,8 @@ export default function LiveGlobalStats() {
           </div>
           <span className="text-teal-400 text-3xl">🌍</span>
         </div>
-        <div className="text-gray-400 text-sm mb-1">Cities</div>
-        <div className="text-white text-2xl font-bold">{stats.cityCount != null ? `${formatNumber(stats.cityCount)} cities live` : 'New cities weekly'}</div>
+        <div className="t-g400 text-sm mb-1">Cities</div>
+        <div className="t-text text-2xl font-bold">{stats.cityCount != null ? `${formatNumber(stats.cityCount)} cities live` : 'New cities weekly'}</div>
       </div>
 
       <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 backdrop-blur-sm rounded-2xl p-6 border border-emerald-400/30 hover:border-emerald-400/50 transition-all">
@@ -146,33 +146,33 @@ export default function LiveGlobalStats() {
           </div>
           <span className="text-emerald-400 text-3xl">🕌</span>
         </div>
-        <div className="text-gray-400 text-sm mb-1">Prayer</div>
+        <div className="t-g400 text-sm mb-1">Prayer</div>
         {stats.nextMeccaPrayer ? (
           <>
-            <div className="text-white text-lg font-bold">
+            <div className="t-text text-lg font-bold">
               Next Mecca prayer: <span className="text-emerald-400">{stats.nextMeccaPrayer.name}</span>
             </div>
-            <div className="text-gray-300 text-sm">in {stats.nextMeccaPrayer.time}</div>
+            <div className="t-g300 text-sm">in {stats.nextMeccaPrayer.time}</div>
           </>
         ) : (
-          <div className="text-white text-lg font-bold">Live prayer times on every city page</div>
+          <div className="t-text text-lg font-bold">Live prayer times on every city page</div>
         )}
       </div>
 
       <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 backdrop-blur-sm rounded-2xl p-6 border border-yellow-400/30 hover:border-yellow-400/50 transition-all">
         <div className="flex items-center justify-between mb-3">
           <div className="bg-yellow-500/20 rounded-full p-3">
-            <TrendingUp className="w-6 h-6 text-yellow-400" />
+            <TrendingUp className="w-6 h-6 t-gold" />
           </div>
-          <span className="text-yellow-400 text-3xl">💰</span>
+          <span className="t-gold text-3xl">💰</span>
         </div>
-        <div className="text-gray-400 text-sm mb-1">Gold</div>
+        <div className="t-g400 text-sm mb-1">Gold</div>
         {stats.goldPrice ? (
           <>
-            <div className="text-white text-2xl font-bold">
+            <div className="t-text text-2xl font-bold">
               ${stats.goldPrice.price.toLocaleString()}/oz
             </div>
-            <div className={`flex items-center text-sm ${stats.goldPrice.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            <div className={`flex items-center text-sm ${stats.goldPrice.change >= 0 ? 't-green' : 't-red'}`}>
               {stats.goldPrice.change >= 0 ? (
                 <ArrowUp className="w-4 h-4 mr-1" />
               ) : (
@@ -182,24 +182,24 @@ export default function LiveGlobalStats() {
             </div>
           </>
         ) : (
-          <div className="text-white text-lg font-bold">Live gold rates on the Rates page</div>
+          <div className="t-text text-lg font-bold">Live gold rates on the Rates page</div>
         )}
       </div>
 
       <div className="bg-gradient-to-br from-red-500/20 to-orange-500/20 backdrop-blur-sm rounded-2xl p-6 border border-red-400/30 hover:border-red-400/50 transition-all">
         <div className="flex items-center justify-between mb-3">
           <div className="bg-red-500/20 rounded-full p-3">
-            <Thermometer className="w-6 h-6 text-red-400" />
+            <Thermometer className="w-6 h-6 t-red" />
           </div>
-          <span className="text-red-400 text-3xl">🌡️</span>
+          <span className="t-red text-3xl">🌡️</span>
         </div>
-        <div className="text-gray-400 text-sm mb-1">Hottest</div>
+        <div className="t-g400 text-sm mb-1">Hottest</div>
         {stats.hottestCity ? (
-          <div className="text-white text-2xl font-bold flex items-center">
-            {stats.hottestCity.name} {getCountryFlag(stats.hottestCity.country)} <span className="text-red-400 ml-2">{stats.hottestCity.temp}°C</span>
+          <div className="t-text text-2xl font-bold flex items-center">
+            {stats.hottestCity.name} {getCountryFlag(stats.hottestCity.country)} <span className="t-red ml-2">{stats.hottestCity.temp}°C</span>
           </div>
         ) : (
-          <div className="text-white text-lg font-bold">Live weather on every city page</div>
+          <div className="t-text text-lg font-bold">Live weather on every city page</div>
         )}
       </div>
     </div>

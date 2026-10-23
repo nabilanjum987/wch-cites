@@ -29,6 +29,11 @@ export default async function Page() {
     fetchCryptoData(1, 'USD', '$'),
     fetchCurrencyPairs(),
   ]);
+
+  // No FAQPage schema here (merge prep, billi's merge rule): on the
+  // rates page the surviving FAQPage is the one emitted from PR #85's
+  // visible answer layer, so exactly one FAQPage remains after the
+  // merge. This branch's schema-only emission was removed.
   return (
     <WorldRatesPage
       initialRates={initialRates}

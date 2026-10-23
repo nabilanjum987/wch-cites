@@ -14,25 +14,28 @@ export default async function ConflictsPanel() {
   return (
     <div>
       {t ? (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5 items-start">
-          {[
-            { label: 'Refugees', value: fmt(t.refugees) },
-            { label: 'Internally displaced', value: fmt(t.idps) },
-            { label: 'Asylum seekers', value: fmt(t.asylumSeekers) },
-            { label: 'Stateless people', value: fmt(t.stateless) },
-          ].map((s) => (
-            <div key={s.label} className="rounded-xl bg-white/5 border border-white/10 px-4 py-3">
-              <div className="text-white font-bold text-xl">{s.value}</div>
-              <div className="sub-desc mt-0.5">{s.label} · UNHCR {t.year}</div>
-            </div>
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+            {[
+              { label: 'Refugees', value: fmt(t.refugees) },
+              { label: 'Internally displaced', value: fmt(t.idps) },
+              { label: 'Asylum seekers', value: fmt(t.asylumSeekers) },
+              { label: 'Stateless people', value: fmt(t.stateless) },
+            ].map((s) => (
+              <div key={s.label} className="rounded-xl t-card border t-border px-4 py-3">
+                <div className="t-text font-bold text-xl">{s.value}</div>
+                <div className="sub-desc mt-0.5">{s.label}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] t-text-40 -mt-3 mb-1">Source: UNHCR {t.year}</p>
+        </>
       ) : (
-        <p className="sub-desc mb-5">
+        <p className="sub-desc">
           The UNHCR figures feed is unreachable right now — the conflicts hub carries the full picture.
         </p>
       )}
-      <Link href="/conflicts" className="inline-flex items-center gap-2 text-cyan-300 hover:text-cyan-200 text-sm font-medium no-underline">
+      <Link href="/conflicts" className="inline-flex items-center gap-2 t-link text-sm font-medium no-underline">
         The conflicts hub — verified figures, peace efforts, how to help →
       </Link>
     </div>

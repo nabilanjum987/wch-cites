@@ -4,6 +4,15 @@
 // Six flag-coloured clocks (London, Dubai, Karachi, New York, Tokyo,
 // Sydney), ticking every second, plus the visitor's own BIG clock when
 // he opts in via the "My Location" button (never forced on load).
+// Polish Card 4 (2026-10-23): each clock also carries its country's
+// REAL flag as a small chip under the dial (flag artwork is public
+// domain). The flag-colour ring is unchanged.
+// Billi audit fix (2026-10-23): the six flag files are VENDORED
+// locally in public/images/flags/ and referenced same-origin — no
+// remote hotlink from this component.
+// Owner izafa (2026-10-23): each clock card ALSO carries its own
+// country's flag as a soft backdrop (vendored file at 50% opacity
+// under a dark scrim); the chip and the dial are unchanged.
 // Link rule (link map §3 + L1): a clock links to its city page if the
 // city is published, else to its country page ONLY when that page
 // renders real content. Verified live 2026-10-22: Karachi city page
@@ -12,7 +21,7 @@
 // so London, Dubai, Tokyo and Sydney clocks render WITHOUT links
 // until those country pages pass the QA gate.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
 import { useVisitorCity } from './useVisitorCity';
@@ -20,18 +29,19 @@ import { useVisitorCity } from './useVisitorCity';
 interface ClockDef {
   name: string;
   tz: string;
-  flag: string;
+  code: string; // ISO 3166-1 alpha-2, lowercase — selects the vendored flag file
+  country: string;
   primary: string; // flag colour used for ring + hands
   href: string | null;
 }
 
 const CLOCKS: ClockDef[] = [
-  { name: 'London', tz: 'Europe/London', flag: '🇬🇧', primary: '#4f7ddf', href: null },
-  { name: 'Dubai', tz: 'Asia/Dubai', flag: '🇦🇪', primary: '#00a651', href: null },
-  { name: 'Karachi', tz: 'Asia/Karachi', flag: '🇵🇰', primary: '#14a44d', href: '/pakistan/sindh/karachi' },
-  { name: 'New York', tz: 'America/New_York', flag: '🇺🇸', primary: '#e05260', href: '/united-states' },
-  { name: 'Tokyo', tz: 'Asia/Tokyo', flag: '🇯🇵', primary: '#e0576b', href: null },
-  { name: 'Sydney', tz: 'Australia/Sydney', flag: '🇦🇺', primary: '#f5c542', href: null },
+  { name: 'London', tz: 'Europe/London', code: 'gb', country: 'United Kingdom', primary: '#4f7ddf', href: null },
+  { name: 'Dubai', tz: 'Asia/Dubai', code: 'ae', country: 'United Arab Emirates', primary: '#00a651', href: null },
+  { name: 'Karachi', tz: 'Asia/Karachi', code: 'pk', country: 'Pakistan', primary: '#14a44d', href: '/pakistan/sindh/karachi' },
+  { name: 'New York', tz: 'America/New_York', code: 'us', country: 'United States', primary: '#e05260', href: '/united-states' },
+  { name: 'Tokyo', tz: 'Asia/Tokyo', code: 'jp', country: 'Japan', primary: '#e0576b', href: null },
+  { name: 'Sydney', tz: 'Australia/Sydney', code: 'au', country: 'Australia', primary: '#f5c542', href: null },
 ];
 
 function useNow() {
@@ -63,18 +73,18 @@ function AnalogClock({ now, tz, color, size }: { now: Date; tz: string; color: s
   const sE = end(s * 6 - 90, r * 0.85);
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`Clock for ${tz}`}>
-      <circle cx={cx} cy={cy} r={r} fill="rgba(255,255,255,0.04)" stroke={color} strokeWidth="2" />
+      <circle cx={cx} cy={cy} r={r} fill="var(--card)" stroke={color} strokeWidth="2" />
       {[...Array(12)].map((_, i) => {
         const a = (i * 30 - 90) * Math.PI / 180;
         return (
           <line key={i}
             x1={cx + (r - 5) * Math.cos(a)} y1={cy + (r - 5) * Math.sin(a)}
             x2={cx + r * Math.cos(a)} y2={cy + r * Math.sin(a)}
-            stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+            stroke="var(--text-25)" strokeWidth="1.5" />
         );
       })}
       <line x1={cx} y1={cy} x2={hE.x} y2={hE.y} stroke={color} strokeWidth="3.5" strokeLinecap="round" />
-      <line x1={cx} y1={cy} x2={mE.x} y2={mE.y} stroke="white" strokeWidth="2" strokeLinecap="round" />
+      <line x1={cx} y1={cy} x2={mE.x} y2={mE.y} stroke="var(--text)" strokeWidth="2" strokeLinecap="round" />
       <line x1={cx} y1={cy} x2={sE.x} y2={sE.y} stroke="#ef4444" strokeWidth="1" strokeLinecap="round" />
       <circle cx={cx} cy={cy} r="3.5" fill={color} />
     </svg>
@@ -84,13 +94,35 @@ function AnalogClock({ now, tz, color, size }: { now: Date; tz: string; color: s
 function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number }) {
   const { str12, date } = parts(now, def.tz);
   const inner = (
-    <div className="flex flex-col items-center gap-2">
-      <AnalogClock now={now} tz={def.tz} color={def.primary} size={size} />
-      <div className="text-center">
-        <div className="text-base" aria-hidden="true">{def.flag}</div>
-        <div className="text-white font-bold text-sm">{def.name}</div>
-        <div className="text-white/80 font-mono text-sm">{str12}</div>
-        <div className="text-white/40 text-xs">{date}</div>
+    <div className="t-force-dark relative overflow-hidden rounded-2xl px-2 py-3">
+      {/* Flag backdrop (owner izafa): this clock's own country flag —
+          the vendored file at 50% opacity, object-cover, decorative.
+          Scrim over it: linear-gradient(180deg, rgba(8,12,24,0.55),
+          rgba(8,12,24,0.74)) — the hero's own dark tones, so the dial,
+          hands and labels keep exactly their previous contrast. The
+          card is an always-dark island (its scrim is fixed dark in
+          both themes, like Ticker 2's emerald band): the t-force-dark
+          wrapper re-declares the dark token values on the card, so the
+          labels and the dial use the same t-* / var(--…) token classes
+          as the themed page (t-text / t-text-80 / t-text-40 — main's
+          own themed lines for this block) and resolve to the dark
+          palette in both themes. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={`/images/flags/${def.code}.png`} alt="" aria-hidden="true" width={160} height={107} loading="lazy" decoding="async"
+        className="absolute inset-0 h-full w-full object-cover opacity-50" />
+      <div aria-hidden="true" className="absolute inset-0"
+        style={{ background: 'linear-gradient(180deg, rgba(8,12,24,0.55), rgba(8,12,24,0.74))' }} />
+      <div className="relative flex flex-col items-center gap-2">
+        <AnalogClock now={now} tz={def.tz} color={def.primary} size={size} />
+        <div className="text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`/images/flags/${def.code}.png`} alt={`Flag of ${def.country}`} width={36} height={24} loading="lazy" decoding="async"
+            style={{ '--tw-ring-color': 'var(--border-25)' } as CSSProperties}
+            className="mx-auto h-6 w-9 rounded-[4px] object-cover shadow ring-1" />
+          <div className="t-text font-bold text-sm mt-1.5">{def.name}</div>
+          <div className="t-text-80 font-mono text-sm">{str12}</div>
+          <div className="t-text-40 text-xs">{date}</div>
+        </div>
       </div>
     </div>
   );
@@ -111,14 +143,14 @@ export default function HeroClocks() {
       <div className="mb-10 flex flex-col items-center">
         {visitor ? (
           <>
-            <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300 mb-3">
+            <div className="text-[11px] font-bold uppercase tracking-[0.2em] t-cyan mb-3">
               Your time{visitor.source === 'ip' ? ' · approximate, from your connection' : ''}
             </div>
             <AnalogClock now={now} tz={visitor.tz} color="#22d3ee" size={168} />
             <div className="mt-3 text-center">
-              <div className="text-white font-bold text-2xl">{visitor.name}</div>
-              <div className="text-white/90 font-mono text-xl">{parts(now, visitor.tz).str12}</div>
-              <div className="text-white/40 text-sm">{parts(now, visitor.tz).date}</div>
+              <div className="t-text font-bold text-2xl">{visitor.name}</div>
+              <div className="t-text-90 font-mono text-xl">{parts(now, visitor.tz).str12}</div>
+              <div className="t-text-40 text-sm">{parts(now, visitor.tz).date}</div>
             </div>
           </>
         ) : (
@@ -126,7 +158,7 @@ export default function HeroClocks() {
             <button
               onClick={request}
               disabled={locating}
-              className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 disabled:opacity-60 px-6 py-3 text-sm font-semibold text-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 disabled:opacity-60 px-6 py-3 text-sm font-semibold t-onbrand transition-colors"
             >
               <MapPin className="w-4 h-4" />
               {locating ? 'Finding your city…' : 'My Location'}

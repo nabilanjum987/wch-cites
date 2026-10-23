@@ -1,12 +1,17 @@
 // Design System Constants
+// Polish Card 5: the neutral tokens are CSS-variable references into
+// the theme layer in src/app/globals.css (:root = dark, values equal
+// to the hexes they replace; [data-theme="light"] = the light set), so
+// every inline-style consumer themes with the rest of the site.
+// Brand constants (primary/accent) stay fixed hexes in both themes.
 export const COLORS = {
   primary: '#6366f1', // Indigo
   accent: '#06b6d4', // Cyan
-  background: '#0a0f1e', // Dark navy
-  card: 'rgba(99, 102, 241, 0.1)', // Glassmorphism
-  border: 'rgba(255, 255, 255, 0.1)',
-  text: '#ffffff',
-  textSecondary: '#cbd5e1',
+  background: 'var(--bg)',
+  card: 'var(--glass-card)', // Glassmorphism
+  border: 'var(--border)',
+  text: 'var(--text)',
+  textSecondary: 'var(--text-secondary)',
 };
 
 export const ANIMATIONS = {

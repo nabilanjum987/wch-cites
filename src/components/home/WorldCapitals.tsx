@@ -39,16 +39,16 @@ export default function WorldCapitals() {
         const time = now.toLocaleTimeString('en-US', { timeZone: c.tz, hour: 'numeric', minute: '2-digit', hour12: true });
         return (
           <Link key={c.capital} href={`/${c.countrySlug}`} className="no-underline group">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 h-32 flex flex-col justify-between transition-all group-hover:border-white/25 group-hover:scale-[1.02]">
+            <div className="rounded-2xl border t-border t-card p-4 h-32 flex flex-col justify-between transition-all t-group-border-hover-25 group-hover:scale-[1.02]">
               <div className="flex items-center justify-between">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={`https://flagcdn.com/w160/${c.code}.png`} alt={`Flag of ${c.country}`} width={40} height={27} className="rounded shadow" loading="lazy" decoding="async" />
-                {temps[i] != null && <span className="text-white font-bold text-lg">{temps[i]}°C</span>}
+                {temps[i] != null && <span className="t-text font-bold text-lg">{temps[i]}°C</span>}
               </div>
               <div>
-                <div className="text-white font-bold text-sm leading-tight">{c.capital}</div>
+                <div className="t-text font-bold text-sm leading-tight">{c.capital}</div>
                 <div className="sub-desc">{c.country}</div>
-                <div className="text-cyan-300 font-mono text-sm mt-0.5">{time}</div>
+                <div className="t-cyan font-mono text-sm mt-0.5">{time}</div>
               </div>
             </div>
           </Link>

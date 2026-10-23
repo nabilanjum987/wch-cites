@@ -11,13 +11,16 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 const WONDERS = [
-  { name: 'Great Wall of China',    country: 'China',  emoji: '🏯', color: '#CC0000', desc: '21,196 km of wall built over centuries' },
-  { name: 'Petra',                  country: 'Jordan', emoji: '🏛️', color: '#C4A265', desc: 'Rose-red city carved into rock' },
-  { name: 'Christ the Redeemer',    country: 'Brazil', emoji: '✝️', color: '#009C3B', desc: '38 m statue overlooking Rio de Janeiro' },
-  { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', color: '#D9A028', desc: '15th-century Inca citadel in the Andes' },
-  { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Ancient Mayan pyramid city' },
-  { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Iconic amphitheatre from 80 AD' },
-  { name: 'Taj Mahal',              country: 'India',  emoji: '🕌', color: '#FF9933', desc: 'White marble mausoleum in Agra', href: '/wonders/taj-mahal' },
+  { name: 'Great Wall of China',    country: 'China',  emoji: '🏯', color: '#CC0000', desc: '21,196 km of ancient wall' },
+  { name: 'Petra',                  country: 'Jordan', emoji: '🏛️', color: '#C4A265', desc: 'Rose-red city in rock' },
+  { name: 'Christ the Redeemer',    country: 'Brazil', emoji: '✝️', color: '#009C3B', desc: '38 m statue above Rio' },
+  { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', color: '#D9A028', desc: 'Inca citadel in the Andes' },
+  { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Mayan pyramid city' },
+  { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Amphitheatre from 80 AD' },
+  { name: 'Taj Mahal',              country: 'India',  emoji: '🕌', color: '#FF9933', desc: 'Marble tomb in Agra', href: '/wonders/taj-mahal',
+    // Polish Card 4: the published wonder's card carries its real photo
+    // (image bank: "Taj Mahal (Edited).jpeg", Yann Forget, CC BY-SA 4.0).
+    img: '/images/home/taj.webp', imgAlt: 'The Taj Mahal seen from the Yamuna river side, its white marble dome and minarets above the garden wall', credit: 'Photo: Yann Forget · CC BY-SA 4.0' },
 ];
 
 export default function FeaturedWonders() {
@@ -55,8 +58,8 @@ export default function FeaturedWonders() {
   return (
     <div className="mb-4">
       {tajTemp != null && (
-        <p className="sub-desc mb-4">
-          Right now at the Taj Mahal in Agra: <span className="text-white font-semibold">{tajTemp}°C</span> — the marble changes colour with the light through the day.
+        <p className="sub-desc">
+          Right now at the Taj Mahal in Agra: <span className="t-text font-semibold">{tajTemp}°C</span> — the marble changes colour with the light through the day.
         </p>
       )}
       <div className="overflow-hidden rounded-2xl">
@@ -64,14 +67,23 @@ export default function FeaturedWonders() {
           {doubled.map((w, i) => {
             const card = (
               <div className="relative h-44 rounded-2xl overflow-hidden border"
-                style={{ borderColor: `${w.color}40`, background: `linear-gradient(135deg, ${w.color}20, #0a0f1e)` }}>
-                <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-15 select-none pointer-events-none">{w.emoji}</div>
+                style={{ borderColor: `${w.color}40`, background: `linear-gradient(135deg, ${w.color}20, var(--bg))` }}>
+                {'img' in w && w.img ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={w.img} alt={w.imgAlt} width={640} height={421} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,15,30,0.92) 0%, rgba(10,15,30,0.35) 55%, rgba(10,15,30,0.15) 100%)' }} />
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-15 select-none pointer-events-none">{w.emoji}</div>
+                )}
                 <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
                   <div className="text-3xl">{w.emoji}</div>
                   <div>
-                    <div className="text-white font-bold text-sm leading-tight">{w.name}</div>
+                    <div className="t-text font-bold text-sm leading-tight">{w.name}</div>
                     <div className="sub-desc mt-0.5">{w.country}</div>
-                    <div className="sub-desc mt-1 line-clamp-2">{w.desc}</div>
+                    <div className="sub-desc mt-1">{w.desc}</div>
+                    {'credit' in w && w.credit && <div className="t-force-dark text-[9px] t-text-50 mt-1">{w.credit}</div>}
                   </div>
                 </div>
               </div>
@@ -86,7 +98,7 @@ export default function FeaturedWonders() {
       </div>
       <p className="sub-desc mt-4">
         The Taj Mahal&rsquo;s full page is live now — live visiting conditions, history and photography guides. The other wonders open one by one as each passes review.{' '}
-        <Link href="/wonders" className="text-white/70 underline underline-offset-4 hover:text-white">Explore all wonders →</Link>
+        <Link href="/wonders" className="t-text-70 underline underline-offset-4 t-hover-text">Explore all wonders →</Link>
       </p>
     </div>
   );

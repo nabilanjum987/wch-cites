@@ -2,105 +2,343 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══ THEME TOKEN LAYER (Polish Card 5, 2026-10-23) ════════════════════════
+   ONE token system drives the whole colour layer. Dark is the default
+   (:root) and every dark value below is EXACTLY the colour the site
+   rendered before this card — dark parity is a hard requirement.
+   [data-theme="light"] is a complete second set. A future mode is just
+   another variable set. The navbar toggle writes data-theme on <html>
+   and persists the choice in localStorage ('wch-theme'); an inline
+   script in the root layout sets it before first paint (no FOUC).
+   Server HTML carries no attribute → :root (dark) applies. */
+:root {
+  color-scheme: dark;
+  --bg: #0a0f1e;               /* page background */
+  --bg-2: #080c18;             /* alternate section background */
+  --bg-3: #0b1120;             /* Ticker 1 bar */
+  --bg-panel: #0d1424;         /* raised panel surface */
+  --bg-panel-2: #111827;       /* deeper panel surface */
+  --bg-deep: #030712;          /* dropdowns / deepest chrome */
+  --bg-footer: rgba(0, 0, 0, 0.3);
+  /* Card surfaces. NOTE: the old [class*="bg-white"] !important remap
+     flattened EVERY bg-white/* utility (including hover: variants and
+     elements whose only background was a hover class) to exactly
+     rgba(255,255,255,0.04) — so dark --card AND --card-hover are both
+     0.04. Anything else would change the dark render. */
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.04);
+  --card-strong: rgba(255, 255, 255, 0.06);
+  --text: #ffffff;
+  --text-95: rgba(255, 255, 255, 0.95);
+  --text-90: rgba(255, 255, 255, 0.9);
+  --text-85: rgba(255, 255, 255, 0.85);
+  --text-80: rgba(255, 255, 255, 0.8);
+  --text-75: rgba(255, 255, 255, 0.75);
+  --text-70: rgba(255, 255, 255, 0.7);
+  --text-60: rgba(255, 255, 255, 0.6);
+  --text-50: rgba(255, 255, 255, 0.5);
+  --text-40: rgba(255, 255, 255, 0.4);
+  --text-35: rgba(255, 255, 255, 0.35);
+  --text-30: rgba(255, 255, 255, 0.3);
+  --text-25: rgba(255, 255, 255, 0.25);
+  /* Tailwind gray text scale AS RENDERED in dark: the old remap value
+     where one existed (500/600/700), the natural hex where the old CSS
+     left the class alone (200/300/400). */
+  --g200: #e5e7eb;
+  --g300: #d1d5db;
+  --g400: #9ca3af;
+  --g500: rgba(255, 255, 255, 0.5);
+  --g600: rgba(255, 255, 255, 0.6);
+  --g700: rgba(255, 255, 255, 0.75);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-5: rgba(255, 255, 255, 0.05);
+  --border-6: rgba(255, 255, 255, 0.06);
+  --border-8: rgba(255, 255, 255, 0.08);
+  --border-15: rgba(255, 255, 255, 0.15);
+  --border-20: rgba(255, 255, 255, 0.2);
+  --border-25: rgba(255, 255, 255, 0.25);
+  --border-30: rgba(255, 255, 255, 0.3);
+  --border-12: rgba(255, 255, 255, 0.12);
+  --bg-deep-95: rgba(3, 7, 18, 0.95);
+  --bg-deep-90: rgba(3, 7, 18, 0.9);
+  --glass-card: rgba(99, 102, 241, 0.1);
+  --text-secondary: #cbd5e1;
+  --hero-panel-bg: rgba(10, 15, 30, 0.6);
+  --header-bg: rgba(3, 7, 18, 0.85);
+  --menu-bg: rgba(10, 15, 30, 0.95);
+  --input-bg: rgba(255, 255, 255, 0.06);
+  --input-border: rgba(255, 255, 255, 0.15);
+  --input-placeholder: rgba(255, 255, 255, 0.35);
+  --nav-chip-bg: rgba(99, 102, 241, 0.05);
+  --nav-link: #06b6d4;
+  --accent-cyan: #67e8f9;        /* text-cyan-300 as rendered */
+  --accent-cyan-hover: #a5f3fc;  /* text-cyan-200 */
+  --accent-emerald: #6ee7b7;     /* text-emerald-300 */
+  --accent-amber: #fcd34d;       /* text-amber-300 */
+  --accent-sky: #7dd3fc;         /* text-sky-300 */
+  --accent-yellow: #facc15;      /* text-yellow-400 */
+  --accent-yellow-hover: #fde047;/* text-yellow-300 */
+  --accent-green: #4ade80;       /* text-green-400 */
+  --accent-red: #f87171;         /* text-red-400 */
+  --shadow: none;                /* dark killed card shadows (old rule) */
+  --scrollbar: rgba(255, 255, 255, 0.18);
+  --scrollbar-hover: rgba(255, 255, 255, 0.3);
+  --space-subdesc: 1.5rem;       /* sub-desc spacing standard (Card 5 §2) */
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f6fb;
+  --bg-2: #eaeef6;
+  --bg-3: #e6ebf4;
+  --bg-panel: #ffffff;
+  --bg-panel-2: #f1f5f9;
+  --bg-deep: #ffffff;
+  --bg-footer: #e8edf5;
+  --card: #ffffff;
+  --card-hover: #eef2f9;
+  --card-strong: #e8edf5;
+  --text: #0f172a;
+  --text-95: rgba(15, 23, 42, 0.95);
+  --text-90: rgba(15, 23, 42, 0.9);
+  --text-85: rgba(15, 23, 42, 0.85);
+  --text-80: rgba(15, 23, 42, 0.8);
+  --text-75: rgba(15, 23, 42, 0.75);
+  --text-70: rgba(15, 23, 42, 0.7);
+  --text-60: rgba(15, 23, 42, 0.62);
+  --text-50: rgba(15, 23, 42, 0.55);
+  --text-40: rgba(15, 23, 42, 0.52);
+  --text-35: rgba(15, 23, 42, 0.45);
+  --text-30: rgba(15, 23, 42, 0.42);
+  --text-25: rgba(15, 23, 42, 0.35);
+  --g200: #334155;
+  --g300: #475569;
+  --g400: #64748b;
+  --g500: #64748b;
+  --g600: #475569;
+  --g700: #334155;
+  --border: rgba(15, 23, 42, 0.14);
+  --border-5: rgba(15, 23, 42, 0.08);
+  --border-6: rgba(15, 23, 42, 0.09);
+  --border-8: rgba(15, 23, 42, 0.1);
+  --border-15: rgba(15, 23, 42, 0.18);
+  --border-20: rgba(15, 23, 42, 0.22);
+  --border-25: rgba(15, 23, 42, 0.26);
+  --border-30: rgba(15, 23, 42, 0.3);
+  --border-12: rgba(15, 23, 42, 0.16);
+  --bg-deep-95: rgba(255, 255, 255, 0.97);
+  --bg-deep-90: rgba(255, 255, 255, 0.94);
+  --glass-card: rgba(99, 102, 241, 0.08);
+  --text-secondary: #475569;
+  --hero-panel-bg: rgba(255, 255, 255, 0.72);
+  --header-bg: rgba(255, 255, 255, 0.88);
+  --menu-bg: rgba(255, 255, 255, 0.97);
+  --input-bg: #ffffff;
+  --input-border: rgba(15, 23, 42, 0.2);
+  --input-placeholder: rgba(15, 23, 42, 0.4);
+  --nav-chip-bg: rgba(99, 102, 241, 0.08);
+  --nav-link: #0369a1;
+  --accent-cyan: #0e7490;
+  --accent-cyan-hover: #155e75;
+  --accent-emerald: #047857;
+  --accent-amber: #b45309;
+  --accent-sky: #0369a1;
+  --accent-yellow: #a16207;
+  --accent-yellow-hover: #854d0e;
+  --accent-green: #15803d;
+  --accent-red: #dc2626;
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 14px rgba(15, 23, 42, 0.06);
+  --scrollbar: rgba(15, 23, 42, 0.25);
+  --scrollbar-hover: rgba(15, 23, 42, 0.4);
+  /* --space-subdesc is theme-independent: inherited from :root. */
+}
+
 /* ─── GLOBAL BASE ─────────────────────────────────────────────────────────── */
 html, body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #0a0f1e;
-  color: #ffffff;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
-/* ─── DARK THEME OVERRIDE ─────────────────────────────────────────────────── */
-/* Forces all light-background Tailwind/shadcn classes to dark equivalents.
-   This handles the 50+ components that use bg-white/bg-gray-50 etc.
-   Country accent colors are applied via inline styles — unaffected by this. */
+/* ─── SEMANTIC THEME CLASSES (Polish Card 5) ────────────────────────────────
+   The ONE conversion mechanism for the homepage + shared chrome:
+   components use these classes (or var(--…) inside an existing inline
+   style) instead of hard-coded dark colours. */
+.t-bg { background-color: var(--bg); }
+.t-bg-2 { background-color: var(--bg-2); }
+.t-bg-3 { background-color: var(--bg-3); }
+.t-bg-deep { background-color: var(--bg-deep); }
+.t-bg-deep-95 { background-color: var(--bg-deep-95); }
+.t-bg-deep-90 { background-color: var(--bg-deep-90); }
+.t-panel { background-color: var(--bg-panel); }
+.t-panel-2 { background-color: var(--bg-panel-2); }
+.t-footer { background-color: var(--bg-footer); }
+.t-card { background-color: var(--card); box-shadow: var(--shadow); }
+.t-card-hover:hover { background-color: var(--card-hover); }
+.t-card-strong { background-color: var(--card-strong); }
+.t-header { background-color: var(--header-bg); }
+.t-menu { background-color: var(--menu-bg); }
+.t-text { color: var(--text); }
+.t-text-95 { color: var(--text-95); }
+.t-text-90 { color: var(--text-90); }
+.t-text-85 { color: var(--text-85); }
+.t-text-80 { color: var(--text-80); }
+.t-text-75 { color: var(--text-75); }
+.t-text-70 { color: var(--text-70); }
+.t-text-60 { color: var(--text-60); }
+.t-text-50 { color: var(--text-50); }
+.t-text-40 { color: var(--text-40); }
+.t-text-35 { color: var(--text-35); }
+.t-text-30 { color: var(--text-30); }
+.t-text-25 { color: var(--text-25); }
+.t-g200 { color: var(--g200); }
+.t-g300 { color: var(--g300); }
+.t-g400 { color: var(--g400); }
+.t-g500 { color: var(--g500); }
+.t-g600 { color: var(--g600); }
+.t-g700 { color: var(--g700); }
+.t-border { border-color: var(--border); }
+.t-border-5 { border-color: var(--border-5); }
+.t-border-6 { border-color: var(--border-6); }
+.t-border-8 { border-color: var(--border-8); }
+.t-border-15 { border-color: var(--border-15); }
+.t-border-20 { border-color: var(--border-20); }
+.t-border-25 { border-color: var(--border-25); }
+.t-border-30 { border-color: var(--border-30); }
+.t-border-hover-20:hover { border-color: var(--border-20); }
+.t-border-hover-25:hover { border-color: var(--border-25); }
+.t-border-hover-30:hover { border-color: var(--border-30); }
+.t-link { color: var(--accent-cyan); }
+.t-link:hover { color: var(--accent-cyan-hover); }
+.t-cyan { color: var(--accent-cyan); }
+.t-emerald { color: var(--accent-emerald); }
+.t-amber { color: var(--accent-amber); }
+.t-sky { color: var(--accent-sky); }
+.t-yellow { color: var(--accent-yellow); }
+.t-yellow:hover { color: var(--accent-yellow-hover); }
+.t-gold { color: var(--accent-yellow); }
+.t-gold-soft { color: var(--accent-yellow-hover); }
+.t-onbrand { color: #ffffff; } /* text on brand-filled buttons (emerald/cyan) — constant in both themes */
+.group:hover .t-group-border-hover-25 { border-color: var(--border-25); }
+.group:hover .t-group-hover-text { color: var(--text); }
+.t-hover-text:hover { color: var(--text); }
+.t-hover-g300:hover { color: var(--g300); }
+.t-green { color: var(--accent-green); }
+.t-red { color: var(--accent-red); }
 
-.bg-white,
-[class*="bg-white"] {
-  background-color: rgba(255, 255, 255, 0.04) !important;
+/* ─── ALWAYS-DARK ISLANDS (PR #87 merge-prep round 2, 2026-10-23) ──────────
+   Purely additive: surfaces that are dark BY DESIGN in both themes — the
+   hero clock flag-backdrop cards, the day/night diagram band, on-photo
+   caption chips — carry this class on the island root (or on the chip
+   itself). It re-declares the DARK token values scoped to the island, so
+   the island's content uses the SAME t-* classes as the themed page and
+   resolves to the dark palette in both themes. Every value below is
+   copied verbatim from the :root (dark) set above — parity is exact. */
+.t-force-dark {
+  color-scheme: dark;
+  --bg: #0a0f1e;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.04);
+  --card-strong: rgba(255, 255, 255, 0.06);
+  --text: #ffffff;
+  --text-95: rgba(255, 255, 255, 0.95);
+  --text-90: rgba(255, 255, 255, 0.9);
+  --text-85: rgba(255, 255, 255, 0.85);
+  --text-80: rgba(255, 255, 255, 0.8);
+  --text-75: rgba(255, 255, 255, 0.75);
+  --text-70: rgba(255, 255, 255, 0.7);
+  --text-60: rgba(255, 255, 255, 0.6);
+  --text-50: rgba(255, 255, 255, 0.5);
+  --text-40: rgba(255, 255, 255, 0.4);
+  --text-35: rgba(255, 255, 255, 0.35);
+  --text-30: rgba(255, 255, 255, 0.3);
+  --text-25: rgba(255, 255, 255, 0.25);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-5: rgba(255, 255, 255, 0.05);
+  --border-6: rgba(255, 255, 255, 0.06);
+  --border-8: rgba(255, 255, 255, 0.08);
+  --border-15: rgba(255, 255, 255, 0.15);
+  --border-20: rgba(255, 255, 255, 0.2);
+  --border-25: rgba(255, 255, 255, 0.25);
+  --border-30: rgba(255, 255, 255, 0.3);
+  --accent-amber: #fcd34d;
+  --shadow: none;
 }
 
-.bg-gray-50 {
-  background-color: #0d1424 !important;
+/* ─── LEGACY CLASS COMPAT (tokenised) ───────────────────────────────────────
+   The old "DARK THEME OVERRIDE" block is REMOVED as a force-dark hack and
+   re-expressed here on the theme tokens. These rules are load-bearing for
+   the NON-homepage pages (rates, city, country, …) that still use the
+   light-palette Tailwind classes; deleting them outright would un-dark
+   those pages in dark mode, which is outside this card's scope. Under
+   :root:not([data-theme="light"]) every value below is IDENTICAL to the
+   old remap (dark parity, site-wide). In light mode the compat rules
+   switch off and the natural Tailwind palette renders. The homepage +
+   shared chrome no longer use any of these classes (converted above). */
+:root:not([data-theme="light"]) .bg-white,
+:root:not([data-theme="light"]) [class*="bg-white"] {
+  background-color: var(--card) !important;
 }
-
-.bg-gray-100 {
-  background-color: #111827 !important;
-}
-
-.bg-gray-200 {
-  background-color: #1f2937 !important;
-}
-
-.bg-gray-950 {
-  background-color: #0a0f1e !important;
-}
-
-/* Borders */
-.border-gray-100 {
-  border-color: rgba(255, 255, 255, 0.08) !important;
-}
-.border-gray-200 {
-  border-color: rgba(255, 255, 255, 0.10) !important;
-}
-.border-gray-300 {
-  border-color: rgba(255, 255, 255, 0.15) !important;
-}
-
-/* Text */
-.text-gray-900 { color: rgba(255, 255, 255, 0.95) !important; }
-.text-gray-800 { color: rgba(255, 255, 255, 0.85) !important; }
-.text-gray-700 { color: rgba(255, 255, 255, 0.75) !important; }
-.text-gray-600 { color: rgba(255, 255, 255, 0.60) !important; }
-.text-gray-500 { color: rgba(255, 255, 255, 0.50) !important; }
-.text-black    { color: rgba(255, 255, 255, 0.95) !important; }
-.text-slate-900 { color: rgba(255, 255, 255, 0.95) !important; }
-.text-slate-800 { color: rgba(255, 255, 255, 0.85) !important; }
-.text-slate-700 { color: rgba(255, 255, 255, 0.75) !important; }
-.text-slate-600 { color: rgba(255, 255, 255, 0.60) !important; }
-.text-slate-500 { color: rgba(255, 255, 255, 0.50) !important; }
-.text-zinc-900  { color: rgba(255, 255, 255, 0.95) !important; }
-.text-zinc-800  { color: rgba(255, 255, 255, 0.85) !important; }
-.text-neutral-900 { color: rgba(255, 255, 255, 0.95) !important; }
-.text-neutral-800 { color: rgba(255, 255, 255, 0.85) !important; }
-
-/* Backgrounds that create invisible text zones */
-.bg-gray-800 { background-color: rgba(255, 255, 255, 0.06) !important; }
-.bg-gray-900 { background-color: rgba(255, 255, 255, 0.04) !important; }
-.bg-slate-50  { background-color: #0d1424 !important; }
-.bg-slate-100 { background-color: #111827 !important; }
-.bg-slate-800 { background-color: rgba(255, 255, 255, 0.06) !important; }
-.bg-slate-900 { background-color: #0a0f1e !important; }
-.bg-zinc-50   { background-color: #0d1424 !important; }
-.bg-zinc-100  { background-color: #111827 !important; }
-.bg-neutral-50  { background-color: #0d1424 !important; }
-.bg-neutral-100 { background-color: #111827 !important; }
-
-/* Gradient backgrounds that were light */
-.from-gray-50  { --tw-gradient-from: #0d1424 !important; }
-.from-gray-100 { --tw-gradient-from: #111827 !important; }
-.to-gray-50    { --tw-gradient-to: #0d1424 !important; }
-.to-gray-100   { --tw-gradient-to: #111827 !important; }
-.from-slate-50 { --tw-gradient-from: #0d1424 !important; }
-.to-slate-50   { --tw-gradient-to: #0d1424 !important; }
-
-/* Remove light box shadows — they look wrong on dark */
-.shadow-sm,
-.shadow,
-.shadow-md,
-.shadow-lg,
-.shadow-xl {
+:root:not([data-theme="light"]) .bg-gray-50 { background-color: var(--bg-panel) !important; }
+:root:not([data-theme="light"]) .bg-gray-100 { background-color: var(--bg-panel-2) !important; }
+:root:not([data-theme="light"]) .bg-gray-200 { background-color: #1f2937 !important; }
+:root:not([data-theme="light"]) .bg-gray-950 { background-color: var(--bg) !important; }
+:root:not([data-theme="light"]) .border-gray-100 { border-color: var(--border-8) !important; }
+:root:not([data-theme="light"]) .border-gray-200 { border-color: var(--border) !important; }
+:root:not([data-theme="light"]) .border-gray-300 { border-color: var(--border-15) !important; }
+:root:not([data-theme="light"]) .text-gray-900 { color: var(--text-95) !important; }
+:root:not([data-theme="light"]) .text-gray-800 { color: var(--text-85) !important; }
+:root:not([data-theme="light"]) .text-gray-700 { color: var(--text-75) !important; }
+:root:not([data-theme="light"]) .text-gray-600 { color: var(--text-60) !important; }
+:root:not([data-theme="light"]) .text-gray-500 { color: var(--text-50) !important; }
+:root:not([data-theme="light"]) .text-black { color: var(--text-95) !important; }
+:root:not([data-theme="light"]) .text-slate-900 { color: var(--text-95) !important; }
+:root:not([data-theme="light"]) .text-slate-800 { color: var(--text-85) !important; }
+:root:not([data-theme="light"]) .text-slate-700 { color: var(--text-75) !important; }
+:root:not([data-theme="light"]) .text-slate-600 { color: var(--text-60) !important; }
+:root:not([data-theme="light"]) .text-slate-500 { color: var(--text-50) !important; }
+:root:not([data-theme="light"]) .text-zinc-900 { color: var(--text-95) !important; }
+:root:not([data-theme="light"]) .text-zinc-800 { color: var(--text-85) !important; }
+:root:not([data-theme="light"]) .text-neutral-900 { color: var(--text-95) !important; }
+:root:not([data-theme="light"]) .text-neutral-800 { color: var(--text-85) !important; }
+:root:not([data-theme="light"]) .bg-gray-800 { background-color: var(--card-strong) !important; }
+:root:not([data-theme="light"]) .bg-gray-900 { background-color: var(--card) !important; }
+:root:not([data-theme="light"]) .bg-slate-50 { background-color: var(--bg-panel) !important; }
+:root:not([data-theme="light"]) .bg-slate-100 { background-color: var(--bg-panel-2) !important; }
+:root:not([data-theme="light"]) .bg-slate-800 { background-color: var(--card-strong) !important; }
+:root:not([data-theme="light"]) .bg-slate-900 { background-color: var(--bg) !important; }
+:root:not([data-theme="light"]) .bg-zinc-50 { background-color: var(--bg-panel) !important; }
+:root:not([data-theme="light"]) .bg-zinc-100 { background-color: var(--bg-panel-2) !important; }
+:root:not([data-theme="light"]) .bg-neutral-50 { background-color: var(--bg-panel) !important; }
+:root:not([data-theme="light"]) .bg-neutral-100 { background-color: var(--bg-panel-2) !important; }
+/* Gradient remaps — same treatment: dark values identical, off in light. */
+:root:not([data-theme="light"]) .from-gray-50 { --tw-gradient-from: var(--bg-panel) !important; }
+:root:not([data-theme="light"]) .from-gray-100 { --tw-gradient-from: var(--bg-panel-2) !important; }
+:root:not([data-theme="light"]) .to-gray-50 { --tw-gradient-to: var(--bg-panel) !important; }
+:root:not([data-theme="light"]) .to-gray-100 { --tw-gradient-to: var(--bg-panel-2) !important; }
+:root:not([data-theme="light"]) .from-slate-50 { --tw-gradient-from: var(--bg-panel) !important; }
+:root:not([data-theme="light"]) .to-slate-50 { --tw-gradient-to: var(--bg-panel) !important; }
+/* Shadow kill — was a dark-only cosmetic fix; now scoped to dark only,
+   so light mode gets its natural shadows back. */
+:root:not([data-theme="light"]) .shadow-sm,
+:root:not([data-theme="light"]) .shadow,
+:root:not([data-theme="light"]) .shadow-md,
+:root:not([data-theme="light"]) .shadow-lg,
+:root:not([data-theme="light"]) .shadow-xl {
   box-shadow: none !important;
 }
 
-/* Input fields */
+/* Input fields — a genuine global fix (unstyled inputs were unreadable),
+   now token-driven so it themes with the rest of the layer. Dark values
+   are identical to the old rule. */
 input, textarea, select {
-  background-color: rgba(255, 255, 255, 0.06) !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
+  background-color: var(--input-bg) !important;
+  color: var(--text) !important;
+  border-color: var(--input-border) !important;
 }
 
 input::placeholder, textarea::placeholder {
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: var(--input-placeholder) !important;
 }
 
 
@@ -116,17 +354,29 @@ input::placeholder, textarea::placeholder {
   .ticker-track { animation: none; }
 }
 
-/* Homepage sub-description standard (Polish Card 3): ONE size/leading/colour
-   for every panel/card sub-description on the homepage. */
-.sub-desc { font-size: 0.875rem; line-height: 1.625; color: rgba(255, 255, 255, 0.4); }
+/* Homepage sub-description standard (Polish Card 3, extended by Card 5):
+   ONE size/leading/colour for every panel/card sub-description on the
+   homepage; Card 5 adds the justified presentation and the single
+   spacing token — the space after every .sub-desc block is exactly
+   var(--space-subdesc), homepage-wide. Colour now comes from the theme
+   token (dark value identical to Card 3's rgba(255,255,255,0.4)). */
+.sub-desc {
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: var(--text-40);
+  text-align: justify;
+  hyphens: auto;
+  margin-bottom: var(--space-subdesc);
+}
 
 /* My City rail internal scroll (Polish Card 2): on lg+ the sticky rail is
    capped at the viewport height under the header and scrolls internally,
    with a slim, subtle scrollbar. No overscroll-behavior is set, so scroll
-   chaining to the page stays on — the page scroll is never trapped. */
+   chaining to the page stays on — the page scroll is never trapped.
+   Scrollbar colours tokenised by Card 5 (dark values identical). */
 .rail-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: var(--scrollbar) transparent;
 }
 .rail-scroll::-webkit-scrollbar {
   width: 6px;
@@ -135,9 +385,9 @@ input::placeholder, textarea::placeholder {
   background: transparent;
 }
 .rail-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--scrollbar);
   border-radius: 999px;
 }
 .rail-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--scrollbar-hover);
 }

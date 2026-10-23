@@ -19,18 +19,18 @@ export default function ActiveConflictsWidget() {
             <div className="rounded-xl border p-4 transition-all group-hover:scale-[1.01]"
               style={{ backgroundColor: `${r.color}08`, borderColor: `${r.color}30` }}>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-white/80 font-medium text-sm">{r.region}</span>
+                <span className="t-text-80 font-medium text-sm">{r.region}</span>
                 <span className="text-xs px-2 py-0.5 rounded-full font-medium"
                   style={{ backgroundColor: `${r.color}20`, color: r.color }}>{r.severity}</span>
               </div>
               <div className="flex gap-4">
                 <div>
                   <div className="text-2xl font-bold" style={{ color: r.color }}>{r.conflicts}</div>
-                  <div className="text-white/30 text-xs">conflicts</div>
+                  <div className="t-text-30 text-xs">conflicts</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-white/70">{r.displaced}</div>
-                  <div className="text-white/30 text-xs">displaced</div>
+                  <div className="text-2xl font-bold t-text-70">{r.displaced}</div>
+                  <div className="t-text-30 text-xs">displaced</div>
                 </div>
               </div>
             </div>

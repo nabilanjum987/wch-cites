@@ -247,12 +247,45 @@ export default async function PersonalityPage({ params }: PageProps) {
   const p = await getPersonalityBySlug(slug);
   if (!p) notFound();
 
+  // ── Schema (SEO completion, Batch 4 Item 1): Person, built ONLY from
+  // the profile record. Dates are stored as text ("9 November 1877");
+  // they are converted to ISO only when they parse cleanly, otherwise
+  // the property is omitted — never guessed.
+  const MONTH_NUM: Record<string, string> = {
+    january: '01', february: '02', march: '03', april: '04', may: '05', june: '06',
+    july: '07', august: '08', september: '09', october: '10', november: '11', december: '12',
+  };
+  const toISODate = (s?: string): string | undefined => {
+    if (!s) return undefined;
+    const m = s.trim().match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+    if (!m) return undefined;
+    const mon = MONTH_NUM[m[2].toLowerCase()];
+    return mon ? `${m[3]}-${mon}-${m[1].padStart(2, '0')}` : undefined;
+  };
+  const birthISO = toISODate(p.birthDate);
+  const deathISO = toISODate(p.deathDate);
+  const personJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: p.name,
+    jobTitle: p.title,
+    description: p.description,
+    url: `https://worldcityhub.vercel.app/personalities/${p.slug}`,
+    ...(p.imageUrl ? { image: p.imageUrl } : {}),
+    ...(birthISO ? { birthDate: birthISO } : {}),
+    ...(deathISO ? { deathDate: deathISO } : {}),
+    nationality: { '@type': 'Country', name: p.country },
+    homeLocation: { '@type': 'Place', name: `${p.city}, ${p.country}` },
+    ...(p.wikiUrl ? { sameAs: [p.wikiUrl] } : {}),
+  };
+
   // Batch 4 Item 2: AEO answer layer data (from this profile's own record).
   const { directAnswer: personalityDirectAnswer, faqs: personalityFaqs } = buildPersonalityAeo(p);
   const personalityAeoSource = `Profile facts: WorldCityHub personalities dataset${p.wikiUrl ? ' · Wikipedia article linked on this page' : ''} · Full timeline, works & quotes on this profile`;
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       {/* Flag background symbol */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
         <FlagSymbolBackground countrySlug={p.countrySlug} />

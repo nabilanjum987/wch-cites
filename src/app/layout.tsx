@@ -19,7 +19,18 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const tickerItems = await getMarketTickerItems().catch(() => []);
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
+      <head>
+        {/* Theme init (Polish Card 5): set data-theme from localStorage
+            BEFORE first paint so there is no flash of the wrong theme.
+            Default (no stored choice) is dark — the :root token set —
+            and the server HTML carries no attribute. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('wch-theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t;}}catch(e){}`,
+          }}
+        />
+      </head>
       <body>
         {/* Fixed top bar: ticker + navbar */}
         <div className="fixed top-0 left-0 right-0 z-50">
