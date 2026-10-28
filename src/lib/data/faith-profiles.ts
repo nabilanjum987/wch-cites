@@ -149,6 +149,128 @@ const PROFILES: Record<string, CityFaithProfile> = {
       },
     ],
   },
+  // ── PR2 (A2) — same population rule as Lahore: majority faith first and
+  // full (via depthFor, never a hard-coded city name), other faiths at the
+  // depth their community warrants. No service times are claimed here —
+  // only places and major festivals; timings come from the live timetable
+  // and the faith tabs, and readers are told to check ahead.
+  karachi: {
+    citySlug: 'karachi',
+    censusNote:
+      '2023 Census of Pakistan: Islam 96.52% of Karachi city; Christianity 2.14%; Hinduism 1.17%; other faiths 0.17%.',
+    sections: [
+      {
+        key: 'islam',
+        faith: 'Islam',
+        baseDepth: 'medium',
+        intro:
+          'The majority faith of Karachi, covered in full across this page: the live five-prayer timetable, mosque finder, Hijri calendar, Ramadan and Zakat sections above.',
+        places: [
+          {
+            name: 'Masjid-e-Tooba, Defence area',
+            detail: 'One of Karachi’s best-known mosques, famed for its single dome.',
+          },
+          {
+            name: 'New Memon Masjid, Bolton Market, Saddar',
+            detail: 'Historic Memon community mosque in the old commercial quarter.',
+          },
+        ],
+        source: 'Site prayer data (Aladhan, Karachi method, Hanafi); 2023 Census figures.',
+      },
+      {
+        key: 'christian',
+        faith: 'Christianity',
+        baseDepth: 'medium',
+        intro:
+          'Karachi’s largest minority faith (2.14% in the 2023 Census), covered here in medium depth, with real churches and their major festivals — Christmas and Easter. Service times vary by church and season; check ahead before travelling.',
+        places: [
+          {
+            name: 'St Patrick’s Cathedral, Shahrah-e-Iraq, Saddar',
+            detail:
+              'Seat of the Roman Catholic Archdiocese of Karachi, near Empress Market; the present cathedral was completed in 1881.',
+          },
+          {
+            name: 'St Andrew’s Kirk, Saddar',
+            detail: 'Built in 1867 for Karachi’s Scottish Presbyterian community.',
+          },
+        ],
+        source: '2023 Census of Pakistan; Wikipedia (Saint Patrick’s Cathedral, Karachi).',
+      },
+      {
+        key: 'hindu',
+        faith: 'Hinduism',
+        baseDepth: 'light',
+        intro:
+          'A community of 1.17% in the 2023 Census, covered here in light depth, with its temples and major festivals — Diwali and Holi. Festival dates follow the Hindu calendar; check ahead before travelling.',
+        places: [
+          {
+            name: 'Shri Swaminarayan Mandir, Saddar',
+            detail: 'Historic Hindu temple in central Karachi.',
+          },
+          {
+            name: 'Shri Panchmukhi Hanuman Mandir, Soldier Bazaar',
+            detail: 'Long-standing Hanuman temple in Soldier Bazaar.',
+          },
+        ],
+        source: '2023 Census of Pakistan; Karachi places-of-worship listings.',
+      },
+    ],
+  },
+  islamabad: {
+    citySlug: 'islamabad',
+    censusNote:
+      '2023 Census of Pakistan, Islamabad District (PBS Table 9): total 2,283,244; Muslims 2,181,663; Christians 97,281; Hindus 839; Sikhs 60.',
+    sections: [
+      {
+        key: 'islam',
+        faith: 'Islam',
+        baseDepth: 'medium',
+        intro:
+          'The majority faith of Islamabad, covered in full across this page: the live five-prayer timetable, mosque finder, Hijri calendar, Ramadan and Zakat sections above.',
+        places: [
+          {
+            name: 'Faisal Mosque, foot of the Margalla Hills',
+            detail: 'The capital’s national mosque and most recognisable landmark, in a modern, tent-like design.',
+          },
+        ],
+        source: 'Site prayer data (Aladhan, Karachi method, Hanafi); 2023 Census figures (PBS Table 9).',
+      },
+      {
+        key: 'christian',
+        faith: 'Christianity',
+        baseDepth: 'medium',
+        intro:
+          'Islamabad’s largest minority faith (97,281 people in the 2023 Census), covered here in medium depth, with its churches and major festivals — Christmas and Easter. Service times vary by church and season; check ahead before travelling.',
+        places: [
+          {
+            name: 'Churches in Islamabad’s residential sectors',
+            detail:
+              'Sunday services for the city’s Christian community are held in churches across the planned sectors; no single service time is claimed here because times vary by church.',
+          },
+        ],
+        source: '2023 Census of Pakistan (PBS Table 9).',
+      },
+      {
+        key: 'hindu',
+        faith: 'Hinduism',
+        baseDepth: 'light',
+        intro:
+          'A very small community in Islamabad today (839 Hindus in the 2023 Census) with no fully operational temple in the capital territory, covered here in light depth. Major festivals are Diwali and Holi.',
+        places: [
+          {
+            name: 'Ram temple, Saidpur Village',
+            detail: 'Historic temple site in Saidpur Village; not maintained as an active place of worship.',
+          },
+          {
+            name: 'Shri Krishna Mandir plot, Sector H-9',
+            detail:
+              'Half-acre plot allocated in 2016 for a temple and cremation site; construction had not begun as of 2025.',
+          },
+        ],
+        source: '2023 Census of Pakistan (PBS Table 9); Wikipedia (Hinduism in Islamabad Capital Territory).',
+      },
+    ],
+  },
 };
 
 /** Rendered depth: the majority faith is always 'full', whatever it is. */

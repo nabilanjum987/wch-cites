@@ -6,6 +6,7 @@ import { getGoldPkr, getUsdPkrRate, TROY_OZ_GRAMS } from '@/lib/gold';
 
 import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
+import { getPrayerSeo, CITY_COORDS } from '@/lib/data/prayer-keywords';
 
 // Server wrapper: the interactive Spiritual & Wellness Hub lives in
 // PrayerTimesClient.tsx (a client component). Metadata must be exported
@@ -22,8 +23,12 @@ const titleCase = (s: string) =>
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const p = await params;
   const city = titleCase(p.city);
-  const title = `${city} Prayer Times & Faiths Guide | WorldCityHub`;
-  const description = `${city} prayer times for all faiths: live countdown, mosque, church, temple, gurdwara and synagogue times, multi-faith calendar.`;
+  // final30 prayer cluster: Lahore/Karachi/Islamabad get their keyword
+  // title + description from prayer-keywords.ts; every other city keeps
+  // the pre-existing generic title/description below.
+  const seo = getPrayerSeo(p.city);
+  const title = seo?.title ?? `${city} Prayer Times & Faiths Guide | WorldCityHub`;
+  const description = seo?.description ?? `${city} prayer times for all faiths: live countdown, mosque, church, temple, gurdwara and synagogue times, multi-faith calendar.`;
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/prayer-times`;
   return {
     title,
@@ -111,18 +116,17 @@ export default async function Page({ params }: PageProps) {
   const provinceName = titleCaseSlug(p.province);
   const countryName = titleCaseSlug(p.country);
   const city = getCityBySlug(p.city);
+  // final30 prayer cluster: the template's fallback city carries Lahore's
+  // coordinates, so Karachi/Islamabad would otherwise fetch Lahore's
+  // times. CITY_COORDS (from the repo's own prayer-tables) overrides it.
+  const coords = CITY_COORDS[p.city];
+  const lat = city?.lat ?? coords?.lat ?? 31.5204;
+  const lng = city?.lng ?? coords?.lng ?? 74.3587;
+  const tz = city?.timezone ?? coords?.timezone ?? 'Asia/Karachi';
   const [initialTimes, initialZakat, initialShafiiAsr] = await Promise.all([
-    fetchInitialTimes(
-      city?.lat ?? 31.5204,
-      city?.lng ?? 74.3587,
-      city?.timezone ?? 'Asia/Karachi',
-    ),
+    fetchInitialTimes(lat, lng, tz),
     fetchInitialZakat(),
-    fetchInitialShafiiAsr(
-      city?.lat ?? 31.5204,
-      city?.lng ?? 74.3587,
-      city?.timezone ?? 'Asia/Karachi',
-    ),
+    fetchInitialShafiiAsr(lat, lng, tz),
   ]);
   return (
     <>
