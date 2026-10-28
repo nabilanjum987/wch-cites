@@ -50,10 +50,10 @@ export default function HoroscopeIndexClient() {
         <div className="relative max-w-3xl mx-auto">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Star size={28} className="text-yellow-400" />
-            <h1 className="text-4xl font-bold text-white">WorldCityHub Astrology</h1>
+            <h1 className="text-4xl font-bold text-white">Horoscope Today</h1>
             <Moon size={28} className="text-yellow-400" />
           </div>
-          <p className="text-purple-200 text-lg mb-2">Daily Horoscopes • Moon Phases • Cosmic Events</p>
+          <p className="text-purple-200 text-lg mb-2">Horoscope Today • Moon Phases • Cosmic Events</p>
           <p className="text-purple-400 text-sm">{today}</p>
         </div>
       </div>
@@ -134,6 +134,30 @@ export default function HoroscopeIndexClient() {
             primaryColor="#7c3aed"
             onSignClick={(sign: ZodiacSign) => router.push(`/horoscope/${sign}`)}
           />
+        </section>
+
+        {/* A1: hub AEO section — H2 + H3 questions, each answered directly
+            underneath in 50–70 words. No new design language: reuses the
+            section heading / body styles already used on this page. */}
+        <section>
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles size={20} className="text-yellow-400" />
+            <h2 className="text-xl font-bold text-white">Horoscope Today: Questions Answered</h2>
+          </div>
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-base font-semibold text-white mb-2">What is today&apos;s horoscope?</h3>
+              <p className="text-gray-300 leading-relaxed text-sm">Today&apos;s horoscope is a daily astrological reading for each of the twelve zodiac signs, covering love, career, finance, health and spirituality. On this page, choose your sign to open its daily reading, with star ratings, lucky number and colour, and compatibility for today. Readings are generated from computed planetary positions and are for entertainment only, not professional advice.</p>
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-white mb-2">How do I find my sign&apos;s horoscope today?</h3>
+              <p className="text-gray-300 leading-relaxed text-sm">Find your birth date range in the Choose Your Sign grid, then open that sign&apos;s page for its daily reading, weekly forecast and monthly outlook. The Daily tab shows today&apos;s star ratings, lucky elements and compatibility, while the Weekly tab covers the week ahead. If you are on a date boundary, check both neighbouring signs, since sign dates follow the traditional zodiac calendar.</p>
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-white mb-2">Are horoscope readings accurate?</h3>
+              <p className="text-gray-300 leading-relaxed text-sm">Horoscope readings are entertainment, not measured predictions: they translate traditional astrological associations and today&apos;s computed planetary positions into guidance for the day. Treat strong or weak ratings as prompts for reflection, not as facts about what will happen. For decisions about health, money or relationships, rely on qualified professional advice rather than any horoscope page.</p>
+            </div>
+          </div>
         </section>
 
         <Affiliates primaryColor="#7c3aed" />

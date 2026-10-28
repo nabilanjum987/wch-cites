@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import HoroscopeIndexClient from '@/components/horoscope/HoroscopeIndexClient';
 
 export const metadata: Metadata = {
-  title: 'Daily Horoscope, Moon Calendar & Astrology | WorldCityHub',
-  description: 'Daily horoscope for all 12 zodiac signs: Chinese zodiac, life-path numerology, moon phases, tarot card of the day and sky right now.',
+  title: 'Horoscope Today | All 12 Signs Daily | WorldCityHub',
+  description: 'Horoscope today for all 12 zodiac signs: daily readings, moon phases, tarot card of the day, Chinese zodiac and numerology — free on WorldCityHub.',
   alternates: { canonical: 'https://worldcityhub.vercel.app/horoscope' },
 };
 
