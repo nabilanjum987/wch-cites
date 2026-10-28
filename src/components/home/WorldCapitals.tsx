@@ -1,7 +1,8 @@
 'use client';
 
 // World Capitals panel (§9A, frozen amendment 2026-10-22) — a live
-// rotating set of capitals: flag (flagcdn), capital + country, local
+// rotating set of capitals: flag (vendored locally in
+// public/images/flags/), capital + country, local
 // time ticking via Intl, current temperature from Open-Meteo (one
 // batch call). Each capital links to its country page, per link map
 // §9A; when a capital's own city page is published, its link switches
@@ -42,7 +43,7 @@ export default function WorldCapitals() {
             <div className="rounded-2xl border t-border t-card p-4 h-32 flex flex-col justify-between transition-all t-group-border-hover-25 group-hover:scale-[1.02]">
               <div className="flex items-center justify-between">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`https://flagcdn.com/w160/${c.code}.png`} alt={`Flag of ${c.country}`} width={40} height={27} className="rounded shadow" loading="lazy" decoding="async" />
+                <img src={`/images/flags/${c.code}.png`} alt={`Flag of ${c.country}`} width={40} height={27} className="rounded shadow" loading="lazy" decoding="async" />
                 {temps[i] != null && <span className="t-text font-bold text-lg">{temps[i]}°C</span>}
               </div>
               <div>
