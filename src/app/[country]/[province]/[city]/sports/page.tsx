@@ -22,8 +22,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = titleCase(p.city);
   const province = titleCase(p.province);
   const country = titleCase(p.country);
-  const title = `${city} Sports — Fixtures & Results | WorldCityHub`;
-  const description = `${city} sports: teams, fixtures, results, stadiums and athletes from ${city}, ${province}, ${country} — updated daily.`;
+  // A6 (final30): the primary sports keyword "cricket live score today"
+  // targets exactly ONE page — Lahore sports (one keyword → one page).
+  // Karachi and every other city keep the generic sports title.
+  const isLahore = p.city === 'lahore';
+  const title = isLahore
+    ? `Cricket Live Score Today — Lahore Sports | WorldCityHub`
+    : `${city} Sports — Fixtures & Results | WorldCityHub`;
+  const description = isLahore
+    ? `Cricket live score today in Lahore: live scores, fixtures and results, plus Gaddafi Stadium Lahore, home of Lahore Qalandars.`
+    : `${city} sports: teams, fixtures, results, stadiums and athletes from ${city}, ${province}, ${country} — updated daily.`;
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/sports`;
   return {
     title,
