@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
+import CityAssistant, { OpenAssistantButton } from '@/components/shared/CityAssistant';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
@@ -332,6 +333,36 @@ export default async function CityPage({
   const fireNum = (emergency?.data as Record<string, Record<string, string>> | undefined)?.fire?.all?.[0] ?? null;
 
   const hourlyList = (hourly?.list as Array<Record<string, unknown>> | undefined)?.slice(0, 8) ?? [];
+
+  // ── City Assistant (Phase 1) snapshot ──────────────────────────────────
+  // ONLY values this page already loaded (same feeds as the panels above).
+  // The bot renders exactly these — never a fetched, guessed or cross-city
+  // value. Events: this page lists no individual events, so eventsCount
+  // is 0 and the bot answers honestly with the events-page link.
+  const rainMm =
+    (weather?.rain as Record<string, number> | undefined)?.['1h'] ??
+    (weather?.rain as Record<string, number> | undefined)?.['3h'] ?? null;
+  const assistantSnapshot = {
+    scopeName: city,
+    countryCode: cityParams.countryCode,
+    basePath: `/${countrySlug}/${provinceSlug}/${citySlug}`,
+    prayerTimes: timings
+      ? {
+          Fajr: timings.Fajr, Sunrise: timings.Sunrise, Dhuhr: timings.Dhuhr,
+          Asr: timings.Asr, Maghrib: timings.Maghrib, Isha: timings.Isha,
+        }
+      : null,
+    temp: temp !== null ? Math.round(temp) : null,
+    feelsLike: feelsLike !== null ? Math.round(feelsLike) : temp !== null ? Math.round(temp) : null,
+    weatherDesc,
+    rainMm,
+    goldPerGram: goldPerGram !== null ? Math.round(goldPerGram) : null,
+    goldPerTola,
+    police: policeNum ?? '15',
+    ambulance: ambulanceNum ?? '1122',
+    fire: fireNum ?? '16',
+    eventsCount: 0,
+  };
 
   const upcomingHolidays = ((holidays ?? []) as Array<Record<string, string>>)
     .filter((h) => new Date(h.date) >= new Date())
@@ -1126,9 +1157,7 @@ export default async function CityPage({
             <p className="text-gray-400 text-sm mb-4">
               Weather, prayer times, gold rates, events — ask the {city} City Assistant
             </p>
-            <button className="text-white px-6 py-3 rounded-full font-medium transition border border-green-500/50 hover:border-green-400" style={{ backgroundColor: 'rgba(12,122,61,0.6)' }}>
-              Start Chat →
-            </button>
+            <OpenAssistantButton />
           </section>
 
           {/* ── Batch 4 Item 2: visible FAQ block — same data as the FAQPage schema in the head ── */}
@@ -1156,6 +1185,8 @@ export default async function CityPage({
 
         </div>
       </main>
+
+      <CityAssistant snapshot={assistantSnapshot} />
 
       <ImproveCTA country={resolvedParams.country} city={resolvedParams.city} label={cityParams.city} />
 
