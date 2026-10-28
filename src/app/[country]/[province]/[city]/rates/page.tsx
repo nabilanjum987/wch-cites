@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import RatesPageClient from '@/components/rates/RatesPageClient';
+import CityGoldSeo from '@/components/rates/CityGoldSeo';
 import CityPageImage from '@/components/city/CityPageImage';
 
 import JsonLd from '@/components/seo/JsonLd';
@@ -16,10 +17,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { country, province, city } = await params;
   const cityData = await getCityData(country, province, city);
   const cityName = cityData?.name ?? city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-  const countryName = cityData?.country ?? country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  // A4: the city rates page carries its city's gold keyword in the
+  // title (the old "Gold & Currency Rates" title carried no keyword).
+  // Lahore 41 chars, Karachi 42, Islamabad 44 — all within ≤60. The
+  // description names the live gold figure's source (F4 canonical).
   return {
-    title: `${cityName} Gold & Currency Rates Today | WorldCityHub`,
-    description: `Live gold, currency and crypto rates in ${cityName}, ${countryName}: interbank rates, Zakat nisab and a remittance calculator.`,
+    title: `Gold Price in ${cityName} Today | WorldCityHub`,
+    description: `Gold price in ${cityName} today: live 24K per gram and per tola in PKR from the gold-api XAU spot, plus dollar and currency rates.`,
     alternates: { canonical: `https://worldcityhub.vercel.app/${country}/${province}/${city}/rates` },
   };
 }
@@ -56,6 +60,15 @@ export default async function CityRatesPage({ params }: PageProps) {
         countrySlug={country}
         initialRates={initialRates}
         initialCrypto={initialCrypto}
+      />
+      {/* A4: city gold answer, fed by this page's own server-fetched
+          gold rates so it can never disagree with the hero strip. */}
+      <CityGoldSeo
+        cityName={cityName}
+        perGram={initialRates?.per_gram ?? null}
+        perTola={initialRates?.per_tola ?? null}
+        spotSource={initialRates?.spot_source ?? null}
+        lastUpdated={initialRates?.last_updated ?? null}
       />
     </>
   );
