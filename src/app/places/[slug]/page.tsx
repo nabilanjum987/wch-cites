@@ -29,6 +29,10 @@ interface Place {
   tagline: string;
   description: string;
   imageUrl?: string;
+  // B8 (final30): visible hero credit line for local licensed photos.
+  // Only set alongside a local /images/places/*.webp file whose licence
+  // is recorded in docs/media-registry/subjects/places-b8-2026-10-28.json.
+  imageCredit?: string;
   gallery?: string[];
   primaryColor: string;
   category: string;
@@ -158,6 +162,9 @@ const PLACES: Record<string, Place> = {
   // PR #87 media rule, photos must be local licensed/open files with
   // registry records, never hotlinks, so these pages use the
   // template's gradient hero until local photos are supplied.
+  // B8 (final30) supplies those local photos for all four pages
+  // (public/images/places/*.webp + media-registry records), so the
+  // gradient fallback now applies to no published place page.
   // Nearby links point ONLY at published place slugs.
   'shalimar-gardens': {
     slug: 'shalimar-gardens',
@@ -200,6 +207,9 @@ const PLACES: Record<string, Place> = {
       'In October 2026 the Walled City of Lahore Authority opened the gardens for night visits, 7:00–11:00 PM',
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Shalimar_Gardens,_Lahore',
+    // B8 (final30): local licensed photo — see the media-registry record.
+    imageUrl: '/images/places/shalimar-gardens.webp',
+    imageCredit: 'M Umair Astro · CC BY-SA 4.0, via Wikimedia Commons',
   },
   'data-darbar': {
     slug: 'data-darbar',
@@ -242,6 +252,9 @@ const PLACES: Record<string, Place> = {
       'The shrine\'s tomb is of carved white marble, set in a large marble courtyard',
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Data_Darbar',
+    // B8 (final30): local licensed photo — see the media-registry record.
+    imageUrl: '/images/places/data-darbar.webp',
+    imageCredit: 'Guilhem Vellut · CC BY 2.0, via Wikimedia Commons',
   },
   'walled-city': {
     slug: 'walled-city',
@@ -284,6 +297,9 @@ const PLACES: Record<string, Place> = {
       'Also called the Old City, or Androon Shehr — the “Inner City”',
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Walled_City_of_Lahore',
+    // B8 (final30): local licensed photo — see the media-registry record.
+    imageUrl: '/images/places/walled-city.webp',
+    imageCredit: 'Guilhem Vellut · CC BY 2.0, via Wikimedia Commons',
   },
   'lahore-museum': {
     slug: 'lahore-museum',
@@ -326,6 +342,9 @@ const PLACES: Record<string, Place> = {
       'The entrance hall ceiling features a large mural by Sadequain',
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Lahore_Museum',
+    // B8 (final30): local licensed photo — see the media-registry record.
+    imageUrl: '/images/places/lahore-museum.webp',
+    imageCredit: 'Muhammad Ashar · CC BY-SA 3.0, via Wikimedia Commons',
   },
 };
 
@@ -588,6 +607,15 @@ export default async function FamousPlacePage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* B8 (final30): photo credit line under the hero, only on pages
+          with a local licensed photo. Reuses existing small-text styling;
+          no layout or design change beyond this caption line. */}
+      {place.imageCredit && (
+        <div className="max-w-5xl mx-auto px-4 pt-2">
+          <p className="text-xs text-gray-400">Photo: {place.imageCredit}</p>
+        </div>
+      )}
 
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
