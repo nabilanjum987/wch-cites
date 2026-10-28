@@ -10,6 +10,7 @@ import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import CityAssistant, { OpenAssistantButton } from '@/components/shared/CityAssistant';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
+import { TOLA_GRAMS } from '@/lib/gold';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
 import { CENSUS_2023_POPULATION, hasCensusPopulation } from '@/lib/census2023';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
@@ -314,7 +315,7 @@ export default async function CityPage({
   const hijriDate = (prayer?.data as Record<string, Record<string, Record<string, string>>> | undefined)?.date?.hijri ?? null;
 
   const goldPerGram = (gold as Record<string, number> | null)?.price_gram_24k ?? null;
-  const goldPerTola = goldPerGram ? Math.round(goldPerGram * 11.664) : null;
+  const goldPerTola = goldPerGram ? Math.round(goldPerGram * TOLA_GRAMS) : null;
 
   const sunrise = (sunMoon?.results as Record<string, string> | undefined)?.sunrise ?? null;
   const sunset = (sunMoon?.results as Record<string, string> | undefined)?.sunset ?? null;

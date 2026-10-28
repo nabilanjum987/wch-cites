@@ -2,6 +2,8 @@
 // All API calls for the City Main Page (23 sections)
 // Uses ISR - called server-side at build/revalidate time
 
+import { getGoldSpot, getGoldPkr, TROY_OZ_GRAMS } from '@/lib/gold';
+
 export interface CityParams {
   city: string;
   country: string;
@@ -63,44 +65,36 @@ export async function fetchPrayerTimes(lat: number, lon: number) {
 }
 
 // ─── 4. GOLD & METAL RATES ───────────────────────────────────────────────────
-// Primary: goldapi.io (needs NEXT_PUBLIC_METAL_KEY). PC1 fix: when the
-// keyed API does not answer, fall back to CoinGecko's PAX Gold spot
-// (keyless — the same source the /rates pages and the homepage tickers
-// use) so the server-rendered city page carries a REAL gold figure in
-// its raw HTML instead of the "Gold rates loading..." placeholder.
-const TROY_OZ_GRAMS = 31.1035;
+// Canonical spot (F4): gold-api.com XAU via the shared helper in
+// src/lib/gold.ts — the same spot every other surface reads, with the
+// source's own `updatedAt`. The goldapi.io call and the
+// NEXT_PUBLIC_METAL_KEY dependency are retired: no surface silently
+// switches source when a key lapses. Fallback (inside the helper):
+// CoinGecko PAX Gold, so a gold-api outage degrades to today's
+// behaviour instead of the "Gold rates loading..." placeholder.
+// Return shape is unchanged for the city page (price, price_gram_24k,
+// currency, source) plus the spot's `updatedAt`.
 export async function fetchGoldRates(currency = 'PKR') {
-  try {
-    const res = await fetch(
-      `https://www.goldapi.io/api/XAU/${currency}`,
-      {
-        headers: { 'x-access-token': process.env.NEXT_PUBLIC_METAL_KEY || '' },
-        next: { revalidate: 3600 }
-      }
-    );
-    if (res.ok) {
-      const data = await res.json();
-      if (data && typeof data.price_gram_24k === 'number') return data;
-    }
-  } catch { /* fall through to the keyless source */ }
-  try {
-    const res = await fetch(
-      'https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd,pkr',
-      { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return null;
-    const cg = await res.json();
-    const pax = cg?.['pax-gold'];
-    if (!pax) return null;
-    const perOz = currency === 'USD' ? pax.usd : pax.pkr;
-    if (typeof perOz !== 'number') return null;
+  if (currency === 'USD') {
+    const spot = await getGoldSpot();
+    if (!spot) return null;
     return {
-      price: perOz,
-      price_gram_24k: perOz / TROY_OZ_GRAMS,
+      price: spot.priceUsdPerOz,
+      price_gram_24k: spot.priceUsdPerOz / TROY_OZ_GRAMS,
       currency,
-      source: 'coingecko-pax-gold',
+      source: spot.source,
+      updatedAt: spot.updatedAt,
     };
-  } catch { return null; }
+  }
+  const pkr = await getGoldPkr();
+  if (!pkr) return null;
+  return {
+    price: pkr.perOz,
+    price_gram_24k: pkr.perGram,
+    currency,
+    source: pkr.source,
+    updatedAt: pkr.updatedAt,
+  };
 }
 
 // ─── 5. CRYPTO (CoinGecko - no key) ──────────────────────────────────────────

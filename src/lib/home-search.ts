@@ -3,7 +3,8 @@
 // The homepage search covers PUBLISHED entities only (Link Law L2/L6):
 // the three QA-passed cities and the one published country. Figures are
 // fetched client-side from the same keyless APIs the site already uses
-// (Open-Meteo weather, Aladhan prayer, CoinGecko PAX Gold, World Bank) —
+// (Open-Meteo weather, Aladhan prayer, gold-api XAU gold via the shared
+// F4 helper, World Bank) —
 // a figure is shown only when its source responded; nothing is invented.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -16,6 +17,8 @@ export interface SearchEntity {
   lng?: number;
   tz?: string;
 }
+
+import { getGoldPkr } from '@/lib/gold';
 
 export const SEARCH_ENTITIES: SearchEntity[] = [
   { kind: 'city', name: 'Lahore', sub: 'Punjab, Pakistan', href: '/pakistan/punjab/lahore', lat: 31.5204, lng: 74.3587, tz: 'Asia/Karachi' },
@@ -70,7 +73,7 @@ export async function fetchPreviewFigures(e: SearchEntity): Promise<PreviewFigur
   const [w, p, g] = await Promise.all([
     jget(`https://api.open-meteo.com/v1/forecast?latitude=${e.lat}&longitude=${e.lng}&current=temperature_2m,weather_code`),
     jget(`https://api.aladhan.com/v1/timings/${String(new Date().getUTCDate()).padStart(2, '0')}-${String(new Date().getUTCMonth() + 1).padStart(2, '0')}-${new Date().getUTCFullYear()}?latitude=${e.lat}&longitude=${e.lng}&method=1`),
-    jget('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=pkr'),
+    getGoldPkr().catch(() => null),
   ]);
   const temp = w?.current?.temperature_2m;
   if (typeof temp === 'number') {
@@ -93,9 +96,8 @@ export async function fetchPreviewFigures(e: SearchEntity): Promise<PreviewFigur
     }
     if (!out.nextPrayer && timings.Fajr) out.nextPrayer = `Fajr ${timings.Fajr.split(' ')[0]} (tomorrow)`;
   }
-  const pkr = g?.['pax-gold']?.pkr;
-  if (typeof pkr === 'number') {
-    const tola = Math.round((pkr * 11.6638) / 31.1035);
+  if (g) {
+    const tola = Math.round(g.perTola);
     out.goldTola = `Rs ${tola.toLocaleString('en-US')} / tola`;
   }
   return out;

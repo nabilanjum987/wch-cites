@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { CloudSun, Moon, Sunrise, Sunset, Coins, Newspaper, ArrowRight, MapPin } from 'lucide-react';
 import type { MyCityData } from '@/lib/home-mycity';
+import { getGoldPkr } from '@/lib/gold';
 import { useVisitorCity, nearestPublished } from './useVisitorCity';
 
 interface Meta {
@@ -59,10 +60,10 @@ async function fetchCityClient(slug: string, meta: Meta, moonPhase: string): Pro
   const dd = String(now.getUTCDate()).padStart(2, '0');
   const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
   const key = process.env.NEXT_PUBLIC_GNEWS_KEY ?? '';
-  const [w, al, cg, silver, news] = await Promise.all([
+  const [w, al, gold, silver, news] = await Promise.all([
     jget(`https://api.open-meteo.com/v1/forecast?latitude=${meta.lat}&longitude=${meta.lng}&current=temperature_2m,apparent_temperature,weather_code`),
     jget(`https://api.aladhan.com/v1/timings/${dd}-${mm}-${now.getUTCFullYear()}?latitude=${meta.lat}&longitude=${meta.lng}&method=1`),
-    jget('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=pkr'),
+    getGoldPkr().catch(() => null),
     jget('https://api.gold-api.com/price/XAG'),
     key ? jget(`https://gnews.io/api/v4/search?q=${encodeURIComponent(meta.name)}&lang=en&max=2&sortby=publishedAt&apikey=${key}`) : Promise.resolve(null),
   ]);
@@ -97,13 +98,12 @@ async function fetchCityClient(slug: string, meta: Meta, moonPhase: string): Pro
   if (meta.capitalFact) facts.push(meta.capitalFact + '.');
   if (typeof w?.elevation === 'number') facts.push(`${meta.name} sits ${Math.round(w.elevation)} metres above sea level, at ${meta.lat.toFixed(2)}°N, ${meta.lng.toFixed(2)}°E.`);
   if (dayLength) facts.push(`Today ${meta.name} gets ${dayLength}.`);
-  const pkr = cg?.['pax-gold']?.pkr;
   return {
     slug, name: meta.name, province: meta.province, country: 'Pakistan', countryCode: 'pk', path,
     color: '#01411C', tz: meta.tz,
     weather: typeof temp === 'number' ? { temp: Math.round(temp), feels: Math.round(w.current.apparent_temperature ?? temp), condition: WMO[w.current.weather_code] ?? '' } : null,
     nextPrayer,
-    goldTola: typeof pkr === 'number' ? Math.round((pkr * 11.6638) / 31.1035) : null,
+    goldTola: gold ? Math.round(gold.perTola) : null,
     silverOz: typeof silver?.price === 'number' ? Math.round(silver.price * 100) / 100 : null,
     sunrise: fmt12(timings?.Sunrise), sunset: fmt12(timings?.Sunset), dayLength,
     hijri: hijriRaw ? `${hijriRaw.day} ${hijriRaw.month?.en ?? ''} ${hijriRaw.year} AH` : null,
