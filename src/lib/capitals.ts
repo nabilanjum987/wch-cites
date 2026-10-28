@@ -1,7 +1,8 @@
 // World Capitals panel data (WP2 Slice 5 / Q5, frozen spec §9A).
 // Baked from the verified dataset collected 2026-10-21
 // (~/workspace/worldcityhub/data/world_capitals.csv, GeoNames-based):
-// capital, country, site country slug, ISO code (for flagcdn flags),
+// capital, country, site country slug, ISO code (selects the vendored
+// local flag file in public/images/flags/),
 // coordinates and IANA timezone. Live time is computed client-side
 // with Intl; live temperature comes from Open-Meteo at these coords.
 // Per the link map (§9A) each capital links to its COUNTRY page today.
@@ -10,7 +11,7 @@ export interface Capital {
   capital: string;
   country: string;
   countrySlug: string;
-  code: string; // ISO 3166-1 alpha-2, lowercase for flagcdn
+  code: string; // ISO 3166-1 alpha-2, lowercase — selects the vendored flag file
   lat: number;
   lng: number;
   tz: string;
