@@ -40,8 +40,9 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
   // (F3's single store), otherwise the incoming figure unchanged — so
   // the Population row, the scorecard and the pie below can never
   // disagree. The pie renders only when BOTH sides have a census figure.
-  // NOTE (pies PR): the popKey/popLabel lines below are identical to
-  // F3 (#110) — the F3-first rebase keeps F3's copy and drops this one.
+  // F3 — the "2023 census" label applies only when BOTH sides carry a
+  // PBS Census-2023 figure; other pairs keep the plain label, so a
+  // non-census city is never presented as census-counted.
   const popKey = (d: CityCompareData) => `${d.ref.countrySlug}/${d.ref.provinceSlug}/${d.ref.citySlug}`;
   const popA = censusPopulationOr(popKey(a), a.city.population);
   const popB = censusPopulationOr(popKey(b), b.city.population);
