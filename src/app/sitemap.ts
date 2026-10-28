@@ -14,6 +14,27 @@ const baseUrl = 'https://worldcityhub.vercel.app'
 const LIVE_CITIES = [
   { country: 'pakistan', province: 'punjab', city: 'lahore' },
   { country: 'pakistan', province: 'sindh', city: 'karachi' },
+  // Final30 C2: Multan + Peshawar (8 URLs each via CITY_SUBPAGES below:
+  // the city page + weather, prayer-times, rates, news, sports, economy,
+  // events = 16 URLs total). URL/slug correspondence verified against
+  // B10's branch (final30-b10-multan-peshawar, PR #140): migration 0020
+  // inserts ('multan', 'punjab', 'pakistan') and ('peshawar',
+  // 'khyber-pakhtunkhwa', 'pakistan'), and the dynamic city route carries
+  // exactly those 7 subpage segments. MERGE GATE: this PR merges ONLY
+  // after B10 (#140) merges AND migration 0020 is applied AND all 16
+  // URLs re-verify live at HTTP 200 with real data and no noindex —
+  // the pre-B10 live baseline (text fetch, 2026-10-28) shows content on
+  // all 16 but cannot prove status/canonical/noindex, and shows three
+  // quality flags the re-verify must look at (identical weather figures
+  // on both cities' /weather pages; Lahore mosque content on both
+  // /prayer-times pages; national-only dates on both /events pages).
+  // The Supabase merge below dedupes, so once B10's rows exist these
+  // static entries coincide with the DB-merged ones — no duplicates.
+  // NOT included: /oceans/black-sea + /oceans/bay-of-bengal (separate
+  // later step after PRs #137/#138 merge + render live 200), and nothing
+  // for /compare/faisalabad-vs-multan (B10 fixed it with no new URL).
+  { country: 'pakistan', province: 'punjab', city: 'multan' },
+  { country: 'pakistan', province: 'khyber-pakhtunkhwa', city: 'peshawar' },
 ] as const
 
 const CITY_SUBPAGES = [
