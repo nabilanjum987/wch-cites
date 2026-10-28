@@ -10,10 +10,14 @@
 //
 // Data scope is whatever the host page passes in: a city page passes
 // that city's snapshot only, so Lahore's bot can never answer for
-// Karachi. Other levels (country / province / homepage) are a
-// follow-up: those pages carry no live per-scope snapshot to switch
-// to, so wiring them would mean new fetches plus a scope decision
-// (which city represents a country?) — deliberately NOT forced here.
+// Karachi. B9 extends the same component to three more levels
+// (country / province / homepage) WITHOUT new fetches: those pages
+// pass their own snapshot — live values where the page has them,
+// nulls elsewhere (the bot then answers "I don't have that yet"),
+// plus link overrides to real section anchors (they have no city
+// subpages) and verbatim extraFacts built from the page's own data.
+// A level bot never answers for a city, and never repeats a figure
+// its host page does not carry.
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -26,6 +30,19 @@ export interface AssistantPrayerTimes {
   Isha?: string;
 }
 
+export interface AssistantLink {
+  label: string;
+  href: string;
+}
+
+export interface AssistantFact {
+  /** Lowercase keywords matched against the normalized question. */
+  keywords: string[];
+  /** Full answer text, built by the host page from its own data only. */
+  answer: string;
+  link?: AssistantLink;
+}
+
 export interface AssistantSnapshot {
   /** Display name of the scope, e.g. "Lahore". */
   scopeName: string;
@@ -33,6 +50,39 @@ export interface AssistantSnapshot {
   countryCode: string;
   /** Canonical base path of the host page, e.g. "/pakistan/punjab/lahore". */
   basePath: string;
+  /**
+   * B9 — level link overrides. A city page leaves this out and keeps the
+   * original behaviour (basePath subpages + #emergency). A country /
+   * province / homepage page has no such subpages, so it MUST pass real
+   * targets here (its own section anchors or real pages) — otherwise the
+   * bot would link to routes that do not exist at that level.
+   */
+  links?: {
+    prayerTimes?: AssistantLink;
+    weather?: AssistantLink;
+    rates?: AssistantLink;
+    events?: AssistantLink;
+    emergency?: AssistantLink;
+  };
+  /**
+   * B9 — greeting topics override. Absent = the city wording ("prayer
+   * times, weather, gold rates, emergency numbers or events"). A level
+   * whose snapshot carries no live prayer/weather/gold values must NOT
+   * promise those topics — it names what it can actually answer.
+   */
+  topics?: string;
+  /**
+   * B9 — host-page facts, answered verbatim. The host page builds each
+   * answer from data it already renders (capital, provinces, divisions,
+   * population with source year); the matcher never composes a figure.
+   */
+  extraFacts?: AssistantFact[];
+  /**
+   * B9 — fallback section-link overrides ({ label, href } per topic key:
+   * news, sports, economy, places, food, jobs, holidays, glance).
+   * Absent = the city behaviour (#anchor per key).
+   */
+  sectionLinks?: Record<string, AssistantLink>;
   prayerTimes: AssistantPrayerTimes | null;
   /** Rounded values exactly as the weather panel renders them. */
   temp: number | null;
@@ -44,10 +94,12 @@ export interface AssistantSnapshot {
   goldPerGram: number | null;
   goldPerTola: number | null;
   /** Emergency numbers exactly as the emergency panel renders them
-   *  (panel fallbacks included: 15 / 1122 / 16 when the live feed is empty). */
-  police: string;
-  ambulance: string;
-  fire: string;
+   *  (panel fallbacks included: 15 / 1122 / 16 when the live feed is empty).
+   *  B9: null when the host page carries no emergency panel (homepage) —
+   *  the matcher then answers honestly instead of inventing numbers. */
+  police: string | null;
+  ambulance: string | null;
+  fire: string | null;
   /** Real events listed on the host page (city main page lists none). */
   eventsCount: number;
 }
@@ -86,7 +138,9 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
   if (/^(hi|hello|hey|good morning|good afternoon|good evening)$/.test(q)) {
     return {
       role: 'bot',
-      text: `Hi! I'm the ${scope} Assistant. Ask me about prayer times, weather, gold rates, emergency numbers or events in ${scope} — or tap a quick button below.`,
+      text: snap.topics
+        ? `Hi! I'm the ${scope} Assistant. Ask me about ${snap.topics} in ${scope} — or tap a quick button below.`
+        : `Hi! I'm the ${scope} Assistant. Ask me about prayer times, weather, gold rates, emergency numbers or events in ${scope} — or tap a quick button below.`,
     };
   }
 
@@ -100,7 +154,7 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
     [/\bsunrise\b/, 'Sunrise', 'Sunrise'],
   ];
   if (/\bprayer\b|\bnamaz\b|\bsalah\b|\bazan\b|\badhan\b/.test(q) || prayerNames.some(([re]) => re.test(q))) {
-    const prayerLink = { label: `Full prayer timetable for ${scope}`, href: `${snap.basePath}/prayer-times` };
+    const prayerLink = snap.links?.prayerTimes ?? { label: `Full prayer timetable for ${scope}`, href: `${snap.basePath}/prayer-times` };
     if (!snap.prayerTimes) return noData('prayer times', prayerLink);
     const named = prayerNames.find(([re]) => re.test(q));
     if (named) {
@@ -125,7 +179,7 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
 
   // ── Weather ───────────────────────────────────────────────────────
   if (/\bweather\b|\btemperature\b|\btemp\b|\bhot\b|\bcold\b|\brain\b|\bforecast\b/.test(q)) {
-    const weatherLink = { label: `Full weather forecast for ${scope}`, href: `${snap.basePath}/weather` };
+    const weatherLink = snap.links?.weather ?? { label: `Full weather forecast for ${scope}`, href: `${snap.basePath}/weather` };
     if (snap.temp === null) return noData('live weather', weatherLink);
     const rain =
       snap.rainMm !== null
@@ -140,7 +194,7 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
 
   // ── Gold ──────────────────────────────────────────────────────────
   if (/\bgold\b|\btola\b|\bkarat\b|\bcarat\b|\bmetal\b/.test(q)) {
-    const goldLink = { label: `Full rates page for ${scope}`, href: `${snap.basePath}/rates` };
+    const goldLink = snap.links?.rates ?? { label: `Full rates page for ${scope}`, href: `${snap.basePath}/rates` };
     if (snap.goldPerGram === null) return noData('a live gold rate', goldLink);
     const tola = snap.goldPerTola !== null ? ` (${fmt(snap.goldPerTola)} PKR per tola)` : '';
     return {
@@ -152,10 +206,18 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
 
   // ── Emergency ─────────────────────────────────────────────────────
   if (/\bemergency\b|\bpolice\b|\bambulance\b|\bfire\b|\bhelpline\b|\brescue\b/.test(q)) {
+    const emergencyLink = snap.links?.emergency ?? { label: `Emergency contacts section`, href: '#emergency' };
+    if (!snap.police || !snap.ambulance || !snap.fire) {
+      return {
+        role: 'bot',
+        text: `I don't have emergency numbers for ${scope} yet — this page carries no emergency panel.`,
+        link: emergencyLink,
+      };
+    }
     return {
       role: 'bot',
       text: `Emergency numbers for ${scope}: Police ${snap.police}, Rescue / Ambulance ${snap.ambulance}, Fire Brigade ${snap.fire}.`,
-      link: { label: `Emergency contacts section`, href: '#emergency' },
+      link: emergencyLink,
     };
   }
 
@@ -164,7 +226,7 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
   // is category links only), so the honest Phase 1 answer is "none
   // listed here" + the events page link. NEVER invent an event.
   if (/\bevents?\b|\bweekend\b|\bthings to do\b|\bwhat.s on\b/.test(q)) {
-    const eventsLink = { label: `Full events calendar for ${scope}`, href: `${snap.basePath}/events` };
+    const eventsLink = snap.links?.events ?? { label: `Full events calendar for ${scope}`, href: `${snap.basePath}/events` };
     if (snap.eventsCount > 0) {
       return {
         role: 'bot',
@@ -179,6 +241,18 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
     };
   }
 
+  // ── B9 host-page facts: verbatim answers from the host page's own
+  // data. Checked before the fallback so a level can answer its own
+  // questions (capital, provinces, population) without a new rule per
+  // fact — and so an unlisted question still falls through honestly.
+  if (snap.extraFacts) {
+    for (const fact of snap.extraFacts) {
+      if (fact.keywords.some((kw) => q.includes(kw))) {
+        return { role: 'bot', text: fact.answer, link: fact.link };
+      }
+    }
+  }
+
   // ── Fallback: honest, with a section link when the topic maps to one ─
   const sectionLinks: Array<[RegExp, string, string]> = [
     [/\bnews\b|\bheadline\b/, 'news', 'News section'],
@@ -191,10 +265,15 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
     [/\bpopulation\b|\barea\b|\belevation\b/, 'glance', 'At a glance section'],
   ];
   const section = sectionLinks.find(([re]) => re.test(q));
+  const sectionLink = section
+    ? (snap.sectionLinks?.[section[1]] ?? { label: section[2], href: `#${section[1]}` })
+    : undefined;
   return {
     role: 'bot',
-    text: `I don't have that for ${scope} yet — I can only answer from this page's live data (prayer times, weather, gold, emergency numbers, events). Try one of the quick buttons below.`,
-    link: section ? { label: section[2], href: `#${section[1]}` } : undefined,
+    text: snap.topics
+      ? `I don't have that for ${scope} yet — I can only answer from this page's data (${snap.topics}). Try one of the quick buttons below.`
+      : `I don't have that for ${scope} yet — I can only answer from this page's live data (prayer times, weather, gold, emergency numbers, events). Try one of the quick buttons below.`,
+    link: sectionLink,
   };
 }
 
@@ -220,7 +299,9 @@ export default function CityAssistant({ snapshot }: { snapshot: AssistantSnapsho
   const [messages, setMessages] = useState<BotMessage[]>([
     {
       role: 'bot',
-      text: `Hi! I'm the ${snapshot.scopeName} Assistant. I answer only from this page's live data — tap a quick button or ask about prayer times, weather, gold, emergency numbers or events.`,
+      text: snapshot.topics
+        ? `Hi! I'm the ${snapshot.scopeName} Assistant. I answer only from this page's data — tap a quick button or ask about ${snapshot.topics}.`
+        : `Hi! I'm the ${snapshot.scopeName} Assistant. I answer only from this page's live data — tap a quick button or ask about prayer times, weather, gold, emergency numbers or events.`,
     },
   ]);
   const listRef = useRef<HTMLDivElement>(null);

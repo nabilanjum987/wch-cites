@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getSupabase } from '@/lib/supabase';
+import CityAssistant from '@/components/shared/CityAssistant';
 import { CENSUS_2023_POPULATION, censusPopulationOr } from '@/lib/census2023';
 import {
   ChevronRight, TrendingUp, TrendingDown, ArrowRight,
@@ -563,6 +564,73 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
   const eventTypes = ['All', ...Array.from(new Set(events.map(e => e.type)))];
   const filteredEvents = activeEvent === 'All' ? events : events.filter(e => e.type === activeEvent);
 
+  // ── B9: Punjab Assistant (Phase 1) snapshot ─────────────────────────
+  // ONLY this page's own data: capital/divisions/cities (page dataset),
+  // emergency numbers (page panel), events (page list). No live
+  // prayer/weather/gold panel exists at province level, so those
+  // fields are null and the bot answers "I don't have that yet" +
+  // the real section anchor. The page's static market-rates/weather
+  // cards are NOT fed to the bot (dated fallbacks, not live feeds).
+  // Population is deliberately NOT a fact here: the page's glance
+  // panel still carries the pre-2023 figure (110,012,442), while PBS
+  // Census-2023 puts Punjab at 127,688,922 — the bot must not repeat
+  // either number as an answer until the page dataset is fixed
+  // (flagged in the PR body). Population questions fall through to
+  // the glance-section link.
+  const punjabAssistantSnapshot = province
+    ? {
+        scopeName: 'Punjab',
+        countryCode: 'PK',
+        basePath: '/pakistan/punjab',
+        prayerTimes: null,
+        temp: null,
+        feelsLike: null,
+        weatherDesc: null,
+        rainMm: null,
+        goldPerGram: null,
+        goldPerTola: null,
+        police: emergency.find((e) => e.label === 'Police')?.number ?? '15',
+        ambulance: emergency.find((e) => e.label === 'Ambulance / Rescue')?.number ?? '1122',
+        fire: emergency.find((e) => e.label === 'Fire')?.number ?? '16',
+        eventsCount: events.length,
+        links: {
+          prayerTimes: { label: 'Faith & spiritual section', href: '#faith' },
+          weather: { label: 'Weather across Punjab section', href: '#weather' },
+          rates: { label: 'Market rates section', href: '#rates' },
+          events: { label: 'Events section', href: '#events' },
+          emergency: { label: 'Emergency contacts section', href: '#emergency' },
+        },
+        topics: 'emergency numbers, events, its capital, cities and divisions',
+        extraFacts: [
+          {
+            keywords: ['capital'],
+            answer: `${province.capital} is the capital of Punjab.`,
+            link: { label: 'Lahore city guide', href: '/pakistan/punjab/lahore' },
+          },
+          {
+            keywords: ['division'],
+            answer: `Punjab's divisions on this page are: ${divisions.map((d) => d.name).join(', ')}.`,
+            link: { label: 'Divisions section', href: '#divisions' },
+          },
+          {
+            keywords: ['cities', 'major cities'],
+            answer: `The major cities of Punjab on this page are: ${cities.map((c) => c.name).join(', ')}.`,
+            link: { label: 'Major cities section', href: '#cities' },
+          },
+        ],
+        sectionLinks: {
+          news: { label: 'News section', href: '#news' },
+          sports: { label: 'Major cities section', href: '#cities' },
+          economy: { label: 'Economy section', href: '#economy' },
+          places: { label: 'Must-see section', href: '#places' },
+          food: { label: 'Famous foods section', href: '#foods' },
+          jobs: { label: 'Major industries section', href: '#industries' },
+          holidays: { label: 'Events section', href: '#events' },
+          glance: { label: 'At a glance section', href: '#glance' },
+        },
+      }
+    : null;
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: bg }}>
 
@@ -602,7 +670,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
       <div className="relative z-10 max-w-6xl mx-auto px-4 pb-20 space-y-14 pt-8">
 
         {/* ── 1. PROVINCE OVERVIEW ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="glance">
           <SectionHeader icon={Globe} title={`${province.name} at a Glance`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateOverviewParagraph(province.name, province.country, province.capital)}
@@ -633,7 +701,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 2. MAJOR CITIES ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="cities">
           <SectionHeader icon={Building2} title={`Major Cities of ${province.name}`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateCitiesParagraph(province.name)}
@@ -691,7 +759,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 3. WEATHER ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="weather">
           <SectionHeader icon={Thermometer} title={`Weather Across ${province.name}`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateWeatherParagraph(province.name)}
@@ -717,7 +785,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
 
         {/* ── 4. DIVISIONS ── */}
         {divisions.length > 0 && (
-          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="divisions">
             <SectionHeader icon={MapPin} title={`Explore ${province.name} by Division`} accent={accent} />
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               {province.name} is administratively divided into {divisions.length} divisions, each comprising several districts.
@@ -739,7 +807,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         )}
 
         {/* ── 5. FAITH & SPIRITUAL ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="faith">
           <SectionHeader icon={Star} title="Faith & Spiritual" accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {province.majorFaith} is practised by {province.majorFaithPct}% of {province.name}'s population.
@@ -796,7 +864,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 6. MARKET RATES ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="rates">
           <SectionHeader icon={Coins} title={`${province.name} Market Rates Today`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             Gold, silver, currency exchange rates, and fuel prices apply uniformly across {province.name} as they
@@ -825,7 +893,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 7. NEWS ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="news">
           <SectionHeader icon={Newspaper} title={`${province.name} Today`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             The latest from {province.name} — provincial government news, city-level developments across the major
@@ -862,7 +930,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 8. ECONOMY ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="economy">
           <SectionHeader icon={TrendingUp} title={`${province.name} Economy`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateEconomyParagraph(province.name, province.country)}
@@ -954,7 +1022,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         )}
 
         {/* ── 9. INDUSTRIES ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="industries">
           <SectionHeader icon={Building2} title={`Major Industries of ${province.name}`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateIndustriesParagraph(province.name)}
@@ -997,7 +1065,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 11. LANDMARKS ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="places">
           <SectionHeader icon={Mountain} title={`${province.name} Must See`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateLandmarksParagraph(province.name, province.capital)}
@@ -1078,7 +1146,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 14. FAMOUS FOODS ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="foods">
           <SectionHeader icon={Utensils} title={`${province.name} Famous Foods`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             The food of {province.name} reflects the province's geography, agricultural richness, and cultural history.
@@ -1099,7 +1167,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 15. EVENTS ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="events">
           <SectionHeader icon={Calendar} title={`${province.name} Events`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {province.name} hosts events spanning sports, culture, religious observances, and business across its
@@ -1131,7 +1199,7 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
         </motion.section>
 
         {/* ── 16. EMERGENCY CONTACTS ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="emergency">
           <SectionHeader icon={ShieldAlert} title={`Emergency Contacts — ${province.name}`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateEmergencyParagraph(province.name, province.country)}
@@ -1192,6 +1260,13 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
             ))}
           </div>
         </motion.section>
+
+      {/* ── B9: Punjab Assistant — floating widget only, no new page
+          section (no design change). Punjab only: other provinces
+          carry no verified snapshot here. */}
+      {province?.countrySlug === 'pakistan' && province?.slug === 'punjab' && punjabAssistantSnapshot && (
+        <CityAssistant snapshot={punjabAssistantSnapshot} />
+      )}
 
       </div>
     </div>

@@ -15,6 +15,7 @@ import DayNightBand from '@/components/home/DayNightBand';
 import TrendCharts from '@/components/home/TrendCharts';
 import WorldCapitals from '@/components/home/WorldCapitals';
 import AllFaithsToday from '@/components/home/AllFaithsToday';
+import CityAssistant from '@/components/shared/CityAssistant';
 import HeritageSpotlight from '@/components/home/HeritageSpotlight';
 import AboutAndFooter from '@/components/home/AboutAndFooter';
 import HoroscopeSection from '@/components/home/HoroscopeSection';
@@ -141,10 +142,12 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       </Section>
 
       {/* ── §9A WORLD CAPITALS (Q5 — Sayyed's amendment) ── */}
+      <div id="capitals">
       <Section bg="darker" title="World Capitals"
         desc="Capitals are where a country keeps its government, its oldest streets and usually its biggest airport — and 'capital of…' is one of the most-asked questions on the web. Here the capitals are alive: each one shows its flag, its local time right now and its current temperature, and links through to its country page.">
         <WorldCapitals />
       </Section>
+      </div>
 
       {/* ── §10 CITIES (Q5 — published cities only; anchor added by
           Polish Card 5 so the navbar's Cities link lands here) ── */}
@@ -182,16 +185,20 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       </div>
 
       {/* ── §13 EVENTS — server slot ── */}
+      <div id="events">
       <Section bg="darker" title="Events and Holidays"
         desc="What is on, and who has the day off. Public holidays are the skeleton of a city's week — they decide its traffic, its markets and its mood before a single event is announced. These are the real holidays falling today and over the next seven days, plus the events pages of every published city.">
         {eventsSlot}
       </Section>
+      </div>
 
       {/* ── §14 NEWS — category tabs, server slot ── */}
+      <div id="news">
       <Section bg="dark" title="Live Updates — News by Category"
         desc="Events that matter, sorted the way you actually follow them — your country, your money, your health, your team. Pick a category; the headlines are the latest the wire services have published, and every one opens on the full news page with its source.">
         {newsSlot}
       </Section>
+      </div>
 
       {/* ── §15 HOROSCOPE ── */}
       <Section bg="darker" title="Stars, Signs and Sacred Calendars"
@@ -224,10 +231,12 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       </Section>
 
       {/* ── §20 SPORTS — server slot ── */}
+      <div id="sports">
       <Section bg="dark" title="Sports"
         desc="Pakistan plays, and the whole country stops. Cricket first, hockey and football behind it — these are the national teams' next scheduled fixtures from the live sports feed, and the door into sport city by city.">
         {sportsSlot}
       </Section>
+      </div>
 
       {/* ── §21 CONFLICTS — server slot; hub link only ── */}
       <Section bg="darker" title="Conflicts and Displacement"
@@ -236,10 +245,12 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       </Section>
 
       {/* ── §22 COMPARE ── */}
+      <div id="compare">
       <Section bg="dark" title="Compare Cities"
         desc="Two cities, one screen, no arguments left unsettled. Live weather, air quality and prayer times side by side, with a verdict drawn only from measured figures. Start with the classic — Lahore against Karachi — or pick your own pairing from the published cities.">
         <CompareSection />
       </Section>
+      </div>
 
       {/* ── §23 MY LOCATION ── */}
       <Section bg="darker" title="Your City, Your Page"
@@ -255,6 +266,65 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
 
       {/* ── §24 FOOTER ── */}
       <AboutAndFooter />
+
+      {/* ── B9: Homepage Assistant — floating widget only, no new page
+          section (no design change). The homepage carries no single
+          city/country live panel, so every live field is null and the
+          bot answers "I don't have that yet" + the real section or
+          page — it never repeats a city figure as a world figure. */}
+      <CityAssistant
+        snapshot={{
+          scopeName: 'WorldCityHub',
+          countryCode: '',
+          basePath: '',
+          prayerTimes: null,
+          temp: null,
+          feelsLike: null,
+          weatherDesc: null,
+          rainMm: null,
+          goldPerGram: null,
+          goldPerTola: null,
+          police: null,
+          ambulance: null,
+          fire: null,
+          eventsCount: 0,
+          links: {
+            prayerTimes: { label: 'Cities of the World section', href: '#cities' },
+            weather: { label: 'Cities of the World section', href: '#cities' },
+            rates: { label: 'Live market rates section', href: '#finance' },
+            events: { label: 'Events and holidays section', href: '#events' },
+            emergency: { label: 'Cities of the World section', href: '#cities' },
+          },
+          topics: 'cities, capitals, rates, news and comparisons',
+          extraFacts: [
+            {
+              keywords: ['capital'],
+              answer: 'The World Capitals section below lists live capitals with their flag, local time and current temperature, each linking to its country page.',
+              link: { label: 'World Capitals section', href: '#capitals' },
+            },
+            {
+              keywords: ['compare', 'comparison', 'versus'],
+              answer: 'The Compare Cities section below compares two cities side by side on live weather, air quality and prayer times.',
+              link: { label: 'Compare Cities section', href: '#compare' },
+            },
+            {
+              keywords: ['find a city', 'search'],
+              answer: 'Use the search bar at the top of this page to find any published city, or browse the Cities of the World section below.',
+              link: { label: 'Cities of the World section', href: '#cities' },
+            },
+          ],
+          sectionLinks: {
+            news: { label: 'Live news section', href: '#news' },
+            sports: { label: 'Sports section', href: '#sports' },
+            economy: { label: 'Live market rates section', href: '#finance' },
+            places: { label: 'Cities of the World section', href: '#cities' },
+            food: { label: 'Cities of the World section', href: '#cities' },
+            jobs: { label: 'Cities of the World section', href: '#cities' },
+            holidays: { label: 'Events and holidays section', href: '#events' },
+            glance: { label: 'Cities of the World section', href: '#cities' },
+          },
+        }}
+      />
     </>
   );
 }
