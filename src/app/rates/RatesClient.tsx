@@ -13,6 +13,7 @@ import {
 import { TrendingUp, TrendingDown, RefreshCw, Globe, Calculator, Info, Droplet, Coins, DollarSign, TrendingUp as TrendUp, TrendingDown as TrendDown, BarChart3, Percent, ArrowUpRight, ArrowDownRight, Banknote, PiggyBank, Home, Wheat, Flame, Factory, Newspaper, AlertTriangle } from 'lucide-react';
 import { fetchGoldRates, fetchSilverRates, fetchOilPrices, fetchCryptoData, fetchCurrencyPairs, fetchStockIndices, fetchCommodities, calculateLoan, calculateSavings, type GoldRates, type SilverRates, type OilPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type StockIndex, type Commodity, type FinancialStressData, type MiseryIndex } from '../../lib/apis/rates';
 import { fetchWorldBankLatest, buildMiseryIndex, computeStressScore, stressLevel, MISERY_META, type WBValues } from '../../lib/apis/worldbank';
+import { TOLA_GRAMS, TROY_OZ_GRAMS } from '../../lib/gold';
 
 const KARATS = [
   { label: '24K', key: 'k24' as const, purity: '99.9%' },
@@ -209,8 +210,9 @@ function ZakatCalculator({ nisabValue, nisabGrams, symbol, perGram }: ZakatCalcu
 }
 
 export default function WorldRatesPage({ initialRates, initialSilver, initialCrypto, initialPairs }: {
-  // Real data fetched on the server (CoinGecko + ExchangeRate-API) so the
-  // raw HTML carries live rates instead of a loading skeleton.
+  // Real data fetched on the server (gold-api XAU + CoinGecko PAXG
+  // history + ExchangeRate-API) so the raw HTML carries live rates
+  // instead of a loading skeleton.
   initialRates?: GoldRates | null;
   initialSilver?: SilverRates | null;
   initialCrypto?: { cryptos: CryptoData[]; market: CryptoMarket } | null;
@@ -299,9 +301,9 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
     if (!rates) return 0;
     const gramPrice = rates.by_karat[karat];
     if (activeUnit === 'per_gram') return gramPrice;
-    if (activeUnit === 'per_tola') return Math.round(gramPrice * 11.664 * 100) / 100;
+    if (activeUnit === 'per_tola') return Math.round(gramPrice * TOLA_GRAMS * 100) / 100;
     if (activeUnit === 'per_10g') return Math.round(gramPrice * 10 * 100) / 100;
-    return Math.round(gramPrice * 31.1035 * 100) / 100;
+    return Math.round(gramPrice * TROY_OZ_GRAMS * 100) / 100;
   };
 
   const isPositive = rates ? rates.change_percent >= 0 : true;
@@ -341,7 +343,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
           },
           {
             q: 'What is the 22K gold price per tola in Pakistan?',
-            a: `The 22-karat gold rate in Pakistan today is about PKR ${pkrOf(rates.by_karat.k22 * 11.664)} per tola, converted from the live spot price at USD to PKR ${fxText}. 22K gold is 91.7% pure — 22 parts gold in 24 — against 99.9% for 24K, which is why it costs less per tola. Jewellers favour 22K for jewellery because the alloyed metal is harder and holds stones and designs better than soft, pure gold.`,
+            a: `The 22-karat gold rate in Pakistan today is about PKR ${pkrOf(rates.by_karat.k22 * TOLA_GRAMS)} per tola, converted from the live spot price at USD to PKR ${fxText}. 22K gold is 91.7% pure — 22 parts gold in 24 — against 99.9% for 24K, which is why it costs less per tola. Jewellers favour 22K for jewellery because the alloyed metal is harder and holds stones and designs better than soft, pure gold.`,
           },
           {
             q: 'How many grams are in 1 tola of gold?',
@@ -436,9 +438,9 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10">
               {[
                 { label: 'Current (24K/oz)', value: fmt(rates.per_oz), highlight: true },
-                { label: "Today's High", value: fmt(rates.high * 31.1035) },
-                { label: "Today's Low", value: fmt(rates.low * 31.1035) },
-                { label: 'Open', value: fmt(rates.open * 31.1035) },
+                { label: "Today's High", value: fmt(rates.high * TROY_OZ_GRAMS) },
+                { label: "Today's Low", value: fmt(rates.low * TROY_OZ_GRAMS) },
+                { label: 'Open', value: fmt(rates.open * TROY_OZ_GRAMS) },
               ].map((item) => (
                 <div
                   key={item.label}
@@ -557,6 +559,11 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
                       Thirty daily closes from the same live feed, so one day&apos;s spike can be judged
                       against the month&apos;s trend. The badge in the corner tracks the change across the
                       year to date.
+                    </p>
+                    <p className="text-sm text-gray-500 mt-1 max-w-xl">
+                      {rates.spot_source === 'gold-api-xau'
+                        ? 'History, 24h change and year-to-date figures are the CoinGecko PAX Gold series; the headline spot price is gold-api.com XAU.'
+                        : 'Headline spot and history are the CoinGecko PAX Gold series while gold-api.com is unavailable.'}
                     </p>
                   </div>
                   <div

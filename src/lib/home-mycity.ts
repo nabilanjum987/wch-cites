@@ -2,8 +2,9 @@
 // My City panel data (WP2 Slice 4 / Q4) — SERVER fetcher.
 // Everything comes from the same live APIs the city pages use (frozen
 // spec: no new data pipeline): Open-Meteo (weather, elevation),
-// Aladhan (prayer times, sunrise/sunset, Hijri date), CoinGecko PAX
-// Gold + gold-api (gold tola / silver), GNews (headlines, titles only).
+// Aladhan (prayer times, sunrise/sunset, Hijri date), gold-api
+// (gold XAU tola / silver XAG via the shared F4 helper), GNews
+// (headlines, titles only).
 // A figure exists only when its source responded — otherwise the panel
 // shows less, never an invented number. Moon phase is computed from
 // the synodic cycle (deterministic astronomy, not sampled data).
@@ -12,6 +13,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { gnewsSearch } from '@/lib/apis/news';
+import { getGoldPkr } from '@/lib/gold';
 
 export interface MyCityData {
   slug: string;
@@ -103,10 +105,10 @@ export async function getMyCityData(slug: string): Promise<MyCityData> {
   const dd = String(now.getUTCDate()).padStart(2, '0');
   const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
 
-  const [w, al, cg, silver, news] = await Promise.all([
+  const [w, al, gold, silver, news] = await Promise.all([
     jget(`https://api.open-meteo.com/v1/forecast?latitude=${meta.lat}&longitude=${meta.lng}&current=temperature_2m,apparent_temperature,weather_code`, 600),
     jget(`https://api.aladhan.com/v1/timings/${dd}-${mm}-${now.getUTCFullYear()}?latitude=${meta.lat}&longitude=${meta.lng}&method=1`, 300),
-    jget('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=pkr', 300),
+    getGoldPkr().catch(() => null),
     jget('https://api.gold-api.com/price/XAG', 300),
     gnewsSearch(meta.name, 'en', 2, 'local', 'pk', 900).catch(() => []),
   ]);
@@ -144,8 +146,7 @@ export async function getMyCityData(slug: string): Promise<MyCityData> {
     if (mins > 0) dayLength = `${Math.floor(mins / 60)}h ${mins % 60}m of daylight`;
   }
 
-  const pkr = cg?.['pax-gold']?.pkr;
-  const goldTola = typeof pkr === 'number' ? Math.round((pkr * 11.6638) / 31.1035) : null;
+  const goldTola = gold ? Math.round(gold.perTola) : null;
   const silverOz = typeof silver?.price === 'number' ? Math.round(silver.price * 100) / 100 : null;
 
   const facts: string[] = [];

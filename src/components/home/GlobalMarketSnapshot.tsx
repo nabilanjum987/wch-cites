@@ -2,14 +2,19 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Coins, DollarSign, BarChart3 } from 'lucide-react';
+import { getGoldSpot, TROY_OZ_GRAMS } from '@/lib/gold';
 
 // Live market snapshot — every number is fetched at runtime from free
-// keyless APIs (CoinGecko for gold/BTC/USD-PKR, Open Exchange Rates API
-// for the currency table, Alternative.me for Fear & Greed).
+// keyless APIs (gold-api XAU for gold via the shared F4 helper,
+// CoinGecko for BTC/USD-PKR, Open Exchange Rates API for the currency
+// table, Alternative.me for Fear & Greed).
 // Truth rule: nothing here is hardcoded. A value that fails to load is
 // replaced by a pointer to the Rates page, never by an invented number.
 // The old Oil card was removed: there is no free, keyless, reliable oil
 // feed, and the plan forbids presenting made-up prices as live.
+// Gold has no change figure here: gold-api publishes spot only, and
+// the PAXG 24h change is not mixed into an XAU price (the /rates
+// chart + 24h change stay the one labelled PAXG exception).
 
 interface MarketState {
   goldPerGram: number | null;
@@ -52,19 +57,19 @@ export default function GlobalMarketSnapshot() {
     let cancelled = false;
     (async () => {
       const next: MarketState = { ...EMPTY, loaded: true };
-      const [cg, fxRes, fngRes] = await Promise.allSettled([
-        fetchJson('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,pax-gold,tether&vs_currencies=usd,pkr&include_24hr_change=true'),
+      const [cg, goldRes, fxRes, fngRes] = await Promise.allSettled([
+        fetchJson('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,tether&vs_currencies=usd,pkr&include_24hr_change=true'),
+        getGoldSpot(),
         fetchJson('https://open.er-api.com/v6/latest/USD'),
         fetchJson('https://api.alternative.me/fng/?limit=1'),
       ]);
+      if (goldRes.status === 'fulfilled' && goldRes.value) {
+        next.goldPerGram = goldRes.value.priceUsdPerOz / TROY_OZ_GRAMS;
+        next.goldChange = null;
+      }
       if (cg.status === 'fulfilled') {
-        const gold = cg.value?.['pax-gold'];
         const btc = cg.value?.bitcoin;
         const usdt = cg.value?.tether;
-        if (gold?.usd) {
-          next.goldPerGram = gold.usd / 31.1035;
-          next.goldChange = gold.usd_24h_change ?? null;
-        }
         if (btc?.usd) {
           next.btc = btc.usd;
           next.btcChange = btc.usd_24h_change ?? null;

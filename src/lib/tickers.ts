@@ -1,3 +1,5 @@
+import { getGoldSpot, getGoldPkr, TROY_OZ_GRAMS, TOLA_GRAMS } from './gold';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Ticker data layer (WP2 Slice 1) — SERVER ONLY.
 // Every figure comes from a live, free source at render time; an item is
@@ -7,8 +9,10 @@
 // its published growth rate, and the formula is documented here.
 //
 // Sources:
-//   Gold oz / BTC / gold 24h move — CoinGecko (PAX Gold tracks spot gold)
-//   Gold tola (PKR) — CoinGecko PAX Gold in PKR × (11.6638 g / 31.1035 g)
+//   Gold oz + gold tola (PKR) — gold-api.com spot XAU (F4 canonical;
+//     CoinGecko PAX Gold fallback inside the shared helper), tola via
+//     the ExchangeRate-API USD/PKR rate × (11.6638 g / 31.1035 g)
+//   BTC — CoinGecko
 //   Silver — gold-api.com spot XAG
 //   FX to PKR — ExchangeRate-API open endpoint (keyless), USD base,
 //     cross-divided. (Frankfurter's new host dropped PKR/AED/SAR coverage.)
@@ -32,9 +36,6 @@ export interface SiteItem {
   text: string;
   href: string;
 }
-
-const TROY_OZ_G = 31.1035;
-const TOLA_G = 11.6638;
 
 async function jget(url: string, revalidate: number): Promise<any | null> {
   try {
@@ -111,8 +112,9 @@ const cityPath = (c: (typeof PUBLISHED_CITIES)[number]) => `/pakistan/${c.provin
 
 export async function getMarketTickerItems(): Promise<MarketItem[]> {
   const items: MarketItem[] = [];
-  const [cg, silver, fx, fng, popTotal, popGrowth] = await Promise.all([
-    jget('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold,bitcoin&vs_currencies=usd,pkr&include_24hr_change=true', 300),
+  const [cg, gold, silver, fx, fng, popTotal, popGrowth] = await Promise.all([
+    jget('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true', 300),
+    getGoldSpot().catch(() => null),
     jget('https://api.gold-api.com/price/XAG', 300),
     jget('https://open.er-api.com/v6/latest/USD', 300),
     jget('https://api.alternative.me/fng/?limit=1', 900),
@@ -121,18 +123,21 @@ export async function getMarketTickerItems(): Promise<MarketItem[]> {
   ]);
   const brentCsv = await tget('https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILBRENTEU', 3600);
 
-  const paxUsd = cg?.['pax-gold']?.usd;
-  const paxPkr = cg?.['pax-gold']?.pkr;
-  if (typeof paxPkr === 'number') {
-    items.push({ label: 'Gold', value: `Rs ${pkr0.format(Math.round((paxPkr * TOLA_G) / TROY_OZ_G))}/tola`, href: '/rates#gold' });
+  // F4: gold from the shared canonical spot (gold-api XAU); the tola
+  // converts through this render's own FX snapshot — the same
+  // ExchangeRate-API rate the USD→PKR item below shows.
+  const fxRates = fx?.result === 'success' ? fx?.rates : null;
+  const pkrRate = typeof fxRates?.PKR === 'number' ? fxRates.PKR : null;
+  if (gold && pkrRate) {
+    items.push({ label: 'Gold', value: `Rs ${pkr0.format(Math.round((gold.priceUsdPerOz * pkrRate * TOLA_GRAMS) / TROY_OZ_GRAMS))}/tola`, href: '/rates#gold' });
   }
-  if (typeof paxUsd === 'number') {
-    items.push({ label: 'Gold', value: `$${usd0.format(Math.round(paxUsd))}/oz`, href: '/rates#gold' });
+  if (gold) {
+    items.push({ label: 'Gold', value: `$${usd0.format(Math.round(gold.priceUsdPerOz))}/oz`, href: '/rates#gold' });
   }
   if (typeof silver?.price === 'number') {
     items.push({ label: 'Silver', value: `$${silver.price.toFixed(2)}/oz`, href: '/rates#silver' });
   }
-  const r = fx?.result === 'success' ? fx?.rates : null;
+  const r = fxRates;
   if (r && typeof r.PKR === 'number') {
     items.push({ label: 'USD → PKR', value: `Rs ${fx2(r.PKR)}`, href: '/rates' });
     if (typeof r.SAR === 'number') items.push({ label: 'SAR → PKR', value: `Rs ${fx2(r.PKR / r.SAR)}`, href: '/rates' });
@@ -208,14 +213,14 @@ export async function getWebsiteTickerItems(): Promise<SiteItem[]> {
     });
     if (best) items.push({ text: `Hottest right now · ${best.c.label} ${Math.round(best.t)}°C`, href: `${cityPath(best.c)}/weather` });
   } catch { /* item omitted */ }
-  // 3) Gold mover (CoinGecko 24h change, PKR tola).
-  const cg = await jget('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=pkr&include_24hr_change=true', 300);
-  const paxPkr = cg?.['pax-gold']?.pkr;
-  const chg = cg?.['pax-gold']?.pkr_24h_change;
-  if (typeof paxPkr === 'number' && typeof chg === 'number') {
-    const tola = Math.round((paxPkr * TOLA_G) / TROY_OZ_G);
-    const arrow = chg >= 0 ? '▲' : '▼';
-    items.push({ text: `Gold today · Rs ${pkr0.format(tola)}/tola ${arrow} ${Math.abs(chg).toFixed(1)}%`, href: '/rates' });
+  // 3) Gold today (F4 canonical XAU tola). The 24h arrow is dropped:
+  // gold-api publishes spot only, and the PAXG 24h change would be a
+  // second, unlabelled PAXG figure next to an XAU price — the /rates
+  // chart + 24h change stay the one labelled PAXG exception.
+  const goldPkr = await getGoldPkr().catch(() => null);
+  if (goldPkr) {
+    const tola = Math.round(goldPkr.perTola);
+    items.push({ text: `Gold today · Rs ${pkr0.format(tola)}/tola`, href: '/rates' });
   }
   // 4) Wonders + Oceans — the published golden pages (link map L3/L6
   // switch-on, 2026-10-22). Figure-bearing when the source responds

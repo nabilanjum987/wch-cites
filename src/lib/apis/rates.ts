@@ -1,3 +1,5 @@
+import { getGoldSpot, TROY_OZ_GRAMS, TOLA_GRAMS } from '../gold';
+
 export interface GoldRates {
   per_oz: number;
   per_gram: number;
@@ -21,6 +23,11 @@ export interface GoldRates {
   currency: string;
   currency_symbol: string;
   last_updated: string;
+  // Which feed the headline spot came from (F4): 'gold-api-xau' in the
+  // normal case, 'coingecko-pax-gold' only while the fallback is active.
+  // The UI label next to the chart reads this so a fallback never
+  // presents itself as the canonical feed.
+  spot_source: 'gold-api-xau' | 'coingecko-pax-gold';
 }
 
 export interface OilPrice {
@@ -59,11 +66,15 @@ export interface CryptoMarket {
   fear_greed_label: string;
 }
 
-const TROY_OZ_TO_GRAM = 31.1035;
-const GRAM_TO_TOLA = 11.664;
+const TROY_OZ_TO_GRAM = TROY_OZ_GRAMS;
+const GRAM_TO_TOLA = TOLA_GRAMS;
 
-// Gold history + YTD are computed from the REAL CoinGecko market chart
-// for PAX Gold (tokenized gold tracking spot). The previous version
+// F4: the HEADLINE spot is gold-api.com XAU (see fetchGoldRates) —
+// gold-api publishes spot only, so the 30-day/YTD chart and the 24h
+// change/high/low below keep coming from the REAL CoinGecko market
+// chart for PAX Gold (tokenized gold tracking spot), labelled as the
+// PAXG series in the UI. That is the one honest exception: the chart
+// is a secondary display, never the headline. The previous version
 // generated a Math.random() price history, random open/high/low and a
 // random daily change, and priced everything off a hardcoded $2,320
 // fallback when its defunct metals API failed — all fabrication, removed.
@@ -83,7 +94,9 @@ function buildRates(
   historyUsdPerOz: { date: string; price: number }[],
   currencyRate: number,
   currencyCode: string,
-  currencySymbol: string
+  currencySymbol: string,
+  spotUpdatedAt: string,
+  spotSource: 'gold-api-xau' | 'coingecko-pax-gold'
 ): GoldRates {
   const convert = (usd: number) => Math.round(usd * currencyRate * 100) / 100;
   const pricePerGramUSD = priceUsdPerOz / TROY_OZ_TO_GRAM;
@@ -116,7 +129,11 @@ function buildRates(
     history: historyConverted,
     currency: currencyCode,
     currency_symbol: currencySymbol,
-    last_updated: new Date().toISOString(),
+    // The spot feed's own timestamp (gold-api `updatedAt`), NOT the
+    // render time — so /rates shows the same "as of" time as the
+    // ticker, My City and city surfaces that read the same spot.
+    last_updated: spotUpdatedAt,
+    spot_source: spotSource,
   };
 }
 
@@ -126,17 +143,26 @@ export async function fetchGoldRates(
   currencySymbol = '$'
 ): Promise<GoldRates | null> {
   try {
-    const [marketsRes, chartRes] = await Promise.allSettled([
-      fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pax-gold'),
-      fetch('https://api.coingecko.com/api/v3/coins/pax-gold/market_chart?vs_currency=usd&days=365'),
+    // F4: headline spot from the shared canonical helper (gold-api XAU,
+    // PAXG fallback inside). The CoinGecko calls below now supply ONLY
+    // the 24h change, 24h high/low and the 365-day series — the figures
+    // gold-api cannot publish — and the UI labels them as the PAXG
+    // series. If the markets call fails, the whole section stays null
+    // (today's behaviour); a failed chart alone just empties history.
+    const [spot, marketsRes, chartRes] = await Promise.all([
+      getGoldSpot(),
+      fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pax-gold')
+        .then((r) => (r.ok ? r : null)).catch(() => null),
+      fetch('https://api.coingecko.com/api/v3/coins/pax-gold/market_chart?vs_currency=usd&days=365')
+        .then((r) => (r.ok ? r : null)).catch(() => null),
     ]);
-    if (marketsRes.status !== 'fulfilled' || !marketsRes.value.ok) return null;
-    const markets = await marketsRes.value.json();
+    if (!spot || !marketsRes) return null;
+    const markets = await marketsRes.json();
     const m = markets?.[0];
     if (!m?.current_price) return null;
     let history: { date: string; price: number }[] = [];
-    if (chartRes.status === 'fulfilled' && chartRes.value.ok) {
-      const chart = await chartRes.value.json();
+    if (chartRes) {
+      const chart = await chartRes.json();
       const byDay = new Map<string, number>();
       for (const [ts, price] of (chart?.prices ?? []) as [number, number][]) {
         byDay.set(new Date(ts).toISOString().split('T')[0], price);
@@ -144,14 +170,16 @@ export async function fetchGoldRates(
       history = [...byDay.entries()].map(([date, price]) => ({ date, price }));
     }
     return buildRates(
-      m.current_price,
+      spot.priceUsdPerOz,
       m.price_change_percentage_24h ?? 0,
-      m.high_24h ?? m.current_price,
-      m.low_24h ?? m.current_price,
+      m.high_24h ?? spot.priceUsdPerOz,
+      m.low_24h ?? spot.priceUsdPerOz,
       history,
       currencyRate,
       currencyCode,
-      currencySymbol
+      currencySymbol,
+      spot.updatedAt,
+      spot.source
     );
   } catch {
     return null;
@@ -573,9 +601,10 @@ export interface Commodity {
 
 export function fetchCommodities(): Commodity[] {
   // Was a fully static invented price table (gold $2,320, Brent $82.30,
-  // wheat, cocoa...) with jitter — removed. Gold and crypto on this page
-  // are real (CoinGecko); the broader commodities board stays hidden
-  // until a real feed is connected.
+  // wheat, cocoa...) with jitter — removed. Gold on this page is real
+  // (gold-api XAU spot; CoinGecko PAXG for history/change only) and
+  // crypto is real (CoinGecko); the broader commodities board stays
+  // hidden until a real feed is connected.
   return [];
 }
 

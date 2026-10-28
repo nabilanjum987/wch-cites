@@ -22,8 +22,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CityRatesPage({ params }: PageProps) {
   const { country } = await params;
-  // Server-fetch the real gold + crypto data (CoinGecko) so the raw HTML
-  // carries live rates; the client still refreshes on mount as before.
+  // Server-fetch the real gold (gold-api XAU spot; CoinGecko PAXG for
+  // history/change only) + crypto data so the raw HTML carries live
+  // rates; the client still refreshes on mount as before.
   const currency: CurrencyInfo = COUNTRY_CURRENCIES[country] ?? {
     code: 'USD',
     name: 'US Dollar',

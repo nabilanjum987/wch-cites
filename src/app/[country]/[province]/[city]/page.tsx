@@ -9,6 +9,7 @@ import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
+import { TOLA_GRAMS } from '@/lib/gold';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
 import {
@@ -282,7 +283,7 @@ export default async function CityPage({
   const hijriDate = (prayer?.data as Record<string, Record<string, Record<string, string>>> | undefined)?.date?.hijri ?? null;
 
   const goldPerGram = (gold as Record<string, number> | null)?.price_gram_24k ?? null;
-  const goldPerTola = goldPerGram ? Math.round(goldPerGram * 11.664) : null;
+  const goldPerTola = goldPerGram ? Math.round(goldPerGram * TOLA_GRAMS) : null;
 
   const sunrise = (sunMoon?.results as Record<string, string> | undefined)?.sunrise ?? null;
   const sunset = (sunMoon?.results as Record<string, string> | undefined)?.sunset ?? null;
