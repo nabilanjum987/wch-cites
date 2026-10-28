@@ -338,6 +338,8 @@ export default async function PersonalityPage({ params }: PageProps) {
             name={p.name}
             title={p.title}
             imageUrl={p.imageUrl}
+            imageCredit={p.imageCredit}
+            imageLicence={p.imageLicence}
             birthDate={p.birthDate}
             deathDate={p.deathDate}
             nationality={p.nationality}

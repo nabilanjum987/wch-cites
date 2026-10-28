@@ -17,6 +17,10 @@ export interface PersonalityProfile {
   name: string;
   title: string;
   imageUrl?: string;
+  // P9: licence-recorded photo credit, rendered as a caption by
+  // PersonalityHero. Full source records: docs/personality-photos-p9.md.
+  imageCredit?: string;
+  imageLicence?: string;
   birthDate?: string;
   deathDate?: string;
   nationality: string;
@@ -88,6 +92,11 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     slug: 'imran-khan',
     name: 'Imran Khan',
     title: 'Cricketer, Philanthropist & Former Prime Minister',
+    // P9: local WebP from Wikimedia Commons "Imran Khan 2012.jpg"
+    // (World Economic Forum, CC BY-SA 2.0) — see docs/personality-photos-p9.md.
+    imageUrl: '/images/personalities/imran-khan.webp',
+    imageCredit: 'World Economic Forum, via Wikimedia Commons',
+    imageLicence: 'CC BY-SA 2.0',
     birthDate: '5 October 1952',
     nationality: 'Pakistani',
     city: 'Lahore', citySlug: 'lahore',
@@ -128,6 +137,11 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     slug: 'faiz-ahmed-faiz',
     name: 'Faiz Ahmed Faiz',
     title: 'Poet of Resistance & Romance',
+    // P9: local WebP from Wikimedia Commons "Faiz, London 1983.jpg"
+    // (Amarjit Chandan, CC BY-SA 4.0) — see docs/personality-photos-p9.md.
+    imageUrl: '/images/personalities/faiz-ahmed-faiz.webp',
+    imageCredit: 'Amarjit Chandan, via Wikimedia Commons',
+    imageLicence: 'CC BY-SA 4.0',
     birthDate: '13 February 1911',
     deathDate: '20 November 1984',
     nationality: 'Pakistani',
