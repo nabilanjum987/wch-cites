@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import CountryPage from './CountryClient';
 import CountryInventory from '@/components/shared/CountryInventory';
 import ImproveCTA from '@/components/shared/ImproveCTA';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbJsonLd, countryCrumbs, countryJsonLd, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 import { fetchWorldBankLatest, countrySlugToIso2 } from '@/lib/apis/worldbank';
 
 // Server wrapper: the interactive country page lives in CountryClient.tsx.
@@ -38,8 +40,12 @@ export default async function Page({ params }: PageProps) {
   const iso2 = countrySlugToIso2(p.country);
   const wb = await fetchWorldBankLatest([iso2]);
   const wbPopulation = wb[iso2]?.population ?? null;
+  // P6: country pages had no JSON-LD at all — BreadcrumbList + Country.
+  const countryName = titleCaseSlug(p.country);
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd(countryCrumbs(countryName, p.country))} />
+      <JsonLd data={countryJsonLd(countryName, p.country)} />
       <CountryPage wbPopulation={wbPopulation} />
       <CountryInventory countrySlug={p.country} />
       <ImproveCTA country={p.country} label={titleCase(p.country)} />

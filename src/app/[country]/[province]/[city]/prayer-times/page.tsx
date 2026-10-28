@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import PrayerTimesPage from './PrayerTimesClient';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 
 // Server wrapper: the interactive Spiritual & Wellness Hub lives in
 // PrayerTimesClient.tsx (a client component). Metadata must be exported
@@ -27,6 +29,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function Page() {
-  return <PrayerTimesPage />;
+export default async function Page({ params }: PageProps) {
+  // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+  // Names from the route slugs, the same derivation this template's own
+  // metadata title already uses; the client still resolves its own city.
+  const p = await params;
+  const cityName = titleCaseSlug(p.city);
+  const provinceName = titleCaseSlug(p.province);
+  const countryName = titleCaseSlug(p.country);
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, p.country, provinceName, p.province, cityName, p.city, 'Prayer Times', 'prayer-times'))} />
+      <JsonLd data={cityJsonLd(cityName, p.city, provinceName, p.province, countryName, p.country)} />
+      <PrayerTimesPage />
+    </>
+  );
 }
