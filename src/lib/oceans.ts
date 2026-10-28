@@ -2461,6 +2461,25 @@ export async function getPublishedOceans(): Promise<Ocean[]> {
   return out;
 }
 
+// ── P10 (28 Oct final sitting): sibling detail links ─────────────────────
+// Mirror of getSiblingWonders: the "More oceans" section on an ocean detail
+// page is server-rendered from this list — every COMPLETE golden build in
+// the dataset (published + built), minus the page itself. No content-only
+// or unfinished ocean is ever listed, so a sibling link never points at an
+// unfinished page; the hub and the sitemap stay published-only and are
+// untouched by this helper. Every slug here renders a full detail page at
+// /oceans/<slug> (verified live 200 before use).
+export function getSiblingOceans(slug: string): Ocean[] {
+  const seen = new Set<string>();
+  const out: Ocean[] = [];
+  for (const o of [...PUBLISHED_OCEANS, ...BUILT_OCEANS]) {
+    if (o.slug === slug || seen.has(o.slug)) continue;
+    seen.add(o.slug);
+    out.push(o);
+  }
+  return out;
+}
+
 // Hub list (final28-P1): the published ocean plus every BUILT ocean
 // whose detail page is live and complete. getOcean resolves each slug
 // (database first, baked data as fallback) and only resolved oceans

@@ -5054,6 +5054,25 @@ export async function getPublishedWonders(): Promise<Wonder[]> {
   return out;
 }
 
+// ── P10 (28 Oct final sitting): sibling detail links ─────────────────────
+// The "More wonders" section on a wonder detail page is server-rendered
+// from this list: every COMPLETE golden build in the dataset (published
+// + built), minus the page itself. Content-only UPCOMING_WONDERS (Petra,
+// Chichen Itza — no detail build) are deliberately excluded, so a sibling
+// link never points at an unfinished page; the hub and the sitemap stay
+// published-only and are untouched by this helper. Every slug here renders
+// a full detail page at /wonders/<slug> (verified live 200 before use).
+export function getSiblingWonders(slug: string): Wonder[] {
+  const seen = new Set<string>();
+  const out: Wonder[] = [];
+  for (const w of [...PUBLISHED_WONDERS, ...BUILT_WONDERS]) {
+    if (w.slug === slug || seen.has(w.slug)) continue;
+    seen.add(w.slug);
+    out.push(w);
+  }
+  return out;
+}
+
 // ── Live layer: Open-Meteo at the site ──────────────────────────────────────
 export interface WonderLive {
   sampledAt: string; // local time at the site, ISO
