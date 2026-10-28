@@ -2364,7 +2364,174 @@ const NORTH_SEA: Ocean = {
   ]
 };
 
-export const BUILT_OCEANS: Ocean[] = [PACIFIC_OCEAN, ATLANTIC_OCEAN, INDIAN_OCEAN, ARCTIC_OCEAN, SOUTHERN_OCEAN, MEDITERRANEAN_SEA, CARIBBEAN_SEA, SOUTH_CHINA_SEA, RED_SEA, BERING_SEA, CORAL_SEA, PERSIAN_GULF, TASMAN_SEA, BALTIC_SEA, NORTH_SEA];
+// ── Final30 A9: Black Sea ─────────────────────────────────────────────────
+// Golden record built 2026-10-28 from Wikipedia ("Black Sea", infobox +
+// lead + hydrology) and Wikidata Q166 ("sea between Europe and Asia",
+// part of the North Atlantic Ocean). No figure is invented: where sources
+// differ, the variant is recorded in the sources list. BUILT, not
+// published: the page renders for QA, the hub and the sitemap are
+// untouched, and the sitemap addition waits for merge + live HTTP 200.
+// A9 facts intent: the "Total area", "Average depth", "Maximum depth" and
+// "Representative point" rows below are the exact rows PR #132's
+// oceanFactsQa() derives its H2 "Black Sea facts" + H3 answers from, so
+// adding 'black-sea' to that PR's FACTS_SLUGS renders the section with
+// no further record change. The three facts FAQs below use wordings
+// distinct from both the existing FAQ bank and #132's derived questions,
+// so the FAQPage schema never carries an exact-duplicate question.
+// Media: hero only. The NASA MODIS satellite image is the Wikidata
+// item image (public domain, 4,800 x 3,600). A shore-photo gallery slot
+// is deliberately left empty: the Batumi coast photo (Jagermesh,
+// CC BY-SA 2.0) is licence-verified but its original dimensions could
+// not be text-verified in this session, so it is NOT used rather than
+// filled with an unsourced figure.
+
+const BLACK_SEA: Ocean = {
+  "slug": "black-sea",
+  "name": "Black Sea",
+  "wikidataQid": "Q166",
+  "partOfName": "Atlantic Ocean",
+  "partOfLabel": "Atlantic Ocean · via the Mediterranean and Turkish Straits",
+  "seasonTitle": "The two-layer sea",
+  "wikiTitle": "Black_Sea",
+  "lat": 44,
+  "lng": 35,
+  "marineTimezone": "Europe/Istanbul",
+  "seoTitle": "Black Sea: Live Waves, Weather & Facts",
+  "seoDescription": "The Black Sea live: wave height today, size, depth and anoxic deep-water facts with sources, and its straits to the Mediterranean explained.",
+  "intro": [
+    "The Black Sea is a marginal sea lying between Europe and Asia, east of the Balkans, south of the East European Plain, west of the Caucasus, and north of Anatolia. It is bordered by Bulgaria, Georgia, Romania, Russia, Turkey, and Ukraine, and is supplied by major rivers, principally the Danube, Dnieper and Dniester. While six countries have a coastline on the sea, its drainage basin includes parts of 24 countries in Europe.",
+    "The Black Sea, not including the Sea of Azov, covers 436,400 km² (168,500 sq mi), has a maximum depth of 2,212 m, and a volume of 547,000 km³. Most of its coasts ascend rapidly: the Pontic Mountains to the south, the Caucasus Mountains to the east, and the Crimean Mountains to the mid-north. Its longest east-west extent is about 1,175 km.",
+    "The sea has a positive water balance, with an annual net outflow of 300 km³ per year through the Bosporus and the Dardanelles into the Aegean Sea. Denser, more saline water from the Aegean flows in underneath the less dense, fresher water flowing out, creating a significant and permanent layer of deep water that does not drain or mix and is therefore anoxic — the layer responsible for the preservation of ancient shipwrecks found in the Black Sea."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Atlantic Ocean — via the Mediterranean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "436,400 km² (168,500 sq mi)",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Average depth",
+      "value": "1,253 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "2,212 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Water volume",
+      "value": "547,000 km³",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Longest extent",
+      "value": "1,175 km east-west",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Connection to the ocean",
+      "value": "Bosporus → Sea of Marmara → Dardanelles → Aegean Sea",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Deep water",
+      "value": "Anoxic — over 90% of deeper volume",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "44° N, 35° E",
+      "source": "Wikipedia"
+    }
+  ],
+  "geography": [
+    "Six countries have a coastline on the sea: Bulgaria, Georgia, Romania, Russia, Turkey and Ukraine. The largest bays are Karkinit Bay in Ukraine, the Gulf of Burgas in Bulgaria, Dnieprovska Gulf and Dniestrovsky Liman in Ukraine, and Sinop Bay and Samsun Bay in Turkey. To the southwest the International Hydrographic Organization sets the limit at the northeastern limit of the Sea of Marmara; to the north the Kerch Strait connects the Black Sea to the Sea of Azov.",
+    "In the west the coast is generally small floodplains below foothills such as the Strandzha, Cape Emine at the east end of the Balkan Mountains, and the Dobruja Plateau further north. Important cities along the coast include, clockwise from the Bosporus, the northern suburbs of Istanbul, Burgas, Varna, Constanta, Odesa, Sevastopol, Kerch, Novorossiysk, Sochi, Poti, Batumi, Trabzon and Samsun (Wikipedia)."
+  ],
+  "monsoon": [
+    "The Black Sea is the world's largest body of water with a meromictic basin: the deep waters do not mix with the upper layers that receive oxygen from the atmosphere, so over 90% of the deeper Black Sea volume is anoxic water. Circulation is primarily controlled by basin topography and fluvial inputs, which produce a strongly stratified vertical structure. Below the surface layer, salinity increases to about 22.3 PSU and the hydrochemical environment shifts from oxygenated to anoxic as bacterial decomposition of sunken biomass uses all the free oxygen.",
+    "Because of the anoxic water at depth, organic matter — including boat hulls and other artifacts — is well preserved, and ancient shipwrecks in excellent states of preservation have been discovered, such as the Byzantine wreck Sinop D in the anoxic layer off Sinop, Turkey. The sea ultimately drains into the Atlantic Ocean via the Turkish Straits and the Aegean Sea into the Mediterranean, and from it through the Strait of Gibraltar; the Black Sea undersea river, a current of particularly saline water flowing through the Bosporus and along the seabed, was the first of its kind discovered."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How large is the Black Sea?",
+      "a": "The Black Sea covers 436,400 square kilometres (168,500 square miles), not counting the Sea of Azov, and holds about 547,000 cubic kilometres of water. Its longest east-west extent is about 1,175 kilometres, and its average depth is 1,253 metres. Six countries border it: Bulgaria, Georgia, Romania, Russia, Turkey and Ukraine, while its drainage basin reaches parts of 24 European countries."
+    },
+    {
+      "q": "How deep does the Black Sea get?",
+      "a": "The Black Sea reaches a maximum depth of 2,212 metres (7,257 feet), against an average depth of 1,253 metres. Its deep water is unusual: denser, saltier water from the Aegean flows in beneath fresher surface water, creating a permanent layer that does not mix and is therefore anoxic. Over 90 percent of the deeper volume has no oxygen, which is why ancient shipwrecks survive there in remarkable condition."
+    },
+    {
+      "q": "Where in the world is the Black Sea?",
+      "a": "The Black Sea lies between Europe and Asia, east of the Balkans, south of the East European Plain, west of the Caucasus and north of Anatolia, at about 44 degrees north, 35 degrees east. It is bordered by Bulgaria, Georgia, Romania, Russia, Turkey and Ukraine. It drains to the Atlantic Ocean through the Bosporus, the Sea of Marmara, the Dardanelles, the Aegean Sea and the Mediterranean."
+    },
+    {
+      "q": "Why is the Black Sea's deep water without oxygen?",
+      "a": "The Black Sea is meromictic: its deep waters do not mix with the oxygenated upper layers. River inflow keeps the surface layer fresher and less dense, while denser, saltier Aegean water sinks below it, and the boundary between them prevents vertical mixing — so oxygen from the atmosphere and photosynthesis stays in the surface waters and the deep layer is anoxic."
+    },
+    {
+      "q": "What connects the Black Sea to the Mediterranean?",
+      "a": "The Bosporus Strait connects the Black Sea to the small Sea of Marmara, which in turn is connected to the Aegean Sea via the Strait of the Dardanelles. The two straits are known collectively as the Turkish Straits, and the net flow of water through them is out of the Black Sea, at about 300 km³ per year."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Black Sea Nasa May 25 2004.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Black_Sea_Nasa_May_25_2004.jpg",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Black_Sea_Nasa_May_25_2004.jpg",
+      "width": 4800,
+      "height": 3600,
+      "licence": "Public domain",
+      "licenceUrl": "https://commons.wikimedia.org/wiki/Commons:Public_domain",
+      "author": "NASA (MODIS)",
+      "attribution": "\"Black Sea\" MODIS satellite image by NASA — public domain, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Satellite view of the Black Sea, its bright blue swirls of phytoplankton blooms and sediment plumes ringing the basin (NASA MODIS)",
+      "sortOrder": 1
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity (sea between Europe and Asia), part of the North Atlantic Ocean, item image (NASA MODIS, 4,800 x 3,600)",
+      "sourceName": "Wikidata — Q166 (Black Sea)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q166",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Area, average/maximum depth, volume, longest extent, borders, rivers, drainage basin, connections, water balance, anoxic layer, meromictic basin, bays, coastal cities, undersea river",
+      "sourceName": "Wikipedia — \"Black Sea\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Black_Sea",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Figure variants: area is also given as 436,402 km² in older text of the same article; the page uses the current infobox figure 436,400 km². No deepest-point name is published in the article, so none is claimed here.",
+      "sourceName": "Wikipedia — \"Black Sea\" (variant note)",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Black_Sea",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Live wave height, direction and period at 44° N, 35° E",
+      "sourceName": "Open-Meteo Marine API",
+      "sourceUrl": "https://open-meteo.com/",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Photograph: licence, author, dimensions (Wikidata item image record; NASA MODIS image, public domain)",
+      "sourceName": "Wikimedia Commons — image record for the file above",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Black_Sea_Nasa_May_25_2004.jpg",
+      "checkedAt": "2026-10-28"
+    }
+  ]
+};
+
+export const BUILT_OCEANS: Ocean[] = [PACIFIC_OCEAN, ATLANTIC_OCEAN, INDIAN_OCEAN, ARCTIC_OCEAN, SOUTHERN_OCEAN, MEDITERRANEAN_SEA, CARIBBEAN_SEA, SOUTH_CHINA_SEA, RED_SEA, BERING_SEA, CORAL_SEA, PERSIAN_GULF, TASMAN_SEA, BALTIC_SEA, NORTH_SEA, BLACK_SEA];
 
 export const PUBLISHED_OCEANS: Ocean[] = [ARABIAN_SEA];
 
@@ -2587,6 +2754,15 @@ export function monsoonSeason(timezone: string, slug = 'arabian-sea'): { name: s
     return {
       name: 'Austral winter — the great freeze',
       text: 'The winter frame: sea ice grows outward until it roughly doubles Antarctica\u2019s footprint, in near-total darkness at the pole (pattern per Wikipedia). Compare the live waves above — today\u2019s actual sea, inside the seasonal frame.',
+    };
+  }
+  // Final30 A9 (black-sea): the default monsoon frame below does NOT
+  // apply here — the Black Sea runs on no monsoon. Its one frame is
+  // its permanent structure, which holds in every month (Wikipedia).
+  if (slug === 'black-sea') {
+    return {
+      name: 'The two-layer sea',
+      text: 'The year-round frame: fresher river-fed surface water sits over denser, saltier Aegean water, and the deep layer does not mix — so over 90% of the deeper volume is anoxic (pattern per Wikipedia). Compare the live waves above — today\u2019s actual sea, inside that permanent frame.',
     };
   }
   if (month >= 6 && month <= 9)
