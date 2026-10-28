@@ -44,6 +44,29 @@ const LIVE_PLACES = [
   'lahore-museum',
 ] as const
 
+// Final30 C1: ocean detail pages. Every slug below was verified live on
+// 2026-10-28 before listing (HTTP 200 + real content + self-canonical +
+// no noindex; per-URL results in the PR evidence pack). The 16th ocean
+// detail page, arabian-sea, is already listed in staticPages above and is
+// deliberately NOT repeated here, so no URL appears twice.
+const LIVE_OCEANS = [
+  'arctic-ocean',
+  'atlantic-ocean',
+  'baltic-sea',
+  'bering-sea',
+  'caribbean-sea',
+  'coral-sea',
+  'indian-ocean',
+  'mediterranean-sea',
+  'north-sea',
+  'pacific-ocean',
+  'persian-gulf',
+  'red-sea',
+  'south-china-sea',
+  'southern-ocean',
+  'tasman-sea',
+] as const
+
 // Live personalities + places pages (final28 B11). Every slug below was
 // verified live before listing (200 + real content + self-canonical).
 // Deliberately NOT listed: the /personalities and /places index pages
@@ -122,6 +145,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
+  const oceanPages: MetadataRoute.Sitemap = LIVE_OCEANS.map((slug) => ({
+    url: `${baseUrl}/oceans/${slug}`,
+    changeFrequency: 'daily' as const,
+    priority: 0.8,
+  }))
+
   const placePages: MetadataRoute.Sitemap = LIVE_PLACES.map((slug) => ({
     url: `${baseUrl}/places/${slug}`,
     changeFrequency: 'weekly' as const,
@@ -141,7 +170,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ]
 
-  const pages: MetadataRoute.Sitemap = [...staticPages, ...horoscopePages, ...cityPages, ...profilePages, ...placePages]
+  const pages: MetadataRoute.Sitemap = [...staticPages, ...horoscopePages, ...cityPages, ...profilePages, ...placePages, ...oceanPages]
   const seen = new Set(pages.map((p) => p.url))
 
   // Bonus: any additional active cities that appear in Supabase later are
