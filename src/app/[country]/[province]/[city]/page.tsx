@@ -8,10 +8,13 @@ import type { Metadata } from 'next';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
+import CityAssistant, { OpenAssistantButton } from '@/components/shared/CityAssistant';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { TOLA_GRAMS } from '@/lib/gold';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
+import { CENSUS_2023_POPULATION, hasCensusPopulation } from '@/lib/census2023';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
+import CityPageImage from '@/components/city/CityPageImage';
 import {
   generateCityIntro,
   generateCityIntroAfter,
@@ -72,6 +75,14 @@ const CITY_DB: Record<string, CityParams> = {
     city: 'Rawalpindi', country: 'Pakistan', province: 'Punjab',
     lat: 33.5651, lon: 73.0169, countryCode: 'PK', timezone: 'Asia/Karachi'
   },
+  'pakistan/punjab/multan': {
+    city: 'Multan', country: 'Pakistan', province: 'Punjab',
+    lat: 30.1978, lon: 71.4711, countryCode: 'PK', timezone: 'Asia/Karachi'
+  },
+  'pakistan/khyber-pakhtunkhwa/peshawar': {
+    city: 'Peshawar', country: 'Pakistan', province: 'Khyber Pakhtunkhwa',
+    lat: 34.008, lon: 71.57849, countryCode: 'PK', timezone: 'Asia/Karachi'
+  },
 };
 
 function getCityParams(country: string, province: string, city: string): CityParams | null {
@@ -82,28 +93,43 @@ function getCityParams(country: string, province: string, city: string): CityPar
 
 // ─── Q11 AUDIT FIXES ─────────────────────────────────────────────────────────
 // Per-city "at a glance" facts. Until now EVERY city printed Lahore's
-// values (population 13M+, area 1,772 km², elevation 217 m). Populations
-// are the site's own collected dataset values (pakistan_cities.csv,
-// GeoNames-shaped); areas are district/territory areas; elevations are
-// the cities' standard published figures.
+// values (population 13M+, area 1,772 km², elevation 217 m). F3: the
+// populations of Lahore, Karachi and Islamabad are PBS Census-2023
+// admin-unit totals read from the single source in @/lib/census2023
+// (district / division / territory totals matching the areas shown);
+// Faisalabad and Rawalpindi keep the site's own collected dataset
+// values (pakistan_cities.csv, GeoNames-shaped). Areas are
+// district/territory areas; elevations are the cities' standard
+// published figures.
+// D17 exception, following the batch's F3 single-source rule: Multan and
+// Peshawar populations are PBS Census-2023 DISTRICT totals, paired with
+// the matching district areas (the same unit-matches-area rule F3 uses
+// for Lahore/Karachi/Islamabad) — not city/municipal-corporation counts.
+const fmtCensus = (key: string): string => CENSUS_2023_POPULATION[key].toLocaleString('en-US');
 const GLANCE: Record<string, { population: string; area: string; elevation: string; languages: string; founded: string }> = {
-  'pakistan/punjab/lahore': { population: '13,004,135', area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
-  'pakistan/sindh/karachi': { population: '11,624,219', area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
-  'pakistan/islamabad-capital-territory/islamabad': { population: '601,600', area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
+  'pakistan/punjab/lahore': { population: fmtCensus('pakistan/punjab/lahore'), area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
+  'pakistan/sindh/karachi': { population: fmtCensus('pakistan/sindh/karachi'), area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
+  'pakistan/islamabad-capital-territory/islamabad': { population: fmtCensus('pakistan/islamabad-capital-territory/islamabad'), area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
   'pakistan/punjab/faisalabad': { population: '3,800,193', area: '5,856', elevation: '184', languages: 'Urdu, Punjabi', founded: '1892' },
   'pakistan/punjab/rawalpindi': { population: '3,357,612', area: '5,286', elevation: '508', languages: 'Urdu, Punjabi, Potohari', founded: 'antiquity' },
+  'pakistan/punjab/multan': { population: '5,362,305', area: '3,720', elevation: '122', languages: 'Urdu, Saraiki, Punjabi', founded: 'antiquity' },
+  'pakistan/khyber-pakhtunkhwa/peshawar': { population: '4,758,762', area: '1,518', elevation: '340', languages: 'Urdu, Pashto, Hindko', founded: 'antiquity' },
 };
 
 // Nearby cities: only cities whose full pages render (the old list
-// linked to Coming Soon shells — Gujranwala, Sialkot, Multan — from
+// linked to Coming Soon shells — Gujranwala, Sialkot — from
 // every city, with Lahore's distances). Distances are straight-line,
 // computed from the canonical coordinates in CITY_DB above.
+// D17: the two new cities link ONLY to already-live pages; existing
+// cities' nearby lists are untouched by this change.
 const NEARBY_KEYS: Record<string, string[]> = {
   'pakistan/punjab/lahore': ['pakistan/islamabad-capital-territory/islamabad', 'pakistan/punjab/faisalabad', 'pakistan/punjab/rawalpindi', 'pakistan/sindh/karachi'],
   'pakistan/sindh/karachi': ['pakistan/punjab/lahore', 'pakistan/islamabad-capital-territory/islamabad'],
   'pakistan/islamabad-capital-territory/islamabad': ['pakistan/punjab/rawalpindi', 'pakistan/punjab/lahore', 'pakistan/punjab/faisalabad'],
   'pakistan/punjab/faisalabad': ['pakistan/punjab/lahore', 'pakistan/islamabad-capital-territory/islamabad'],
   'pakistan/punjab/rawalpindi': ['pakistan/islamabad-capital-territory/islamabad', 'pakistan/punjab/lahore'],
+  'pakistan/punjab/multan': ['pakistan/punjab/lahore', 'pakistan/punjab/faisalabad', 'pakistan/islamabad-capital-territory/islamabad'],
+  'pakistan/khyber-pakhtunkhwa/peshawar': ['pakistan/islamabad-capital-territory/islamabad', 'pakistan/punjab/rawalpindi', 'pakistan/punjab/lahore'],
 };
 
 function haversineKm(a: CityParams, b: CityParams): number {
@@ -117,6 +143,12 @@ function haversineKm(a: CityParams, b: CityParams): number {
 // Compare chips: ONLY the pairs actually published in /compare (the old
 // chips linked to lahore-vs-dubai, lahore-vs-mumbai, lahore-vs-london
 // and a wrong-order lahore-vs-faisalabad — all dead ends).
+// D17: no chips for Multan/Peshawar yet — the only Multan pair
+// (faisalabad-vs-multan) is not in this audited list or the sitemap's
+// compare list, and its compare surface still carries the 2017 package
+// population, which would drift against this page's 2023 census figure.
+// Peshawar has no compare pair at all. Chips are a follow-up, not a
+// silent addition here.
 const COMPARE_LINKS: Record<string, { label: string; pair: string }[]> = {
   lahore: [
     { label: 'Karachi', pair: 'lahore-vs-karachi' },
@@ -309,6 +341,36 @@ export default async function CityPage({
 
   const hourlyList = (hourly?.list as Array<Record<string, unknown>> | undefined)?.slice(0, 8) ?? [];
 
+  // ── City Assistant (Phase 1) snapshot ──────────────────────────────────
+  // ONLY values this page already loaded (same feeds as the panels above).
+  // The bot renders exactly these — never a fetched, guessed or cross-city
+  // value. Events: this page lists no individual events, so eventsCount
+  // is 0 and the bot answers honestly with the events-page link.
+  const rainMm =
+    (weather?.rain as Record<string, number> | undefined)?.['1h'] ??
+    (weather?.rain as Record<string, number> | undefined)?.['3h'] ?? null;
+  const assistantSnapshot = {
+    scopeName: city,
+    countryCode: cityParams.countryCode,
+    basePath: `/${countrySlug}/${provinceSlug}/${citySlug}`,
+    prayerTimes: timings
+      ? {
+          Fajr: timings.Fajr, Sunrise: timings.Sunrise, Dhuhr: timings.Dhuhr,
+          Asr: timings.Asr, Maghrib: timings.Maghrib, Isha: timings.Isha,
+        }
+      : null,
+    temp: temp !== null ? Math.round(temp) : null,
+    feelsLike: feelsLike !== null ? Math.round(feelsLike) : temp !== null ? Math.round(temp) : null,
+    weatherDesc,
+    rainMm,
+    goldPerGram: goldPerGram !== null ? Math.round(goldPerGram) : null,
+    goldPerTola,
+    police: policeNum ?? '15',
+    ambulance: ambulanceNum ?? '1122',
+    fire: fireNum ?? '16',
+    eventsCount: 0,
+  };
+
   const upcomingHolidays = ((holidays ?? []) as Array<Record<string, string>>)
     .filter((h) => new Date(h.date) >= new Date())
     .slice(0, 5);
@@ -444,6 +506,10 @@ export default async function CityPage({
                 </div>
               )}
             </div>
+          </div>
+          {/* Final28 P12: real city photo (licensed/open, local file, credited) — no image for cities without a record. */}
+          <div className="max-w-6xl mx-auto mt-8">
+            <CityPageImage citySlug={resolvedParams.city} variant="hero" layout="card" />
           </div>
         </section>
 
@@ -858,6 +924,11 @@ export default async function CityPage({
               {(citySlug === 'lahore' ? [
                 { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque' },
                 { name: 'Lahore Fort', type: 'UNESCO Heritage', slug: 'lahore-fort' },
+                // D18: the four newly published Lahore places.
+                { name: 'Shalimar Gardens', type: 'Mughal Gardens', slug: 'shalimar-gardens' },
+                { name: 'Data Darbar', type: 'Sufi Shrine', slug: 'data-darbar' },
+                { name: 'Walled City', type: 'Historic District', slug: 'walled-city' },
+                { name: 'Lahore Museum', type: 'Museum', slug: 'lahore-museum' },
               ] : []).map((place) => (
                 <a
                   key={place.slug}
@@ -978,7 +1049,7 @@ export default async function CityPage({
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {[
                 ...(glance ? [
-                  { label: 'Population', value: glance.population },
+                  { label: hasCensusPopulation(cityKey) ? 'Population (2023 census)' : 'Population', value: glance.population },
                   { label: 'Area', value: `${glance.area} km²` },
                   { label: 'Elevation', value: `${glance.elevation} m` },
                 ] : []),
@@ -1098,9 +1169,7 @@ export default async function CityPage({
             <p className="text-gray-400 text-sm mb-4">
               Weather, prayer times, gold rates, events — ask the {city} City Assistant
             </p>
-            <button className="text-white px-6 py-3 rounded-full font-medium transition border border-green-500/50 hover:border-green-400" style={{ backgroundColor: 'rgba(12,122,61,0.6)' }}>
-              Start Chat →
-            </button>
+            <OpenAssistantButton />
           </section>
 
           {/* ── Batch 4 Item 2: visible FAQ block — same data as the FAQPage schema in the head ── */}
@@ -1128,6 +1197,8 @@ export default async function CityPage({
 
         </div>
       </main>
+
+      <CityAssistant snapshot={assistantSnapshot} />
 
       <ImproveCTA country={resolvedParams.country} city={resolvedParams.city} label={cityParams.city} />
 

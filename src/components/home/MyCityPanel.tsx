@@ -110,9 +110,32 @@ async function fetchCityClient(slug: string, meta: Meta, moonPhase: string): Pro
     moonPhase,
     facts,
     headlines: Array.isArray(news?.articles) ? news.articles.map((a: any) => a.title).filter(Boolean).slice(0, 2) : [],
-    image: null,
+    // Homepage-imagery pass (2026-10-28): the client-side city
+    // switch previously dropped the photo entirely (image: null).
+    // Same per-city vendored photos as the server path in
+    // src/lib/home-mycity.ts, keyed by the same slug, so the photo
+    // always matches the panel city after a location switch.
+    image: CLIENT_CITY_IMAGES[slug] ?? null,
   };
 }
+
+const CLIENT_CITY_IMAGES: Record<string, { url: string; credit: string; alt: string }> = {
+  lahore: {
+    url: '/images/home28/mycity-lahore.webp',
+    credit: 'Badshahi Mosque, Lahore — photo by Muhammad Umair Mirza · CC BY-SA 4.0 · Wikimedia Commons',
+    alt: 'The Badshahi Mosque in Lahore at golden hour',
+  },
+  karachi: {
+    url: '/images/home28/mycity-karachi.webp',
+    credit: 'Mazar-e-Quaid, Karachi — photo by Anwar Ahmed · CC BY-SA 3.0 · Wikimedia Commons',
+    alt: 'The Mazar-e-Quaid mausoleum in Karachi',
+  },
+  islamabad: {
+    url: '/images/home28/mycity-islamabad.webp',
+    credit: 'The Faisal Mosque in Islamabad — photo by Marsmux · CC BY-SA 4.0 · Wikimedia Commons',
+    alt: 'The Faisal Mosque in Islamabad',
+  },
+};
 
 export default function MyCityPanel({ initial, metas }: { initial: MyCityData; metas: Record<string, Meta> }) {
   const [data, setData] = useState<MyCityData>(initial);
