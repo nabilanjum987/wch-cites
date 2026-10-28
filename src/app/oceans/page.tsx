@@ -28,7 +28,7 @@ export default async function OceansIndex() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Oceans & Seas',
+    name: 'Oceans of the World',
     description:
       'Ocean guides with sourced facts (Wikidata & Wikipedia), licensed credited photos, and a live marine layer — waves and coastal weather today.',
     url: `${BASE}/oceans`,
@@ -53,7 +53,7 @@ export default async function OceansIndex() {
           <span className="mx-2">/</span>
           <span className="text-gray-200">Oceans</span>
         </nav>
-        <h1 className="mt-3 text-4xl font-bold sm:text-5xl">Oceans &amp; Seas</h1>
+        <h1 className="mt-3 text-4xl font-bold sm:text-5xl">Oceans of the World</h1>
         <p className="mt-3 max-w-3xl leading-relaxed text-gray-300">
           An ocean guide with a pulse: the verified facts — size, depth, shores, the monsoon that rules it — checked
           against Wikidata and Wikipedia, plus a live marine layer no static page can offer: today&apos;s wave height
