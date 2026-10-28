@@ -922,6 +922,11 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
   const activeSportLabel = sports.find(s => s.id === activeSport)?.label ?? '';
   const headerColor = city?.primary_color ?? '#1a1a2e';
   const nextMatch = nextMatches[0];
+  // A6 (final30): the primary sports keyword "cricket live score today"
+  // targets exactly ONE page — Lahore sports. Other cities keep the
+  // generic "{City} Sports" H1. The secondary keyword "gaddafi stadium
+  // lahore" is likewise Lahore-only (see the block after Live Scores).
+  const isLahore = (city?.city_slug ?? params.city) === 'lahore';
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="">
@@ -942,7 +947,7 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
               </span>
             ))}
           </nav>
-          <h1 className="text-3xl font-bold text-white">{city?.name ?? ''} Sports</h1>
+          <h1 className="text-3xl font-bold text-white">{isLahore ? 'Cricket Live Score Today in Lahore' : `${city?.name ?? ''} Sports`}</h1>
           <p className="text-white/70 mt-1 text-sm">Live scores, standings, national team & more</p>
         </div>
       </header>
@@ -1013,6 +1018,44 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
             {generateLiveScoresAfter(activeSportLabel, city?.name ?? '')}
           </p>
         </motion.section>
+
+        {/* A6 (final30) — Lahore-only keyword block. No scores, fixtures
+            or dates are stated here: live data comes only from the
+            TheSportsDB feed in the Live Scores section above, and the
+            stadium facts below repeat this page's own stadium record
+            (Gaddafi Stadium, capacity 27,800, home team Lahore
+            Qalandars). Each H3 answer is 50–70 words. */}
+        {isLahore && (
+          <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+            <h2 className="text-lg font-bold text-white mb-4">Gaddafi Stadium Lahore</h2>
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
+              Gaddafi Stadium is Lahore&apos;s best-known cricket ground. This page&apos;s Major Stadiums section lists it with
+              a capacity of 27,800 and Lahore Qalandars as its home team, alongside the National Stadium in Karachi and
+              Multan Cricket Stadium.
+            </p>
+            <h3 className="text-base font-bold text-white mb-2">Where is Gaddafi Stadium?</h3>
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
+              Gaddafi Stadium stands in Lahore, Punjab, Pakistan, and it is the city&apos;s best-known cricket ground. The
+              stadium appears in this page&apos;s Major Stadiums section with its capacity and home team listed beside it.
+              Visitors looking for the ground should head for Lahore itself, since no other city in Pakistan has a stadium
+              of this name on this page.
+            </p>
+            <h3 className="text-base font-bold text-white mb-2">Which team calls Gaddafi Stadium home?</h3>
+            <p className="text-gray-300 leading-relaxed text-sm mb-4">
+              Lahore Qalandars call Gaddafi Stadium home, according to this page&apos;s stadium data, which lists the Qalandars
+              as the ground&apos;s home team. The stadium&apos;s listed capacity is 27,800, and its entry sits alongside the
+              National Stadium in Karachi and Multan Cricket Stadium in the Major Stadiums section. Supporters of the
+              Qalandars therefore treat this Lahore ground as their team&apos;s home venue.
+            </p>
+            <h3 className="text-base font-bold text-white mb-2">How do I check today&apos;s cricket live score?</h3>
+            <p className="text-gray-300 leading-relaxed text-sm">
+              Use this page&apos;s Live Scores Today section and keep Cricket selected in the sport selector above it. The
+              section loads the day&apos;s cricket fixtures and scores from TheSportsDB&apos;s live feed, showing each match with
+              its league, teams and score, or its scheduled time when play has not started. When no cricket match is
+              scheduled today, the section says so plainly, so an empty result means no match.
+            </p>
+          </motion.section>
+        )}
 
         {domesticLeague && standings.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
