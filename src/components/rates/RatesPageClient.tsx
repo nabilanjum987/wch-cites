@@ -426,6 +426,12 @@ function RemittanceCalculator({ currency, currencyPairs }: RemittanceCalculatorP
 
 interface CountryRatesPageProps {
   countrySlug?: string;
+  // A4: 'country' only for the /[country]/rates route. The Pakistan
+  // country page carries the petrol head keyword (its H1 + hero
+  // answer); city rates pages keep their existing headings, and the
+  // legacy /country/rates route keeps the default. Default 'city'
+  // preserves every existing heading outside /pakistan/rates.
+  pageKind?: 'country' | 'city';
   // Real gold (gold-api XAU spot; CoinGecko PAXG for history/change
   // only) + crypto data fetched on the server so the page's raw HTML
   // carries live rates instead of a loading skeleton.
@@ -434,7 +440,7 @@ interface CountryRatesPageProps {
   initialCrypto?: { cryptos: CryptoData[]; market: CryptoMarket } | null;
 }
 
-export default function CountryRatesPage({ countrySlug = 'pakistan', initialRates, initialCrypto }: CountryRatesPageProps) {
+export default function CountryRatesPage({ countrySlug = 'pakistan', initialRates, initialCrypto, pageKind = 'city' }: CountryRatesPageProps) {
   const [rates, setRates] = useState<GoldRates | null>(initialRates ?? null);
   const [oilPrices, setOilPrices] = useState<OilPrice[]>([]);
   const [fuelPrices, setFuelPrices] = useState<FuelPrice[]>([]);
@@ -590,10 +596,14 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
                 <span className="text-6xl">{currency.flag}</span>
                 <div>
                   <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
-                    {countryName} Gold Rates
+                    {pageKind === 'country' && countrySlug === 'pakistan'
+                      ? 'Petrol Price in Pakistan Today'
+                      : `${countryName} Gold Rates`}
                   </h1>
                   <p className="text-gray-400 text-base mt-2">
-                    Prices in {currency.name} ({currency.code}) · Updated every 5 min
+                    {pageKind === 'country' && countrySlug === 'pakistan'
+                      ? 'Live dollar, silver and gold rates in Pakistan, plus diesel and official fuel-price guidance.'
+                      : `Prices in ${currency.name} (${currency.code}) · Updated every 5 min`}
                   </p>
                 </div>
               </div>
@@ -622,6 +632,28 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
               </button>
             </div>
           </div>
+
+          {/* A4: direct answer under the Pakistan petrol H1. No pump
+              figure is printed: no verified OGRA feed is connected,
+              and an estimate would be fabrication. The answer says so
+              and points to OGRA's own notifications. */}
+          {pageKind === 'country' && countrySlug === 'pakistan' && (
+            <p className="mt-6 max-w-3xl text-base leading-relaxed text-gray-300">
+              Petrol prices in Pakistan are notified by the{' '}
+              <a
+                href="https://www.ogra.org.pk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cyan-300 underline"
+              >
+                Oil and Gas Regulatory Authority (OGRA)
+              </a>
+              , which publishes the retail prices that apply across the country. This page does not show a
+              live pump price, because no verified OGRA feed is connected yet, and printing an estimate would
+              mislead readers. Instead it gives the live dollar, silver and gold figures below, and links to
+              OGRA&apos;s own notifications for the current fuel prices.
+            </p>
+          )}
 
           {/* Live Price Strip */}
           {rates && (
