@@ -317,6 +317,85 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
   return { directAnswer, faqs: faqs.filter((f) => f.a.trim().length > 0) };
 }
 
+// ─── A7 (final30): keyword sections ─────────────────────────────────────
+// One block per targeted slug; every answer is 50–70 words (verified by
+// script at build time) and uses only that profile's own record. The
+// Faiz Lenin Peace Prize year is deliberately NOT stated: the record
+// itself carries two different years (timeline 1979, achievement 1962).
+function A7KeywordSections({ slug }: { slug: string }) {
+  const qa = (q: string, a: string) => (
+    <div key={q} className="mb-6">
+      <h3 className="text-xl font-bold text-white mb-2">{q}</h3>
+      <p className="text-gray-300 leading-relaxed text-sm">{a}</p>
+    </div>
+  );
+  const h2 = (t: string) => (
+    <h2 className="text-2xl font-bold text-white mb-4 mt-8">{t}</h2>
+  );
+  if (slug === 'nusrat-fateh-ali-khan') {
+    return (
+      <div>
+        {h2('Nusrat Fateh Ali Khan Songs')}
+        {qa(
+          "What are Nusrat Fateh Ali Khan's most famous songs?",
+          "Nusrat Fateh Ali Khan's best-known songs on this profile are Allah Hoo, a signature traditional qawwali in praise of God, and Dama Dam Mast Qalandar, a devotional song honouring Lal Shahbaz Qalandar and a staple of his concerts. His albums here include Mustt Mustt from 1990, Night Song from 1996 and Shahen-Shah, and his record lists more than 125 qawwali albums.",
+        )}
+        {qa(
+          'What kind of music did Nusrat Fateh Ali Khan sing?',
+          "Nusrat Fateh Ali Khan sang qawwali, the Sufi devotional music his family had sung for generations in Faisalabad. He sang mainly in Urdu and Punjabi, and occasionally in Persian, building a style of extraordinary range, stamina and improvisation. From the 1980s he carried qawwali to more than 40 countries, recording for Peter Gabriel's Real World label.",
+        )}
+      </div>
+    );
+  }
+  if (slug === 'faiz-ahmed-faiz') {
+    return (
+      <div>
+        {h2('Faiz Ahmed Faiz Poetry')}
+        {qa(
+          "What is Faiz Ahmed Faiz's most famous poetry?",
+          "Faiz Ahmed Faiz's poetry on this profile begins with Naqsh-e-Faryadi, his first major collection from 1941, blending love and social conscience. Nuskha Haye Wafa collects his poetry as a kulliyat, and Mujh Se Pehli Si Mohabbat is his most quoted poem, turning from private love to public sorrow. His poem Bol, opening with 'Bol ke lab azaad hain tere', is quoted here too.",
+        )}
+        {qa(
+          'What did Faiz Ahmed Faiz write about?',
+          "Faiz Ahmed Faiz fused romance and revolution in Urdu poetry, and his ghazals and nazms made political longing singable across South Asia. He was the first editor of the Pakistan Times in Lahore, a trade unionist and an exile, and he spent his last years in Lahore, where he died in 1984. His verse remains part of the city's air, and he received the Lenin Peace Prize.",
+        )}
+      </div>
+    );
+  }
+  if (slug === 'allama-iqbal') {
+    return (
+      <div>
+        {h2('Allama Iqbal Poetry')}
+        {qa(
+          "What is Allama Iqbal's most famous poetry?",
+          "Allama Iqbal's poetry on this profile spans Urdu and Persian. Asrar-e-Khudi, from 1915, is his landmark Persian poem on the philosophy of the self. Bang-e-Dra, from 1924, is his first Urdu collection, spanning three phases of his life. Bal-e-Jibril, from 1935, is considered his most mature Urdu poetry, and Javid Nama, from 1932, is a Persian epic inspired by Dante's Divine Comedy.",
+        )}
+        {h2('Allama Iqbal Biography')}
+        {qa(
+          'Who was Allama Iqbal?',
+          "Allama Iqbal, born in Sialkot in 1877, was one of the most significant Muslim poets and philosophers of the 20th century. He studied at Government College Lahore, then at Cambridge and Munich, earning his doctorate in philosophy. His 1930 Allahabad Address envisioned a separate Muslim state, and he died in Lahore in 1938, where his mausoleum stands at the Badshahi Mosque entrance.",
+        )}
+      </div>
+    );
+  }
+  if (slug === 'wasim-akram') {
+    return (
+      <div>
+        {h2('Wasim Akram Biography')}
+        {qa(
+          'Who is Wasim Akram?',
+          "Wasim Akram, born in Lahore on 3 June 1966, is Pakistan's Sultan of Swing, a left-arm fast bowler who could swing the new ball both ways and make the old ball reverse. He took 916 international wickets, starred in Pakistan's 1992 World Cup final win over England at Melbourne, and was inducted into the ICC Cricket Hall of Fame in 2009.",
+        )}
+        {qa(
+          'How many wickets did Wasim Akram take?',
+          "Wasim Akram took 916 international wickets: 414 wickets in 104 Tests and 502 in 356 one-day internationals, becoming the first bowler to reach 500 ODI wickets. His second Test brought 10 wickets in the match, and his 1992 World Cup final figures of 3 for 49, with a quick 33 with the bat, earned him man of the match.",
+        )}
+      </div>
+    );
+  }
+  return null;
+}
+
 export default async function PersonalityPage({ params }: PageProps) {
   const { slug } = await params;
   const p = await getPersonalityBySlug(slug);
@@ -425,6 +504,14 @@ export default async function PersonalityPage({ params }: PageProps) {
 
         {/* Description sections */}
         <PersonalityDescription sections={p.descriptionSections} />
+
+        {/* A7 (final30): keyword sections for exactly four profiles.
+            H2 = the brief's keyword phrasing; H3 = AEO questions, each
+            answered in 50–70 words composed ONLY from this profile's
+            own record (description, timeline, works, achievements,
+            descriptionSections) — no new facts, no invented titles.
+            Imran Khan is deliberately NOT targeted (reserve keyword). */}
+        <A7KeywordSections slug={p.slug} />
 
         {/* Timeline */}
         {p.timeline.length > 0 && (
