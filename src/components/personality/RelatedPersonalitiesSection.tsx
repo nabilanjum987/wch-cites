@@ -35,7 +35,7 @@ export function RelatedPersonalitiesSection({
       className="mt-10 p-4 rounded-2xl"
     >
       <div className="flex items-center justify-between gap-4 mb-4">
-        <h2 className="font-semibold text-gray-900 text-base">Related Personalities</h2>
+        <h2 className="font-semibold text-white text-base">Related Personalities</h2>
         <Link
           href={`${cityHref}#personalities`}
           className="inline-flex items-center gap-1 text-sm font-medium hover:underline shrink-0"
@@ -51,8 +51,8 @@ export function RelatedPersonalitiesSection({
               style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}
               className="block rounded-xl px-4 py-3 hover:opacity-80 transition"
             >
-              <span className="block font-semibold text-gray-900 text-sm">{p.name}</span>
-              <span className="block text-xs text-gray-500 mt-0.5">{p.title}</span>
+              <span className="block font-semibold text-white text-sm">{p.name}</span>
+              <span className="block text-xs text-gray-400 mt-0.5">{p.title}</span>
             </Link>
           </li>
         ))}
