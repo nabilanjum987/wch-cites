@@ -99,10 +99,12 @@ function getCityParams(country: string, province: string, city: string): CityPar
 // populations of Lahore, Karachi and Islamabad are PBS Census-2023
 // admin-unit totals read from the single source in @/lib/census2023
 // (district / division / territory totals matching the areas shown);
-// Faisalabad and Rawalpindi keep the site's own collected dataset
-// values (pakistan_cities.csv, GeoNames-shaped). Areas are
-// district/territory areas; elevations are the cities' standard
-// published figures.
+// B10 extends the same rule to Faisalabad (district total, matching
+// its 5,856 km² district area) so the Faisalabad-vs-Multan pair reads
+// Census-2023 on both sides. Rawalpindi alone keeps the site's own
+// collected dataset value (pakistan_cities.csv, GeoNames-shaped).
+// Areas are district/territory areas; elevations are the cities'
+// standard published figures.
 // D17 exception, following the batch's F3 single-source rule: Multan and
 // Peshawar populations are PBS Census-2023 DISTRICT totals, paired with
 // the matching district areas (the same unit-matches-area rule F3 uses
@@ -112,7 +114,7 @@ const GLANCE: Record<string, { population: string; area: string; elevation: stri
   'pakistan/punjab/lahore': { population: fmtCensus('pakistan/punjab/lahore'), area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
   'pakistan/sindh/karachi': { population: fmtCensus('pakistan/sindh/karachi'), area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
   'pakistan/islamabad-capital-territory/islamabad': { population: fmtCensus('pakistan/islamabad-capital-territory/islamabad'), area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
-  'pakistan/punjab/faisalabad': { population: '3,800,193', area: '5,856', elevation: '184', languages: 'Urdu, Punjabi', founded: '1892' },
+  'pakistan/punjab/faisalabad': { population: '9,075,819', area: '5,856', elevation: '184', languages: 'Urdu, Punjabi', founded: '1892' },
   'pakistan/punjab/rawalpindi': { population: '3,357,612', area: '5,286', elevation: '508', languages: 'Urdu, Punjabi, Potohari', founded: 'antiquity' },
   'pakistan/punjab/multan': { population: '5,362,305', area: '3,720', elevation: '122', languages: 'Urdu, Saraiki, Punjabi', founded: 'antiquity' },
   'pakistan/khyber-pakhtunkhwa/peshawar': { population: '4,758,762', area: '1,518', elevation: '340', languages: 'Urdu, Pashto, Hindko', founded: 'antiquity' },
@@ -147,10 +149,10 @@ function haversineKm(a: CityParams, b: CityParams): number {
 // and a wrong-order lahore-vs-faisalabad — all dead ends).
 // D17: no chips for Multan/Peshawar yet — the only Multan pair
 // (faisalabad-vs-multan) is not in this audited list or the sitemap's
-// compare list, and its compare surface still carries the 2017 package
-// population, which would drift against this page's 2023 census figure.
-// Peshawar has no compare pair at all. Chips are a follow-up, not a
-// silent addition here.
+// compare list. (B10 retired the pair's 2017 package population in
+// favour of PBS Census-2023 district totals, so the drift reason no
+// longer applies — but chips are still a follow-up, not a silent
+// addition here.) Peshawar has no compare pair at all.
 const COMPARE_LINKS: Record<string, { label: string; pair: string }[]> = {
   lahore: [
     { label: 'Karachi', pair: 'lahore-vs-karachi' },

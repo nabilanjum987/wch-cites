@@ -12,7 +12,7 @@ export const FAISALABAD: CityPackage = {
     "province_slug": "punjab",
     "lat": 31.418,
     "lng": 73.079,
-    "population": 3203846,
+    "population": 9075819,
     "timezone": "Asia/Karachi",
     "major_religion": "Islam",
     "religion_percent": null,
@@ -33,8 +33,8 @@ export const FAISALABAD: CityPackage = {
       "value": "Punjab"
     },
     {
-      "label": "Population (2017 census)",
-      "value": "3,203,846"
+      "label": "Population (2023 census, district total)",
+      "value": "9,075,819"
     },
     {
       "label": "Elevation",
@@ -125,7 +125,7 @@ export const FAISALABAD: CityPackage = {
     {
       "group": "identity (coords, population, elevation)",
       "source": "Wikidata Q173985",
-      "detail": "Coordinates P625, population P1082 (point-in-time 2017, Pakistan Bureau of Statistics census as referenced on the item), elevation P2044 — pulled live 2026-10-22."
+      "detail": "Coordinates P625, elevation P2044 — Wikidata, pulled live 2026-10-22. Population REPLACED (final30 B10) with PBS 7th Population & Housing Census (2023), Table 1, Faisalabad District total 9,075,819 — the 2017 Wikidata figure (3,203,846) is retired."
     },
     {
       "group": "emergency numbers",
