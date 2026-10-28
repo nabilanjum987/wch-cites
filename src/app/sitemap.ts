@@ -44,6 +44,33 @@ const LIVE_PLACES = [
   'lahore-museum',
 ] as const
 
+// Live personalities + places pages (final28 B11). Every slug below was
+// verified live before listing (200 + real content + self-canonical).
+// Deliberately NOT listed: the /personalities and /places index pages
+// (200 but "Check back soon" fallbacks with 0 links) and the 4
+// unpublished place slugs (Shalimar Gardens, Data Darbar, Walled City,
+// Lahore Museum — all 404 live); sibling item D18 carries those entries
+// when it builds the pages.
+const PROFILE_SLUGS = [
+  'abdul-qadeer-khan', 'abdul-sattar-edhi', 'abdus-salam',
+  'allama-iqbal', 'ameer-haider-khan-hoti', 'amrita-pritam',
+  'ashfaq-ahmed', 'azam-khan-hoti', 'bahawal-khan-i', 'bano-qudsia',
+  'benazir-bhutto', 'dr-abdus-salam', 'faiz-ahmed-faiz', 'fatima-jinnah',
+  'feroz-khan-noon', 'habib-jalib', 'haider-zaman-khan', 'imran-khan',
+  'james-abbott', 'khurshid-ahmed-shah', 'malala-yousafzai',
+  'mehdi-hasan', 'mir-muhammad-masum', 'mohammad-hafeez',
+  'muhammad-ali-jinnah', 'mushaf-ali-mir', 'nasir-hussain-shah',
+  'noor-jehan', 'nusrat-fateh-ali-khan', 'pervez-musharraf',
+  'quaid-e-azam-jinnah', 'sadequain', 'sadiq-muhammad-khan-iv',
+  'sadiq-muhammad-khan-v', 'sardar-mehtab-abbasi',
+  'wasim-akram', 'younis-khan',
+] as const
+
+const PLACE_SLUGS = [
+  'badshahi-mosque',
+  'lahore-fort',
+] as const
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: 'daily', priority: 1.0 },
@@ -73,6 +100,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/pakistan`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/pakistan/punjab`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/pakistan/sindh`, changeFrequency: 'daily', priority: 0.7 },
+    // P7: the bare ICT province page returns 200 with full content live
+    // (its 8 Islamabad city URLs were already in the sitemap via the
+    // Supabase merge) but was missing as a province entry, unlike
+    // Punjab/Sindh above. Verified: 200, 1 self-canonical, title 58,
+    // description 114.
+    { url: `${baseUrl}/pakistan/islamabad-capital-territory`, changeFrequency: 'daily', priority: 0.7 },
   ]
 
   const horoscopePages: MetadataRoute.Sitemap = HOROSCOPE_SIGNS.map((sign) => ({
@@ -95,7 +128,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  const pages: MetadataRoute.Sitemap = [...staticPages, ...horoscopePages, ...cityPages, ...placePages]
+  const profilePages: MetadataRoute.Sitemap = [
+    ...PROFILE_SLUGS.map((slug) => ({
+      url: `${baseUrl}/personalities/${slug}`,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    })),
+    ...PLACE_SLUGS.map((slug) => ({
+      url: `${baseUrl}/places/${slug}`,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    })),
+  ]
+
+  const pages: MetadataRoute.Sitemap = [...staticPages, ...horoscopePages, ...cityPages, ...profilePages, ...placePages]
   const seen = new Set(pages.map((p) => p.url))
 
   // Bonus: any additional active cities that appear in Supabase later are
