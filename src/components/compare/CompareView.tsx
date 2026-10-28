@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { aqiScore, cityPath, POPULAR_PAIRS, findCompareCity, type CityCompareData } from '@/lib/compare';
+import { hasCensusPopulation } from '@/lib/census2023';
 
 // Server-rendered side-by-side comparison (Page 15 of the locked plan,
 // honest-data subset). Winners are named per category, but the verdict
@@ -35,6 +36,11 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
   const aqiWinner = aqiA != null && aqiB != null
     ? (aqiA === aqiB ? null : aqiA > aqiB ? 'a' : 'b') : null;
   const biggerWinner = a.city.population === b.city.population ? null : a.city.population > b.city.population ? 'a' : 'b';
+  // F3 — the "2023 census" label applies only when BOTH sides carry a
+  // PBS Census-2023 figure; other pairs keep the plain label, so a
+  // non-census city is never presented as census-counted.
+  const popKey = (d: CityCompareData) => `${d.ref.countrySlug}/${d.ref.provinceSlug}/${d.ref.citySlug}`;
+  const popLabel = hasCensusPopulation(popKey(a)) && hasCensusPopulation(popKey(b)) ? 'Population (2023 census)' : 'Population';
 
   const categories: { label: string; winner: 'a' | 'b' | null; detail: string }[] = [
     { label: 'Weather comfort right now', winner: comfortWinner as 'a' | 'b' | null, detail: `Comfort score ${a.comfort ?? '—'} vs ${b.comfort ?? '—'} (WCH-computed from live feels-like, humidity and wind)` },
@@ -148,7 +154,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
           <h2 className="text-lg font-bold text-white">Population & Basics</h2>
           <div className="mt-3 space-y-2.5 text-sm">
             {[
-              ['Population', fmtPop(a.city.population), fmtPop(b.city.population)],
+              [popLabel, fmtPop(a.city.population), fmtPop(b.city.population)],
               ['Province / State', a.city.province, b.city.province],
               ['Country', a.city.country, b.city.country],
               ['Timezone', a.city.timezone, b.city.timezone],

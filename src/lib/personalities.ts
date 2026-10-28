@@ -110,6 +110,8 @@ function rowToProfile(r: PersonalityRow): PersonalityProfile {
     name: asString(r.name),
     title: asString(r.title),
     imageUrl: asOptString(r.image_url),
+    imageCredit: asOptString(r.image_credit),
+    imageLicence: asOptString(r.image_licence),
     birthDate: asOptString(r.birth_date),
     deathDate: asOptString(r.death_date),
     nationality: asString(r.nationality),
@@ -203,6 +205,42 @@ export async function getBornToday(date: Date = new Date()): Promise<Personality
     const m = p.birthDate.trim().match(/^(\d{1,2})\s+([A-Za-z]+)/);
     return !!m && parseInt(m[1], 10) === day && m[2].toLowerCase() === month;
   });
+}
+
+// ── Related personalities (final28: template Section 10) ────────────────────
+// Same-city profiles first, then same-country profiles to fill up to
+// `limit`. Order inside each group is slug order (the pools are already
+// slug-sorted), so the selection is deterministic — no randomness at
+// render. Self is always excluded.
+//
+// NO-DEAD-LINK INVARIANT: candidates come only from the public pools
+// (getPersonalitiesByCity / getPersonalitiesByCountry). The database
+// path of those pools returns verified rows only, and the seed path
+// returns profiles the site already publishes — both are subsets of
+// the getAllPersonalitySlugs() set that generateStaticParams()
+// prerenders. A candidate is therefore always a published profile
+// page, never a shell. If the pool yields nothing (e.g. a lone
+// profile in a country), the caller renders nothing at all — an empty
+// related section is omitted, never rendered as an empty shell.
+export async function getRelatedPersonalities(
+  profile: PersonalityProfile,
+  limit = 4,
+): Promise<PersonalityProfile[]> {
+  const seen = new Set<string>([profile.slug]);
+  const out: PersonalityProfile[] = [];
+  const push = (p: PersonalityProfile): void => {
+    if (!seen.has(p.slug)) {
+      seen.add(p.slug);
+      out.push(p);
+    }
+  };
+  if (profile.citySlug) {
+    for (const p of await getPersonalitiesByCity(profile.citySlug)) push(p);
+  }
+  if (out.length < limit && profile.countrySlug) {
+    for (const p of await getPersonalitiesByCountry(profile.countrySlug)) push(p);
+  }
+  return out.slice(0, limit);
 }
 
 // ── Homepage 24-month rotation ──────────────────────────────────────────────

@@ -2,6 +2,12 @@ import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import { notFound } from 'next/navigation';
 import EventsPageClient from '@/components/events/EventsPageClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
+import { getApprovedEvents, mapDbEventToCityEvent } from '@/lib/events';
+import EventsServerSummary from './EventsServerSummary';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 
 interface PageProps {
   params: Promise<{ country: string; province: string; city: string }>;
@@ -24,12 +30,36 @@ export default async function EventsPage({ params }: PageProps) {
   const cityData = await getCityData(country, province, city);
   if (!cityData) notFound();
 
+  // P2: server-side verified listings (own events table, approved + verified
+  // + future only — enforced in getApprovedEvents). Without Supabase env or
+  // with the table unapplied this is [] and the page renders its honest
+  // parked state; nothing is fabricated to fill the gap.
+  const approved = await getApprovedEvents({ citySlug: city, includeNational: true, limit: 100 });
+  const cityRows = approved.filter((r) => r.city_slug === city);
+  const nationalRows = approved.filter((r) => !r.city_slug);
+  const initialDbEvents = approved.map((r) => mapDbEventToCityEvent(r, cityData.name, cityData.country));
+
+  // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+  const cityName = cityData?.name ?? titleCaseSlug(city);
+  const provinceName = cityData?.province ?? titleCaseSlug(province);
+  const countryName = cityData?.country ?? titleCaseSlug(country);
   return (
-    <EventsPageClient
-      city={cityData}
-      country={country}
-      province={province}
-      citySlug={city}
-    />
+    <>
+      <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, country, provinceName, province, cityName, city, 'Events', 'events'))} />
+      <JsonLd data={cityJsonLd(cityName, city, provinceName, province, countryName, country)} />
+      <CityPageImage citySlug={city} variant="events" />
+      <EventsServerSummary
+        cityName={cityData.name}
+        cityEvents={cityRows}
+        nationalEvents={nationalRows}
+      />
+      <EventsPageClient
+        city={cityData}
+        country={country}
+        province={province}
+        citySlug={city}
+        initialDbEvents={initialDbEvents}
+      />
+    </>
   );
 }

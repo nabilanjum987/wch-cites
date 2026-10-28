@@ -60,7 +60,7 @@ on unmerged PR branches and are noted as such).
 | date.nager.at | Nager.Date | Public holidays (ticker, city, events) | Free, keyless | n/a | none | curated holiday tables (migration 0003) | ACTIVE with **coverage gaps: PK absent; QA/KW/OM/MY absent (204)** |
 | ipwho.is | ipwho.is | Visitor approximate city (My City panel) | Free tier | UNVERIFIED | none | default city | ACTIVE |
 | ipapi.co | ipapi.co | (former visitor-geo first choice) | — | — | none | ipwho.is | **SUPERSEDED** — rate-limited from this network; only a code comment remains (useVisitorCity.ts) |
-| flagcdn | flagcdn | Capital/country flags (WorldCapitals) | Free CDN | UNVERIFIED | none | omit flag | ACTIVE |
+| Local flag artwork | Vendored PNGs in public/images/flags/ | Capital/country flags (WorldCapitals) | Public-domain flag artwork, vendored locally | n/a | none | omit flag | VENDORED (F20, 2026-10-28) |
 | OpenStreetMap (Nominatim + Overpass) | OSM contributors | Reverse geocode; POI/amenity queries | ODbL; Nominatim usage policy (rate limits) | policy-capped | none | none wired | ACTIVE in code |
 | emergencynumberapi.com | emergencynumberapi | Emergency numbers (city local info) | Free API, terms UNVERIFIED | UNVERIFIED | none | omit section | ACTIVE in code |
 

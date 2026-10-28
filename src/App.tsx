@@ -13,7 +13,7 @@ const demoCity: City = {
   province_slug: 'sindh',
   lat: 24.8607,
   lng: 67.0011,
-  population: 14910352,
+  population: 20382881, // F3 — PBS Census-2023, Karachi Division total (legacy demo file, not rendered by the Next app)
   timezone: 'Asia/Karachi',
   major_religion: 'Islam',
   religion_percent: 96,

@@ -18,8 +18,18 @@ const CITIES = [
     // (image bank: "Badshahi Mosque in Lahore, Pakistan 03",
     // Harvinder Chandigarh, CC BY 4.0).
     img: '/images/home/lahore-city.webp', imgAlt: 'The Badshahi Mosque in Lahore', credit: 'Photo: Harvinder Chandigarh · CC BY 4.0' },
-  { name: 'Karachi', province: 'Sindh', flag: '🇵🇰', color: '#0e5a8a', href: '/pakistan/sindh/karachi', lat: 24.8607, lng: 67.0011 },
-  { name: 'Islamabad', province: 'Capital Territory', flag: '🇵🇰', color: '#7a5c14', href: '/pakistan/islamabad-capital-territory/islamabad', lat: 33.7294, lng: 73.0931 },
+  { name: 'Karachi', province: 'Sindh', flag: '🇵🇰', color: '#0e5a8a', href: '/pakistan/sindh/karachi', lat: 24.8607, lng: 67.0011,
+    // Homepage-imagery pass (2026-10-28): Karachi gets the same
+    // treatment as Lahore — a real photo instead of the big "PK"
+    // text placeholder (image bank: "Mazar-e-Quaid, or Jinnah
+    // Mausoleum in Karachi, Pakistan", Jan Kranendonk, CC BY-SA 4.0).
+    img: '/images/home28/city-karachi.webp', imgAlt: 'The Mazar-e-Quaid mausoleum in Karachi', credit: 'Photo: Jan Kranendonk · CC BY-SA 4.0' },
+  { name: 'Islamabad', province: 'Capital Territory', flag: '🇵🇰', color: '#7a5c14', href: '/pakistan/islamabad-capital-territory/islamabad', lat: 33.7294, lng: 73.0931,
+    // Homepage-imagery pass (2026-10-28): Islamabad gets the same
+    // treatment — a real photo instead of the big "PK" text
+    // placeholder (image bank: "Ali Mujtaba WLM2015 FAISAL MOSQUE
+    // m 10", Ali Mujtaba, CC BY-SA 4.0).
+    img: '/images/home28/city-islamabad.webp', imgAlt: 'The Faisal Mosque in Islamabad', credit: 'Photo: Ali Mujtaba · CC BY-SA 4.0' },
 ];
 
 interface LiveFig { temp: number | null; prayer: string | null }

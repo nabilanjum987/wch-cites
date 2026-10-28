@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
   PUBLISHED_WONDERS,
+  getSiblingWonders,
   getWonder,
   getWonderFaqs,
   getWonderLive,
@@ -616,6 +617,23 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
             page can offer. The other New7Wonders — the Great Wall of China, Petra, Christ the Redeemer, Machu Picchu,
             Chichen Itza and the Colosseum — are being built to the same standard, one verified wonder at a time.
           </p>
+          {/* P10: sibling detail links, server-rendered in this template
+              (getSiblingWonders: complete builds only, never content-only
+              upcoming wonders). No /places/ link is added here: no live
+              /places/ page matches this wonder's city or nearby sites
+              (the only live /places/ slugs are Lahore's), so per the
+              missing-data rule the link is omitted, never faked. */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {getSiblingWonders(wonder.slug).map((s) => (
+              <Link
+                key={s.slug}
+                href={`/wonders/${s.slug}`}
+                className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+              >
+                {s.name} · {s.cityName}, {s.countryName}
+              </Link>
+            ))}
+          </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link href="/wonders" className="rounded-full bg-amber-500 px-5 py-2 text-sm font-semibold text-black transition hover:bg-amber-400">
               All wonders
