@@ -10,6 +10,9 @@ import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
+import { CENSUS_2023_POPULATION, hasCensusPopulation } from '@/lib/census2023';
+import PopulationPie from '@/components/PopulationPie';
+import { urbanRuralSlicesFor, faithSlicesForCity, isAllUrbanDistrict } from '@/lib/census2023-splits';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
 import {
   generateCityIntro,
@@ -81,14 +84,21 @@ function getCityParams(country: string, province: string, city: string): CityPar
 
 // ─── Q11 AUDIT FIXES ─────────────────────────────────────────────────────────
 // Per-city "at a glance" facts. Until now EVERY city printed Lahore's
-// values (population 13M+, area 1,772 km², elevation 217 m). Populations
-// are the site's own collected dataset values (pakistan_cities.csv,
-// GeoNames-shaped); areas are district/territory areas; elevations are
-// the cities' standard published figures.
+// values (population 13M+, area 1,772 km², elevation 217 m). F3: the
+// populations of Lahore, Karachi and Islamabad are PBS Census-2023
+// admin-unit totals read from the single source in @/lib/census2023
+// (district / division / territory totals matching the areas shown);
+// Faisalabad and Rawalpindi keep the site's own collected dataset
+// values (pakistan_cities.csv, GeoNames-shaped). Areas are
+// district/territory areas; elevations are the cities' standard
+// published figures.
+// NOTE (pies PR): these three fmtCensus lines are identical to F3
+// (#110) — the F3-first rebase keeps F3's copy and drops this one.
+const fmtCensus = (key: string): string => CENSUS_2023_POPULATION[key].toLocaleString('en-US');
 const GLANCE: Record<string, { population: string; area: string; elevation: string; languages: string; founded: string }> = {
-  'pakistan/punjab/lahore': { population: '13,004,135', area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
-  'pakistan/sindh/karachi': { population: '11,624,219', area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
-  'pakistan/islamabad-capital-territory/islamabad': { population: '601,600', area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
+  'pakistan/punjab/lahore': { population: fmtCensus('pakistan/punjab/lahore'), area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
+  'pakistan/sindh/karachi': { population: fmtCensus('pakistan/sindh/karachi'), area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
+  'pakistan/islamabad-capital-territory/islamabad': { population: fmtCensus('pakistan/islamabad-capital-territory/islamabad'), area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
   'pakistan/punjab/faisalabad': { population: '3,800,193', area: '5,856', elevation: '184', languages: 'Urdu, Punjabi', founded: '1892' },
   'pakistan/punjab/rawalpindi': { population: '3,357,612', area: '5,286', elevation: '508', languages: 'Urdu, Punjabi, Potohari', founded: 'antiquity' },
 };
@@ -977,7 +987,7 @@ export default async function CityPage({
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {[
                 ...(glance ? [
-                  { label: 'Population', value: glance.population },
+                  { label: hasCensusPopulation(cityKey) ? 'Population (2023 census)' : 'Population', value: glance.population },
                   { label: 'Area', value: `${glance.area} km²` },
                   { label: 'Elevation', value: `${glance.elevation} m` },
                 ] : []),
@@ -991,6 +1001,52 @@ export default async function CityPage({
                 </div>
               ))}
             </div>
+            {/* ── Population pies (PBS Census-2023 splits) ───────────────────
+              Rendered only where a verified split exists: urban/rural for
+              Karachi + Islamabad, "100% urban (district)" text for Lahore
+              (a one-slice pie is a defect), faith pies for Karachi +
+              Islamabad. Lahore has NO faith pie: its PBS Table 9 district
+              row was not directly sighted and secondary summaries disagree
+              on the Sikh / Scheduled Castes split — see
+              @/lib/census2023-splits. Other cities get no pie block. */}
+            {(() => {
+              const urbanRural = urbanRuralSlicesFor(cityKey);
+              const faith = faithSlicesForCity(cityKey);
+              const allUrban = isAllUrbanDistrict(cityKey);
+              if (!urbanRural && !faith && !allUrban) return null;
+              return (
+                <div className="mt-6 grid gap-6 md:grid-cols-2">
+                  {urbanRural ? (
+                    <PopulationPie
+                      title="Urban vs rural population"
+                      unit={urbanRural.unit}
+                      slices={urbanRural.slices}
+                      source="PBS Census-2023, Table 1"
+                    />
+                  ) : allUrban ? (
+                    <div
+                      data-population-pie="Urban vs rural population"
+                      className="rounded-2xl p-5 border"
+                      style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}
+                    >
+                      <div className="text-white font-semibold text-sm">Urban vs rural population</div>
+                      <div className="text-gray-500 text-xs mt-0.5">Lahore District · Total {glance?.population}</div>
+                      <p className="mt-4 text-sm text-gray-300">100% urban (district)</p>
+                      <p className="mt-4 text-xs text-gray-500">Source: PBS Census-2023 — the entire Lahore District population lives in urban areas.</p>
+                    </div>
+                  ) : null}
+                  {faith ? (
+                    <PopulationPie
+                      title="Population by faith"
+                      unit={faith.unit}
+                      slices={faith.slices}
+                      source="PBS Census-2023, Table 9"
+                      note="Hindu combines Table 9's Hindu Jati + Scheduled Castes columns. Religion not recorded covers people in sensitive areas / collective residences for whom religion was not enumerated, so the pie sums to the census total."
+                    />
+                  ) : null}
+                </div>
+              );
+            })()}
             <p className="text-gray-400 leading-relaxed text-sm">
               {glance ? generateCityGlanceParagraph(city, country, province, glance.area, glance.elevation, glance.founded) : generateCityGlanceAfter(city, country)}
             </p>
