@@ -63,7 +63,11 @@ const PLACES: Record<string, Place> = {
     category: 'Mosque / Heritage',
     builtYear: '1671–1673 AD',
     unescoStatus: 'Tentative UNESCO World Heritage Site',
-    openHours: '7:00 AM – 10:00 PM (closed during prayer times)',
+    // A10 (final30): the pre-existing 7 AM–10 PM window was unsourced and
+    // conflicts with other published windows (8 AM–9 PM directory listing;
+    // 5 AM–8 PM in a 2026 guide), so the record now states no clock window
+    // — the timings answer below says daily + prayer pauses only.
+    openHours: 'Open daily; visitor access pauses during prayer times',
     entryFee: 'Free for Muslims. PKR 100 for non-Muslim visitors.',
     address: 'Walled City, Lahore, Punjab, Pakistan',
     lat: 31.5882, lng: 74.3101,
@@ -120,7 +124,12 @@ const PLACES: Record<string, Place> = {
     builtYear: 'Current structure from 1566 AD (Akbar)',
     unescoStatus: '✅ UNESCO World Heritage Site (1981)',
     openHours: '8:30 AM – 5:30 PM (Tue–Sun). Closed Monday.',
-    entryFee: 'PKR 500 locals / PKR 1,000 foreigners',
+    // A10 (final30): the pre-existing PKR 500/1,000 figure was unsourced and
+    // conflicts with recent published local rates (Rs 30–500 across 2026
+    // guides; one Oct-2026 read of WCLA's site says Rs 100/30/1,000). No
+    // single figure is verifiable from a primary source, so the record now
+    // states no figure — the ticket answer below says counter-only.
+    entryFee: 'Ticketed at the Alamgiri Gate counter; local and foreign rates differ — confirm the current rate at the counter',
     address: 'Lahore Fort Road, Walled City, Lahore',
     lat: 31.5881, lng: 74.3150,
     bestTimeToVisit: 'November to February. Morning visits avoid crowds.',
@@ -333,6 +342,73 @@ async function getPlace(slug: string): Promise<Place | null> {
   return PLACES[slug] ?? null;
 }
 
+// ─── final30 A10 — Places keyword targeting ────────────────────────────────
+// One keyword → exactly one page: each A10 term below is targeted ONLY on
+// its own place page (Badshahi history/timings, Fort history/ticket,
+// Museum ticket, Shalimar ticket). H1 stays the place name — the page's
+// primary keyword — and each A10 term becomes an H2 section heading plus
+// one H3 question with a 50–70 word answer. No figure appears in an A10
+// answer unless it is sourced on the page: the Museum figures come from
+// the museum's official site; the Fort, Shalimar and Badshahi clock-window
+// figures are UNVERIFIED (published sources conflict — see the answers'
+// source lines), so those answers deliberately state no figure.
+// Data Darbar and Walled City are NOT A10 pages: they keep the generic
+// title/meta and the plain "History" heading.
+const A10_META: Record<string, { title: string; description: string }> = {
+  'badshahi-mosque': {
+    title: 'Badshahi Mosque History & Timings | WorldCityHub',
+    description: 'Badshahi Mosque history — Aurangzeb\'s 1671–73 mosque in Lahore — plus visitor timings: open daily, with access pausing during prayer times.',
+  },
+  'lahore-fort': {
+    title: 'Lahore Fort History & Ticket Price | WorldCityHub',
+    description: 'Lahore Fort history — Akbar\'s 1566 citadel, a UNESCO site since 1981 — plus ticket guidance: ticketed at the Alamgiri Gate counter, rates differ.',
+  },
+  'lahore-museum': {
+    title: 'Lahore Museum Ticket Price | WorldCityHub',
+    description: 'Lahore Museum ticket price: PKR 50 adults, PKR 20 students and children, PKR 1,000 foreigners — official-site rates, hours and closed days.',
+  },
+  'shalimar-gardens': {
+    title: 'Shalimar Gardens Ticket Price | WorldCityHub',
+    description: 'Shalimar Gardens ticket price: the garden is ticketed, with different fees for local and foreign visitors — confirm the current fee at the entrance.',
+  },
+};
+
+const A10_HISTORY_H2: Record<string, string> = {
+  'badshahi-mosque': 'Badshahi Mosque History',
+  'lahore-fort': 'Lahore Fort History',
+};
+
+const A10_SECTIONS: Record<string, { h2: string; q: string; a: string; source: string; icon: 'clock' | 'ticket' }> = {
+  'badshahi-mosque': {
+    h2: 'Badshahi Mosque Timings',
+    q: 'What are the timings of Badshahi Mosque?',
+    a: 'Badshahi Mosque is open to visitors daily, but as a working mosque it closes to tourists during the five daily prayers, so plan around prayer times. Early morning is the quietest time, with the best light for photography, and the mosque is at its most beautiful illuminated at night. Dress modestly, and note that headscarves are available at the entrance for women.',
+    source: 'Source: visitor information on this page. Published clock windows conflict (7 AM–10 PM in the old record; 8 AM–9 PM in a directory listing), so no single opening window is stated here — confirm prayer-time closures on arrival.',
+    icon: 'clock',
+  },
+  'lahore-fort': {
+    h2: 'Lahore Fort Ticket Price',
+    q: 'What is the ticket price of Lahore Fort?',
+    a: 'Lahore Fort is ticketed, with different rates for local and foreign visitors, and tickets are sold at the Alamgiri Gate counter. Published guides disagree on the current local rate, so this page states no single figure: confirm the rate at the counter before you visit. Allow two to three hours for the fort\'s twenty-one monuments, including the Sheesh Mahal.',
+    source: 'Source: the fort is run by the Walled City of Lahore Authority; tickets are sold at the Alamgiri Gate counter. Recent published local rates conflict (Rs 30–500), so no single figure is stated here — confirm the current rate at the counter.',
+    icon: 'ticket',
+  },
+  'lahore-museum': {
+    h2: 'Lahore Museum Ticket Price',
+    q: 'What is the ticket price of Lahore Museum?',
+    a: 'Lahore Museum charges PKR 50 for adults, PKR 20 for students and children, and PKR 1,000 for foreign visitors, according to the museum\'s official site. The museum is open 9:00 AM to 4:00 PM in winter and 9:00 AM to 5:00 PM in summer, and is closed on Fridays and the first Monday of each month. A typical visit takes two to three hours.',
+    source: 'Source: Lahore Museum official site (lahoremuseum.punjab.gov.pk), as read in October 2026 — the same figures shown in the visitor panel on this page.',
+    icon: 'ticket',
+  },
+  'shalimar-gardens': {
+    h2: 'Shalimar Gardens Ticket Price',
+    q: 'What is the ticket price of Shalimar Gardens?',
+    a: 'Shalimar Gardens is ticketed, with different fees for local and foreign visitors, and tickets are sold at the entrance. Published day-fee figures conflict, so this page states no single figure: confirm the current fee at the entrance before you visit. The gardens are open 8:00 AM to 6:00 PM daily, and a typical visit takes one to two hours.',
+    source: 'Source: visitor information on this page. Published day-fee figures conflict, so no single figure is stated here — confirm the current fee at the entrance.',
+    icon: 'ticket',
+  },
+};
+
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
 interface PageProps {
@@ -353,13 +429,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // past 60 for every place, and slice(0, 160) past 155 — both fixed
   // here. This shortens the two pre-existing place titles too; no
   // other copy changes.
+  const a10 = A10_META[slug];
   return {
-    title: `${place.name}, ${place.city} | WorldCityHub`,
-    description: desc.slice(0, 155),
+    title: a10?.title ?? `${place.name}, ${place.city} | WorldCityHub`,
+    description: (a10?.description ?? desc).slice(0, 155),
     alternates: { canonical: `https://worldcityhub.vercel.app/places/${slug}` },
     openGraph: {
-      title: `${place.name} | WorldCityHub`,
-      description: desc.slice(0, 155),
+      title: a10?.title ?? `${place.name} | WorldCityHub`,
+      description: (a10?.description ?? desc).slice(0, 155),
       images: place.imageUrl ? [{ url: place.imageUrl }] : [],
     },
   };
@@ -608,10 +685,33 @@ export default async function FamousPlacePage({ params }: PageProps) {
             <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <BookOpen size={16} style={{ color: place.primaryColor }} />
-                <h2 className="font-bold text-gray-900">History</h2>
+                <h2 className="font-bold text-gray-900">{A10_HISTORY_H2[slug] ?? 'History'}</h2>
               </div>
               <p className="text-gray-600 text-sm leading-relaxed">{place.history}</p>
             </div>
+
+            {/* final30 A10: targeted H2 + H3 answer, this page's A10 term only.
+                No new facts: history answers reuse the record; fee/timing
+                answers state figures only where sourced (Museum) and say so
+                where no figure is verifiable (Fort, Shalimar, Badshahi).
+                No extra FAQPage schema — the template's single FAQPage from
+                the Batch 4 answer layer is untouched. */}
+            {(() => {
+              const s = A10_SECTIONS[slug];
+              if (!s) return null;
+              const Icon = s.icon === 'clock' ? Clock : Ticket;
+              return (
+                <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon size={16} style={{ color: place.primaryColor }} />
+                    <h2 className="font-bold text-gray-900">{s.h2}</h2>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 text-sm mb-2">{s.q}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{s.a}</p>
+                  <p className="text-gray-500 text-xs leading-relaxed mt-3">{s.source}</p>
+                </div>
+              );
+            })()}
 
             {/* Significance */}
             <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }} className="rounded-2xl p-5">
