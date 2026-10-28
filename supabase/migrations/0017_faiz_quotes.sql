@@ -3,11 +3,20 @@
 -- (companion to the seed change in src/lib/data/personalities-seed.ts)
 --
 -- WHAT: fills the `quotes` array on the faiz-ahmed-faiz row with two
--- verified poem lines (see SOURCES below). Until this migration is
--- applied, production serves the same quotes from the seed fallback in
--- src/lib/personalities.ts, so the page is correct either way; after
--- it is applied, the DB row (which getPersonalityBySlug prefers) agrees
--- with the seed.
+-- verified poem lines (see SOURCES below).
+--
+-- CORRECTION (B6, 2026-10-28 — comment only, the SQL below is
+-- unchanged): the original header claimed that until this migration
+-- is applied, production serves the same quotes from the seed fallback
+-- in src/lib/personalities.ts, so the page is correct either way.
+-- That is FALSE whenever migration 0006 has been applied: 0006 seeds
+-- the faiz row with quotes `[]`, and getPersonalityBySlug prefers ANY
+-- database row over the seed, so with 0006 applied and 0017 unapplied
+-- the page shows NO quotes — not the seed quotes. The seed fallback
+-- serves the quotes ONLY when no faiz row exists in the database at
+-- all. After this migration is applied, the DB row agrees with the
+-- seed. (The no-op paragraph below, for the row-absent case, was true
+-- and is kept as written.)
 --
 -- NUMBERING: 0017, NOT 0016. On the base (main d193fcf) the highest
 -- numbered migration is 0015, but the parallel final-sitting branches
