@@ -16,6 +16,7 @@ import { getCityBySlug, type City } from '../../../../../types/city';
 import { fetchPrayerTimes, fetchWeeklyPrayerTimes } from '../../../../../lib/apis/prayer';
 import { fetchGoldRates, fetchSilverRates } from '../../../../../lib/apis/rates';
 import type { GoldSpotSource } from '../../../../../lib/gold';
+import { LAHORE_FAITH_SECTIONS } from '../../../../../lib/data/faiths-lahore-a11';
 import { getFaithSectionsForCity, nextRamadan, moonPhaseInfo } from '../../../../../lib/data/faith-profiles';
 import { getPrayerSeo, CITY_COORDS } from '../../../../../lib/data/prayer-keywords';
 import { HIJRI_MONTHS, fetchHadith } from '../../../../../lib/apis/islamic';
@@ -416,6 +417,51 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
             </motion.div>
           );
         })()}
+
+        {/* ── final30 A11: Lahore minority-faith keyword sections ────────
+            Always rendered — not hidden behind a tab — so the three
+            keywords are true in raw HTML: 'churches in lahore',
+            'hindu temple in lahore', 'gurdwara in lahore' (one H2 each,
+            in 2023-Census population order). Lahore ONLY
+            (city_slug gate); every other city renders nothing here.
+            Content lives in lib/data/faiths-lahore-a11.ts and reuses the
+            Faiths block's card markup above — no design change. The
+            majority faith is not repeated: it is covered in full across
+            this page already (PR #100 population rule). */}
+        {city.city_slug === 'lahore' && (
+          <motion.div {...SECTION_FADE} className="space-y-6">
+            {LAHORE_FAITH_SECTIONS.map((section) => (
+              <FlagCard key={section.h2} color={colorAt(0)}>
+                <FlagSectionTitle title={section.h2} color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-3">{section.intro}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {section.places.map((place) => (
+                    <div key={place.name} className="rounded-xl p-4 border"
+                      style={{ backgroundColor: `${colorAt(0)}10`, borderColor: `${colorAt(0)}25` }}>
+                      <div className="text-white font-semibold text-sm">{place.name}</div>
+                      <div className="text-white/60 text-xs mt-1 leading-relaxed">{place.detail}</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-white/70 leading-relaxed text-sm mt-3">
+                  <span className="text-white font-semibold text-sm">Timings: </span>
+                  {section.timings}
+                </p>
+                <p className="text-white/70 leading-relaxed text-sm mt-2">
+                  <span className="text-white font-semibold text-sm">Major festivals: </span>
+                  {section.festivals}
+                </p>
+                {section.questions.map((qa) => (
+                  <div key={qa.question}>
+                    <h3 className="text-white font-bold text-base mt-5 mb-1">{qa.question}</h3>
+                    <p className="text-white/70 leading-relaxed text-sm">{qa.answer}</p>
+                  </div>
+                ))}
+                <p className="text-white/40 text-xs mt-2">Sources: {section.source}</p>
+              </FlagCard>
+            ))}
+          </motion.div>
+        )}
 
         {/* Islamic Content */}
         <AnimatePresence mode="wait">
