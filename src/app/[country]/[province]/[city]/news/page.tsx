@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import NewsPageWrapper from '@/components/city/NewsPageWrapper';
+import CityPageImage from '@/components/city/CityPageImage';
+
 import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 
@@ -32,6 +34,7 @@ export default async function NewsPage({ params }: PageProps) {
     <>
       <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, country, provinceName, province, cityName, city, 'News', 'news'))} />
       <JsonLd data={cityJsonLd(cityName, city, provinceName, province, countryName, country)} />
+      <CityPageImage citySlug={city} variant="news" />
       <NewsPageWrapper
         country={country}
         province={province}

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import SportsPage from './SportsClient';
+import CityPageImage from '@/components/city/CityPageImage';
 import { getCityData } from '@/lib/getCityData';
 import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
@@ -43,6 +44,7 @@ export default async function Page({ params }: PageProps) {
     <>
       <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, p.country, provinceName, p.province, cityName, p.city, 'Sports', 'sports'))} />
       <JsonLd data={cityJsonLd(cityName, p.city, provinceName, p.province, countryName, p.country)} />
+      <CityPageImage citySlug={p.city} variant="sports" />
       <SportsPage initialCity={initialCity} />
     </>
   );

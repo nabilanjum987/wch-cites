@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import { notFound } from 'next/navigation';
 import EventsPageClient from '@/components/events/EventsPageClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
 import { getApprovedEvents, mapDbEventToCityEvent } from '@/lib/events';
 import EventsServerSummary from './EventsServerSummary';
 import JsonLd from '@/components/seo/JsonLd';
@@ -45,6 +47,7 @@ export default async function EventsPage({ params }: PageProps) {
     <>
       <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, country, provinceName, province, cityName, city, 'Events', 'events'))} />
       <JsonLd data={cityJsonLd(cityName, city, provinceName, province, countryName, country)} />
+      <CityPageImage citySlug={city} variant="events" />
       <EventsServerSummary
         cityName={cityData.name}
         cityEvents={cityRows}

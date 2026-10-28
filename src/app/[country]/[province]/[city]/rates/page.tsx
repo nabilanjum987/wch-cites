@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import RatesPageClient from '@/components/rates/RatesPageClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
 import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 import { fetchGoldRates, fetchCryptoData } from '@/lib/apis/rates';
@@ -48,6 +50,7 @@ export default async function CityRatesPage({ params }: PageProps) {
     <>
       <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, country, provinceName, province, cityName, city, 'Rates', 'rates'))} />
       <JsonLd data={cityJsonLd(cityName, city, provinceName, province, countryName, country)} />
+      <CityPageImage citySlug={city} variant="rates" />
       <RatesPageClient
         countrySlug={country}
         initialRates={initialRates}

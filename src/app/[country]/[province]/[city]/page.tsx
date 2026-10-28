@@ -11,6 +11,7 @@ import ImproveCTA from '@/components/shared/ImproveCTA';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
+import CityPageImage from '@/components/city/CityPageImage';
 import {
   generateCityIntro,
   generateCityIntroAfter,
@@ -443,6 +444,10 @@ export default async function CityPage({
                 </div>
               )}
             </div>
+          </div>
+          {/* Final28 P12: real city photo (licensed/open, local file, credited) — no image for cities without a record. */}
+          <div className="max-w-6xl mx-auto mt-8">
+            <CityPageImage citySlug={resolvedParams.city} variant="hero" layout="card" />
           </div>
         </section>
 

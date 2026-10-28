@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import PrayerTimesPage from './PrayerTimesClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
 import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 
@@ -41,6 +43,7 @@ export default async function Page({ params }: PageProps) {
     <>
       <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, p.country, provinceName, p.province, cityName, p.city, 'Prayer Times', 'prayer-times'))} />
       <JsonLd data={cityJsonLd(cityName, p.city, provinceName, p.province, countryName, p.country)} />
+      <CityPageImage citySlug={p.city} variant="prayer" />
       <PrayerTimesPage />
     </>
   );

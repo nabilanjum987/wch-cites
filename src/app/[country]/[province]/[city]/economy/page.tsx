@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import EconomyPageClient from '@/components/economy/EconomyPageClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
 import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 import { getCountryEconomy, resolveIso2, type WBValues } from '@/lib/apis/worldbank';
@@ -49,6 +51,7 @@ export default async function EconomyPage({ params }: PageProps) {
     <>
       <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, country, provinceName, province, cityName, city, 'Economy', 'economy'))} />
       <JsonLd data={cityJsonLd(cityName, city, provinceName, province, countryName, country)} />
+      <CityPageImage citySlug={city} variant="economy" />
       <EconomyPageClient
         country={country}
         province={province}

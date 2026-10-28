@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import WeatherPageClient from "@/components/weather/WeatherPageClient"
+import CityPageImage from "@/components/city/CityPageImage"
 import { getCityData } from "@/lib/getCityData"
 import JsonLd from "@/components/seo/JsonLd"
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from "@/lib/seo/breadcrumbs"
@@ -56,6 +57,7 @@ export default async function WeatherPage({ params }: PageProps) {
       <>
         <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(schemaCountryName, p.country, schemaProvinceName, p.province, schemaCityName, p.city, 'Weather', 'weather'))} />
         <JsonLd data={cityJsonLd(schemaCityName, p.city, schemaProvinceName, p.province, schemaCountryName, p.country)} />
+        <CityPageImage citySlug={p.city} variant="weather" />
         <WeatherPageClient
           cityName={cityName}
           country={p.country}
