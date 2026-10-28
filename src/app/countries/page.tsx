@@ -76,9 +76,13 @@ export async function generateMetadata({
   const { continent } = await searchParams;
   const meta = CONTINENTS.find((c) => c.slug === continent);
   if (!meta) {
+    // A5: the hub overview carries the "countries of the world"
+    // keyword in its title (37 chars) and description (127 chars).
+    // Continent-detail metadata below is unchanged.
     return {
-      title: 'Explore Countries by Continent | WorldCityHub',
-      description: 'Browse countries and cities across all seven continents on WorldCityHub.',
+      title: 'Countries of the World | WorldCityHub',
+      description:
+        'Countries of the world — every capital with live time and temperature, and full country guides as they go live on WorldCityHub.',
       alternates: { canonical: 'https://worldcityhub.vercel.app/countries' },
     };
   }
@@ -107,7 +111,7 @@ export default async function CountriesPage({
           <p className="text-cyan-400 text-sm font-semibold uppercase tracking-wide mb-3">
             Explore the World
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Countries by Continent</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Countries of the World</h1>
           <p className="text-white/60 text-lg mb-10 max-w-2xl">
             Pick a continent to see which countries and cities are live on WorldCityHub right now.
           </p>
@@ -170,6 +174,39 @@ export default async function CountriesPage({
             <CapitalsTable rows={capitalRows} />
             <p className="text-white/35 text-xs mt-4">
               Capital data: GeoNames. Temperatures: Open-Meteo, refreshed every 30 minutes.
+            </p>
+          </section>
+          {/* A5: secondary hub keywords. The "most beautiful" answer
+              deliberately names NO ranking — there is no official one,
+              and inventing a top list would be fabrication. The
+              population answer states only the UN-based fact, with no
+              population figure attached. */}
+          <section className="mt-16">
+            <h2 className="text-3xl font-bold mb-3">Most Beautiful Countries in the World</h2>
+            <p className="text-white/60 max-w-2xl leading-relaxed">
+              There is no official ranking of the most beautiful countries in the world, so this page
+              names none: travel lists disagree because beauty is judged by different things, from
+              mountains and coastlines to historic cities and wildlife. The honest way to explore is
+              country by country, starting with the full guides and capital entries on this page, where
+              each guide covers the same ground.
+            </p>
+          </section>
+          <section className="mt-16">
+            <h2 className="text-3xl font-bold mb-3">Largest Country in the World by Population</h2>
+            <p className="text-white/60 max-w-2xl leading-relaxed">
+              India is the largest country in the world by population, according to United Nations
+              estimates, having moved ahead of China in 2023. The two countries together hold well over
+              a quarter of all people on earth, which is why their cities, languages and economies
+              dominate world rankings. This page&apos;s capitals table lists New Delhi as India&apos;s
+              capital, and a full India guide will follow when its country page goes live.
+            </p>
+            <h3 className="text-2xl font-bold mt-8 mb-3">How many countries are there in the world?</h3>
+            <p className="text-white/60 max-w-2xl leading-relaxed">
+              The United Nations has 193 member states, and two observer states — the Holy See and
+              Palestine — which is why 195 is the figure quoted for the number of countries in the
+              world. Counts differ because some places are recognised by some states and not others.
+              The capitals table on this page lists 198 entries, including Vatican City, Kosovo and
+              Taiwan, which appear in the source data as entries.
             </p>
           </section>
           <section className="mt-16">
