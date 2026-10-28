@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import RatesPageClient from '@/components/rates/RatesPageClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
 import { fetchGoldRates, fetchCryptoData } from '@/lib/apis/rates';
 import { COUNTRY_CURRENCIES, type CurrencyInfo } from '@/types/city';
 
@@ -21,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CityRatesPage({ params }: PageProps) {
-  const { country } = await params;
+  const { country, city } = await params;
   // Server-fetch the real gold + crypto data (CoinGecko) so the raw HTML
   // carries live rates; the client still refreshes on mount as before.
   const currency: CurrencyInfo = COUNTRY_CURRENCIES[country] ?? {
@@ -37,10 +39,13 @@ export default async function CityRatesPage({ params }: PageProps) {
     fetchCryptoData(currency.rate_to_usd, currency.code, currency.symbol),
   ]);
   return (
-    <RatesPageClient
+    <>
+      <CityPageImage citySlug={city} variant="rates" />
+      <RatesPageClient
       countrySlug={country}
       initialRates={initialRates}
       initialCrypto={initialCrypto}
-    />
+      />
+    </>
   );
 }

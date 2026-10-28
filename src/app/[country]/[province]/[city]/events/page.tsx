@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import { notFound } from 'next/navigation';
 import EventsPageClient from '@/components/events/EventsPageClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
 
 interface PageProps {
   params: Promise<{ country: string; province: string; city: string }>;
@@ -25,11 +27,14 @@ export default async function EventsPage({ params }: PageProps) {
   if (!cityData) notFound();
 
   return (
-    <EventsPageClient
+    <>
+      <CityPageImage citySlug={city} variant="events" />
+      <EventsPageClient
       city={cityData}
       country={country}
       province={province}
       citySlug={city}
-    />
+      />
+    </>
   );
 }

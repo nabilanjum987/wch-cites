@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import PrayerTimesPage from './PrayerTimesClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
 
 // Server wrapper: the interactive Spiritual & Wellness Hub lives in
 // PrayerTimesClient.tsx (a client component). Metadata must be exported
@@ -27,6 +29,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function Page() {
-  return <PrayerTimesPage />;
+export default async function Page({ params }: PageProps) {
+  const p = await params;
+  return (
+    <>
+      <CityPageImage citySlug={p.city} variant="prayer" />
+      <PrayerTimesPage />
+    </>
+  );
 }

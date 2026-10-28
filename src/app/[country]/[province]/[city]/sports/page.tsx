@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import SportsPage from './SportsClient';
+import CityPageImage from '@/components/city/CityPageImage';
 import { getCityData } from '@/lib/getCityData';
 
 // Server wrapper: the interactive sports page lives in SportsClient.tsx
@@ -33,5 +34,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function Page({ params }: PageProps) {
   const p = await params;
   const initialCity = await getCityData(p.country, p.province, p.city);
-  return <SportsPage initialCity={initialCity} />;
+  return (
+    <>
+      <CityPageImage citySlug={p.city} variant="sports" />
+      <SportsPage initialCity={initialCity} />
+    </>
+  );
 }

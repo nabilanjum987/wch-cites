@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import NewsPageWrapper from '@/components/city/NewsPageWrapper';
+import CityPageImage from '@/components/city/CityPageImage';
+
 
 interface PageProps {
   params: Promise<{ country: string; province: string; city: string }>;
@@ -23,11 +25,14 @@ export default async function NewsPage({ params }: PageProps) {
   const cityData = await getCityData(country, province, city);
 
   return (
-    <NewsPageWrapper
+    <>
+      <CityPageImage citySlug={city} variant="news" />
+      <NewsPageWrapper
       country={country}
       province={province}
       city={city}
       cityData={cityData}
-    />
+      />
+    </>
   );
 }

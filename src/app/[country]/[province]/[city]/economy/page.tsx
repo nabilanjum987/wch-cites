@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import EconomyPageClient from '@/components/economy/EconomyPageClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
 import { getCountryEconomy, resolveIso2, type WBValues } from '@/lib/apis/worldbank';
 
 interface PageProps {
@@ -40,13 +42,16 @@ export default async function EconomyPage({ params }: PageProps) {
   } catch { /* WB unavailable — client shows an honest reduced page */ }
 
   return (
-    <EconomyPageClient
+    <>
+      <CityPageImage citySlug={city} variant="economy" />
+      <EconomyPageClient
       country={country}
       province={province}
       citySlug={city}
       cityData={cityData}
       wb={wb}
       miseryData={miseryData}
-    />
+      />
+    </>
   );
 }

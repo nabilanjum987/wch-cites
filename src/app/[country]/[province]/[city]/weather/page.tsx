@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import WeatherPageClient from "@/components/weather/WeatherPageClient"
+import CityPageImage from "@/components/city/CityPageImage"
 import { getCityData } from "@/lib/getCityData"
 import { fetchWeatherData, fetchSunMoonData, fetchAQIData } from "@/lib/apis/weather"
 
@@ -45,7 +46,9 @@ export default async function WeatherPage({ params }: PageProps) {
     ])
 
     return (
-      <WeatherPageClient
+      <>
+        <CityPageImage citySlug={p.city} variant="weather" />
+        <WeatherPageClient
         cityName={cityName}
         country={p.country}
         province={p.province}
@@ -56,7 +59,8 @@ export default async function WeatherPage({ params }: PageProps) {
         initialWeather={initialWeather}
         initialSunMoon={initialSunMoon}
         initialAqi={initialAqi}
-      />
+        />
+      </>
     )
   } catch (error) {
     console.error('Weather page error:', error)
