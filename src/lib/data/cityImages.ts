@@ -42,9 +42,9 @@ export const CITY_IMAGES: Record<string, Partial<Record<CityImageVariant, CityIm
     rates: img('lahore-rates.webp', 'Anarkali Bazaar street, Lahore', 'Photo: Ali lahoti · CC BY-SA 4.0', 1600, 900),
   },
   karachi: {
-    hero: img('karachi-hero.webp', 'Mazar-e-Quaid, Karachi', 'Photo: Jan Kranendonk · CC BY-SA 4.0', 1600, 1064),
+    hero: img('karachi-hero.webp', 'Mazar-e-Quaid, Karachi', 'Photo: Jan Kranendonk (https://www.jankranendonk.nl) · CC BY-SA 4.0', 1600, 1064),
     prayer: img('karachi-prayer.webp', 'Masjid-e-Tooba, Karachi', 'Photo: Muhammad Saqib Khan · CC BY-SA 3.0', 1600, 1200),
-    sports: img('karachi-sports.webp', 'National Stadium, Karachi', 'Photo: Umair ua · Public domain', 1600, 1214),
+    sports: img('karachi-sports.webp', 'National Stadium, Karachi', 'Photo: Umair ua at English Wikipedia · Public domain', 1600, 1214),
     weather: img('karachi-weather.webp', 'Clifton skyline, Karachi', 'Photo: Ahmad Haq · CC BY-SA 4.0', 1600, 708),
     news: img('karachi-news.webp', 'Karachi skyline, Clifton', 'Photo: Ktownboy103 · CC0', 1600, 608),
     economy: img('karachi-economy.webp', 'I. I. Chundrigar Road skyline, Karachi', 'Photo: User:Swerveut · Public domain', 1600, 704),
