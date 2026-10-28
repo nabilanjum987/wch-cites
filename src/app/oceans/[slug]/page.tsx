@@ -12,6 +12,7 @@ import {
   compass,
   seaStateLabel,
   monsoonSeason,
+  type Ocean,
 } from '@/lib/oceans';
 import { formatLocalTime, formatLocalDate } from '@/lib/wonders';
 import OceanClock from './OceanClock';
@@ -61,12 +62,80 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+// ── Final30 A9: facts-intent sections ─────────────────────────────────────
+// H2 "{Name} facts" with H3 AEO questions, rendered ONLY for the nine
+// briefed oceans that have a record (see below). Every answer is composed
+// from the ocean's own key-facts rows (Total area, Average depth, Maximum
+// depth, Deepest point, Seabed, Representative point) and its partOfName /
+// coastal city — 50–70 words each, no figure invented. H3 wordings are
+// kept distinct from the existing FAQ bank ("How big is…?", "What is the
+// deepest point…?", "How deep is…?") so the FAQPage schema below never
+// carries an exact-duplicate question. The brief's Black Sea and Bay of
+// Bengal items are NOT built here: no record/page exists for either in
+// src/lib/oceans.ts, and inventing a thin record would break the golden
+// template's sourcing standard (reported back to the coordinator).
+const FACTS_SLUGS = new Set([
+  'pacific-ocean',
+  'atlantic-ocean',
+  'mediterranean-sea',
+  'red-sea',
+  'caribbean-sea',
+  'north-sea',
+  'baltic-sea',
+  'south-china-sea',
+  'arabian-sea',
+]);
+
+function oceanFact(ocean: Ocean, label: string): string | null {
+  return ocean.facts.find((f) => f.label === label)?.value ?? null;
+}
+
+function oceanFactsQa(ocean: Ocean): { q: string; a: string }[] {
+  if (!FACTS_SLUGS.has(ocean.slug)) return [];
+  const area = oceanFact(ocean, 'Total area');
+  const avg = oceanFact(ocean, 'Average depth');
+  const max = oceanFact(ocean, 'Maximum depth');
+  const deepest = oceanFact(ocean, 'Deepest point');
+  const seabed = oceanFact(ocean, 'Seabed');
+  const point = oceanFact(ocean, 'Representative point');
+  // All nine briefed oceans carry area + max depth + representative point;
+  // without them no honest answer can be composed, so render nothing.
+  if (!area || !max || !point) return [];
+  const middle = deepest ? ` Its deepest point is ${deepest}.` : seabed ? ` Its seabed is ${seabed}.` : '';
+  const qa: { q: string; a: string }[] = [
+    {
+      q: `What is the total area of the ${ocean.name}?`,
+      a: `The ${ocean.name} covers ${area}${avg ? `, with an average depth of ${avg} and a maximum depth of ${max}` : `, with a maximum depth of ${max}`}.${middle} All figures on this page are shown with their sources in the key facts panel, and the live panel above measures today's waves at the sea's representative point.`,
+    },
+    {
+      q: `What is the maximum depth of the ${ocean.name}?`,
+      a: `The maximum depth of the ${ocean.name} is ${max}.${middle}${avg ? ` Its average depth is ${avg}, and its total area is ${area}.` : ` Its total area is ${area}.`} Depth and area figures on this page carry their sources in the key facts panel above. The live panel above measures today's waves at the sea's representative point.`,
+    },
+    {
+      q: `Where is the ${ocean.name} located?`,
+      a: `The ${ocean.name} is part of the ${ocean.partOfName}. Its representative point is ${point}, the same point the live wave panel measures. It covers ${area} and reaches a maximum depth of ${max}.${ocean.coastalCity ? ` On its shore, this page's live panel carries ${ocean.coastalCity.name} coastal weather.` : ` Its shores, connections and seasons are set out in the geography and season sections below, and the live panel above measures today's waves at its representative point.`}`,
+    },
+  ];
+  if (ocean.slug === 'arabian-sea') {
+    // Brief keyword "arabian sea temperature": the record carries NO
+    // sourced sea-surface-temperature figure (live layer is coastal AIR
+    // temperature + waves), so this answer deliberately prints no figure.
+    qa.push({
+      q: 'What is the Arabian Sea temperature?',
+      a: "No single sea-temperature figure is printed for the Arabian Sea here, because surface temperature varies by season and place across the basin. This page's live panel measures today's open-sea waves and Karachi coastal air temperature instead, and the monsoon section below explains the seasonal pattern. Check the live panel above for today's conditions.",
+    });
+  }
+  return qa;
+}
+
 export default async function OceanPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const ocean = await getOcean(slug);
   if (!ocean) notFound();
 
   const live = await getOceanLive(ocean);
+  // Final30 A9: facts-intent H3 questions (empty for out-of-brief oceans).
+  const factsQa = oceanFactsQa(ocean);
   const hero = oceanHero(ocean);
   const gallery = ocean.media.filter((m) => m.role !== 'hero');
   const season = monsoonSeason(ocean.marineTimezone, ocean.slug);
@@ -102,7 +171,9 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
       },
       {
         '@type': 'FAQPage',
-        mainEntity: ocean.faqs.map((f) => ({
+        // Final30 A9: facts H3 questions join the schema with the exact
+        // visible answer text (same shape as the FAQ bank entries).
+        mainEntity: [...ocean.faqs, ...factsQa].map((f) => ({
           '@type': 'Question',
           name: f.q,
           acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -217,6 +288,20 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
             ))}
           </dl>
         </Section>
+
+        {/* 4b — Final30 A9: facts-intent section (briefed oceans only) */}
+        {factsQa.length > 0 && (
+          <Section title={`${ocean.name} facts`}>
+            <div className="max-w-3xl space-y-6">
+              {factsQa.map((item) => (
+                <div key={item.q}>
+                  <h3 className="font-semibold text-white">{item.q}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-300">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
 
         {/* 5 — THERE TODAY live dashboard */}
         {live && (
