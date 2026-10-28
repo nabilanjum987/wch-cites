@@ -4,6 +4,7 @@ import { useRouter, useParams } from 'next/navigation';
 import type { ZodiacSign } from '@/types/horoscope';
 import { ZODIAC_SIGNS } from '@/types/horoscope';
 import SignDetailPage from '@/components/horoscope/SignDetailPage';
+import SignSeoSection from '@/components/horoscope/SignSeoSection';
 import CompatibilityFinder from '@/components/horoscope/CompatibilityFinder';
 import BirthChartCalculator from '@/components/horoscope/BirthChartCalculator';
 import Numerology from '@/components/horoscope/Numerology';
@@ -27,6 +28,11 @@ const SIGN_COLORS: Record<string, string> = {
 };
 
 const VALID_SIGNS = ZODIAC_SIGNS.map(s => s.key);
+
+// A1: easy signs (Low head terms) get "<Sign> Horoscope Today" as the page H1;
+// hard signs keep the bare sign name as H1 so their head term is never
+// targeted in an H1 (their flank lives only in SignSeoSection's H2/H3s).
+const EASY_SIGNS = new Set(['aries', 'taurus', 'cancer', 'leo', 'scorpio', 'capricorn']);
 
 export default function HoroscopeSignPage() {
   const router = useRouter();
@@ -61,6 +67,7 @@ export default function HoroscopeSignPage() {
           sign={sign}
           onBack={() => router.push('/horoscope')}
           primaryColor={primaryColor}
+          heading={EASY_SIGNS.has(sign) ? `${signMeta.name} Horoscope Today` : undefined}
         />
         <p className="text-gray-400 leading-relaxed text-sm mt-4">
           {generateSignOverviewAfter(signMeta.name, signMeta.element)}
@@ -113,6 +120,9 @@ export default function HoroscopeSignPage() {
             {generateNumerologyAfter(signMeta.name)}
           </p>
         </div>
+
+        {/* A1 SEO section: H2 + AEO H3s (see SignSeoSection) */}
+        <SignSeoSection signMeta={signMeta} />
 
         {/* Affiliates */}
         <div className="mt-10">

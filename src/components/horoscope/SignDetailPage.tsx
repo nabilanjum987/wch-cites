@@ -14,6 +14,11 @@ interface Props {
   sign: ZodiacSign;
   onBack: () => void;
   primaryColor: string;
+  // A1: H1 override. Easy signs pass "<Sign> Horoscope Today" (their Low head
+  // term); hard signs pass nothing, so the H1 stays the bare sign name and
+  // the head term is never targeted in an H1. Default preserves the legacy
+  // HoroscopePage.tsx usage.
+  heading?: string;
 }
 
 function StarRating({ rating, color, size = 18 }: { rating: number; color: string; size?: number }) {
@@ -34,7 +39,7 @@ const METRIC_CONFIG = [
   { key: 'spirituality' as const, label: 'Spirituality', icon: <Sparkles size={16} /> },
 ];
 
-export default function SignDetailPage({ sign, onBack, primaryColor }: Props) {
+export default function SignDetailPage({ sign, onBack, primaryColor, heading }: Props) {
   const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [compatSign, setCompatSign] = useState<ZodiacSign | null>(null);
 
@@ -79,7 +84,7 @@ export default function SignDetailPage({ sign, onBack, primaryColor }: Props) {
               {signData.symbol}
             </motion.div>
             <div>
-              <h1 className="text-2xl font-bold text-white">{signData.name}</h1>
+              <h1 className="text-2xl font-bold text-white">{heading ?? signData.name}</h1>
               <p className="text-white/70 text-sm mt-0.5">{signData.dates}</p>
               <div className="flex items-center gap-2 mt-2">
                 <span className={`text-xs font-semibold px-2 py-0.5 rounded-lg ${ELEMENT_BG[signData.element]} ${ELEMENT_TEXT[signData.element]}`}>
