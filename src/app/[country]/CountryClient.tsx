@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getSupabase } from '@/lib/supabase';
 import PopulationPie from '@/components/PopulationPie';
+import CityAssistant from '@/components/shared/CityAssistant';
 import { PAKISTAN_PROVINCE_POPULATION, PAKISTAN_PROVINCE_TOTAL, NATIONAL_FAITH_SLICES } from '@/lib/census2023-splits';
 import { censusPopulationOr } from '@/lib/census2023';
 import {
@@ -550,6 +551,73 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
   const holidayTypes = ['All', ...Array.from(new Set(holidays.map(h => h.type)))];
   const filteredHolidays = activeHolidayType === 'All' ? holidays : holidays.filter(h => h.type === activeHolidayType);
 
+  // ── B9: Pakistan Assistant (Phase 1) snapshot ───────────────────────
+  // ONLY this page's own data: World Bank population (server prop),
+  // provinces/capital (page dataset), emergency numbers (page panel),
+  // holidays (page list). No live prayer/weather/gold panel exists at
+  // country level, so those fields are null and the bot answers
+  // "I don't have that yet" + the real section anchor — never a
+  // capital-city figure passed off as a national one. The page's
+  // static market-rates/weather cards are NOT fed to the bot (they
+  // are dated fallbacks, not live feeds).
+  const pakistanAssistantSnapshot = country
+    ? {
+        scopeName: 'Pakistan',
+        countryCode: 'PK',
+        basePath: '/pakistan',
+        prayerTimes: null,
+        temp: null,
+        feelsLike: null,
+        weatherDesc: null,
+        rainMm: null,
+        goldPerGram: null,
+        goldPerTola: null,
+        police: emergency.find((e) => e.label === 'Police')?.number ?? '15',
+        ambulance: emergency.find((e) => e.label === 'Ambulance')?.number ?? '1122',
+        fire: emergency.find((e) => e.label === 'Fire')?.number ?? '16',
+        eventsCount: holidays.length,
+        links: {
+          prayerTimes: { label: 'Faith & spiritual section', href: '#faith' },
+          weather: { label: 'Weather today section', href: '#weather' },
+          rates: { label: 'Market rates section', href: '#rates' },
+          events: { label: 'Holidays & events section', href: '#holidays' },
+          emergency: { label: 'Emergency contacts section', href: '#emergency' },
+        },
+        topics: 'emergency numbers, holidays and events, its capital, provinces and cities',
+        extraFacts: [
+          {
+            keywords: ['capital'],
+            answer: `${country.capital} is the capital of Pakistan.`,
+            link: { label: 'Islamabad city guide', href: '/pakistan/islamabad-capital-territory/islamabad' },
+          },
+          {
+            keywords: ['province', 'territor'],
+            answer: `The provinces and territories listed on this page are: ${provinces.map((p) => p.name).join(', ')}.`,
+            link: { label: 'Provinces section', href: '#provinces' },
+          },
+          ...(wbPopulation
+            ? [
+                {
+                  keywords: ['population', 'how many people'],
+                  answer: `Pakistan's population is ${wbPopulation.value.toLocaleString('en-US')} (World Bank, ${wbPopulation.year}).`,
+                  link: { label: 'Country facts section', href: '#glance' },
+                },
+              ]
+            : []),
+        ],
+        sectionLinks: {
+          news: { label: 'News section', href: '#news' },
+          sports: { label: 'Sports section', href: '#sports' },
+          economy: { label: 'Economy section', href: '#economy' },
+          places: { label: 'Must-see section', href: '#places' },
+          food: { label: 'Famous foods section', href: '#foods' },
+          jobs: { label: 'Economy section', href: '#economy' },
+          holidays: { label: 'Holidays & events section', href: '#holidays' },
+          glance: { label: 'Country facts section', href: '#glance' },
+        },
+      }
+    : null;
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: bg }}>
 
@@ -592,7 +660,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
       <div className="relative z-10 max-w-6xl mx-auto px-4 pb-20 space-y-14 pt-8">
 
         {/* ── 1. COUNTRY FACTS ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="glance">
           <SectionHeader icon={Globe} title="Country Facts" accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateFactsParagraph(country.name, country.capital)}
@@ -623,7 +691,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
         </motion.section>
 
         {/* ── 1b. MAJOR CITIES (live from Supabase — works for any country) ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="cities">
           <SectionHeader icon={Building2} title={`Major Cities of ${country.name}`} accent={accent} />
           {majorCitiesLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
@@ -686,7 +754,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
         )}
 
         {/* ── 3. WEATHER ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="weather">
           <SectionHeader icon={Thermometer} title={`${country.name} Weather Today`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateCitiesWeatherParagraph(country.name)}
@@ -710,7 +778,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
         </motion.section>
 
         {/* ── 4. FAITH & SPIRITUAL ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="faith">
           <SectionHeader icon={Star} title="Faith & Spiritual" accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {country.majorFaith} is the dominant faith in {country.name} at {country.majorFaithPct}% of the population,
@@ -771,7 +839,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
         </motion.section>
 
         {/* ── 5. MARKET RATES ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="rates">
           <SectionHeader icon={Coins} title={`${country.name} Market Rates Today`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             Gold, silver, currency exchange rates, and fuel prices for {country.name} as of today.
@@ -800,7 +868,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
         </motion.section>
 
         {/* ── 6. NEWS ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="news">
           <SectionHeader icon={Newspaper} title={`${country.name} Today`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             A snapshot of today's most important headlines from {country.name} and global coverage
@@ -840,7 +908,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
 
         {/* ── 7. PROVINCES ── */}
         {provinces.length > 0 && (
-          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="provinces">
             <SectionHeader icon={MapPin as any} title={`Explore ${country.name} by Province`} accent={accent} />
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               {generateProvincesParagraph(country.name)}
@@ -887,7 +955,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
 
         {/* ── 8. ECONOMY DASHBOARD ── */}
         {economy && (
-          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="economy">
             <SectionHeader icon={TrendingUp} title={`${country.name} Economy`} accent={accent} />
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               {generateEconomyDashboardParagraph(country.name)}
@@ -975,7 +1043,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
 
         {/* ── 10. FAMOUS PLACES ── */}
         {landmarks.length > 0 && (
-          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="places">
             <SectionHeader icon={Mountain} title={`${country.name} Must See`} accent={accent} />
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               {generatePlacesParagraph(country.name)}
@@ -1070,7 +1138,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
 
         {/* ── 13. NATIONAL TEAMS ── */}
         {teams.length > 0 && (
-          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="sports">
             <SectionHeader icon={Trophy} title={`${country.name} in Sport`} accent={accent} />
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               {generateTeamsParagraph(country.name)}
@@ -1102,7 +1170,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
 
         {/* ── 14. FAMOUS FOODS ── */}
         {foods.length > 0 && (
-          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="foods">
             <SectionHeader icon={Utensils} title={`${country.name} Famous Foods`} accent={accent} />
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               The food of {country.name} is as varied as its geography and as layered as its history.
@@ -1126,7 +1194,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
 
         {/* ── 15. HOLIDAYS ── */}
         {holidays.length > 0 && (
-          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="holidays">
             <SectionHeader icon={Calendar} title={`${country.name} Holidays & Events`} accent={accent} />
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               {generateHolidaysParagraph(country.name)}
@@ -1162,7 +1230,7 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
         )}
 
         {/* ── 16. EMERGENCY CONTACTS ── */}
-        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="emergency">
           <SectionHeader icon={ShieldAlert} title={`${country.name} Emergency Contacts`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {generateEmergencyParagraph(country.name)}
@@ -1224,6 +1292,13 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
             ))}
           </div>
         </motion.section>
+
+      {/* ── B9: Pakistan Assistant — floating widget only, no new page
+          section (no design change). Pakistan only: other countries
+          carry no verified snapshot here. */}
+      {country?.slug === 'pakistan' && pakistanAssistantSnapshot && (
+        <CityAssistant snapshot={pakistanAssistantSnapshot} />
+      )}
 
       </div>
     </div>
