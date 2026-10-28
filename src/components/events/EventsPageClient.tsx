@@ -12,11 +12,9 @@ import {
 } from 'lucide-react';
 import type { City, CityEvent, RecurringEvent, EventCategory, TimeTab, LevelTab } from '@/types/city';
 import { fetchCityEvents, fetchRecurringEvents } from '@/lib/apis/events';
-import { fetchCityDbEvents, mapDbEventToCityEvent } from '@/lib/events';
 import EventsMap from '@/components/city/EventsMap';
 import RecurringEvents from '@/components/city/RecurringEvents';
 import SubmitEvent from '@/components/city/SubmitEvent';
-import TourAffiliates from '@/components/city/TourAffiliates';
 
 // ── Category config ───────────────────────────────────────────────────────────
 
@@ -170,9 +168,12 @@ interface Props {
   country: string;
   province: string;
   citySlug: string;
+  // Verified own-DB rows fetched server-side in page.tsx (P2). The client
+  // no longer fetches the DB itself, so server summary and grid agree.
+  initialDbEvents?: CityEvent[];
 }
 
-export default function EventsPageClient({ city, country, province, citySlug }: Props) {
+export default function EventsPageClient({ city, country, province, citySlug, initialDbEvents }: Props) {
   const [events, setEvents] = useState<CityEvent[]>([]);
   const [recurringEvents, setRecurringEvents] = useState<RecurringEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -188,14 +189,15 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
   const loadEvents = useCallback(async () => {
     setLoading(true);
     try {
-      const [cityEvents, recurring, dbRows] = await Promise.all([
+      const [cityEvents, recurring] = await Promise.all([
         fetchCityEvents(city.name, city.country, city.country_code, city.lat, city.lng, timeTab, activeCategory === 'all' ? null : activeCategory, levelTab),
         fetchRecurringEvents(city.name),
-        // WorldCityHub's own events database (Q12) as an ADDITIONAL
-        // source. While migration 0003 is unapplied this returns [] and
-        // the page behaves exactly as before.
-        fetchCityDbEvents(citySlug),
       ]);
+      // WorldCityHub's own events database (Q12), already fetched
+      // server-side in page.tsx and passed as initialDbEvents. While
+      // migration 0003 is unapplied this is [] and the page behaves
+      // exactly as before.
+      const dbRows = initialDbEvents ?? [];
 
       // Merge own-DB events that match the active tab/filters. Own-DB
       // rows are 'local' (city) or 'national' (country-wide) level.
@@ -212,7 +214,6 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
         return d;
       })();
       const dbEvents = dbRows
-        .map((row) => mapDbEventToCityEvent(row, city.name, city.country))
         .filter((ev) => {
           const t = new Date(ev.start_time).getTime();
           if (t < startOfDay.getTime() || t > endOfWindow.getTime()) return false;
@@ -242,7 +243,7 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
     } finally {
       setLoading(false);
     }
-  }, [city, timeTab, activeCategory, levelTab, citySlug]);
+  }, [city, timeTab, activeCategory, levelTab, initialDbEvents]);
 
   useEffect(() => { loadEvents(); }, [loadEvents]);
 
@@ -398,11 +399,6 @@ export default function EventsPageClient({ city, country, province, citySlug }: 
             <RecurringEvents events={recurringEvents} primaryColor={primaryColor} />
           </div>
         )}
-
-        {/* Tour affiliates */}
-        <div className="mt-10">
-          <TourAffiliates cityName={city.name} primaryColor={primaryColor} />
-        </div>
 
         {/* Submit event */}
         <div className="mt-10">

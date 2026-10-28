@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import ProvincePage from './ProvinceClient';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbJsonLd, provinceCrumbs, provinceJsonLd, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 import { fetchWorldBankLatest, countrySlugToIso2 } from '@/lib/apis/worldbank';
 
 // Server wrapper: the interactive province page lives in
@@ -37,5 +39,15 @@ export default async function Page({ params }: PageProps) {
   // dated Pakistan fallback or hides the share.
   const iso2 = countrySlugToIso2(p.country);
   const wb = await fetchWorldBankLatest([iso2]);
-  return <ProvincePage wbCountryPopulation={wb[iso2]?.population ?? null} />;
+  // P6: province pages had no JSON-LD at all — BreadcrumbList +
+  // AdministrativeArea (name + URL only, no figures).
+  const countryName = titleCaseSlug(p.country);
+  const provinceName = titleCaseSlug(p.province);
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd(provinceCrumbs(countryName, p.country, provinceName, p.province))} />
+      <JsonLd data={provinceJsonLd(provinceName, p.province, countryName, p.country)} />
+      <ProvincePage wbCountryPopulation={wb[iso2]?.population ?? null} />
+    </>
+  );
 }
