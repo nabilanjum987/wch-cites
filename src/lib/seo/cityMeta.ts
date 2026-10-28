@@ -22,6 +22,12 @@ import { TOLA_GRAMS } from '../gold';
 const PROVINCE_CAPITALS: Record<string, string> = {
   Punjab: 'Lahore',
   Sindh: 'Karachi',
+  // B10: Peshawar IS the capital of Khyber Pakhtunkhwa — previously
+  // missing here, so Peshawar got no capital claim at all. Sourced
+  // against the site's own province records (compare.ts province
+  // entities, CountryClient/ProvinceClient province tables, and the
+  // schema.sql provinces seed, all naming Peshawar as KP's capital).
+  'Khyber Pakhtunkhwa': 'Peshawar',
 };
 
 function capitalSentence(city: string, province: string, country: string): string {

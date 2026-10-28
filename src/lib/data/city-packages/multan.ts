@@ -12,7 +12,7 @@ export const MULTAN: CityPackage = {
     "province_slug": "punjab",
     "lat": 30.1978,
     "lng": 71.4711,
-    "population": 1871843,
+    "population": 5362305,
     "timezone": "Asia/Karachi",
     "major_religion": "Islam",
     "religion_percent": null,
@@ -33,8 +33,8 @@ export const MULTAN: CityPackage = {
       "value": "Punjab"
     },
     {
-      "label": "Population (2017 census)",
-      "value": "1,871,843"
+      "label": "Population (2023 census, district total)",
+      "value": "5,362,305"
     },
     {
       "label": "Elevation",
@@ -129,7 +129,7 @@ export const MULTAN: CityPackage = {
     {
       "group": "identity (coords, population, elevation)",
       "source": "Wikidata Q185453",
-      "detail": "Coordinates P625, population P1082 (point-in-time 2017, Pakistan Bureau of Statistics census as referenced on the item), elevation P2044 — pulled live 2026-10-22."
+      "detail": "Coordinates P625, elevation P2044 — Wikidata, pulled live 2026-10-22. Population REPLACED (final30 B10) with PBS 7th Population & Housing Census (2023), Table 1, Multan District total 5,362,305 — the 2017 Wikidata figure (1,871,843) is retired."
     },
     {
       "group": "emergency numbers",

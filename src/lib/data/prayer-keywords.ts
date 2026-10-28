@@ -74,4 +74,10 @@ export const CITY_COORDS: Record<string, CityCoords> = {
   // From src/lib/data/prayer-tables/karachi.ts and islamabad.ts.
   karachi: { lat: 24.8608, lng: 67.0104, timezone: 'Asia/Karachi' },
   islamabad: { lat: 33.72148, lng: 73.04329, timezone: 'Asia/Karachi' },
+  // B10: without these, Multan/Peshawar prayer pages seed from the
+  // Lahore fallback (31.5204, 74.3587). Coordinates are the site's
+  // canonical CITY_DB values (city main page), matching the
+  // prayer-tables rows for Peshawar exactly and Multan within 1 km.
+  multan: { lat: 30.1978, lng: 71.4711, timezone: 'Asia/Karachi' },
+  peshawar: { lat: 34.008, lng: 71.57849, timezone: 'Asia/Karachi' },
 };

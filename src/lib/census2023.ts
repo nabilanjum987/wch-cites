@@ -17,6 +17,12 @@
 //   Islamabad  2,363,863 — Islamabad Capital Territory total
 //                          (area 906.5 km² per PBS; the city page renders
 //                          the area as 906 — see note in the F3 report)
+//   B10 adds the same district-total rule for the Faisalabad-vs-
+//   Multan compare pair and for Peshawar (areas match the city-page
+//   GLANCE district areas, so no unit drift is introduced):
+//   Faisalabad  9,075,819 — Faisalabad District total (area 5,856 km²)
+//   Multan      5,362,305 — Multan District total (area 3,720 km²)
+//   Peshawar    4,758,762 — Peshawar District total (area 1,518 km²)
 //
 // Key spelling is the canonical page URL path
 // (country/province/city). One legacy alias exists: supabase/schema.sql
@@ -33,6 +39,12 @@ export const CENSUS_2023_POPULATION: Record<string, number> = {
   'pakistan/islamabad-capital-territory/islamabad': 2363863,
   // Legacy DB spelling of the same city (see header note).
   'pakistan/islamabad/islamabad': 2363863,
+  // B10 — PBS Census-2023 district totals (see header note). These
+  // make the Faisalabad-vs-Multan compare pair and the Multan /
+  // Peshawar DB rows read the same single source as the city pages.
+  'pakistan/punjab/faisalabad': 9075819,
+  'pakistan/punjab/multan': 5362305,
+  'pakistan/khyber-pakhtunkhwa/peshawar': 4758762,
 };
 
 export const CENSUS_2023_SOURCE =
