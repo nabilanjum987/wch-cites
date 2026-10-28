@@ -848,12 +848,20 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
             <div className="rounded-2xl p-5 border" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
               <div className="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: accent }}>🏙️ City News from {province.name}</div>
               <div className="space-y-3">
-                {[`${cities[0]?.name}: Air quality update for the city`,
-                  `${cities[1]?.name}: Economic activity report this week`,
-                  `${cities[2]?.name}: Cultural event draws large crowds`].map((h, i) => (
+                {/* B1 — headlines pair with cities by index and drop
+                    pairs whose city does not exist. ICT has a single
+                    city (Islamabad), so the old literal rendered
+                    "undefined:" twice for cities[1]/cities[2]; the
+                    filter removes the cause, not just the symptom.
+                    Provinces with 3+ cities still render all three. */}
+                {[
+                  { city: cities[0]?.name, text: 'Air quality update for the city' },
+                  { city: cities[1]?.name, text: 'Economic activity report this week' },
+                  { city: cities[2]?.name, text: 'Cultural event draws large crowds' },
+                ].filter(h => h.city).map((h, i) => (
                   <div key={i} className="flex gap-3 pb-3 border-b border-white/5 last:border-0 last:pb-0">
                     <span className="text-gray-600 text-xs mt-0.5 w-3">{i + 1}</span>
-                    <p className="text-gray-300 text-sm leading-snug">{h}</p>
+                    <p className="text-gray-300 text-sm leading-snug">{`${h.city}: ${h.text}`}</p>
                   </div>
                 ))}
               </div>
