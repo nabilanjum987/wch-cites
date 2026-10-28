@@ -43,6 +43,19 @@ export default async function SportsPanel() {
 
   return (
     <div>
+      {/* Homepage-imagery pass (2026-10-28): the section is no longer
+          a bare text block — a real photo of Gaddafi Stadium, Lahore,
+          sits above the fixtures (or above the honest no-fixtures
+          line, which stays word-for-word). Vendored under
+          public/images/home28/; record in
+          docs/media-registry/subjects/homepage-imagery-2026-10-28.json. */}
+      <figure className="relative h-40 sm:h-48 overflow-hidden rounded-2xl border t-border mb-5">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/home28/sports-pakistan.webp" alt="Gaddafi Stadium in Lahore during a Pakistan Super League match" width={900} height={400} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+        <figcaption className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[11px] px-2.5 py-1 rounded-tl-lg">
+          Gaddafi Stadium, Lahore — photo: PCB · CC0 · Wikimedia Commons
+        </figcaption>
+      </figure>
       {fixtures.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
           {fixtures.map((f, i) => (

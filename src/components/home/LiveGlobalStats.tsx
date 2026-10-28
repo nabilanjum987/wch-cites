@@ -2,11 +2,14 @@
 import { useEffect, useState } from 'react';
 import { Globe, Moon, TrendingUp, Thermometer, ArrowUp, ArrowDown } from 'lucide-react';
 import { getSupabase } from '../../lib/supabase';
+import { getGoldSpot } from '../../lib/gold';
 
 interface GlobalStats {
   cityCount: number | null;
   nextMeccaPrayer: { name: string; time: string } | null;
-  goldPrice: { price: number; change: number } | null;
+  // change is null: gold-api XAU publishes spot only (F4) — the PAXG
+  // 24h change is not mixed into an XAU price; the card hides the chip.
+  goldPrice: { price: number; change: number | null } | null;
   hottestCity: { name: string; temp: number; country: string } | null;
 }
 
@@ -78,17 +81,17 @@ export default function LiveGlobalStats() {
         return best;
       };
 
-      const [countRes, cgRes, prayerRes, hotRes] = await Promise.allSettled([
+      const [countRes, goldRes, prayerRes, hotRes] = await Promise.allSettled([
         supabase.from('cities').select('*', { count: 'exact', head: true }),
-        fetchJson('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd&include_24hr_change=true'),
+        getGoldSpot(),
         meccaNextPrayer(),
         hottest(),
       ]);
 
       setStats({
         cityCount: countRes.status === 'fulfilled' ? (countRes.value.count ?? null) : null,
-        goldPrice: cgRes.status === 'fulfilled' && cgRes.value?.['pax-gold']?.usd
-          ? { price: Math.round(cgRes.value['pax-gold'].usd), change: Math.round((cgRes.value['pax-gold'].usd_24h_change ?? 0) * 10) / 10 }
+        goldPrice: goldRes.status === 'fulfilled' && goldRes.value
+          ? { price: Math.round(goldRes.value.priceUsdPerOz), change: null }
           : null,
         nextMeccaPrayer: prayerRes.status === 'fulfilled' ? prayerRes.value : null,
         hottestCity: hotRes.status === 'fulfilled' ? hotRes.value : null,
@@ -172,14 +175,16 @@ export default function LiveGlobalStats() {
             <div className="t-text text-2xl font-bold">
               ${stats.goldPrice.price.toLocaleString()}/oz
             </div>
-            <div className={`flex items-center text-sm ${stats.goldPrice.change >= 0 ? 't-green' : 't-red'}`}>
-              {stats.goldPrice.change >= 0 ? (
-                <ArrowUp className="w-4 h-4 mr-1" />
-              ) : (
-                <ArrowDown className="w-4 h-4 mr-1" />
-              )}
-              {stats.goldPrice.change >= 0 ? '+' : ''}{stats.goldPrice.change}%
-            </div>
+            {stats.goldPrice.change != null && (
+              <div className={`flex items-center text-sm ${stats.goldPrice.change >= 0 ? 't-green' : 't-red'}`}>
+                {stats.goldPrice.change >= 0 ? (
+                  <ArrowUp className="w-4 h-4 mr-1" />
+                ) : (
+                  <ArrowDown className="w-4 h-4 mr-1" />
+                )}
+                {stats.goldPrice.change >= 0 ? '+' : ''}{stats.goldPrice.change}%
+              </div>
+            )}
           </>
         ) : (
           <div className="t-text text-lg font-bold">Live gold rates on the Rates page</div>

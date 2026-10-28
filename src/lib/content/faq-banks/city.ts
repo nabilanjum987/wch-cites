@@ -7,8 +7,8 @@
 //   {fajr} {maghrib}             — fetchPrayerTimes (Aladhan, Karachi method)
 //   {sunrise} {sunset}           — fetchSunMoon (sunrise-sunset.org)
 //   {aqi}                        — fetchAirQuality (OpenWeatherMap)
-//   {goldPerGram}                — the page's gold fetch (CoinGecko PAX Gold);
-//                                  per-tola = per-gram × 11.664 (definitional)
+//   {goldPerGram}                — the page's gold fetch (gold-api XAU);
+//                                  per-tola = per-gram × 11.6638 (definitional)
 //   {usdPkr}                     — fetchCurrencyRates (ExchangeRate-API open endpoint)
 //   {population}                 — the city dataset figure (registry)
 //   {year}                       — current year
@@ -44,7 +44,7 @@ export const CITY_FAQ_BANK: FaqBank = [
     answer:
       'Gold in {city} is priced from the same international spot market as the rest of Pakistan: 24K at PKR {goldPerGram} per gram, which is PKR {goldPerTola} per tola (one tola = 11.664 grams). All karats — 24K, 22K, 21K and 18K — are shown in the rates section of this page and on the full rates page.',
     slots: ['city', 'goldPerGram', 'goldPerTola'],
-    source: 'Live page data — CoinGecko PAX Gold via the page gold fetch; tola conversion is definitional (× 11.664).',
+    source: 'Live page data — gold-api.com XAU via the page gold fetch; tola conversion is definitional (× 11.6638).',
     demand: '"gold price" / "gold rate today" cluster across all markets in the phrase bank.',
   },
   {

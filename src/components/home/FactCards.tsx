@@ -5,7 +5,7 @@
 // card names its source:
 //   Lahore temperature — getMyCityData (Open-Meteo), the My City feed
 //   Next prayer        — getMyCityData (Aladhan), with a live countdown
-//   Gold per tola (PKR) — getMyCityData (CoinGecko PAX Gold × tola ratio)
+//   Gold per tola (PKR) — getMyCityData (gold-api XAU × tola ratio)
 //   World population   — getMarketTickerItems live payload (World Bank
 //                        SP.POP.TOTL grown at SP.POP.GROW), ticked by
 //                        the same PopulationCounter as §12 — this is
@@ -65,7 +65,7 @@ export default async function FactCards() {
       <Card key="gold" label="Gold — per tola (PKR)"
         value={`Rs ${mc.goldTola.toLocaleString('en-PK')}`}
         sub="24k gold, one tola (11.6638 g)"
-        source="CoinGecko PAX Gold (the My City gold feed)" />,
+        source="gold-api.com XAU (the My City gold feed)" />,
     );
   }
   if (pop?.live?.type === 'population') {

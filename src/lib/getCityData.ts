@@ -1,6 +1,7 @@
 import { City } from '@/types/city';
 import { getSupabase } from './supabase';
 import { countrySlugToIso2 } from './apis/worldbank';
+import { CENSUS_2023_POPULATION, censusPopulationFor } from './census2023';
 
 // Fallback mock data for development
 const MOCK_CITIES: Record<string, City> = {
@@ -14,7 +15,7 @@ const MOCK_CITIES: Record<string, City> = {
     province_slug: 'punjab',
     lat: 31.5204,
     lng: 74.3587,
-    population: 13095038,
+    population: CENSUS_2023_POPULATION['pakistan/punjab/lahore'],
     timezone: 'Asia/Karachi',
     major_religion: 'Islam',
     religion_percent: 96,
@@ -38,7 +39,7 @@ const MOCK_CITIES: Record<string, City> = {
     province_slug: 'sindh',
     lat: 24.8607,
     lng: 67.0011,
-    population: 14910352,
+    population: CENSUS_2023_POPULATION['pakistan/sindh/karachi'],
     timezone: 'Asia/Karachi',
     major_religion: 'Islam',
     religion_percent: 95,
@@ -160,6 +161,14 @@ function mapDbCityRow(row: Record<string, unknown>, fallback: City | null): City
   if (!out.famous_for && row.tagline) out.famous_for = row.tagline;
   if (!out.major_religion && row.major_faith) out.major_religion = row.major_faith;
   if (!out.religion_percent && row.major_faith_pct) out.religion_percent = row.major_faith_pct;
+  // F3 — canonical override: a stale `cities` row (e.g. the 14M/16M/2M
+  // seeds) must never resurface on compare or any other surface. The
+  // row's own slugs key the lookup, so the legacy Islamabad spelling
+  // (province_slug 'islamabad' in the seed) resolves via the alias in
+  // the census module to the same figure as the canonical URL spelling.
+  const rowKey = `${(row.country_slug as string) ?? (fallback?.country_slug as string) ?? ''}/${(row.province_slug as string) ?? (fallback?.province_slug as string) ?? ''}/${(row.slug as string) ?? (fallback?.city_slug as string) ?? ''}`;
+  const census = censusPopulationFor(rowKey);
+  if (census != null) out.population = census;
   out.is_active = true;
   return out as unknown as City;
 }
@@ -203,14 +212,22 @@ export async function getCityData(
 
 function getMockCityData(country: string, province: string, city: string): City | null {
   const key = `${country}/${province}/${city}`;
-  
+
+  // F3 — the dev-only mock is a fallback, never a second source: a
+  // census city always resolves to the census figure here too, so a
+  // compare page rendered without Supabase shows the same number as
+  // the city page. (The old mock figures matched nothing and are
+  // deleted.)
+  const census = censusPopulationFor(key);
+
   // Check if we have hardcoded mock data
   if (MOCK_CITIES[key]) {
-    return MOCK_CITIES[key];
+    const mock = MOCK_CITIES[key];
+    return census != null ? { ...mock, population: census } : mock;
   }
 
   // Generate default city object
-  return {
+  const generated: City = {
     name: city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
     city_slug: city,
     country: country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
@@ -237,6 +254,8 @@ function getMockCityData(country: string, province: string, city: string): City 
     region: 'Unknown',
     is_active: true,
   };
+  if (census != null) generated.population = census;
+  return generated;
 }
 
 // Export async function to fetch multiple cities
