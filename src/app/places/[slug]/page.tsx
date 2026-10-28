@@ -149,7 +149,13 @@ const PLACES: Record<string, Place> = {
     history: 'The origins of Lahore Fort trace back to antiquity, though the current structure was largely built during the Mughal era. Emperor Akbar rebuilt it in burnt brick in 1566. Subsequent emperors — Jahangir, Shah Jahan and Aurangzeb — each added magnificent new sections. The Sikh Empire under Ranjit Singh and later the British colonial administration also left their marks. Today 21 monuments within the fort span different eras.',
     significance: 'As a UNESCO World Heritage Site since 1981, Lahore Fort is Pakistan\'s most important historical monument. It represents the full arc of Mughal civilization at its peak, from military fortification to intimate royal quarters and the world-famous Sheesh Mahal. Unlike the mosque across Hazuri Bagh, Lahore Fort has no single published visitor capacity: a UNESCO/ICOMOS mission notes that different monuments within the fort have different carrying capacities, so visitors explore it as a walking route across more than 20 hectares and 21 monuments rather than as a single hall.',
     thingsToKnow: [
-      'Area: 45 acres containing 21 historic monuments',
+      // B3 (final30): was "45 acres" (= 18.2 ha), contradicting the
+      // significance text on this same page ("more than 20 hectares").
+      // The sourced figure is "greater than 20 hectares (49 acres)"
+      // (Wikipedia, citing the UNESCO nomination) — so this page now
+      // uses ONE value, "more than 20 hectares", everywhere. The acres
+      // figure is dropped rather than converted, per the one-value rule.
+      'Area: more than 20 hectares, containing 21 historic monuments',
       'Sheesh Mahal decorated with thousands of glass mirror pieces',
       'Alamgiri Gate (1674) is the main entrance, facing Badshahi Mosque',
       'Naulakha Pavilion inlaid with semi-precious stones',
