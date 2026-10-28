@@ -72,6 +72,14 @@ const CITY_DB: Record<string, CityParams> = {
     city: 'Rawalpindi', country: 'Pakistan', province: 'Punjab',
     lat: 33.5651, lon: 73.0169, countryCode: 'PK', timezone: 'Asia/Karachi'
   },
+  'pakistan/punjab/multan': {
+    city: 'Multan', country: 'Pakistan', province: 'Punjab',
+    lat: 30.1978, lon: 71.4711, countryCode: 'PK', timezone: 'Asia/Karachi'
+  },
+  'pakistan/khyber-pakhtunkhwa/peshawar': {
+    city: 'Peshawar', country: 'Pakistan', province: 'Khyber Pakhtunkhwa',
+    lat: 34.008, lon: 71.57849, countryCode: 'PK', timezone: 'Asia/Karachi'
+  },
 };
 
 function getCityParams(country: string, province: string, city: string): CityParams | null {
@@ -86,24 +94,34 @@ function getCityParams(country: string, province: string, city: string): CityPar
 // are the site's own collected dataset values (pakistan_cities.csv,
 // GeoNames-shaped); areas are district/territory areas; elevations are
 // the cities' standard published figures.
+// D17 exception, following the batch's F3 single-source rule: Multan and
+// Peshawar populations are PBS Census-2023 DISTRICT totals, paired with
+// the matching district areas (the same unit-matches-area rule F3 uses
+// for Lahore/Karachi/Islamabad) — not city/municipal-corporation counts.
 const GLANCE: Record<string, { population: string; area: string; elevation: string; languages: string; founded: string }> = {
   'pakistan/punjab/lahore': { population: '13,004,135', area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
   'pakistan/sindh/karachi': { population: '11,624,219', area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
   'pakistan/islamabad-capital-territory/islamabad': { population: '601,600', area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
   'pakistan/punjab/faisalabad': { population: '3,800,193', area: '5,856', elevation: '184', languages: 'Urdu, Punjabi', founded: '1892' },
   'pakistan/punjab/rawalpindi': { population: '3,357,612', area: '5,286', elevation: '508', languages: 'Urdu, Punjabi, Potohari', founded: 'antiquity' },
+  'pakistan/punjab/multan': { population: '5,362,305', area: '3,720', elevation: '122', languages: 'Urdu, Saraiki, Punjabi', founded: 'antiquity' },
+  'pakistan/khyber-pakhtunkhwa/peshawar': { population: '4,758,762', area: '1,518', elevation: '340', languages: 'Urdu, Pashto, Hindko', founded: 'antiquity' },
 };
 
 // Nearby cities: only cities whose full pages render (the old list
-// linked to Coming Soon shells — Gujranwala, Sialkot, Multan — from
+// linked to Coming Soon shells — Gujranwala, Sialkot — from
 // every city, with Lahore's distances). Distances are straight-line,
 // computed from the canonical coordinates in CITY_DB above.
+// D17: the two new cities link ONLY to already-live pages; existing
+// cities' nearby lists are untouched by this change.
 const NEARBY_KEYS: Record<string, string[]> = {
   'pakistan/punjab/lahore': ['pakistan/islamabad-capital-territory/islamabad', 'pakistan/punjab/faisalabad', 'pakistan/punjab/rawalpindi', 'pakistan/sindh/karachi'],
   'pakistan/sindh/karachi': ['pakistan/punjab/lahore', 'pakistan/islamabad-capital-territory/islamabad'],
   'pakistan/islamabad-capital-territory/islamabad': ['pakistan/punjab/rawalpindi', 'pakistan/punjab/lahore', 'pakistan/punjab/faisalabad'],
   'pakistan/punjab/faisalabad': ['pakistan/punjab/lahore', 'pakistan/islamabad-capital-territory/islamabad'],
   'pakistan/punjab/rawalpindi': ['pakistan/islamabad-capital-territory/islamabad', 'pakistan/punjab/lahore'],
+  'pakistan/punjab/multan': ['pakistan/punjab/lahore', 'pakistan/punjab/faisalabad', 'pakistan/islamabad-capital-territory/islamabad'],
+  'pakistan/khyber-pakhtunkhwa/peshawar': ['pakistan/islamabad-capital-territory/islamabad', 'pakistan/punjab/rawalpindi', 'pakistan/punjab/lahore'],
 };
 
 function haversineKm(a: CityParams, b: CityParams): number {
@@ -117,6 +135,12 @@ function haversineKm(a: CityParams, b: CityParams): number {
 // Compare chips: ONLY the pairs actually published in /compare (the old
 // chips linked to lahore-vs-dubai, lahore-vs-mumbai, lahore-vs-london
 // and a wrong-order lahore-vs-faisalabad — all dead ends).
+// D17: no chips for Multan/Peshawar yet — the only Multan pair
+// (faisalabad-vs-multan) is not in this audited list or the sitemap's
+// compare list, and its compare surface still carries the 2017 package
+// population, which would drift against this page's 2023 census figure.
+// Peshawar has no compare pair at all. Chips are a follow-up, not a
+// silent addition here.
 const COMPARE_LINKS: Record<string, { label: string; pair: string }[]> = {
   lahore: [
     { label: 'Karachi', pair: 'lahore-vs-karachi' },
