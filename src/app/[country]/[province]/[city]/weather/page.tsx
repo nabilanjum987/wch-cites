@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import WeatherPageClient from "@/components/weather/WeatherPageClient"
 import { getCityData } from "@/lib/getCityData"
+import JsonLd from "@/components/seo/JsonLd"
+import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from "@/lib/seo/breadcrumbs"
 import { fetchWeatherData, fetchSunMoonData, fetchAQIData } from "@/lib/apis/weather"
 
 interface PageProps {
@@ -44,19 +46,29 @@ export default async function WeatherPage({ params }: PageProps) {
       fetchAQIData(cityData.lat, cityData.lng, cityName),
     ])
 
+    // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+    // Emitted only on the success path; the not-found/error fallbacks
+    // below stay schema-free, as they are not the city weather page.
+    const schemaCityName = cityData.name ?? titleCaseSlug(p.city)
+    const schemaProvinceName = cityData.province ?? titleCaseSlug(p.province)
+    const schemaCountryName = cityData.country ?? titleCaseSlug(p.country)
     return (
-      <WeatherPageClient
-        cityName={cityName}
-        country={p.country}
-        province={p.province}
-        citySlug={p.city}
-        lat={cityData.lat}
-        lng={cityData.lng}
-        timezone={cityData.timezone}
-        initialWeather={initialWeather}
-        initialSunMoon={initialSunMoon}
-        initialAqi={initialAqi}
-      />
+      <>
+        <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(schemaCountryName, p.country, schemaProvinceName, p.province, schemaCityName, p.city, 'Weather', 'weather'))} />
+        <JsonLd data={cityJsonLd(schemaCityName, p.city, schemaProvinceName, p.province, schemaCountryName, p.country)} />
+        <WeatherPageClient
+          cityName={cityName}
+          country={p.country}
+          province={p.province}
+          citySlug={p.city}
+          lat={cityData.lat}
+          lng={cityData.lng}
+          timezone={cityData.timezone}
+          initialWeather={initialWeather}
+          initialSunMoon={initialSunMoon}
+          initialAqi={initialAqi}
+        />
+      </>
     )
   } catch (error) {
     console.error('Weather page error:', error)
