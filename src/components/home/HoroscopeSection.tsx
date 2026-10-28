@@ -52,35 +52,61 @@ export default function HoroscopeSection() {
       {/* Today's cosmic snapshot */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link href={`/horoscope/${todaySign.slug}`} className="no-underline group">
-          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01] h-full"
+          <div className="rounded-2xl border overflow-hidden transition-all group-hover:scale-[1.01] h-full"
             style={{ background: `linear-gradient(135deg, ${todaySign.color}20, var(--bg))`, borderColor: `${todaySign.color}40` }}>
+            {/* Homepage-imagery pass (2026-10-28): the 12 sign glyphs
+                below stay exactly as they are — glyphs are the correct
+                visual there. Only these three feature cards gain a
+                real photo each (records in
+                docs/media-registry/subjects/homepage-imagery-2026-10-28.json). */}
+            <div className="relative h-28 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/home28/horo-western.webp" alt="The Milky Way over the Very Large Telescope" width={900} height={300} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">ESO / Y. Beletsky · CC BY 4.0</span>
+            </div>
+            <div className="p-5">
             <div className="text-4xl mb-3">{todaySign.emoji}</div>
             <div className="t-text-40 text-xs uppercase tracking-wider mb-1">Today's Western Sign</div>
             <div className="t-text font-bold text-xl">{todaySign.name}</div>
             <div className="sub-desc mt-1">{todaySign.dates}</div>
             <div className="t-text-30 text-xs mt-2">{todaySign.element} sign · Full reading →</div>
+            </div>
           </div>
         </Link>
 
         <Link href="/horoscope" className="no-underline group">
-          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01] h-full"
+          <div className="rounded-2xl border overflow-hidden transition-all group-hover:scale-[1.01] h-full"
             style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), var(--bg))', borderColor: 'rgba(245,158,11,0.3)' }}>
+            <div className="relative h-28 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/home28/horo-chinese.webp" alt="A Chinese dragon dance" width={900} height={300} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">Caseman · public domain</span>
+            </div>
+            <div className="p-5">
             <div className="text-4xl mb-3">{chineseYear.emoji}</div>
             <div className="t-text-40 text-xs uppercase tracking-wider mb-1">Chinese Zodiac {year}</div>
             <div className="t-text font-bold text-xl">Year of the {chineseYear.animal}</div>
             <div className="sub-desc mt-1">木 Wood element</div>
             <div className="t-text-30 text-xs mt-2">Chinese traditions & forecast →</div>
+            </div>
           </div>
         </Link>
 
         <Link href="/horoscope" className="no-underline group">
-          <div className="rounded-2xl border p-5 transition-all group-hover:scale-[1.01] h-full"
+          <div className="rounded-2xl border overflow-hidden transition-all group-hover:scale-[1.01] h-full"
             style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), var(--bg))', borderColor: 'rgba(16,185,129,0.3)' }}>
+            <div className="relative h-28 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/home28/horo-islamic.webp" alt="A crescent moon in the night sky" width={900} height={300} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+              <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">P. Bramwell Y0kwetahoe · public domain</span>
+            </div>
+            <div className="p-5">
             <div className="text-4xl mb-3">☪️</div>
             <div className="t-text-40 text-xs uppercase tracking-wider mb-1">Islamic Calendar</div>
             <div className="t-text font-bold text-lg">{hijriDate}</div>
             <div className="sub-desc mt-1">Hijri date · Moon sighting</div>
             <div className="t-text-30 text-xs mt-2">Full Islamic & Hebrew calendar →</div>
+            </div>
           </div>
         </Link>
       </div>

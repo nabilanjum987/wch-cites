@@ -11,7 +11,10 @@ import Link from 'next/link';
 export interface NewsCategoryData {
   slug: string;
   label: string;
-  headlines: { title: string; source: string }[];
+  // `image` is the thumbnail URL the GNews API supplied for that
+  // article (publisher image); absent when the API provides none,
+  // in which case the card stays a text card.
+  headlines: { title: string; source: string; image?: string }[];
 }
 
 export default function NewsTabs({ categories }: { categories: NewsCategoryData[] }) {
@@ -40,9 +43,15 @@ export default function NewsTabs({ categories }: { categories: NewsCategoryData[
       {current && current.headlines.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {current.headlines.map((h, i) => (
-            <Link key={i} href="/news" className="rounded-xl t-card border t-border px-4 py-3 t-border-hover-25 transition-colors no-underline block">
-              <div className="t-text-90 font-medium text-sm leading-snug">{h.title}</div>
-              <div className="sub-desc mt-1">{h.source} · read on the news page</div>
+            <Link key={i} href="/news" className="rounded-xl t-card border t-border px-4 py-3 t-border-hover-25 transition-colors no-underline flex gap-3 items-start">
+              {h.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={h.image} alt="" aria-hidden="true" width={96} height={64} loading="lazy" decoding="async" className="w-24 h-16 shrink-0 rounded-lg object-cover" />
+              )}
+              <div className="min-w-0">
+                <div className="t-text-90 font-medium text-sm leading-snug">{h.title}</div>
+                <div className="sub-desc mt-1">{h.source} · read on the news page</div>
+              </div>
             </Link>
           ))}
         </div>
