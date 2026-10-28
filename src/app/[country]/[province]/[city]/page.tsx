@@ -13,6 +13,8 @@ import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { TOLA_GRAMS } from '@/lib/gold';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
 import { CENSUS_2023_POPULATION, hasCensusPopulation } from '@/lib/census2023';
+import PopulationPie from '@/components/PopulationPie';
+import { urbanRuralSlicesFor, faithSlicesForCity, isAllUrbanDistrict } from '@/lib/census2023-splits';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
 import CityPageImage from '@/components/city/CityPageImage';
 import {
@@ -1063,6 +1065,52 @@ export default async function CityPage({
                 </div>
               ))}
             </div>
+            {/* ── Population pies (PBS Census-2023 splits) ───────────────────
+              Rendered only where a verified split exists: urban/rural for
+              Karachi + Islamabad, "100% urban (district)" text for Lahore
+              (a one-slice pie is a defect), faith pies for Karachi +
+              Islamabad. Lahore has NO faith pie: its PBS Table 9 district
+              row was not directly sighted and secondary summaries disagree
+              on the Sikh / Scheduled Castes split — see
+              @/lib/census2023-splits. Other cities get no pie block. */}
+            {(() => {
+              const urbanRural = urbanRuralSlicesFor(cityKey);
+              const faith = faithSlicesForCity(cityKey);
+              const allUrban = isAllUrbanDistrict(cityKey);
+              if (!urbanRural && !faith && !allUrban) return null;
+              return (
+                <div className="mt-6 grid gap-6 md:grid-cols-2">
+                  {urbanRural ? (
+                    <PopulationPie
+                      title="Urban vs rural population"
+                      unit={urbanRural.unit}
+                      slices={urbanRural.slices}
+                      source="PBS Census-2023, Table 1"
+                    />
+                  ) : allUrban ? (
+                    <div
+                      data-population-pie="Urban vs rural population"
+                      className="rounded-2xl p-5 border"
+                      style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}
+                    >
+                      <div className="text-white font-semibold text-sm">Urban vs rural population</div>
+                      <div className="text-gray-500 text-xs mt-0.5">Lahore District · Total {glance?.population}</div>
+                      <p className="mt-4 text-sm text-gray-300">100% urban (district)</p>
+                      <p className="mt-4 text-xs text-gray-500">Source: PBS Census-2023 — the entire Lahore District population lives in urban areas.</p>
+                    </div>
+                  ) : null}
+                  {faith ? (
+                    <PopulationPie
+                      title="Population by faith"
+                      unit={faith.unit}
+                      slices={faith.slices}
+                      source="PBS Census-2023, Table 9"
+                      note="Hindu combines Table 9's Hindu Jati + Scheduled Castes columns. Religion not recorded covers people in sensitive areas / collective residences for whom religion was not enumerated, so the pie sums to the census total."
+                    />
+                  ) : null}
+                </div>
+              );
+            })()}
             <p className="text-gray-400 leading-relaxed text-sm">
               {glance ? generateCityGlanceParagraph(city, country, province, glance.area, glance.elevation, glance.founded) : generateCityGlanceAfter(city, country)}
             </p>

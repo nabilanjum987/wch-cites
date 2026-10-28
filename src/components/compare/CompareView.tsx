@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { aqiScore, cityPath, POPULAR_PAIRS, findCompareCity, type CityCompareData } from '@/lib/compare';
-import { hasCensusPopulation } from '@/lib/census2023';
+import { censusPopulationOr, hasCensusPopulation } from '@/lib/census2023';
+import PopulationPie from '@/components/PopulationPie';
 
 // Server-rendered side-by-side comparison (Page 15 of the locked plan,
 // honest-data subset). Winners are named per category, but the verdict
@@ -35,17 +36,24 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
   const aqiB = aqiScore(b.aqi);
   const aqiWinner = aqiA != null && aqiB != null
     ? (aqiA === aqiB ? null : aqiA > aqiB ? 'a' : 'b') : null;
-  const biggerWinner = a.city.population === b.city.population ? null : a.city.population > b.city.population ? 'a' : 'b';
+  // Population figures: the census total whenever the city carries one
+  // (F3's single store), otherwise the incoming figure unchanged — so
+  // the Population row, the scorecard and the pie below can never
+  // disagree. The pie renders only when BOTH sides have a census figure.
   // F3 — the "2023 census" label applies only when BOTH sides carry a
   // PBS Census-2023 figure; other pairs keep the plain label, so a
   // non-census city is never presented as census-counted.
   const popKey = (d: CityCompareData) => `${d.ref.countrySlug}/${d.ref.provinceSlug}/${d.ref.citySlug}`;
-  const popLabel = hasCensusPopulation(popKey(a)) && hasCensusPopulation(popKey(b)) ? 'Population (2023 census)' : 'Population';
+  const popA = censusPopulationOr(popKey(a), a.city.population);
+  const popB = censusPopulationOr(popKey(b), b.city.population);
+  const bothCensus = hasCensusPopulation(popKey(a)) && hasCensusPopulation(popKey(b));
+  const popLabel = bothCensus ? 'Population (2023 census)' : 'Population';
+  const biggerWinner = popA === popB ? null : popA > popB ? 'a' : 'b';
 
   const categories: { label: string; winner: 'a' | 'b' | null; detail: string }[] = [
     { label: 'Weather comfort right now', winner: comfortWinner as 'a' | 'b' | null, detail: `Comfort score ${a.comfort ?? '—'} vs ${b.comfort ?? '—'} (WCH-computed from live feels-like, humidity and wind)` },
     { label: 'Air quality right now', winner: aqiWinner as 'a' | 'b' | null, detail: `US AQI ${a.aqi ?? '—'} (${a.aqiLevel ?? 'unknown'}) vs ${b.aqi ?? '—'} (${b.aqiLevel ?? 'unknown'})` },
-    { label: 'City size', winner: biggerWinner as 'a' | 'b' | null, detail: `Population ${fmtPop(a.city.population)} vs ${fmtPop(b.city.population)}` },
+    { label: 'City size', winner: biggerWinner as 'a' | 'b' | null, detail: `Population ${fmtPop(popA)} vs ${fmtPop(popB)}` },
   ];
   const winsA = categories.filter((c) => c.winner === 'a').length;
   const winsB = categories.filter((c) => c.winner === 'b').length;
@@ -71,7 +79,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-300">
               {comfortWinner === 'a' && <li>you want the more comfortable weather today</li>}
               {aqiWinner === 'a' && <li>cleaner air matters most to you right now</li>}
-              {biggerWinner === 'a' && <li>you prefer a larger city ({fmtPop(a.city.population)} people)</li>}
+              {biggerWinner === 'a' && <li>you prefer a larger city ({fmtPop(popA)} people)</li>}
               {biggerWinner === 'b' && <li>you prefer a smaller, less sprawling city</li>}
               <li>you want its full live dashboard — weather, prayer times, rates and news in one place</li>
             </ul>
@@ -81,7 +89,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-300">
               {comfortWinner === 'b' && <li>you want the more comfortable weather today</li>}
               {aqiWinner === 'b' && <li>cleaner air matters most to you right now</li>}
-              {biggerWinner === 'b' && <li>you prefer a larger city ({fmtPop(b.city.population)} people)</li>}
+              {biggerWinner === 'b' && <li>you prefer a larger city ({fmtPop(popB)} people)</li>}
               {biggerWinner === 'a' && <li>you prefer a smaller, less sprawling city</li>}
               <li>you want its full live dashboard — weather, prayer times, rates and news in one place</li>
             </ul>
@@ -154,7 +162,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
           <h2 className="text-lg font-bold text-white">Population & Basics</h2>
           <div className="mt-3 space-y-2.5 text-sm">
             {[
-              [popLabel, fmtPop(a.city.population), fmtPop(b.city.population)],
+              [popLabel, fmtPop(popA), fmtPop(popB)],
               ['Province / State', a.city.province, b.city.province],
               ['Country', a.city.country, b.city.country],
               ['Timezone', a.city.timezone, b.city.timezone],
@@ -168,6 +176,22 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
               </div>
             ))}
           </div>
+          {/* Population share pie — only when both sides carry a PBS
+            Census-2023 figure, so the pie and the Population row above
+            always show the same two numbers. */}
+          {bothCensus && (
+            <div className="mt-5">
+              <PopulationPie
+                title="Population share"
+                unit="2023 census totals"
+                slices={[
+                  { label: nameA, value: popA },
+                  { label: nameB, value: popB },
+                ]}
+                source="PBS Census-2023"
+              />
+            </div>
+          )}
           {a.ref.countrySlug === b.ref.countrySlug && (
             <p className="mt-4 rounded-xl bg-white/[0.04] p-3 text-xs leading-relaxed text-gray-400">
               Both cities are in {a.city.country} and share one national gold market and currency — see live rates for{' '}

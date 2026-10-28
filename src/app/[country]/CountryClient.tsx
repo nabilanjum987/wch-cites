@@ -7,6 +7,8 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getSupabase } from '@/lib/supabase';
+import PopulationPie from '@/components/PopulationPie';
+import { PAKISTAN_PROVINCE_POPULATION, PAKISTAN_PROVINCE_TOTAL, NATIONAL_FAITH_SLICES } from '@/lib/census2023-splits';
 import { censusPopulationOr } from '@/lib/census2023';
 import {
   ChevronRight, TrendingUp, TrendingDown, ArrowRight,
@@ -125,11 +127,16 @@ const MAJOR_CITIES: Record<string, CityWeather[]> = {
 };
 
 const PROVINCES: Record<string, Province[]> = {
+  // PK province populations are PBS Census-2023 Table 1 figures (pies PR),
+  // so the province cards match the population-by-province pie below.
+  // Gilgit-Baltistan / Azad Kashmir rows below are pre-existing fallback
+  // figures, untouched — PBS tabulates them separately from the
+  // four-provinces + ICT total the pie shows.
   PK: [
-    { name: 'Punjab', slug: 'punjab', capital: 'Lahore', population: 110012442, area: 205344, tagline: 'Most populous province', cities: ['Lahore', 'Multan', 'Faisalabad'] },
-    { name: 'Sindh', slug: 'sindh', capital: 'Karachi', population: 47886531, area: 140914, tagline: 'Economic heartbeat', cities: ['Karachi', 'Hyderabad', 'Sukkur'] },
-    { name: 'Khyber Pakhtunkhwa', slug: 'khyber-pakhtunkhwa', capital: 'Peshawar', population: 35625000, area: 74521, tagline: 'Land of mountains', cities: ['Peshawar', 'Abbottabad', 'Swat'] },
-    { name: 'Balochistan', slug: 'balochistan', capital: 'Quetta', population: 12344408, area: 347190, tagline: 'Largest province', cities: ['Quetta', 'Gwadar', 'Turbat'] },
+    { name: 'Punjab', slug: 'punjab', capital: 'Lahore', population: 127688922, area: 205344, tagline: 'Most populous province', cities: ['Lahore', 'Multan', 'Faisalabad'] },
+    { name: 'Sindh', slug: 'sindh', capital: 'Karachi', population: 55696147, area: 140914, tagline: 'Economic heartbeat', cities: ['Karachi', 'Hyderabad', 'Sukkur'] },
+    { name: 'Khyber Pakhtunkhwa', slug: 'khyber-pakhtunkhwa', capital: 'Peshawar', population: 40856097, area: 74521, tagline: 'Land of mountains', cities: ['Peshawar', 'Abbottabad', 'Swat'] },
+    { name: 'Balochistan', slug: 'balochistan', capital: 'Quetta', population: 14894402, area: 347190, tagline: 'Largest province', cities: ['Quetta', 'Gwadar', 'Turbat'] },
     { name: 'Gilgit-Baltistan', slug: 'gilgit-baltistan', capital: 'Gilgit', population: 1800000, area: 72497, tagline: 'Roof of the world', cities: ['Gilgit', 'Skardu', 'Hunza'] },
     { name: 'Azad Kashmir', slug: 'azad-kashmir', capital: 'Muzaffarabad', population: 4045000, area: 13297, tagline: 'Heaven on earth', cities: ['Muzaffarabad', 'Mirpur', 'Rawalakot'] },
   ],
@@ -748,6 +755,19 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
               ))}
             </div>
           </div>
+          {/* National faith pie (Pakistan only) — exact PBS Table 9
+            breakdown; the pre-existing rounded bars above are untouched. */}
+          {country.code === 'PK' && (
+            <div className="mt-4">
+              <PopulationPie
+                title="Population by faith"
+                unit="Pakistan — four provinces + Islamabad Capital Territory"
+                slices={NATIONAL_FAITH_SLICES}
+                source="PBS Census-2023, Table 9"
+                note="Table 9 records religion for 240,458,089 people; religion was not recorded for the remaining 1,041,342 (sensitive areas / collective residences), shown as its own slice so the pie sums to the Table 1 total of 241,499,431. Hindu combines Table 9's Hindu Jati + Scheduled Castes columns."
+              />
+            </div>
+          )}
         </motion.section>
 
         {/* ── 5. MARKET RATES ── */}
@@ -843,6 +863,22 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
                 </Link>
               ))}
             </div>
+            {/* Population-by-province pie (Pakistan only) — PBS Table 1.
+              The total is the four provinces + ICT; Gilgit-Baltistan and
+              Azad Kashmir are tabulated separately by PBS and are not in
+              this pie (their province cards above keep pre-existing
+              fallback figures). */}
+            {country.code === 'PK' && (
+              <div className="mt-4">
+                <PopulationPie
+                  title="Population by province"
+                  unit="Pakistan — four provinces + Islamabad Capital Territory"
+                  slices={PAKISTAN_PROVINCE_POPULATION}
+                  source="PBS Census-2023, Table 1"
+                  note={`Total ${PAKISTAN_PROVINCE_TOTAL.toLocaleString('en-US')} — the PBS Table 1 national total for these five units.`}
+                />
+              </div>
+            )}
             <p className="text-gray-500 text-sm leading-relaxed mt-5">
               {generateProvincesAfter(country.name)}
             </p>
