@@ -12,6 +12,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { gnewsSearch } from '@/lib/apis/news';
+import { CENSUS_2023_POPULATION } from '@/lib/census2023';
 
 export interface MyCityData {
   slug: string;
@@ -46,15 +47,17 @@ export const MY_CITY_META: Record<string, {
 }> = {
   lahore: {
     name: 'Lahore', province: 'Punjab', provinceSlug: 'punjab', lat: 31.5204, lng: 74.3587, tz: 'Asia/Karachi',
-    population: 13095038, famousFor: 'Mughal architecture, food, culture', capitalFact: null,
+    // F3 — populations are the PBS Census-2023 totals from the single
+    // source in @/lib/census2023 (Islamabad was previously null).
+    population: CENSUS_2023_POPULATION['pakistan/punjab/lahore'], famousFor: 'Mughal architecture, food, culture', capitalFact: null,
   },
   karachi: {
     name: 'Karachi', province: 'Sindh', provinceSlug: 'sindh', lat: 24.8607, lng: 67.0011, tz: 'Asia/Karachi',
-    population: 14910352, famousFor: 'Port city, financial hub, beaches', capitalFact: null,
+    population: CENSUS_2023_POPULATION['pakistan/sindh/karachi'], famousFor: 'Port city, financial hub, beaches', capitalFact: null,
   },
   islamabad: {
     name: 'Islamabad', province: 'Islamabad Capital Territory', provinceSlug: 'islamabad-capital-territory', lat: 33.7294, lng: 73.0931, tz: 'Asia/Karachi',
-    population: null, famousFor: null, capitalFact: 'Capital of Pakistan, planned in the 1960s at the foot of the Margalla Hills',
+    population: CENSUS_2023_POPULATION['pakistan/islamabad-capital-territory/islamabad'], famousFor: null, capitalFact: 'Capital of Pakistan, planned in the 1960s at the foot of the Margalla Hills',
   },
 };
 
