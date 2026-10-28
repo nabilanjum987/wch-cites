@@ -61,6 +61,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/pakistan`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/pakistan/punjab`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/pakistan/sindh`, changeFrequency: 'daily', priority: 0.7 },
+    // P7: the bare ICT province page returns 200 with full content live
+    // (its 8 Islamabad city URLs were already in the sitemap via the
+    // Supabase merge) but was missing as a province entry, unlike
+    // Punjab/Sindh above. Verified: 200, 1 self-canonical, title 58,
+    // description 114.
+    { url: `${baseUrl}/pakistan/islamabad-capital-territory`, changeFrequency: 'daily', priority: 0.7 },
   ]
 
   const horoscopePages: MetadataRoute.Sitemap = HOROSCOPE_SIGNS.map((sign) => ({

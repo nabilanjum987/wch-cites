@@ -110,6 +110,8 @@ function rowToProfile(r: PersonalityRow): PersonalityProfile {
     name: asString(r.name),
     title: asString(r.title),
     imageUrl: asOptString(r.image_url),
+    imageCredit: asOptString(r.image_credit),
+    imageLicence: asOptString(r.image_licence),
     birthDate: asOptString(r.birth_date),
     deathDate: asOptString(r.death_date),
     nationality: asString(r.nationality),
