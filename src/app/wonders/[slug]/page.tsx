@@ -16,6 +16,7 @@ import {
   formatLocalTime,
   formatLocalDate,
   haversineKm,
+  type Wonder,
 } from '@/lib/wonders';
 import WonderClock from './WonderClock';
 import { DirectAnswer } from '@/components/aeo/AnswerLayer';
@@ -63,6 +64,109 @@ function Section({ title, children, id }: { title: string; children: React.React
   );
 }
 
+// ── Final30 A8: keyword plan-visit sections ──────────────────────────────
+// Ticket-price / opening-hours intent for the seven briefed wonders, plus
+// Taj Mahal location + best-time-to-visit. Rendered ONLY for these slugs:
+// every answer is composed from the wonder's own verified record
+// (visitor.fees rows, hoursText, closedDays, gatesText, intro, nearby),
+// 50–70 words each. Wonders whose record carries fees: null deliberately
+// print NO figure — the answer says prices vary and points at the
+// official site instead; no fee or hour is ever invented here. H3
+// wordings are kept distinct from the existing FAQ bank questions so the
+// FAQPage schema below never carries an exact-duplicate question.
+const PLAN_VISIT_SLUGS = new Set([
+  'taj-mahal',
+  'eiffel-tower',
+  'colosseum',
+  'statue-of-liberty',
+  'great-wall-of-china',
+  'pyramids-of-giza',
+  'burj-khalifa',
+]);
+
+const TICKET_ANSWERS: Record<string, string> = {
+  'taj-mahal':
+    'Foreign tourists pay ₹1,100, citizens of SAARC and BIMSTEC countries pay ₹540, and Indian visitors pay ₹50, with an optional ₹200 extra for the main mausoleum; children below 15 enter free. Fees include ASI and ADA charges, and online tickets are discounted ₹50 for foreigners and ₹5 for Indians. Source: the Official Taj Mahal website (tajmahal.gov.in), verified 2026-10-22.',
+  'eiffel-tower':
+    "The Eiffel Tower does not publish one fixed ticket price here, because lift and stair fares vary by floor and season, and the official site publishes each day's exact schedule and same-day ticket availability. Timed tickets bought through the official ticket site are the reliable way to skip the longest queues. Source: the Eiffel Tower official site, verified 2026-10-22.",
+  colosseum:
+    'The Colosseum does not publish one fixed ticket price here: entry is by timed slot bought through the official ticketing site, and timed booking is effectively mandatory in season. A ticket typically covers the Roman Forum and Palatine Hill within 24 hours. Check the official park site for the current timetable and prices. Source: Parco archeologico del Colosseo — official site, verified 2026-10-22.',
+  'statue-of-liberty':
+    'No ticket price is printed for the Statue of Liberty here, because opening arrangements vary by season and are published by the managing authority, which also announces closures for weather, conservation work or ceremonies. Check the official site before visiting for current times, tickets and any closure notices. Source: the official site (nps.gov/stli), verified 2026-10-22.',
+  'great-wall-of-china':
+    'Great Wall ticket prices are not fixed on this page, because hours and entry fees vary by section and season; the two sections most visitors use, Badaling and Mutianyu outside Beijing, open daily from early morning. Passport-based ticket booking applies to foreign visitors at major sections. Check the official site for the current schedule. Source: The Great Wall official site, verified 2026-10-22.',
+  'pyramids-of-giza':
+    "Pyramid ticket prices are not fixed on this page: the Giza Plateau opens daily and hours shift between summer and winter seasons, while inner-pyramid entry is by separate ticket with limited daily numbers. Egypt's Ministry of Tourism and Antiquities publishes the current schedule and prices, so check its site before visiting. Source: Egypt Ministry of Tourism & Antiquities — Egymonuments, verified 2026-10-22.",
+  'burj-khalifa':
+    "Burj Khalifa ticket prices are not fixed on this page, because the operator's prices are dynamic: sunset ('prime') hours carry different prices and sell out first. The At The Top decks open daily from morning to late evening, and entry runs through Dubai Mall's lower ground floor. Check the official ticket site for the current schedule. Source: Burj Khalifa official site / At The Top, verified 2026-10-22.",
+};
+
+const HOURS_ANSWERS: Record<string, string> = {
+  'taj-mahal':
+    'The Taj Mahal opens 30 minutes before sunrise and closes 30 minutes before sunset, and it is closed on Fridays for general viewing. Today’s exact opening and closing times, from live sunrise and sunset data, are shown in the Quick Answer box at the top of this page. Source: the Official Taj Mahal website (tajmahal.gov.in), verified 2026-10-22.',
+  'eiffel-tower':
+    "The Eiffel Tower is open every day of the year. Lift and stair hours shift with the season, running mid-morning to late evening and later in summer, and the official site publishes the day's exact schedule and same-day ticket availability. Only exceptional weather or security closures interrupt opening. Source: the Eiffel Tower official site, verified 2026-10-22.",
+  colosseum:
+    'The Colosseum opens daily from the morning, and closing follows the sunset through the seasons, with last entry one hour before closing. It closes on 25 December and 1 January. The official park site publishes the current timetable and timed-entry tickets, and timed booking is effectively mandatory in season. Source: Parco archeologico del Colosseo — official site, verified 2026-10-22.',
+  'statue-of-liberty':
+    "The Statue of Liberty's opening arrangements vary by season and are published by the managing authority, so this page prints no fixed opening and closing times. Closures for weather, conservation work or ceremonies are announced by the managing authority. Check the official site before visiting for current times and tickets. Source: the official site (nps.gov/stli), verified 2026-10-22.",
+  'great-wall-of-china':
+    "Great Wall opening hours and entry fees vary by section and season. The two sections most visitors use, Badaling and Mutianyu outside Beijing, open daily from early morning, while individual sections can close in severe mountain weather. The official site and each section's own announcements publish the current schedule. Source: The Great Wall official site, verified 2026-10-22.",
+  'pyramids-of-giza':
+    "The Giza Plateau opens daily in the morning and closes before sunset, with hours shifting between the summer and winter seasons. Inner-pyramid entry is by separate ticket with limited daily numbers. Egypt's Ministry of Tourism and Antiquities publishes the current schedule and prices, so check its site before visiting. Source: Egypt Ministry of Tourism & Antiquities — Egymonuments, verified 2026-10-22.",
+  'burj-khalifa':
+    "The At The Top observation decks open daily from the morning to late evening, and sunset ('prime') hours carry different prices and sell out first. Entry runs through Dubai Mall's lower ground floor, not the tower's own doors, with security and an exhibition corridor before the lifts. Check the official ticket site for today's schedule. Source: Burj Khalifa official site / At The Top, verified 2026-10-22.",
+};
+
+function planVisitSections(wonder: Wonder): { h2: string; qa: { q: string; a: string }[] }[] {
+  if (!PLAN_VISIT_SLUGS.has(wonder.slug)) return [];
+  const ticket = TICKET_ANSWERS[wonder.slug];
+  const hours = HOURS_ANSWERS[wonder.slug];
+  if (!ticket || !hours) return [];
+  const sections: { h2: string; qa: { q: string; a: string }[] }[] = [
+    {
+      // Brief keyword for the Great Wall is "tickets", not "ticket price".
+      h2: wonder.slug === 'great-wall-of-china' ? `${wonder.name} tickets` : `${wonder.name} ticket price`,
+      qa: [
+        {
+          q:
+            wonder.slug === 'great-wall-of-china'
+              ? 'How much are Great Wall of China tickets?'
+              : `How much does a ticket to the ${wonder.name} cost?`,
+          a: ticket,
+        },
+      ],
+    },
+    {
+      h2: `${wonder.name} opening hours`,
+      qa: [{ q: `When does the ${wonder.name} open and close?`, a: hours }],
+    },
+  ];
+  if (wonder.slug === 'taj-mahal') {
+    sections.push(
+      {
+        h2: 'Taj Mahal location',
+        qa: [
+          {
+            q: 'Where is the Taj Mahal located?',
+            a: 'The Taj Mahal stands on the right bank of the river Yamuna in Agra, Uttar Pradesh, India. Entry tickets are sold at the Western Gate, near Saheli Burj, and the Eastern Gate, while the Southern Gate is exit only. Agra Fort, another Mughal monument, stands nearby in the same heritage zone.',
+          },
+        ],
+      },
+      {
+        h2: 'Taj Mahal best time to visit',
+        qa: [
+          {
+            q: 'What is the best time of day to visit the Taj Mahal?',
+            a: "The best time of day to visit the Taj Mahal is at opening time, just before sunrise: the marble glows pinkish in the first light, the crowds are thinnest, and temperatures are at their coolest. This page shows today's sunrise, sunset and golden-hour windows live, so photographers can plan around those windows.",
+          },
+        ],
+      },
+    );
+  }
+  return sections;
+}
+
 export default async function WonderPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const wonder = await getWonder(slug);
@@ -71,6 +175,9 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
   // Fix 3 (billi audit): FAQ list with the fee answer derived from the
   // record's structured fee rows — single source for schema + visible block.
   const faqs = getWonderFaqs(wonder);
+  // Final30 A8: keyword plan-visit sections (empty for out-of-brief wonders).
+  const planSections = planVisitSections(wonder);
+  const planQa = planSections.flatMap((s) => s.qa);
   const live = await getWonderLive(wonder.lat, wonder.lng, wonder.timezone);
   const hero = heroMedia(wonder);
   const gallery = wonder.media.filter((m) => m.role === 'gallery' || m.role === 'detail');
@@ -107,7 +214,9 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
       },
       {
         '@type': 'FAQPage',
-        mainEntity: faqs.map((f) => ({
+        // Final30 A8: plan-visit H3 questions join the schema with the
+        // exact visible answer text (same shape as the FAQ bank entries).
+        mainEntity: [...faqs, ...planQa].map((f) => ({
           '@type': 'Question',
           name: f.q,
           acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -480,6 +589,34 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
             </div>
           </div>
         </Section>
+
+        {/* 9b — Final30 A8: keyword plan-visit sections (briefed wonders only) */}
+        {planSections.map((s) => (
+          <Section key={s.h2} title={s.h2}>
+            <div className="max-w-3xl space-y-6">
+              {s.qa.map((item) => (
+                <div key={item.q}>
+                  <h3 className="font-semibold text-white">{item.q}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-300">{item.a}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-sm text-gray-400">
+              Official site:{' '}
+              <a href={wonder.officialUrl} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
+                {wonder.officialUrl}
+              </a>
+              {wonder.ticketUrl && (
+                <>
+                  {' '}· official tickets:{' '}
+                  <a href={wonder.ticketUrl} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
+                    {wonder.ticketUrl}
+                  </a>
+                </>
+              )}
+            </p>
+          </Section>
+        ))}
 
         {/* 10 — SEE IT LIVE */}
         <Section title="See it live">
