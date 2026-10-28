@@ -9,7 +9,8 @@ import { FamousWorksSection } from '@/components/personality/FamousWorksSection'
 import { FamousQuotesSection } from '@/components/personality/FamousQuotesSection';
 import { PersonalityBreadcrumb } from '@/components/personality/PersonalityBreadcrumb';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
-import { getPersonalityBySlug, getAllPersonalitySlugs } from '@/lib/personalities';
+import { getPersonalityBySlug, getAllPersonalitySlugs, getRelatedPersonalities } from '@/lib/personalities';
+import { RelatedPersonalitiesSection } from '@/components/personality/RelatedPersonalitiesSection';
 import { PersonalityDescription } from '@/components/personality/PersonalityDescription';
 import { DirectAnswer, FaqBlock, type AeoFaq } from '@/components/aeo/AnswerLayer';
 import {
@@ -31,6 +32,57 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// ── P4: meta-length helpers ───────────────────────────────────────────────
+// The generator previously sliced every description at exactly 160
+// chars mid-word and let titles run to 77 chars. Both caps are now
+// honoured on a word boundary, for EVERY profile (the helpers operate
+// on whatever record the data layer returns — seed or database — so no
+// per-profile patching is needed):
+//   description ≤ 155 chars, title ≤ 60 chars (decoded).
+// A cut never ends mid-word: the text is cut at the cap, then backed
+// off to the last whitespace inside the cap. If that backing-off would
+// leave a uselessly short fragment (no whitespace at all inside the
+// cap — a single unbroken token longer than the cap, which no live
+// profile has), there is no word-boundary cut to emit, so the helper
+// returns '' rather than a mid-word fragment or invented text. Text
+// is never padded and never invented; titles that already fit are
+// returned byte-identical, and only the over-long title portion is
+// cut (the name and the site suffix are never dropped to make room).
+const META_DESC_MAX = 155;
+const META_TITLE_MAX = 60;
+const SITE_SUFFIX = ' | WorldCityHub';
+
+function cutAtWordBoundary(text: string, max: number): string {
+  const t = text.trim();
+  if (t.length <= max) return t;
+  const head = t.slice(0, max);
+  let lastSpace = -1;
+  for (const m of head.matchAll(/\s/g)) lastSpace = m.index;
+  if (lastSpace > 0) return head.slice(0, lastSpace).trimEnd();
+  return '';
+}
+
+function fitMetaTitle(name: string, title: string): string {
+  const full = `${name} — ${title}${SITE_SUFFIX}`;
+  if (full.length <= META_TITLE_MAX) return full;
+  const titleBudget = META_TITLE_MAX - name.length - 3 - SITE_SUFFIX.length;
+  if (titleBudget >= 1) {
+    const cut = cutAtWordBoundary(title, titleBudget);
+    if (cut) return `${name} — ${cut}${SITE_SUFFIX}`;
+    return `${name}${SITE_SUFFIX}`;
+  }
+  // Even name + suffix alone exceeds 60 (no live profile does): cut
+  // the name itself at a word boundary rather than dropping the suffix.
+  const cutName = cutAtWordBoundary(name, META_TITLE_MAX - SITE_SUFFIX.length);
+  return `${cutName}${SITE_SUFFIX}`;
+}
+
+function fitOgTitle(name: string): string {
+  const full = `${name}${SITE_SUFFIX}`;
+  if (full.length <= META_TITLE_MAX) return full;
+  return `${cutAtWordBoundary(name, META_TITLE_MAX - SITE_SUFFIX.length)}${SITE_SUFFIX}`;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const p = await getPersonalityBySlug(slug);
@@ -41,12 +93,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // it does not fail the build.
   const desc = (typeof p.description === 'string' ? p.description.trim() : '') || `${p.name} — ${p.title}`;
   return {
-    title: `${p.name} — ${p.title} | WorldCityHub`,
-    description: desc.slice(0, 160),
+    title: fitMetaTitle(p.name, p.title),
+    description: cutAtWordBoundary(desc, META_DESC_MAX),
     alternates: { canonical: `https://worldcityhub.vercel.app/personalities/${slug}` },
     openGraph: {
-      title: `${p.name} | WorldCityHub`,
-      description: desc.slice(0, 160),
+      title: fitOgTitle(p.name),
+      description: cutAtWordBoundary(desc, META_DESC_MAX),
       images: p.imageUrl ? [{ url: p.imageUrl }] : [],
     },
   };
@@ -269,6 +321,9 @@ export default async function PersonalityPage({ params }: PageProps) {
   const { slug } = await params;
   const p = await getPersonalityBySlug(slug);
   if (!p) notFound();
+  // Server-rendered related section (template Section 10): fetched in
+  // the server component so the links are in the raw HTML.
+  const related = await getRelatedPersonalities(p);
 
   // ── Schema (SEO completion, Batch 4 Item 1): Person, built ONLY from
   // the profile record. Dates are stored as text ("9 November 1877");
@@ -338,6 +393,8 @@ export default async function PersonalityPage({ params }: PageProps) {
             name={p.name}
             title={p.title}
             imageUrl={p.imageUrl}
+            imageCredit={p.imageCredit}
+            imageLicence={p.imageLicence}
             birthDate={p.birthDate}
             deathDate={p.deathDate}
             nationality={p.nationality}
@@ -429,6 +486,17 @@ export default async function PersonalityPage({ params }: PageProps) {
             </p>
           </div>
         )}
+
+        {/* Related personalities (template Section 10) — omitted entirely
+            when the pool yields no related profile (never an empty shell).
+            "See All" goes to the city page's #personalities listing: no
+            /personalities index exists, and the live /personalities URL
+            is a "Check back soon" country-fallback shell, not a listing. */}
+        <RelatedPersonalitiesSection
+          profiles={related}
+          city={p.city}
+          cityHref={`/${p.countrySlug}/${p.provinceSlug}/${p.citySlug}`}
+        />
 
         {/* External links */}
         {p.wikiUrl && (

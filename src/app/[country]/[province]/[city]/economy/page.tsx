@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import EconomyPageClient from '@/components/economy/EconomyPageClient';
+import CityPageImage from '@/components/city/CityPageImage';
+
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 import { getCountryEconomy, resolveIso2, type WBValues } from '@/lib/apis/worldbank';
 
 interface PageProps {
@@ -39,14 +43,23 @@ export default async function EconomyPage({ params }: PageProps) {
     miseryData = eco.misery.length > 0 ? eco.misery : null;
   } catch { /* WB unavailable — client shows an honest reduced page */ }
 
+  // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+  const cityName = cityData?.name ?? titleCaseSlug(city);
+  const provinceName = cityData?.province ?? titleCaseSlug(province);
+  const countryName = cityData?.country ?? titleCaseSlug(country);
   return (
-    <EconomyPageClient
-      country={country}
-      province={province}
-      citySlug={city}
-      cityData={cityData}
-      wb={wb}
-      miseryData={miseryData}
-    />
+    <>
+      <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, country, provinceName, province, cityName, city, 'Economy', 'economy'))} />
+      <JsonLd data={cityJsonLd(cityName, city, provinceName, province, countryName, country)} />
+      <CityPageImage citySlug={city} variant="economy" />
+      <EconomyPageClient
+        country={country}
+        province={province}
+        citySlug={city}
+        cityData={cityData}
+        wb={wb}
+        miseryData={miseryData}
+      />
+    </>
   );
 }

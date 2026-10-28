@@ -39,6 +39,7 @@ import {
 } from 'lucide-react';
 import { fetchGoldRates, fetchOilPrices, fetchFuelPrices, fetchCryptoData, fetchCurrencyPairs, fetchCurrencyHistory, fetchStockIndices, fetchStockMovers, fetchCommodities, calculateCurrencyLoss, calculateRemittance, calculateLoan, calculateSavings, calculatePurchasingPower, calculateMiseryImpact, generateOilAffectParagraph, fetchFinancialNews, type GoldRates, type OilPrice, type FuelPrice, type CryptoData, type CryptoMarket, type CurrencyPair, type CurrencyHistory, type StockIndex, type StockMover, type Commodity, type FinancialStressData, type MiseryIndex, type InterestRate, type NewsArticle } from '../../lib/apis/rates';
 import { fetchWorldBankLatest, buildMiseryIndex, computeStressScore, stressLevel, countrySlugToIso2, MISERY_META, type MiseryRow } from '../../lib/apis/worldbank';
+import { TOLA_GRAMS, TROY_OZ_GRAMS } from '../../lib/gold';
 import {
   COUNTRY_CURRENCIES,
   FLAG_COLORS,
@@ -425,8 +426,9 @@ function RemittanceCalculator({ currency, currencyPairs }: RemittanceCalculatorP
 
 interface CountryRatesPageProps {
   countrySlug?: string;
-  // Real gold + crypto data fetched on the server (CoinGecko) so the
-  // page's raw HTML carries live rates instead of a loading skeleton.
+  // Real gold (gold-api XAU spot; CoinGecko PAXG for history/change
+  // only) + crypto data fetched on the server so the page's raw HTML
+  // carries live rates instead of a loading skeleton.
   // The mount effect still refreshes everything as before.
   initialRates?: GoldRates | null;
   initialCrypto?: { cryptos: CryptoData[]; market: CryptoMarket } | null;
@@ -557,9 +559,9 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
     if (!rates) return 0;
     const gramPrice = rates.by_karat[karat];
     if (activeUnit === 'per_gram') return gramPrice;
-    if (activeUnit === 'per_tola') return Math.round(gramPrice * 11.664 * 100) / 100;
+    if (activeUnit === 'per_tola') return Math.round(gramPrice * TOLA_GRAMS * 100) / 100;
     if (activeUnit === 'per_10g') return Math.round(gramPrice * 10 * 100) / 100;
-    return Math.round(gramPrice * 31.1035 * 100) / 100;
+    return Math.round(gramPrice * TROY_OZ_GRAMS * 100) / 100;
   };
 
   const isPositive = rates ? rates.change_percent >= 0 : true;
@@ -744,6 +746,11 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
                     <h2 className="text-lg font-semibold text-white">30-Day Price History</h2>
                     <p className="text-sm text-gray-400">
                       24K gold per gram · {currency.code}
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      {rates.spot_source === 'gold-api-xau'
+                        ? 'History, 24h change and year-to-date figures are the CoinGecko PAX Gold series; the headline spot price is gold-api.com XAU.'
+                        : 'Headline spot and history are the CoinGecko PAX Gold series while gold-api.com is unavailable.'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">

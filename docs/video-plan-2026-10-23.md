@@ -14,7 +14,7 @@ automated.
 
 **Queue rule:** only pages LIVE today (production sitemap, 61 URLs, read
 2026-10-23) that already have a banked brief in `docs/video-briefs/`.
-Briefs for pages that are not live yet wait (listed at the end) — a video
+Briefs for pages that are live by URL, not yet in sitemap, wait (listed at the end) — a video
 is never produced for an unpublished page.
 
 ## Production queue — 10 videos
@@ -138,7 +138,7 @@ also matches the social plan's launch rhythm.
 ## Explicitly OUT of this queue — briefs that wait for their pages
 
 All 12 batch-2 briefs (`docs/video-briefs/batch2/`) are complete but
-their pages are **not live today**, so they wait — each joins the queue
+live by URL, not yet in sitemap, so they wait — each joins the queue
 the week its page publishes, in golden order:
 
 - Wonders (7): `burj-khalifa.md`, `christ-the-redeemer.md`,

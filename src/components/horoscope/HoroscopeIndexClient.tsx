@@ -7,6 +7,8 @@ import ZodiacSignsGrid from './ZodiacSignsGrid';
 import SkyRightNowWrapper from './SkyRightNowWrapper';
 import MoonCalendar from './MoonCalendar';
 import TarotCardOfDay from './TarotCardOfDay';
+import ChineseZodiacSection from './ChineseZodiacSection';
+import LifePathNumerology from './LifePathNumerology';
 import Affiliates from './Affiliates';
 import type { ZodiacSign } from '@/types/horoscope';
 
@@ -102,6 +104,24 @@ export default function HoroscopeIndexClient() {
             <h2 className="text-xl font-bold text-white">Tarot Card of the Day</h2>
           </div>
           <TarotCardOfDay primaryColor="#7c3aed" />
+        </section>
+
+        {/* Chinese Zodiac */}
+        <section>
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles size={20} className="text-red-400" />
+            <h2 className="text-xl font-bold text-white">Chinese Zodiac</h2>
+          </div>
+          <ChineseZodiacSection />
+        </section>
+
+        {/* Numerology: Life-Path Number */}
+        <section>
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles size={20} className="text-yellow-400" />
+            <h2 className="text-xl font-bold text-white">Numerology: Your Life-Path Number</h2>
+          </div>
+          <LifePathNumerology />
         </section>
 
         {/* All Signs Grid */}

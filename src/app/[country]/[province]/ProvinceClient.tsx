@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getSupabase } from '@/lib/supabase';
+import { CENSUS_2023_POPULATION, censusPopulationOr } from '@/lib/census2023';
 import {
   ChevronRight, TrendingUp, TrendingDown, ArrowRight,
   Globe, Users, Coins, Calendar, ShieldAlert, Utensils,
@@ -114,10 +115,12 @@ const PROVINCES: Record<string, Province> = {
 
 const PROVINCE_CITIES: Record<string, City[]> = {
   'islamabad-capital-territory': [
-    { name: 'Islamabad', slug: 'islamabad', population: 1014825, temp: 28, condition: 'Pleasant', icon: '🌤️' },
+    // F3 — fallback figures for the three census cities are the PBS
+    // Census-2023 totals from the single source in @/lib/census2023.
+    { name: 'Islamabad', slug: 'islamabad', population: CENSUS_2023_POPULATION['pakistan/islamabad-capital-territory/islamabad'], temp: 28, condition: 'Pleasant', icon: '🌤️' },
   ],
   punjab: [
-    { name: 'Lahore',      slug: 'lahore',      population: 14000000, temp: 35, condition: 'Hot',      icon: '☀️' },
+    { name: 'Lahore',      slug: 'lahore',      population: CENSUS_2023_POPULATION['pakistan/punjab/lahore'], temp: 35, condition: 'Hot',      icon: '☀️' },
     { name: 'Faisalabad',  slug: 'faisalabad',  population: 3600000,  temp: 36, condition: 'Hot',      icon: '☀️' },
     { name: 'Rawalpindi',  slug: 'rawalpindi',  population: 2100000,  temp: 31, condition: 'Clear',    icon: '🌤️' },
     { name: 'Multan',      slug: 'multan',      population: 1900000,  temp: 38, condition: 'Very Hot', icon: '🔥' },
@@ -125,7 +128,7 @@ const PROVINCE_CITIES: Record<string, City[]> = {
     { name: 'Sialkot',     slug: 'sialkot',     population: 900000,   temp: 32, condition: 'Warm',     icon: '⛅' },
   ],
   sindh: [
-    { name: 'Karachi',    slug: 'karachi',    population: 15000000, temp: 32, condition: 'Humid',  icon: '🌤️' },
+    { name: 'Karachi',    slug: 'karachi',    population: CENSUS_2023_POPULATION['pakistan/sindh/karachi'], temp: 32, condition: 'Humid',  icon: '🌤️' },
     { name: 'Hyderabad',  slug: 'hyderabad',  population: 1800000,  temp: 35, condition: 'Hot',    icon: '☀️' },
     { name: 'Sukkur',     slug: 'sukkur',     population: 500000,   temp: 38, condition: 'Hot',    icon: '🔥' },
     { name: 'Larkana',    slug: 'larkana',    population: 490000,   temp: 37, condition: 'Hot',    icon: '🔥' },
@@ -502,7 +505,12 @@ export default function ProvincePage({ wbCountryPopulation }: { wbCountryPopulat
             console.warn(`Live cities query error for ${countrySlug}/${provinceSlug}:`, error.message);
             setLiveCities([]);
           } else {
-            setLiveCities((data || []) as SupabaseCity[]);
+            // F3 — canonical override: a stale live `cities` row must
+            // not outrank the census figure on the province page.
+            setLiveCities(((data || []) as SupabaseCity[]).map((row) => ({
+              ...row,
+              population: censusPopulationOr(`${countrySlug}/${provinceSlug}/${row.city_slug}`, row.population),
+            })));
           }
         }
       } catch (err: any) {

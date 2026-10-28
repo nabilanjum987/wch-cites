@@ -3,6 +3,7 @@
 // Real data injected - no placeholders
 
 import { CAPITALS } from '../capitals';
+import { TOLA_GRAMS } from '../gold';
 
 // ─── F2 (Batch 4 findings fix): capital-claim gating ──────────────────
 // This generator used to describe EVERY city as "the capital of
@@ -124,7 +125,7 @@ export function generateCityFaqs(props: CityMetaProps): { q: string; a: string }
     {
       q: `What is the gold rate in ${city} today?`,
       a: goldPerGram
-        ? `The gold rate in ${city} today is PKR ${Math.round(goldPerGram).toLocaleString()} per gram for 24-karat gold, which equals PKR ${Math.round(goldPerGram * 11.664).toLocaleString()} per tola — one tola is 11.664 grams. The rate follows the international bullion market and the rupee's exchange rate, and this page updates it daily from the same live feed. Jewellers in ${city} add making charges on top of this bullion rate.`
+        ? `The gold rate in ${city} today is PKR ${Math.round(goldPerGram).toLocaleString()} per gram for 24-karat gold, which equals PKR ${Math.round(goldPerGram * TOLA_GRAMS).toLocaleString()} per tola — one tola is 11.664 grams. The rate follows the international bullion market and the rupee's exchange rate, and this page updates it daily from the same live feed. Jewellers in ${city} add making charges on top of this bullion rate.`
         : `Gold in ${city} is priced per gram and per tola (one tola = 11.664 grams) from the international bullion market, converted into ${isPakistan ? 'Pakistani rupees' : 'the local currency'}. The Gold & Rates section of this page shows today's 24-karat rate with 22K, 21K and 18K beside it, updated daily; the full Rates page tracks the metal in other currencies too. Jewellers add making charges on top.`,
     },
     {
