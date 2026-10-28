@@ -9,7 +9,8 @@ import { FamousWorksSection } from '@/components/personality/FamousWorksSection'
 import { FamousQuotesSection } from '@/components/personality/FamousQuotesSection';
 import { PersonalityBreadcrumb } from '@/components/personality/PersonalityBreadcrumb';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
-import { getPersonalityBySlug, getAllPersonalitySlugs } from '@/lib/personalities';
+import { getPersonalityBySlug, getAllPersonalitySlugs, getRelatedPersonalities } from '@/lib/personalities';
+import { RelatedPersonalitiesSection } from '@/components/personality/RelatedPersonalitiesSection';
 import { PersonalityDescription } from '@/components/personality/PersonalityDescription';
 import { DirectAnswer, FaqBlock, type AeoFaq } from '@/components/aeo/AnswerLayer';
 import {
@@ -320,6 +321,9 @@ export default async function PersonalityPage({ params }: PageProps) {
   const { slug } = await params;
   const p = await getPersonalityBySlug(slug);
   if (!p) notFound();
+  // Server-rendered related section (template Section 10): fetched in
+  // the server component so the links are in the raw HTML.
+  const related = await getRelatedPersonalities(p);
 
   // ── Schema (SEO completion, Batch 4 Item 1): Person, built ONLY from
   // the profile record. Dates are stored as text ("9 November 1877");
@@ -482,6 +486,17 @@ export default async function PersonalityPage({ params }: PageProps) {
             </p>
           </div>
         )}
+
+        {/* Related personalities (template Section 10) — omitted entirely
+            when the pool yields no related profile (never an empty shell).
+            "See All" goes to the city page's #personalities listing: no
+            /personalities index exists, and the live /personalities URL
+            is a "Check back soon" country-fallback shell, not a listing. */}
+        <RelatedPersonalitiesSection
+          profiles={related}
+          city={p.city}
+          cityHref={`/${p.countrySlug}/${p.provinceSlug}/${p.citySlug}`}
+        />
 
         {/* External links */}
         {p.wikiUrl && (
