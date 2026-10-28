@@ -1,6 +1,7 @@
 # Source Reliability Register — WorldCityHub (Research Bank B9)
 
 **Status:** LIVING REGISTER, banked 2026-10-22. Review date for every row: **2026-10-22**.
+**Amendment 2026-10-28 (B6):** the gold rows below are updated to the F4 canonical; every other row is still at its 2026-10-22 review.
 **Compiled from:** (1) codebase grep of this repo tree (endpoints + `process.env` reads),
 (2) `DAY_LOG_2026-10-22.md`, (3) `wch-local-data-api-map-2026-10-22.md`.
 **Conventions:** Key owner = whose account/Vercel env holds the key. A limit or term that could
@@ -26,7 +27,9 @@ on unmerged PR branches and are noted as such).
    `SportsClient.tsx`) with two further calls on `/json/3/`. Neither matches the day-log state —
    reconcile at merge time.
 3. **Name-collision trap:** `gold-api.com` (keyless, in tickers/rates) and `goldapi.io`
-   (keyed, `NEXT_PUBLIC_METAL_KEY`, in cityData) are **different services**; both are in code.
+   (keyed, `NEXT_PUBLIC_METAL_KEY`, formerly in cityData) are **different services**; as of
+   F4 (2026-10-28) only gold-api.com is in code — the goldapi.io call was retired (see the
+   goldapi.io row below). Do not reintroduce it.
 4. **Frankfurter migration is branch-only.** This tree still calls the legacy host
    `api.frankfurter.app` in `src/lib/apis/rates.ts` (lines 303, 344). The move to the
    ExchangeRate-API open endpoint exists on PR #13 (unmerged).
@@ -37,9 +40,9 @@ on unmerged PR branches and are noted as such).
 
 | Source | Owner | Powers | Licence / terms | Free-tier limits | Key | Fallback | Status 2026-10-22 |
 |---|---|---|---|---|---|---|---|
-| CoinGecko | CoinGecko | Ticker gold (PAXG), BTC, market movers | API terms; attribution expected | UNVERIFIED (public tier rate limits apply) | none | gold-api.com | ACTIVE (tickers.ts) |
-| gold-api.com | gold-api.com | Silver spot XAG (ticker + rates); XAU path | Free API, terms UNVERIFIED | UNVERIFIED | none | CoinGecko PAXG | ACTIVE |
-| goldapi.io | GoldAPI.io | Gold price in cityData path | Commercial API, keyed | UNVERIFIED | owner (`NEXT_PUBLIC_METAL_KEY`) | gold-api.com / CoinGecko | ACTIVE in code; key in Vercel |
+| CoinGecko | CoinGecko | PAX Gold fallback for gold spot; PAXG series behind rates-page gold history/24h change; BTC, market movers | API terms; attribution expected | UNVERIFIED (public tier rate limits apply) | none | gold-api.com | ACTIVE — fallback only for gold spot (F4) |
+| gold-api.com | gold-api.com | CANONICAL gold spot XAU (all surfaces via src/lib/gold.ts) + silver spot XAG (ticker + rates) | Free API, terms UNVERIFIED | UNVERIFIED | none | CoinGecko PAXG | ACTIVE (F4 canonical) |
+| goldapi.io | GoldAPI.io | — (retired; formerly gold price in cityData path) | Commercial API, keyed | UNVERIFIED | owner (`NEXT_PUBLIC_METAL_KEY`, no longer read) | n/a (retired) | RETIRED (F4, 2026-10-28): no live call in code; canonical = gold-api.com XAU spot, CoinGecko PAX Gold fallback only |
 | open.er-api.com | ExchangeRate-API (open endpoint) | Ticker FX (USD/PKR, SAR, AED, GBP…) | Free open endpoint, attribution | Updates daily; pair limits UNVERIFIED | none | ExchangeRate-API v6 keyed | ACTIVE |
 | ExchangeRate-API v6 | ExchangeRate-API | FX in cityData path | Keyed API terms | UNVERIFIED | owner (`NEXT_PUBLIC_EXCHANGE_KEY`) | open.er-api.com | ACTIVE in code |
 | Frankfurter | Frankfurter (ECB data) | Legacy FX history in rates.ts | Free, keyless | n/a | none | ExchangeRate-API (PR #13, unmerged) | **DEGRADED** — new host dropped PKR/AED/SAR (ECB currencies only); legacy host still called in this tree |

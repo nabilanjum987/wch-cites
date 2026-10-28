@@ -180,7 +180,7 @@ export default async function CountriesPage({
               weather, prayer times, rates, news, economy, sports and events, plus sections on the
               city&apos;s notable personalities and famous places. The figures come from the public sources named on each page — the World Bank
               for economy indicators, Open-Meteo and OpenWeatherMap for weather, Aladhan for prayer times,
-              CoinGecko for gold and crypto — never from a writer&apos;s imagination.
+              gold-api for gold and silver spot (CoinGecko PAX Gold as fallback) and CoinGecko for crypto — never from a writer&apos;s imagination.
             </p>
             <p className="text-white/60 max-w-2xl leading-relaxed">
               Coverage grows in verified batches rather than by flooding the index with thin pages, so a
