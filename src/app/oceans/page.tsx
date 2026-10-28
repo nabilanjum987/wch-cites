@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { UPCOMING_OCEANS, getPublishedOceans, getOceanLive, oceanHero, seaStateLabel } from '@/lib/oceans';
+import { getHubOceans, getOceanLive, oceanHero, seaStateLabel } from '@/lib/oceans';
 
-// Oceans hub (WP5 / marathon Q10) — server-rendered, mirroring the
-// wonders hub treatment. Only PUBLISHED oceans are linked; the rest
-// appear as content (name + note, no link) until their own golden
-// build passes QA.
+// Oceans hub (WP5 / marathon Q10; final28-P1) — server-rendered,
+// mirroring the wonders hub treatment. The list is generated from
+// data: every ocean in the hub list is a live, complete detail page
+// (all 16 verified HTTP 200 with facts, FAQs, sources and gallery
+// before linking). No ocean is listed without a link.
 export const revalidate = 1800;
 
 const BASE = 'https://worldcityhub.vercel.app';
@@ -19,13 +20,33 @@ export const metadata: Metadata = {
 };
 
 export default async function OceansIndex() {
-  const oceans = await getPublishedOceans();
+  const oceans = await getHubOceans();
   const withLive = await Promise.all(
     oceans.map(async (o) => ({ ocean: o, live: await getOceanLive(o) })),
   );
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Oceans & Seas',
+    description:
+      'Ocean guides with sourced facts (Wikidata & Wikipedia), licensed credited photos, and a live marine layer — waves and coastal weather today.',
+    url: `${BASE}/oceans`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: oceans.length,
+      itemListElement: oceans.map((o, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: o.name,
+        url: `${BASE}/oceans/${o.slug}`,
+      })),
+    },
+  };
+
   return (
     <main className="min-h-screen bg-[#0a0e1a] text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
         <nav aria-label="Breadcrumb" className="text-sm text-gray-400">
           <Link href="/" className="hover:text-white">Home</Link>
@@ -44,6 +65,7 @@ export default async function OceansIndex() {
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
           {withLive.map(({ ocean: o, live }) => {
             const hero = oceanHero(o);
+            const area = o.facts.find((f) => f.label === 'Total area')?.value.split('(')[0].trim();
             return (
               <Link
                 key={o.slug}
@@ -55,7 +77,7 @@ export default async function OceansIndex() {
                 </div>
                 <div className="p-5">
                   <h3 className="text-xl font-bold group-hover:text-sky-300">{o.name}</h3>
-                  <p className="mt-1 text-sm text-gray-400">Northwestern {o.partOfName} · 3,862,000 km²</p>
+                  <p className="mt-1 text-sm text-gray-400">{o.partOfLabel}{area ? ` · ${area}` : ''}</p>
                   {live && live.waveHeight !== null && (
                     <p className="mt-2 text-sm text-emerald-300">
                       Live now: waves {live.waveHeight.toFixed(2)} m · {seaStateLabel(live.waveHeight)}
@@ -70,21 +92,6 @@ export default async function OceansIndex() {
           })}
         </div>
 
-        <h2 className="mt-12 text-2xl font-bold">The world&apos;s oceans — in preparation</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-400">
-          Each receives the same golden treatment — sourced facts, licensed photography and a live marine layer —
-          before its guide opens. Until then they are listed here as content only, deliberately without links:
-          WorldCityHub never links to an unfinished page.
-        </p>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {UPCOMING_OCEANS.map((u) => (
-            <li key={u.name} className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <p className="font-semibold text-gray-100">{u.name}</p>
-              <p className="mt-0.5 text-sm text-gray-400">{u.note}</p>
-              <p className="mt-2 text-xs font-medium uppercase tracking-wide text-gray-500">Guide in preparation</p>
-            </li>
-          ))}
-        </ul>
       </div>
     </main>
   );

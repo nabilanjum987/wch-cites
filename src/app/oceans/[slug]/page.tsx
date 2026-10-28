@@ -6,6 +6,7 @@ import {
   PUBLISHED_OCEANS,
   getOcean,
   getOceanLive,
+  getSiblingOceans,
   oceanHero,
   weatherLabel,
   compass,
@@ -449,6 +450,31 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
             follow the same standard, one verified ocean at a time; they are listed on the oceans hub as content until
             their guides are real.
           </p>
+          {/* P10: sibling detail links, server-rendered in this template
+              (getSiblingOceans: complete builds only, never unfinished
+              oceans). When this ocean has a published coastal city, its
+              live city guide — the page's place link — is listed here too;
+              oceans without a coastal city list no place link, per the
+              missing-data rule. */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {getSiblingOceans(ocean.slug).map((s) => (
+              <Link
+                key={s.slug}
+                href={`/oceans/${s.slug}`}
+                className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+              >
+                {s.name}
+              </Link>
+            ))}
+            {coast && (
+              <Link
+                href={coast.path}
+                className="rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-sky-400"
+              >
+                {coast.name} city guide →
+              </Link>
+            )}
+          </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link href="/oceans" className="rounded-full bg-sky-500 px-5 py-2 text-sm font-semibold text-black transition hover:bg-sky-400">
               All oceans

@@ -61,6 +61,23 @@ export default async function EventsPanel() {
 
   return (
     <div>
+      {/* Homepage-imagery pass (2026-10-28): the section is no longer
+          text-only. No public holidays fall in the feed's covered
+          countries this week (verified 2026-10-28: nager.at returns
+          nothing for GB/US for 2026-10-27–2026-11-03), and the events
+          database item (P2) had no PR up, so — per the item, without
+          blocking on P2 — the banner is a real photo of Lahore, the
+          published city whose events page this section links first
+          (Minar-e-Pakistan, King Eliot, CC BY-SA 4.0; vendored under
+          public/images/home28/; record in
+          docs/media-registry/subjects/homepage-imagery-2026-10-28.json). */}
+      <figure className="relative h-40 sm:h-48 overflow-hidden rounded-2xl border t-border mb-5">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/home28/events-lahore.webp" alt="Minar-e-Pakistan tower in Lahore" width={900} height={400} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+        <figcaption className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[11px] px-2.5 py-1 rounded-tl-lg">
+          Minar-e-Pakistan, Lahore — photo: King Eliot · CC BY-SA 4.0
+        </figcaption>
+      </figure>
       {upcoming.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
           {upcoming.map((h, i) => (

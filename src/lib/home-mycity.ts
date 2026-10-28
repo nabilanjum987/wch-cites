@@ -12,6 +12,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { gnewsSearch } from '@/lib/apis/news';
+import { CENSUS_2023_POPULATION } from '@/lib/census2023';
 
 export interface MyCityData {
   slug: string;
@@ -46,15 +47,17 @@ export const MY_CITY_META: Record<string, {
 }> = {
   lahore: {
     name: 'Lahore', province: 'Punjab', provinceSlug: 'punjab', lat: 31.5204, lng: 74.3587, tz: 'Asia/Karachi',
-    population: 13095038, famousFor: 'Mughal architecture, food, culture', capitalFact: null,
+    // F3 — populations are the PBS Census-2023 totals from the single
+    // source in @/lib/census2023 (Islamabad was previously null).
+    population: CENSUS_2023_POPULATION['pakistan/punjab/lahore'], famousFor: 'Mughal architecture, food, culture', capitalFact: null,
   },
   karachi: {
     name: 'Karachi', province: 'Sindh', provinceSlug: 'sindh', lat: 24.8607, lng: 67.0011, tz: 'Asia/Karachi',
-    population: 14910352, famousFor: 'Port city, financial hub, beaches', capitalFact: null,
+    population: CENSUS_2023_POPULATION['pakistan/sindh/karachi'], famousFor: 'Port city, financial hub, beaches', capitalFact: null,
   },
   islamabad: {
     name: 'Islamabad', province: 'Islamabad Capital Territory', provinceSlug: 'islamabad-capital-territory', lat: 33.7294, lng: 73.0931, tz: 'Asia/Karachi',
-    population: null, famousFor: null, capitalFact: 'Capital of Pakistan, planned in the 1960s at the foot of the Margalla Hills',
+    population: CENSUS_2023_POPULATION['pakistan/islamabad-capital-territory/islamabad'], famousFor: null, capitalFact: 'Capital of Pakistan, planned in the 1960s at the foot of the Margalla Hills',
   },
 };
 
@@ -175,14 +178,37 @@ export async function getMyCityData(slug: string): Promise<MyCityData> {
     moonPhase: moonPhaseName(),
     facts,
     headlines: (news ?? []).map((a: any) => a.title).filter(Boolean).slice(0, 2),
-    image: slug === 'lahore'
-      ? {
-          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Badshahi_Mosque_%28Lahore%29.jpg/1280px-Badshahi_Mosque_%28Lahore%29.jpg',
-          // Image: "Badshahi Mosque (Lahore).jpg" by Muhammad Umair Mirza,
-          // Wikimedia Commons, CC BY-SA 4.0.
-          credit: 'Badshahi Mosque, Lahore — photo by Muhammad Umair Mirza · CC BY-SA 4.0 · Wikimedia Commons',
-          alt: 'The Badshahi Mosque in Lahore at golden hour',
-        }
-      : null,
+    // Homepage-imagery pass (2026-10-28) — VERIFIED mapping fix:
+    // the Lahore photo was correct (it IS the Badshahi Mosque in
+    // Lahore, not a Taj/generic image) but it was a Wikimedia
+    // HOTLINK, and Karachi/Islamabad had no photo at all, so a
+    // visitor whose panel switched cities lost the photo entirely.
+    // Now every published city has its own VENDORED photo under
+    // public/images/home28/ (records in
+    // docs/media-registry/subjects/homepage-imagery-2026-10-28.json),
+    // and the panel photo always matches the panel city. The Lahore
+    // file is the same Umair Mirza photo, now local instead of
+    // hotlinked.
+    image: CITY_IMAGES[slug] ?? null,
   };
 }
+
+// One real photo per published city, keyed by the same slug the panel
+// switches on — so the photo can never show the wrong city.
+const CITY_IMAGES: Record<string, { url: string; credit: string; alt: string }> = {
+  lahore: {
+    url: '/images/home28/mycity-lahore.webp',
+    credit: 'Badshahi Mosque, Lahore — photo by Muhammad Umair Mirza · CC BY-SA 4.0 · Wikimedia Commons',
+    alt: 'The Badshahi Mosque in Lahore at golden hour',
+  },
+  karachi: {
+    url: '/images/home28/mycity-karachi.webp',
+    credit: 'Mazar-e-Quaid, Karachi — photo by Anwar Ahmed · CC BY-SA 3.0 · Wikimedia Commons',
+    alt: 'The Mazar-e-Quaid mausoleum in Karachi',
+  },
+  islamabad: {
+    url: '/images/home28/mycity-islamabad.webp',
+    credit: 'The Faisal Mosque in Islamabad — photo by Marsmux · CC BY-SA 4.0 · Wikimedia Commons',
+    alt: 'The Faisal Mosque in Islamabad',
+  },
+};

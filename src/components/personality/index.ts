@@ -5,3 +5,4 @@ export { AchievementsSection } from './AchievementsSection';
 export { FamousWorksSection } from './FamousWorksSection';
 export { FamousQuotesSection } from './FamousQuotesSection';
 export { PersonalityBreadcrumb } from './PersonalityBreadcrumb';
+export { RelatedPersonalitiesSection } from './RelatedPersonalitiesSection';
