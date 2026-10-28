@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getCityData } from '@/lib/getCityData';
 import RatesPageClient from '@/components/rates/RatesPageClient';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 import { fetchGoldRates, fetchCryptoData } from '@/lib/apis/rates';
 import { COUNTRY_CURRENCIES, type CurrencyInfo } from '@/types/city';
 
@@ -21,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CityRatesPage({ params }: PageProps) {
-  const { country } = await params;
+  const { country, province, city } = await params;
   // Server-fetch the real gold + crypto data (CoinGecko) so the raw HTML
   // carries live rates; the client still refreshes on mount as before.
   const currency: CurrencyInfo = COUNTRY_CURRENCIES[country] ?? {
@@ -36,11 +38,21 @@ export default async function CityRatesPage({ params }: PageProps) {
     fetchGoldRates(currency.rate_to_usd, currency.code, currency.symbol),
     fetchCryptoData(currency.rate_to_usd, currency.code, currency.symbol),
   ]);
+  // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+  // This template fetches no city record, so names come from the route
+  // slugs, the same derivation the other templates use as their fallback.
+  const cityName = titleCaseSlug(city);
+  const provinceName = titleCaseSlug(province);
+  const countryName = titleCaseSlug(country);
   return (
-    <RatesPageClient
-      countrySlug={country}
-      initialRates={initialRates}
-      initialCrypto={initialCrypto}
-    />
+    <>
+      <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, country, provinceName, province, cityName, city, 'Rates', 'rates'))} />
+      <JsonLd data={cityJsonLd(cityName, city, provinceName, province, countryName, country)} />
+      <RatesPageClient
+        countrySlug={country}
+        initialRates={initialRates}
+        initialCrypto={initialCrypto}
+      />
+    </>
   );
 }
