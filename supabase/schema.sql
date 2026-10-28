@@ -520,6 +520,7 @@ INSERT INTO provinces (
 );
 
 -- ─── LAHORE ───────────────────────────────────────────────────────────────────
+-- F3 — Population: PBS Census-2023, Lahore District total (Table 1).
 INSERT INTO cities (
   slug, province_slug, country_slug,
   name, name_local, city_type,
@@ -535,7 +536,7 @@ INSERT INTO cities (
 ) VALUES (
   'lahore', 'punjab', 'pakistan',
   'Lahore', 'لاہور', 'Provincial Capital',
-  14000000, 1772, 217,
+  13004135, 1772, 217,
   31.5497, 74.3436, 'Asia/Karachi', '+05:00',
   1000, 'Semi-arid',
   'Islam', 94.0,
@@ -549,6 +550,7 @@ INSERT INTO cities (
 );
 
 -- ─── KARACHI ──────────────────────────────────────────────────────────────────
+-- F3 — Population: PBS Census-2023, Karachi Division total, all 7 districts.
 INSERT INTO cities (
   slug, province_slug, country_slug,
   name, name_local, city_type,
@@ -562,7 +564,7 @@ INSERT INTO cities (
 ) VALUES (
   'karachi', 'sindh', 'pakistan',
   'Karachi', 'کراچی', 'Provincial Capital',
-  16000000, 3530, 8,
+  20382881, 3530, 8,
   24.8607, 67.0011, 'Asia/Karachi', '+05:00',
   1729, 'Tropical arid',
   'Islam', 95.0,
@@ -573,6 +575,7 @@ INSERT INTO cities (
 );
 
 -- ─── ISLAMABAD ────────────────────────────────────────────────────────────────
+-- F3 — Population: PBS Census-2023, Islamabad Capital Territory total.
 INSERT INTO cities (
   slug, province_slug, country_slug,
   name, name_local, city_type,
@@ -586,7 +589,7 @@ INSERT INTO cities (
 ) VALUES (
   'islamabad', 'islamabad', 'pakistan',
   'Islamabad', 'اسلام آباد', 'Federal Capital',
-  2000000, 906, 540,
+  2363863, 906, 540,
   33.6844, 73.0479, 'Asia/Karachi', '+05:00',
   1960, 'Humid subtropical',
   'Islam', 96.0,

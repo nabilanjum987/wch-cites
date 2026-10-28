@@ -10,6 +10,7 @@ import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
+import { CENSUS_2023_POPULATION, hasCensusPopulation } from '@/lib/census2023';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
 import {
   generateCityIntro,
@@ -81,14 +82,19 @@ function getCityParams(country: string, province: string, city: string): CityPar
 
 // ─── Q11 AUDIT FIXES ─────────────────────────────────────────────────────────
 // Per-city "at a glance" facts. Until now EVERY city printed Lahore's
-// values (population 13M+, area 1,772 km², elevation 217 m). Populations
-// are the site's own collected dataset values (pakistan_cities.csv,
-// GeoNames-shaped); areas are district/territory areas; elevations are
-// the cities' standard published figures.
+// values (population 13M+, area 1,772 km², elevation 217 m). F3: the
+// populations of Lahore, Karachi and Islamabad are PBS Census-2023
+// admin-unit totals read from the single source in @/lib/census2023
+// (district / division / territory totals matching the areas shown);
+// Faisalabad and Rawalpindi keep the site's own collected dataset
+// values (pakistan_cities.csv, GeoNames-shaped). Areas are
+// district/territory areas; elevations are the cities' standard
+// published figures.
+const fmtCensus = (key: string): string => CENSUS_2023_POPULATION[key].toLocaleString('en-US');
 const GLANCE: Record<string, { population: string; area: string; elevation: string; languages: string; founded: string }> = {
-  'pakistan/punjab/lahore': { population: '13,004,135', area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
-  'pakistan/sindh/karachi': { population: '11,624,219', area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
-  'pakistan/islamabad-capital-territory/islamabad': { population: '601,600', area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
+  'pakistan/punjab/lahore': { population: fmtCensus('pakistan/punjab/lahore'), area: '1,772', elevation: '217', languages: 'Urdu, Punjabi', founded: 'antiquity' },
+  'pakistan/sindh/karachi': { population: fmtCensus('pakistan/sindh/karachi'), area: '3,527', elevation: '8', languages: 'Urdu, Sindhi', founded: '1729' },
+  'pakistan/islamabad-capital-territory/islamabad': { population: fmtCensus('pakistan/islamabad-capital-territory/islamabad'), area: '906', elevation: '540', languages: 'Urdu, Punjabi', founded: '1960' },
   'pakistan/punjab/faisalabad': { population: '3,800,193', area: '5,856', elevation: '184', languages: 'Urdu, Punjabi', founded: '1892' },
   'pakistan/punjab/rawalpindi': { population: '3,357,612', area: '5,286', elevation: '508', languages: 'Urdu, Punjabi, Potohari', founded: 'antiquity' },
 };
@@ -977,7 +983,7 @@ export default async function CityPage({
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {[
                 ...(glance ? [
-                  { label: 'Population', value: glance.population },
+                  { label: hasCensusPopulation(cityKey) ? 'Population (2023 census)' : 'Population', value: glance.population },
                   { label: 'Area', value: `${glance.area} km²` },
                   { label: 'Elevation', value: `${glance.elevation} m` },
                 ] : []),

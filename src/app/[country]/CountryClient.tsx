@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getSupabase } from '@/lib/supabase';
+import { censusPopulationOr } from '@/lib/census2023';
 import {
   ChevronRight, TrendingUp, TrendingDown, ArrowRight,
   Globe, Users, Coins, Calendar, ShieldAlert, Utensils,
@@ -470,7 +471,15 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
             console.warn(`Major cities query error for ${countrySlug}:`, error.message);
             setMajorCities([]);
           } else {
-            setMajorCities((data || []) as SupabaseCity[]);
+            // F3 — canonical override: a stale live `cities` row must
+            // not outrank the census figure on the country page. Rows
+            // carry their own province_slug, so the legacy Islamabad
+            // spelling ('islamabad') resolves via the census alias to
+            // the same figure as the canonical URL spelling.
+            setMajorCities(((data || []) as SupabaseCity[]).map((row) => ({
+              ...row,
+              population: censusPopulationOr(`${countrySlug}/${row.province_slug}/${row.city_slug}`, row.population),
+            })));
           }
         }
       } catch (err: any) {
