@@ -74,15 +74,19 @@ const LIVE_OCEANS = [
 // unpublished place slugs (Shalimar Gardens, Data Darbar, Walled City,
 // Lahore Museum — all 404 live); sibling item D18 carries those entries
 // when it builds the pages.
+// Duplicate-person consolidation (owner decision, 28 Oct 2026, final):
+// `abdus-salam` and `muhammad-ali-jinnah` are NOT listed — they 301 to
+// `dr-abdus-salam` and `quaid-e-azam-jinnah` (see src/proxy.ts), which
+// ARE listed. A redirected URL must never appear in the sitemap.
 const PROFILE_SLUGS = [
-  'abdul-qadeer-khan', 'abdul-sattar-edhi', 'abdus-salam',
+  'abdul-qadeer-khan', 'abdul-sattar-edhi',
   'allama-iqbal', 'ameer-haider-khan-hoti', 'amrita-pritam',
   'ashfaq-ahmed', 'azam-khan-hoti', 'bahawal-khan-i', 'bano-qudsia',
   'benazir-bhutto', 'dr-abdus-salam', 'faiz-ahmed-faiz', 'fatima-jinnah',
   'feroz-khan-noon', 'habib-jalib', 'haider-zaman-khan', 'imran-khan',
   'james-abbott', 'khurshid-ahmed-shah', 'malala-yousafzai',
   'mehdi-hasan', 'mir-muhammad-masum', 'mohammad-hafeez',
-  'muhammad-ali-jinnah', 'mushaf-ali-mir', 'nasir-hussain-shah',
+  'mushaf-ali-mir', 'nasir-hussain-shah',
   'noor-jehan', 'nusrat-fateh-ali-khan', 'pervez-musharraf',
   'quaid-e-azam-jinnah', 'sadequain', 'sadiq-muhammad-khan-iv',
   'sadiq-muhammad-khan-v', 'sardar-mehtab-abbasi',

@@ -213,15 +213,21 @@ export async function getBornToday(date: Date = new Date()): Promise<Personality
 // slug-sorted), so the selection is deterministic — no randomness at
 // render. Self is always excluded.
 //
-// NO-DEAD-LINK INVARIANT: candidates come only from the public pools
-// (getPersonalitiesByCity / getPersonalitiesByCountry). The database
-// path of those pools returns verified rows only, and the seed path
-// returns profiles the site already publishes — both are subsets of
-// the getAllPersonalitySlugs() set that generateStaticParams()
-// prerenders. A candidate is therefore always a published profile
-// page, never a shell. If the pool yields nothing (e.g. a lone
-// profile in a country), the caller renders nothing at all — an empty
-// related section is omitted, never rendered as an empty shell.
+// DUPLICATE-PERSON CONSOLIDATION (owner decision, 28 Oct 2026, final):
+// the retired slugs `abdus-salam` and `muhammad-ali-jinnah` 301 to
+// `dr-abdus-salam` and `quaid-e-azam-jinnah` (see src/proxy.ts). The
+// pools below can still carry the retired slugs — the seed fallback
+// lists them, and a verified database row would too — so retired slugs
+// are excluded here, the single choke point for this section's links.
+// Exclusion (not substitution) is deliberate: it behaves identically
+// in seed-fallback and database environments, and the survivor still
+// appears via the pool whenever its own row is present. No page may
+// link to a redirected URL.
+const RETIRED_PERSONALITY_SLUGS = new Set([
+  'abdus-salam',
+  'muhammad-ali-jinnah',
+]);
+
 export async function getRelatedPersonalities(
   profile: PersonalityProfile,
   limit = 4,
@@ -229,7 +235,7 @@ export async function getRelatedPersonalities(
   const seen = new Set<string>([profile.slug]);
   const out: PersonalityProfile[] = [];
   const push = (p: PersonalityProfile): void => {
-    if (!seen.has(p.slug)) {
+    if (!seen.has(p.slug) && !RETIRED_PERSONALITY_SLUGS.has(p.slug)) {
       seen.add(p.slug);
       out.push(p);
     }
