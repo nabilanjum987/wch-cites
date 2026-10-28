@@ -14,6 +14,8 @@ import AzanPlayer from '../../../../../components/prayer/AzanPlayer';
 
 import { getCityBySlug, type City } from '../../../../../types/city';
 import { fetchPrayerTimes, fetchWeeklyPrayerTimes } from '../../../../../lib/apis/prayer';
+import { fetchGoldRates, fetchSilverRates } from '../../../../../lib/apis/rates';
+import { getFaithSectionsForCity, nextRamadan, moonPhaseInfo } from '../../../../../lib/data/faith-profiles';
 import { HIJRI_MONTHS, fetchHadith } from '../../../../../lib/apis/islamic';
 import {
   fetchBibleVerse,
@@ -88,13 +90,39 @@ function calculateQibla(lat: number, _lng: number): number {
   return ((qibla * 180) / Math.PI + 360) % 360;
 }
 
-export default function PrayerTimesPage() {
+export interface InitialPrayerTimes {
+  Fajr: string;
+  Sunrise: string;
+  Dhuhr: string;
+  Asr: string;
+  Maghrib: string;
+  Isha: string;
+}
+
+export interface InitialZakatRates {
+  goldPerGram: number;
+  silverPerGram: number;
+}
+
+export default function PrayerTimesPage({ initialTimes, initialZakat, initialShafiiAsr }: { initialTimes?: InitialPrayerTimes | null; initialZakat?: InitialZakatRates | null; initialShafiiAsr?: string | null }) {
   const _params = useParams();
   const country = String(_params?.country ?? '');
   const province = String(_params?.province ?? '');
   const citySlug = String(_params?.city ?? '');
   const [faith, setFaith] = useState<FaithKey>('islam');
-  const [times, setTimes] = useState<PrayerTimes | null>(null);
+  // Server-rendered initial times (page.tsx, Aladhan Karachi method/Hanafi)
+  // fill the tables in raw HTML; the client fetch below refreshes them.
+  const [times, setTimes] = useState<PrayerTimes | null>(initialTimes ?? null);
+  // Shafi'i Asr, fetched live so the method section shows a real second
+  // value instead of a hard-coded one (Hanafi is the displayed default).
+  const [shafiiAsr, setShafiiAsr] = useState<string | null>(initialShafiiAsr ?? null);
+  // Live bullion rates for the Zakat card (site's existing rates mechanism:
+  // CoinGecko PAX Gold + gold-api silver, converted at USD→PKR). Seeded
+  // from the server-rendered rates (page.tsx) so figures are in raw HTML;
+  // the client fetch below refreshes them. Null when no live source has
+  // responded — figures are then hidden, never stale.
+  const [goldPerGram, setGoldPerGram] = useState<number | null>(initialZakat?.goldPerGram ?? null);
+  const [silverPerGram, setSilverPerGram] = useState<number | null>(initialZakat?.silverPerGram ?? null);
   const [todayData, setTodayData] = useState<any>(null);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [hadith, setHadith] = useState<{ text: string; narrator: string; book: string } | null>(null);
@@ -138,11 +166,28 @@ export default function PrayerTimesPage() {
   useEffect(() => {
     if (!city) return;
     const today = new Date();
-    fetchPrayerTimes(city.lat, city.lng, 5, 0, today.toLocaleDateString("en-GB")).then((data) => {
+    // P13(a): the page claims Karachi method + Hanafi default, so fetch
+    // exactly that (method 1, school 1). The old call used method 5 /
+    // school 0 (Egypt / Shafi'i), which is why the timetable Asr did not
+    // match the Hanafi label in the method section.
+    fetchPrayerTimes(city.lat, city.lng, 1, 1, today.toLocaleDateString("en-GB")).then((data) => {
       setTodayData(data);
       setTimes(data.timings);
     });
-    fetchWeeklyPrayerTimes(city.lat, city.lng, 5, 0).then(setWeeklyData);
+    fetchPrayerTimes(city.lat, city.lng, 1, 0, today.toLocaleDateString("en-GB")).then((data) => {
+      if (data?.timings?.Asr) setShafiiAsr(data.timings.Asr);
+    });
+    fetchWeeklyPrayerTimes(city.lat, city.lng, 1, 1).then(setWeeklyData);
+    // P13(b): live bullion via the site's existing rates mechanism.
+    fetch('https://open.er-api.com/v6/latest/USD')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((fx) => {
+        const rate = typeof fx?.rates?.PKR === 'number' ? fx.rates.PKR : null;
+        if (!rate) return;
+        fetchGoldRates(rate, 'PKR', '₨').then((g) => { if (g) setGoldPerGram(g.per_gram); });
+        fetchSilverRates(rate, 'PKR', '₨').then((s) => { if (s) setSilverPerGram(s.per_gram); });
+      })
+      .catch(() => {});
     fetchHadith().then(setHadith);
     fetchBibleVerse().then(setBibleVerse);
     fetchShabbatTimes(city.lat, city.lng).then(setShabbatTimes);
@@ -223,7 +268,11 @@ export default function PrayerTimesPage() {
 
   const comparisonCities = useMemo(
     () => [
-      { name: 'Karachi', fajr: '5:08 AM', maghrib: '7:02 PM', isha: '8:22 PM' },
+      // P13(f): Karachi matches the Nearby Cities table AND the page's
+      // own data source (Aladhan, Karachi method/Hanafi, 28 Oct 2026:
+      // Fajr 05:20, Maghrib 17:55, Isha 19:12). The old 5:08 AM here
+      // contradicted the 5:20 in the other table on the same page.
+      { name: 'Karachi', fajr: '5:20 AM', maghrib: '5:55 PM', isha: '7:12 PM' },
       { name: 'Islamabad', fajr: '4:52 AM', maghrib: '7:08 PM', isha: '8:32 PM' },
       { name: 'Dubai', fajr: '4:42 AM', maghrib: '7:14 PM', isha: '8:42 PM' },
       { name: 'Mecca', fajr: '4:46 AM', maghrib: '6:52 PM', isha: '8:22 PM' },
@@ -281,6 +330,51 @@ export default function PrayerTimesPage() {
             <FaithTabs active={faith} onChange={setFaith} accent={palette.accent} />
           </FlagCard>
         </motion.div>
+
+        {/* ── Faiths in this city (P13 main defect) ───────────────────────
+            Always rendered — not hidden behind a tab — so the page's
+            "Faiths Guide" title is true in raw HTML, not only after a
+            click. Depth follows the population rule in
+            lib/data/faith-profiles.ts: majority faith first/full, then
+            other faiths at medium/light depth. Cities with no profile
+            render nothing here, so this cannot misfire elsewhere. */}
+        {(() => {
+          const faithProfile = getFaithSectionsForCity(city.city_slug, city.major_religion);
+          if (!faithProfile) return null;
+          return (
+            <motion.div {...SECTION_FADE}>
+              <FlagCard color={colorAt(0)}>
+                <FlagSectionTitle icon={Globe} title={`Faiths in ${city.name}`} subtitle="Population-weighted: majority faith in full, other faiths present" color={colorAt(0)} />
+                <p className="text-white/70 leading-relaxed text-sm mb-5">
+                  {`${city.name} is a multi-faith city. The sections below follow the city's population: the majority faith is covered in full across this page, and the other faiths present in the city are covered at the depth their communities warrant. ${faithProfile.profile.censusNote}`}
+                </p>
+                <div className="space-y-6">
+                  {faithProfile.sections.map(({ section, depth }) => (
+                    <div key={section.key}>
+                      <h3 className="text-white font-bold text-base mb-1">
+                        {section.faith}
+                        <span className="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/60 align-middle">
+                          {depth === 'full' ? 'Full coverage' : depth === 'medium' ? 'Medium coverage' : 'Light coverage'}
+                        </span>
+                      </h3>
+                      <p className="text-white/70 leading-relaxed text-sm mb-3">{section.intro}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {section.places.map((place) => (
+                          <div key={place.name} className="rounded-xl p-4 border"
+                            style={{ backgroundColor: `${colorAt(0)}10`, borderColor: `${colorAt(0)}25` }}>
+                            <div className="text-white font-semibold text-sm">{place.name}</div>
+                            <div className="text-white/60 text-xs mt-1 leading-relaxed">{place.detail}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-white/40 text-xs mt-2">Sources: {section.source}</p>
+                    </div>
+                  ))}
+                </div>
+              </FlagCard>
+            </motion.div>
+          );
+        })()}
 
         {/* Islamic Content */}
         <AnimatePresence mode="wait">
@@ -463,8 +557,18 @@ export default function PrayerTimesPage() {
                   <div className="rounded-xl p-5 border text-center"
                     style={{ backgroundColor: 'rgba(251,191,36,0.12)', borderColor: 'rgba(251,191,36,0.35)' }}>
                     <div className="text-xs font-semibold text-amber-300 mb-1">Next Ramadan</div>
-                    <div className="text-2xl font-bold text-white">March 2026</div>
-                    <div className="text-xs text-white/40 mt-1">~{Math.ceil((new Date('2026-03-17').getTime() - Date.now()) / 86400000)} days away</div>
+                    {(() => {
+                      // P13(c): roll-forward list (faith-profiles.ts) — the
+                      // displayed date is always a FUTURE Ramadan, so the
+                      // countdown can never go negative.
+                      const ramadan = nextRamadan();
+                      return (
+                        <>
+                          <div className="text-2xl font-bold text-white">{ramadan.label}</div>
+                          <div className="text-xs text-white/40 mt-1">~{ramadan.daysAway} days away · Expected date, subject to official moon sighting</div>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
                 <div className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
@@ -485,25 +589,39 @@ export default function PrayerTimesPage() {
                   of Eid. The Ruet-e-Hilal Committee in Pakistan announces official moon sighting
                   based on physical observations across the country.
                 </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                  {[
-                    { label: 'Moon Phase', value: 'Waxing Crescent', icon: '🌙' },
-                    { label: 'Illumination', value: '24%', icon: '✨' },
-                    { label: 'Moonrise', value: '9:12 AM', icon: '⬆️' },
-                    { label: 'Moonset', value: '11:34 PM', icon: '⬇️' },
-                  ].map((item) => (
-                    <div key={item.label} className="rounded-xl p-4 border text-center"
-                      style={{ backgroundColor: `${colorAt(0)}10`, borderColor: `${colorAt(0)}30` }}>
-                      <div className="text-2xl mb-1">{item.icon}</div>
-                      <div className="text-white font-bold text-sm">{item.value}</div>
-                      <div className="text-white/40 text-xs mt-0.5">{item.label}</div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-white/50 text-xs">
-                  🌟 Visible in the western sky after Maghrib tonight.
-                  The next new moon (Dhul Hijjah) is expected around June 27, 2025.
-                </p>
+                {(() => {
+                  // P13(d): phase + next new moon are COMPUTED from the
+                  // verified 9 Nov 2026 anchor (faith-profiles.ts) and
+                  // always roll forward — no hard-coded 2025 date, and no
+                  // hard-coded phase/illumination that goes stale.
+                  const moon = moonPhaseInfo();
+                  const nextMoonLabel = moon.nextNewMoon.toLocaleDateString('en-US', {
+                    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Asia/Karachi',
+                  });
+                  const tiles = [
+                    { label: 'Moon Phase', value: moon.phaseName, icon: '🌙' },
+                    { label: 'Illumination', value: `${moon.illuminationPct}%`, icon: '✨' },
+                    { label: 'Moon Age', value: `${moon.ageDays.toFixed(1)} days`, icon: '🌓' },
+                    { label: 'Next New Moon', value: nextMoonLabel, icon: '🌑' },
+                  ];
+                  return (
+                    <>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                        {tiles.map((item) => (
+                          <div key={item.label} className="rounded-xl p-4 border text-center"
+                            style={{ backgroundColor: `${colorAt(0)}10`, borderColor: `${colorAt(0)}30` }}>
+                            <div className="text-2xl mb-1">{item.icon}</div>
+                            <div className="text-white font-bold text-sm">{item.value}</div>
+                            <div className="text-white/40 text-xs mt-0.5">{item.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-white/50 text-xs">
+                        {`The next new moon (astronomical conjunction) is ${nextMoonLabel}. This is an astronomical estimate: the official start of each Islamic month in Pakistan is announced by the Ruet-e-Hilal Committee after crescent sighting, and can differ by a day.`}
+                      </p>
+                    </>
+                  );
+                })()}
               </FlagCard>
 
               {/* ── Zakat Calculator ── */}
@@ -515,20 +633,30 @@ export default function PrayerTimesPage() {
                   of gold or 595g of silver — whichever benefits the poor more. Based on today's
                   rates in {city.country}, the current Nisab values are shown below.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="rounded-xl p-5 border"
-                    style={{ backgroundColor: 'rgba(251,191,36,0.1)', borderColor: 'rgba(251,191,36,0.35)' }}>
-                    <div className="text-amber-400 text-xs font-semibold mb-2">GOLD NISAB (85g × today's rate)</div>
-                    <div className="text-2xl font-bold text-white">PKR 1,827,500</div>
-                    <div className="text-white/40 text-xs mt-1">Based on PKR 21,500/gram gold rate</div>
+                {goldPerGram && silverPerGram ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="rounded-xl p-5 border"
+                      style={{ backgroundColor: 'rgba(251,191,36,0.1)', borderColor: 'rgba(251,191,36,0.35)' }}>
+                      <div className="text-amber-400 text-xs font-semibold mb-2">GOLD NISAB (85g × live rate)</div>
+                      <div className="text-2xl font-bold text-white">PKR {Math.round(85 * goldPerGram).toLocaleString('en-US')}</div>
+                      <div className="text-white/40 text-xs mt-1">Based on PKR {Math.round(goldPerGram).toLocaleString('en-US')}/gram live gold rate (CoinGecko PAX Gold, converted at USD to PKR)</div>
+                    </div>
+                    <div className="rounded-xl p-5 border"
+                      style={{ backgroundColor: 'rgba(148,163,184,0.1)', borderColor: 'rgba(148,163,184,0.35)' }}>
+                      <div className="text-slate-300 text-xs font-semibold mb-2">SILVER NISAB (595g × live rate)</div>
+                      <div className="text-2xl font-bold text-white">PKR {Math.round(595 * silverPerGram).toLocaleString('en-US')}</div>
+                      <div className="text-white/40 text-xs mt-1">Based on PKR {Math.round(silverPerGram).toLocaleString('en-US')}/gram live silver rate (gold-api spot, converted at USD to PKR)</div>
+                    </div>
                   </div>
-                  <div className="rounded-xl p-5 border"
-                    style={{ backgroundColor: 'rgba(148,163,184,0.1)', borderColor: 'rgba(148,163,184,0.35)' }}>
-                    <div className="text-slate-300 text-xs font-semibold mb-2">SILVER NISAB (595g × today's rate)</div>
-                    <div className="text-2xl font-bold text-white">PKR 142,800</div>
-                    <div className="text-white/40 text-xs mt-1">Based on PKR 240/gram silver rate</div>
+                ) : (
+                  // P13(b): if a live source fails, show NO figure rather
+                  // than a stale one — the old card showed a fixed
+                  // PKR 21,500/gram rate under a "today's rates" claim.
+                  <div className="rounded-xl p-5 border mb-4"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                    <p className="text-white/60 text-sm">Live gold and silver rates are loading or temporarily unavailable, so Nisab figures are hidden until a live rate responds — no estimated rate is shown.</p>
                   </div>
-                </div>
+                )}
                 <div className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
                   <p className="text-white/60 text-xs">
                     If your total savings, gold, silver, investments, and business assets exceed the
@@ -564,7 +692,7 @@ export default function PrayerTimesPage() {
                         { city: 'Rawalpindi', fajr: '5:08', dhuhr: '12:35', asr: '3:59', mgh: '7:33', isha: '8:57', current: false },
                         { city: 'Multan', fajr: '4:58', dhuhr: '12:28', asr: '4:04', mgh: '7:41', isha: '9:06', current: false },
                         { city: 'Islamabad', fajr: '5:07', dhuhr: '12:34', asr: '3:59', mgh: '7:33', isha: '8:57', current: false },
-                        { city: 'Karachi', fajr: '5:20', dhuhr: '12:45', asr: '4:15', mgh: '7:28', isha: '8:55', current: false },
+                        { city: 'Karachi', fajr: '5:20', dhuhr: '12:16', asr: '4:19', mgh: '5:55', isha: '7:12', current: false },
                       ].map((row) => (
                         <tr key={row.city}
                           className="border-b border-white/5"
@@ -619,11 +747,7 @@ export default function PrayerTimesPage() {
               <FlagCard color={colorAt(0)}>
                 <FlagSectionTitle icon={Settings} title="Calculation Method" subtitle="Karachi Method · Hanafi Madhab" color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
-                  Prayer times for {city.name} are calculated using the Karachi method, established by the
-                  University of Islamic Sciences in Karachi and adopted as the standard methodology across
-                  Pakistan, Afghanistan, Bangladesh and parts of India. This method sets the Fajr angle
-                  at 18 degrees and Isha angle at 18 degrees below the horizon. Users following the
-                  Hanafi madhab observe Asr prayer approximately one hour later than the Shafi&#39;i timing.
+                  {`Prayer times for ${city.name} are calculated using the Karachi method, established by the University of Islamic Sciences in Karachi and adopted as the standard methodology across Pakistan, Afghanistan, Bangladesh and parts of India. This method sets the Fajr angle at 18 degrees and Isha angle at 18 degrees below the horizon. Users following the Hanafi madhab observe Asr prayer approximately one hour later than the Shafi'i timing.`}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -652,8 +776,12 @@ export default function PrayerTimesPage() {
                     <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-3">Madhab (Asr Time)</p>
                     <div className="space-y-2">
                       {[
-                        { name: 'Hanafi (shadow = 2× object)', active: true, time: times?.Asr || '5:01 PM' },
-                        { name: "Shafi'i / Maliki / Hanbali (shadow = 1×)", active: false, time: '4:02 PM' },
+                        // P13(a): Hanafi is the DEFAULT — its card shows
+                        // the live timetable Asr (Hanafi fetch). Shafi'i
+                        // shows its own live fetch, never a hard-coded
+                        // time from another date.
+                        { name: 'Hanafi (shadow = 2× object) — default on this page', active: true, time: times ? formatTime(times.Asr) : null },
+                        { name: "Shafi'i / Maliki / Hanbali (shadow = 1×)", active: false, time: shafiiAsr ? formatTime(shafiiAsr) : null },
                       ].map((m) => (
                         <div key={m.name}
                           className="px-3 py-3 rounded-lg text-sm border"
@@ -662,7 +790,7 @@ export default function PrayerTimesPage() {
                             : { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
                           }>
                           <div>{m.active ? '✓ ' : ''}{m.name}</div>
-                          <div className="text-xs mt-1 opacity-70">Asr at {m.time}</div>
+                          <div className="text-xs mt-1 opacity-70">{m.time ? `Asr at ${m.time}` : 'Asr loads with the live timetable'}</div>
                         </div>
                       ))}
                     </div>
@@ -674,12 +802,7 @@ export default function PrayerTimesPage() {
               <FlagCard color={colorAt(1)}>
                 <FlagSectionTitle icon={MapPin} title={`Mosques in ${city.name}`} subtitle="Featured + nearest mosque finder" color={colorAt(1)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
-                  {city.name} is home to over 2,000 mosques, from the iconic Badshahi Mosque in
-                  the Walled City to neighbourhood mosques in every district. The Badshahi Mosque,
-                  built by Emperor Aurangzeb in 1673, can accommodate 100,000 worshippers simultaneously
-                  and remains one of the world&#39;s most magnificent religious structures. Data Darbar,
-                  the shrine of Sufi saint Hazrat Data Ganj Bakhsh, is open 24 hours and draws pilgrims
-                  from across Pakistan and the Muslim world.
+                  {`${city.name} is home to over 2,000 mosques, from the iconic Badshahi Mosque in the Walled City to neighbourhood mosques in every district. The Badshahi Mosque, built by Emperor Aurangzeb in 1673, can accommodate 100,000 worshippers simultaneously and remains one of the world's most magnificent religious structures. Data Darbar, the shrine of Sufi saint Hazrat Data Ganj Bakhsh, is open 24 hours and draws pilgrims from across Pakistan and the Muslim world.`}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                   {[
