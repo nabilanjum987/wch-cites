@@ -23,8 +23,28 @@ export default async function WondersIndex() {
     wonders.map(async (w) => ({ wonder: w, live: await getWonderLive(w.lat, w.lng, w.timezone) })),
   );
 
+  // P11 (final28): ItemList JSON-LD for the hub, built from the SAME
+  // `wonders` array the "Published guides" cards render — so the schema
+  // can never drift from the hub's real linked entries. The "in
+  // preparation" names (UPCOMING_WONDERS) are deliberately NOT listed:
+  // they have no guide URL, and the hub never links to an unfinished
+  // page. No visible content changes; this is the page's only JSON-LD.
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Wonders of the World — Published guides',
+    numberOfItems: wonders.length,
+    itemListElement: wonders.map((w, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: w.name,
+      url: `${BASE}/wonders/${w.slug}`,
+    })),
+  };
+
   return (
     <main className="min-h-screen bg-[#0a0e1a] text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
         <nav aria-label="Breadcrumb" className="text-sm text-gray-400">
           <Link href="/" className="hover:text-white">Home</Link>
