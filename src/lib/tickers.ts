@@ -172,8 +172,9 @@ export async function getMarketTickerItems(pageCitySlug?: string): Promise<Marke
     });
   }
   // P8 — the prayer entry follows the PAGE's city, not always Lahore.
-  // The caller (root layout) passes the city slug parsed from the request
-  // pathname; an unknown/absent slug falls back to Lahore, exactly as
+  // The caller (TickerBarSlot, the Suspense-wrapped child of the root
+  // layout) passes the city slug parsed from the request pathname; an
+  // unknown/absent slug falls back to Lahore, exactly as
   // before, so the homepage and non-city pages are unchanged. Only this
   // block changes — every other ticker entry above is untouched.
   const prayerCity = PUBLISHED_CITIES.find((c) => c.slug === pageCitySlug) ?? PUBLISHED_CITIES[0];

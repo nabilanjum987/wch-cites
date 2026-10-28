@@ -3,8 +3,9 @@ import type { NextRequest } from 'next/server';
 
 // P8 — the root layout cannot see a child page's route params, so the
 // request pathname is passed to server components as a request header.
-// Only the ticker's prayer entry reads it (src/app/layout.tsx); the
-// proxy changes nothing else about the request or response.
+// Only the ticker's prayer entry reads it (via TickerBarSlot, the
+// Suspense-wrapped child of the root layout); the proxy changes
+// nothing else about the request or response.
 export function proxy(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set('x-wch-pathname', req.nextUrl.pathname);
