@@ -79,7 +79,10 @@ const PLACES: Record<string, Place> = {
     nearbyPlaces: [
       { name: 'Lahore Fort', slug: 'lahore-fort', distance: '0.3 km' },
       { name: 'Allama Iqbal Tomb', slug: 'allama-iqbal-tomb', distance: '0.1 km' },
-      { name: 'Walled City of Lahore', slug: 'walled-city-lahore', distance: '0.5 km' },
+      // D18: 'walled-city-lahore' was a dead link (plain row, Batch 4 L1
+      // rule); the Walled City page now publishes as 'walled-city', so
+      // this row links again.
+      { name: 'Walled City of Lahore', slug: 'walled-city', distance: '0.5 km' },
     ],
     history: 'Commissioned by the sixth Mughal Emperor Aurangzeb in 1671 and completed in 1673, Badshahi Mosque was the largest mosque in the world for over 300 years. It was built to replace the earlier Wazir Khan Mosque as Lahore\'s principal congregational mosque. During the Sikh Empire, the mosque was used as a military garrison. The British used it as a barracks during colonial rule. It was returned to Muslim use after the 1947 partition.',
     // F1 (Batch 4 findings fix): courtyard capacity unified on 100,000 in
@@ -147,6 +150,183 @@ const PLACES: Record<string, Place> = {
     wikiUrl: 'https://en.wikipedia.org/wiki/Lahore_Fort',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Lahore_Fort_-_from_outside.jpg/1280px-Lahore_Fort_-_from_outside.jpg',
   },
+  // ── D18 (28 Oct final sitting): four previously unpublished Lahore
+  // places. Every fact below was verified against a real source (see
+  // PR body source list); hours/fees appear ONLY where a source
+  // supports them — Shalimar's day fee is deliberately NOT a number,
+  // because published day-fee figures conflict. No imageUrl: per the
+  // PR #87 media rule, photos must be local licensed/open files with
+  // registry records, never hotlinks, so these pages use the
+  // template's gradient hero until local photos are supplied.
+  // Nearby links point ONLY at published place slugs.
+  'shalimar-gardens': {
+    slug: 'shalimar-gardens',
+    name: 'Shalimar Gardens',
+    city: 'Lahore', citySlug: 'lahore',
+    country: 'Pakistan', countrySlug: 'pakistan',
+    province: 'Punjab', provinceSlug: 'punjab',
+    tagline: 'A Mughal paradise garden of terraces, marble pavilions and 410 fountains',
+    description: 'Shah Jahan built Shalimar Gardens in 1641–42: three terraces, marble pavilions and 410 fountains — a UNESCO World Heritage Site since 1981.',
+    primaryColor: '#2E7D32',
+    category: 'Garden / UNESCO Heritage',
+    builtYear: '1641–1642 AD',
+    unescoStatus: '✅ UNESCO World Heritage Site (1981)',
+    openHours: '8:00 AM – 6:00 PM daily',
+    entryFee: 'Ticketed; fees differ for local and foreign visitors — check at the entrance',
+    address: 'Grand Trunk Road, Baghbanpura, Lahore, Punjab, Pakistan',
+    lat: 31.58583, lng: 74.38194,
+    bestTimeToVisit: 'October to March. Early morning or late afternoon for the best light.',
+    averageVisit: '1–2 hours',
+    tips: [
+      'Walk the terraces from top to bottom to follow the water downhill',
+      'Come early for the softest light on the marble pavilions',
+      'Combine with Lahore Fort — the two share one UNESCO listing',
+      'Wear comfortable shoes; the garden is 658 metres long',
+      'Mornings are quietest; evenings are popular with local families',
+    ],
+    nearbyPlaces: [
+      { name: 'Walled City', slug: 'walled-city', distance: '6.0 km' },
+      { name: 'Lahore Fort', slug: 'lahore-fort', distance: '6.3 km' },
+      { name: 'Badshahi Mosque', slug: 'badshahi-mosque', distance: '6.8 km' },
+    ],
+    history: 'Construction of Shalimar Gardens began in 1641 under Mughal Emperor Shah Jahan and was completed in 1642. The gardens were laid out as a Persian paradise garden in the charbagh (four-part) style, under the superintendence of the court noble Khalilullah Khan, with Ali Mardan Khan. The site at Baghbanpura had been given by the Mian family, who then held custodianship of the gardens for over 350 years. Water reached the fountains through the Shah Nahar canal, brought from over 161 kilometres away. In 1981 the gardens were inscribed as a UNESCO World Heritage Site together with Lahore Fort, and in 2012 they were removed from the World Heritage in Danger list after conservation progress.',
+    significance: 'Shalimar Gardens is Mughal garden design at its apogee — the reason UNESCO inscribed it, with Lahore Fort, in 1981. Its three descending terraces each carry a name: Farah Baksh (Bestower of Pleasure) at the top, Faiz Baksh (Bestower of Goodness) in the middle, and Hayat Baksh (Bestower of Life) at the bottom. The 410 fountains, fed by a gravity hydraulic system, cooled the air and made the garden a working piece of paradise-garden symbolism, not just decoration.',
+    thingsToKnow: [
+      '410 fountains in total: 105 on the upper terrace, 152 on the middle, 153 on the lower',
+      'The garden measures 658 metres north to south and 258 metres east to west',
+      'UNESCO listing “Fort and Shalamar Gardens in Lahore”, reference 171-002, criteria (i), (ii) and (iii)',
+      'Water arrived via the Shah Nahar (Royal) canal, from over 161 km away',
+      'Removed from the World Heritage in Danger list in 2012 after restoration work',
+      'In October 2026 the Walled City of Lahore Authority opened the gardens for night visits, 7:00–11:00 PM',
+    ],
+    wikiUrl: 'https://en.wikipedia.org/wiki/Shalimar_Gardens,_Lahore',
+  },
+  'data-darbar': {
+    slug: 'data-darbar',
+    name: 'Data Darbar',
+    city: 'Lahore', citySlug: 'lahore',
+    country: 'Pakistan', countrySlug: 'pakistan',
+    province: 'Punjab', provinceSlug: 'punjab',
+    tagline: 'South Asia\'s largest Sufi shrine — the heart of Lahore\'s spiritual life',
+    description: 'Data Darbar, beside Bhati Gate, is South Asia\'s largest Sufi shrine — resting place of the 11th-century saint Ali al-Hujwiri, Data Ganj Bakhsh.',
+    primaryColor: '#1B5E20',
+    category: 'Sufi Shrine / Heritage',
+    builtYear: 'Shrine from the Mughal period; rebuilt and greatly expanded in the 1980s',
+    openHours: '24 hours a day, every day',
+    entryFee: 'Free entry (donations voluntary)',
+    address: 'Lower Mall Road, near Bhati Gate, Lahore, Punjab, Pakistan',
+    lat: 31.57898, lng: 74.30474,
+    bestTimeToVisit: 'Early morning for quiet, or Thursday evenings, when qawwali fills the shrine.',
+    averageVisit: '1–2 hours',
+    tips: [
+      'Dress modestly and be ready to remove your shoes',
+      'Thursday evenings are the traditional night for shrine visits — expect crowds',
+      'Try the free langar meal, served to all visitors',
+      'Expect security checks at the entrances',
+      'Combine with a walk through the nearby Walled City gates',
+    ],
+    nearbyPlaces: [
+      { name: 'Badshahi Mosque', slug: 'badshahi-mosque', distance: '1.1 km' },
+      { name: 'Lahore Museum', slug: 'lahore-museum', distance: '1.2 km' },
+      { name: 'Lahore Fort', slug: 'lahore-fort', distance: '1.4 km' },
+      { name: 'Walled City', slug: 'walled-city', distance: '1.4 km' },
+    ],
+    history: 'Ali al-Hujwiri, known as Data Ganj Bakhsh, came to Lahore from Ghazni in the 11th century, during the Ghaznavid period, and built a mosque on what was then the edge of the city. His grave beside that mosque became a shrine in the Mughal period, was expanded in the 19th century, and came under government control through the Auqaf Ordinance of 1960. In the 1980s the complex was rebuilt on its present vast scale, with a new mosque, library, madrasa and free kitchen. Hujwiri\'s Kashf al-Mahjub is the oldest treatise on Sufism written in Persian.',
+    significance: 'Data Darbar is the largest Sufi shrine in South Asia and is considered the most sacred place in Lahore. It draws 30,000 to 60,000 visitors on an ordinary day, double that on Thursdays and religious holidays, and up to one million devotees at its annual three-day urs festival in the Islamic month of Safar. Its free kitchen continues a centuries-old tradition of feeding visitors, with up to 50,000 free meals served in a day.',
+    thingsToKnow: [
+      'Hujwiri wrote Kashf al-Mahjub, the oldest Persian treatise on Sufism',
+      'The annual urs lasts three days in Safar and draws up to one million devotees',
+      'The free kitchen (langar) serves up to 50,000 free meals a day',
+      'The rebuilt complex has one dome and four minarets',
+      'The shrine is served by the Bhati Chowk station of the Lahore Metrobus',
+      'The shrine\'s tomb is of carved white marble, set in a large marble courtyard',
+    ],
+    wikiUrl: 'https://en.wikipedia.org/wiki/Data_Darbar',
+  },
+  'walled-city': {
+    slug: 'walled-city',
+    name: 'Walled City',
+    city: 'Lahore', citySlug: 'lahore',
+    country: 'Pakistan', countrySlug: 'pakistan',
+    province: 'Punjab', provinceSlug: 'punjab',
+    tagline: 'Old Lahore — thirteen gates, a thousand lanes, and the city\'s living heart',
+    description: 'The Walled City is old Lahore: bazaars, havelis and mosques inside Akbar\'s 16th-century walls, entered through six surviving historic gates.',
+    primaryColor: '#6D4C41',
+    category: 'Historic District / Heritage',
+    builtYear: 'Fortified in the Mughal era; Akbar\'s walls, mid-16th century',
+    openHours: '24 hours a day — it is a living neighbourhood, not a gated site',
+    entryFee: 'Free to walk the old city; individual monuments may charge separately',
+    address: 'Walled City (Androon Shehr), Lahore, Punjab, Pakistan',
+    lat: 31.5833, lng: 74.3183,
+    bestTimeToVisit: 'October to March. Go in the morning for quieter lanes.',
+    averageVisit: 'Half a day on foot',
+    tips: [
+      'Start at Delhi Gate and follow the Shahi Guzargah (Royal Passage) toward Wazir Khan Mosque',
+      'Hire a local guide — the lanes are a maze',
+      'Wear walking shoes; streets are narrow and uneven',
+      'Try the old city\'s breakfast stalls and food streets',
+      'Keep valuables close in the crowded bazaars',
+    ],
+    nearbyPlaces: [
+      { name: 'Lahore Fort', slug: 'lahore-fort', distance: '0.6 km' },
+      { name: 'Badshahi Mosque', slug: 'badshahi-mosque', distance: '0.9 km' },
+      { name: 'Data Darbar', slug: 'data-darbar', distance: '1.4 km' },
+      { name: 'Lahore Museum', slug: 'lahore-museum', distance: '1.9 km' },
+    ],
+    history: 'The early settlements of Lahore were established between the 1st and 7th centuries, and Lahore became a proper city in 1040, fortified through the medieval era. Akbar walled the city in the mid-16th century with twelve gates and one narrow passage — thirteen openings in all — and its doors were shut every evening. After the British annexed Punjab in 1849 they demolished most of the walls and gates to weaken the old city\'s defences, replacing the walls with gardens. Six gates survive today: Bhati, Delhi, Kashmiri, Lohari, Roshnai and Shairanwala. The Walled City of Lahore Authority, with the Aga Khan Trust for Culture, has restored stretches including Delhi Gate and the Shahi Guzargah, whose first phase was completed in 2015.',
+    significance: 'The Walled City is the cultural heart of the Punjab: the historic core where Lahore\'s Mughal, Sikh and British layers sit side by side in one dense, living district. It covers about 256 hectares and is home to around 200,000 people. Its lanes hold the lavishly decorated Wazir Khan Mosque and the Shahi Hammam, and its edges hold the Badshahi Mosque and Lahore Fort — which is why a walk here, not a single monument, is the essential Lahore experience.',
+    thingsToKnow: [
+      'The thirteen original gates: Akbari, Bhati, Delhi, Kashmiri, Lohari, Masti, Mochi, Mori, Roshnai, Shahalmi, Shairanwala, Taxali and Yakki',
+      'Six gates survive: Bhati, Delhi, Kashmiri, Lohari, Roshnai and Shairanwala',
+      'Area about 256 hectares, population around 200,000',
+      'Circular Road rings the old city, linking it to the wider city',
+      'Delhi Gate and the adjacent Shahi Hammam were restored in 2015 by Aga Khan Cultural Service Pakistan',
+      'Also called the Old City, or Androon Shehr — the “Inner City”',
+    ],
+    wikiUrl: 'https://en.wikipedia.org/wiki/Walled_City_of_Lahore',
+  },
+  'lahore-museum': {
+    slug: 'lahore-museum',
+    name: 'Lahore Museum',
+    city: 'Lahore', citySlug: 'lahore',
+    country: 'Pakistan', countrySlug: 'pakistan',
+    province: 'Punjab', provinceSlug: 'punjab',
+    tagline: 'Pakistan\'s largest museum — 60,000 objects from Gandhara to the Pakistan Movement',
+    description: 'Founded in 1865 and on The Mall since 1894, Lahore Museum is Pakistan\'s largest museum — 60,000 objects, from Gandhara sculpture to the Fasting Buddha.',
+    primaryColor: '#7B1FA2',
+    category: 'Museum / Heritage',
+    builtYear: 'Founded 1865; present building 1894',
+    openHours: '9:00 AM – 4:00 PM in winter, 9:00 AM – 5:00 PM in summer; closed Fridays and the first Monday of each month',
+    entryFee: 'PKR 50 adults / PKR 20 students & children / PKR 1,000 foreigners (per the museum\'s official site)',
+    address: 'Shahrah-e-Quaid-e-Azam (The Mall), Lahore, Punjab, Pakistan',
+    lat: 31.568226, lng: 74.308174,
+    bestTimeToVisit: 'Weekday mornings, when the galleries are quietest.',
+    averageVisit: '2–3 hours',
+    tips: [
+      'Start with the Gandhara gallery and the Fasting Buddha',
+      'Look up in the entrance hall for Sadequain\'s mural',
+      'Do not miss the Zamzama gun outside the front — the cannon from Kipling\'s Kim',
+      'Photography rules vary by gallery — ask staff',
+      'Combine with a walk past the Mall\'s other colonial-era buildings',
+    ],
+    nearbyPlaces: [
+      { name: 'Data Darbar', slug: 'data-darbar', distance: '1.2 km' },
+      { name: 'Walled City', slug: 'walled-city', distance: '1.4 km' },
+      { name: 'Badshahi Mosque', slug: 'badshahi-mosque', distance: '2.2 km' },
+      { name: 'Lahore Fort', slug: 'lahore-fort', distance: '2.3 km' },
+    ],
+    history: 'Lahore Museum was originally established in 1865–66 on the site of the hall built for the 1864 Punjab Exhibition, on the site of today\'s Tollinton Market. The foundation stone of its present building was laid on 3 February 1890 by Prince Albert Victor, and the collection moved there in 1894, when the building opened as the Jubilee Museum for Queen Victoria\'s Golden Jubilee. John Lockwood Kipling, father of Rudyard Kipling, was one of the museum\'s earliest curators, and the museum and the Zamzama gun outside it open Rudyard Kipling\'s novel Kim. At the 1948 partition of Punjab the collection was divided, with the Lahore museum retaining about 60% of its artefacts.',
+    significance: 'Lahore Museum is Pakistan\'s largest museum and one of its most visited, holding some 60,000 objects. Its Indo-Saracenic building on The Mall houses galleries spanning pre-history to the present day: Indus Valley material, Gandhara Buddhist sculpture, Mughal and Sikh miniatures and arms, coins, textiles and a Pakistan Movement gallery. Its centrepiece is the emaciated Fasting Buddha, one of the finest Gandhara sculptures anywhere, and the entrance hall ceiling carries a large mural by Sadequain.',
+    thingsToKnow: [
+      'Collection of about 60,000 objects',
+      'The Fasting Buddha, from the Gandhara period, is its most famous object',
+      'The Zamzama gun, cast in 1762, stands in front of the building',
+      'Galleries span pre-history to the Pakistan Movement',
+      'Over 250,000 visitors were registered in 2005',
+      'The entrance hall ceiling features a large mural by Sadequain',
+    ],
+    wikiUrl: 'https://en.wikipedia.org/wiki/Lahore_Museum',
+  },
 };
 
 async function getPlace(slug: string): Promise<Place | null> {
@@ -168,13 +348,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // field — a place whose description is missing degrades to
   // name + city, it does not fail the build.
   const desc = (typeof place.description === 'string' ? place.description.trim() : '') || `${place.name} — ${place.city}`;
+  // D18: QA gate is title ≤60 chars DECODED, description ≤155. The old
+  // formula (“…, Visitor Guide, History & Tips | WorldCityHub”) ran
+  // past 60 for every place, and slice(0, 160) past 155 — both fixed
+  // here. This shortens the two pre-existing place titles too; no
+  // other copy changes.
   return {
-    title: `${place.name}, ${place.city} — Visitor Guide, History & Tips | WorldCityHub`,
-    description: desc.slice(0, 160),
+    title: `${place.name}, ${place.city} | WorldCityHub`,
+    description: desc.slice(0, 155),
     alternates: { canonical: `https://worldcityhub.vercel.app/places/${slug}` },
     openGraph: {
       title: `${place.name} | WorldCityHub`,
-      description: desc.slice(0, 160),
+      description: desc.slice(0, 155),
       images: place.imageUrl ? [{ url: place.imageUrl }] : [],
     },
   };
