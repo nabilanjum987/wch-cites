@@ -32,6 +32,18 @@ const HOROSCOPE_SIGNS = [
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ] as const
 
+// D18 (28 Oct final sitting): place pages published in this PR only.
+// A place slug enters here ONLY once its page passes the QA gate
+// (200 + real content + self-canonical + meta limits). The two
+// pre-existing place pages (badshahi-mosque, lahore-fort) are NOT added
+// here — they predate this item and belong to the item-11 sitemap pass.
+const LIVE_PLACES = [
+  'shalimar-gardens',
+  'data-darbar',
+  'walled-city',
+  'lahore-museum',
+] as const
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: 'daily', priority: 1.0 },
@@ -77,7 +89,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
-  const pages: MetadataRoute.Sitemap = [...staticPages, ...horoscopePages, ...cityPages]
+  const placePages: MetadataRoute.Sitemap = LIVE_PLACES.map((slug) => ({
+    url: `${baseUrl}/places/${slug}`,
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
+  const pages: MetadataRoute.Sitemap = [...staticPages, ...horoscopePages, ...cityPages, ...placePages]
   const seen = new Set(pages.map((p) => p.url))
 
   // Bonus: any additional active cities that appear in Supabase later are

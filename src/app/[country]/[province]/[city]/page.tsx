@@ -857,6 +857,11 @@ export default async function CityPage({
               {(citySlug === 'lahore' ? [
                 { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque' },
                 { name: 'Lahore Fort', type: 'UNESCO Heritage', slug: 'lahore-fort' },
+                // D18: the four newly published Lahore places.
+                { name: 'Shalimar Gardens', type: 'Mughal Gardens', slug: 'shalimar-gardens' },
+                { name: 'Data Darbar', type: 'Sufi Shrine', slug: 'data-darbar' },
+                { name: 'Walled City', type: 'Historic District', slug: 'walled-city' },
+                { name: 'Lahore Museum', type: 'Museum', slug: 'lahore-museum' },
               ] : []).map((place) => (
                 <a
                   key={place.slug}
