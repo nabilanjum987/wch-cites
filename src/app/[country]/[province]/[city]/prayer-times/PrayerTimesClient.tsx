@@ -15,6 +15,7 @@ import AzanPlayer from '../../../../../components/prayer/AzanPlayer';
 import { getCityBySlug, type City } from '../../../../../types/city';
 import { fetchPrayerTimes, fetchWeeklyPrayerTimes } from '../../../../../lib/apis/prayer';
 import { fetchGoldRates, fetchSilverRates } from '../../../../../lib/apis/rates';
+import type { GoldSpotSource } from '../../../../../lib/gold';
 import { getFaithSectionsForCity, nextRamadan, moonPhaseInfo } from '../../../../../lib/data/faith-profiles';
 import { HIJRI_MONTHS, fetchHadith } from '../../../../../lib/apis/islamic';
 import {
@@ -102,6 +103,8 @@ export interface InitialPrayerTimes {
 export interface InitialZakatRates {
   goldPerGram: number;
   silverPerGram: number;
+  // F4: which spot served the gold rate — drives the Zakat caption.
+  goldSource?: GoldSpotSource;
 }
 
 export default function PrayerTimesPage({ initialTimes, initialZakat, initialShafiiAsr }: { initialTimes?: InitialPrayerTimes | null; initialZakat?: InitialZakatRates | null; initialShafiiAsr?: string | null }) {
@@ -116,13 +119,15 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
   // Shafi'i Asr, fetched live so the method section shows a real second
   // value instead of a hard-coded one (Hanafi is the displayed default).
   const [shafiiAsr, setShafiiAsr] = useState<string | null>(initialShafiiAsr ?? null);
-  // Live bullion rates for the Zakat card (site's existing rates mechanism:
-  // CoinGecko PAX Gold + gold-api silver, converted at USD→PKR). Seeded
-  // from the server-rendered rates (page.tsx) so figures are in raw HTML;
-  // the client fetch below refreshes them. Null when no live source has
-  // responded — figures are then hidden, never stale.
+  // Live bullion rates for the Zakat card (F4 canonical: gold-api XAU
+  // spot via the shared helper, PAXG fallback inside; silver gold-api
+  // XAG, converted at USD→PKR). Seeded from the server-rendered rates
+  // (page.tsx) so figures are in raw HTML; the client fetch below
+  // refreshes them. Null when no live source has responded — figures
+  // are then hidden, never stale.
   const [goldPerGram, setGoldPerGram] = useState<number | null>(initialZakat?.goldPerGram ?? null);
   const [silverPerGram, setSilverPerGram] = useState<number | null>(initialZakat?.silverPerGram ?? null);
+  const [goldSource, setGoldSource] = useState<GoldSpotSource | null>(initialZakat?.goldSource ?? null);
   const [todayData, setTodayData] = useState<any>(null);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [hadith, setHadith] = useState<{ text: string; narrator: string; book: string } | null>(null);
@@ -184,7 +189,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
       .then((fx) => {
         const rate = typeof fx?.rates?.PKR === 'number' ? fx.rates.PKR : null;
         if (!rate) return;
-        fetchGoldRates(rate, 'PKR', '₨').then((g) => { if (g) setGoldPerGram(g.per_gram); });
+        fetchGoldRates(rate, 'PKR', '₨').then((g) => { if (g) { setGoldPerGram(g.per_gram); setGoldSource(g.spot_source); } });
         fetchSilverRates(rate, 'PKR', '₨').then((s) => { if (s) setSilverPerGram(s.per_gram); });
       })
       .catch(() => {});
@@ -639,7 +644,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                       style={{ backgroundColor: 'rgba(251,191,36,0.1)', borderColor: 'rgba(251,191,36,0.35)' }}>
                       <div className="text-amber-400 text-xs font-semibold mb-2">GOLD NISAB (85g × live rate)</div>
                       <div className="text-2xl font-bold text-white">PKR {Math.round(85 * goldPerGram).toLocaleString('en-US')}</div>
-                      <div className="text-white/40 text-xs mt-1">Based on PKR {Math.round(goldPerGram).toLocaleString('en-US')}/gram live gold rate (CoinGecko PAX Gold, converted at USD to PKR)</div>
+                      <div className="text-white/40 text-xs mt-1">Based on PKR {Math.round(goldPerGram).toLocaleString('en-US')}/gram live gold rate ({goldSource === 'coingecko-pax-gold' ? 'CoinGecko PAX Gold' : 'gold-api spot'}, converted at USD to PKR)</div>
                     </div>
                     <div className="rounded-xl p-5 border"
                       style={{ backgroundColor: 'rgba(148,163,184,0.1)', borderColor: 'rgba(148,163,184,0.35)' }}>

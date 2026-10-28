@@ -1,6 +1,11 @@
 import type { Metadata } from 'next';
 import PrayerTimesPage, { type InitialPrayerTimes, type InitialZakatRates } from './PrayerTimesClient';
 import { getCityBySlug } from '../../../../../types/city';
+import CityPageImage from '@/components/city/CityPageImage';
+import { getGoldPkr, getUsdPkrRate, TROY_OZ_GRAMS } from '@/lib/gold';
+
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 
 // Server wrapper: the interactive Spiritual & Wellness Hub lives in
 // PrayerTimesClient.tsx (a client component). Metadata must be exported
@@ -72,29 +77,26 @@ async function fetchInitialShafiiAsr(lat: number, lng: number, tz: string): Prom
   }
 }
 
-// P13(b): server-rendered live bullion per gram, from the site's existing
-// live-rate mechanism — CoinGecko PAX Gold in PKR (the ticker's source)
-// and gold-api silver spot converted at the open USD→PKR rate. Any
-// failure returns null and the Zakat card hides its figures; the stale
-// hard-coded rate is gone for good.
+// P13(b): server-rendered live bullion per gram, from the F4 canonical
+// gold helper — gold-api XAU spot via getGoldPkr() (PAXG fallback
+// inside); silver is the gold-api XAG spot converted at the open
+// USD→PKR rate. Any failure returns null and the Zakat card hides its
+// figures; the stale hard-coded rate is gone for good.
 async function fetchInitialZakat(): Promise<InitialZakatRates | null> {
   try {
-    const [cg, silver, fx] = await Promise.all([
-      fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=pkr', { next: { revalidate: 3600 } }),
+    const [gold, silverRes, fx] = await Promise.all([
+      getGoldPkr(),
       fetch('https://api.gold-api.com/price/XAG', { next: { revalidate: 3600 } }),
-      fetch('https://open.er-api.com/v6/latest/USD', { next: { revalidate: 3600 } }),
+      getUsdPkrRate(),
     ]);
-    if (!cg.ok || !silver.ok || !fx.ok) return null;
-    const cgJson = await cg.json();
-    const silverJson = await silver.json();
-    const fxJson = await fx.json();
-    const goldPerOzPkr = cgJson?.['pax-gold']?.pkr;
+    if (!gold || !fx || !silverRes.ok) return null;
+    const silverJson = await silverRes.json();
     const silverPerOzUsd = silverJson?.price;
-    const usdPkr = fxJson?.rates?.PKR;
-    if (typeof goldPerOzPkr !== 'number' || typeof silverPerOzUsd !== 'number' || typeof usdPkr !== 'number') return null;
+    if (typeof silverPerOzUsd !== 'number') return null;
     return {
-      goldPerGram: goldPerOzPkr / 31.1035,
-      silverPerGram: (silverPerOzUsd / 31.1035) * usdPkr,
+      goldPerGram: gold.perGram,
+      silverPerGram: (silverPerOzUsd / TROY_OZ_GRAMS) * fx,
+      goldSource: gold.source,
     };
   } catch {
     return null;
@@ -103,6 +105,11 @@ async function fetchInitialZakat(): Promise<InitialZakatRates | null> {
 
 export default async function Page({ params }: PageProps) {
   const p = await params;
+  // P6: subpage JSON-LD names from the route slugs, the same derivation
+  // this template's own metadata title already uses.
+  const cityName = titleCaseSlug(p.city);
+  const provinceName = titleCaseSlug(p.province);
+  const countryName = titleCaseSlug(p.country);
   const city = getCityBySlug(p.city);
   const [initialTimes, initialZakat, initialShafiiAsr] = await Promise.all([
     fetchInitialTimes(
@@ -117,5 +124,12 @@ export default async function Page({ params }: PageProps) {
       city?.timezone ?? 'Asia/Karachi',
     ),
   ]);
-  return <PrayerTimesPage initialTimes={initialTimes} initialZakat={initialZakat} initialShafiiAsr={initialShafiiAsr} />;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, p.country, provinceName, p.province, cityName, p.city, 'Prayer Times', 'prayer-times'))} />
+      <JsonLd data={cityJsonLd(cityName, p.city, provinceName, p.province, countryName, p.country)} />
+      <CityPageImage citySlug={p.city} variant="prayer" />
+      <PrayerTimesPage initialTimes={initialTimes} initialZakat={initialZakat} initialShafiiAsr={initialShafiiAsr} />
+    </>
+  );
 }
