@@ -2480,6 +2480,21 @@ export function getSiblingOceans(slug: string): Ocean[] {
   return out;
 }
 
+// Hub list (final28-P1): the published ocean plus every BUILT ocean
+// whose detail page is live and complete. getOcean resolves each slug
+// (database first, baked data as fallback) and only resolved oceans
+// are returned — a slug that does not resolve is never linked from
+// the hub. This deliberately does NOT widen PUBLISHED_OCEANS, so the
+// detail pages' static params and publish semantics are untouched.
+export async function getHubOceans(): Promise<Ocean[]> {
+  const out: Ocean[] = [];
+  for (const o of [...PUBLISHED_OCEANS, ...BUILT_OCEANS]) {
+    const full = await getOcean(o.slug);
+    if (full) out.push(full);
+  }
+  return out;
+}
+
 // ── Live layer ──────────────────────────────────────────────────────────────
 export interface OceanLive {
   sampledAt: string;
