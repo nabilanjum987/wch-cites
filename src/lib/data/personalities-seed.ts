@@ -153,7 +153,10 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { title: 'Nuskha Haye Wafa', description: 'The collected works (kulliyat) of his poetry.', type: 'Poetry' },
       { title: 'Mujh Se Pehli Si Mohabbat', description: 'His most quoted poem — a turn from private love to public sorrow.', type: 'Poem' },
     ],
-    quotes: [],
+    quotes: [
+      { text: 'Mujh se pehli si mohabbat mere mehboob na maang', context: 'From his poem "Mujh Se Pehli Si Mohabbat" — Do not ask of me, my love, the love I once had for you' },
+      { text: 'Bol ke lab azaad hain tere', context: 'From his poem "Bol" — Speak, for your lips are free' },
+    ],
     descriptionSections: [],
     wikiUrl: 'https://en.wikipedia.org/wiki/Faiz_Ahmed_Faiz',
   },
