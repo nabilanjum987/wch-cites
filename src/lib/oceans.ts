@@ -2364,7 +2364,189 @@ const NORTH_SEA: Ocean = {
   ]
 };
 
-export const BUILT_OCEANS: Ocean[] = [PACIFIC_OCEAN, ATLANTIC_OCEAN, INDIAN_OCEAN, ARCTIC_OCEAN, SOUTHERN_OCEAN, MEDITERRANEAN_SEA, CARIBBEAN_SEA, SOUTH_CHINA_SEA, RED_SEA, BERING_SEA, CORAL_SEA, PERSIAN_GULF, TASMAN_SEA, BALTIC_SEA, NORTH_SEA];
+// ── Final30 A9: Bay of Bengal ─────────────────────────────────────────────
+// Golden record built 2026-10-28 from Wikipedia ("Bay of Bengal",
+// infobox + lead + extent + currents) and Wikidata Q38684 ("part of
+// the Indian Ocean between South and South East Asia"). No figure is
+// invented: where sources differ, the variant is recorded in the
+// sources list. BUILT, not published: the page renders for QA, the
+// hub and the sitemap are untouched, and the sitemap addition waits
+// for merge + live HTTP 200.
+// A9 facts intent: the "Total area", "Average depth", "Maximum depth"
+// and "Representative point" rows below are the exact rows PR #132's
+// oceanFactsQa() derives its H2 "Bay of Bengal facts" + H3 answers
+// from, so adding 'bay-of-bengal' to that PR's FACTS_SLUGS renders
+// the section with no further record change. The three facts FAQs
+// below use wordings distinct from both the existing FAQ bank and
+// #132's derived questions, so the FAQPage schema never carries an
+// exact-duplicate question.
+// Media: two shore photographs, both licence-verified in text on
+// their Commons file pages (Rainer Halama, CC BY-SA 4.0, 6,000 x
+// 4,000, camera location Mamallapuram on the bay's shore). No
+// unsourced image is used.
+
+const BAY_OF_BENGAL: Ocean = {
+  "slug": "bay-of-bengal",
+  "name": "Bay of Bengal",
+  "wikidataQid": "Q38684",
+  "partOfName": "Indian Ocean",
+  "partOfLabel": "Indian Ocean · northeastern arm",
+  "seasonTitle": "The monsoon bay",
+  "wikiTitle": "Bay_of_Bengal",
+  "lat": 15,
+  "lng": 88,
+  "marineTimezone": "Asia/Dhaka",
+  "seoTitle": "Bay of Bengal: Live Waves, Weather & Facts",
+  "seoDescription": "The Bay of Bengal live: wave height today, size and depth facts with sources, its monsoon and cyclone seasons, and the rivers that feed it.",
+  "intro": [
+    "The Bay of Bengal forms the northeastern part of the Indian Ocean, located between the Indian subcontinent and the Indochinese peninsula, south of the Bengal region. Spread across an area of 2,600,000 km² (1,000,000 sq mi), it is the largest water region called a bay in the world, bordered by many of the countries in South Asia and Southeast Asia.",
+    "Geopolitically, the bay is bound by mainland India on the west and northwest, Bangladesh in the north, Myanmar in the northeast and the Andaman and Nicobar Islands of India in the east. Its southern limit is a line between Sangaman Kanda in Sri Lanka, and the northwesternmost point of Sumatra in Indonesia.",
+    "Major river systems of the Indian subcontinent flow into the Bay of Bengal: the Ganges, Brahmaputra, Irrawaddy, Godavari, Krishna, Mahanadi and Kaveri, among others. The coast holds some of the world's longest natural beaches, such as Cox's Bazar and Marina, and varied ecosystems such as the Sundarbans, the largest mangrove forest in the world."
+  ],
+  "facts": [
+    {
+      "label": "Part of",
+      "value": "Indian Ocean",
+      "source": "Wikidata"
+    },
+    {
+      "label": "Total area",
+      "value": "2,600,000 km² (1,000,000 sq mi)",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Average depth",
+      "value": "2,600 m",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum depth",
+      "value": "4,694 m",
+      "source": "Wikipedia / Wikidata"
+    },
+    {
+      "label": "Maximum length",
+      "value": "2,090 km",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Maximum width",
+      "value": "1,610 km",
+      "source": "Wikipedia / Wikidata"
+    },
+    {
+      "label": "Southern limit",
+      "value": "Sangaman Kanda, Sri Lanka → northwestern Sumatra",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Representative point",
+      "value": "15° N, 88° E",
+      "source": "Wikipedia / Wikidata"
+    }
+  ],
+  "geography": [
+    "The International Hydrographic Organization defines the bay's limits as follows: on the east, a line running from Cape Negrais in Myanmar through the larger islands of the Andaman group, in such a way that all the narrow waters between the islands lie eastward of the line, as far as Little Andaman Island (10°48'N, 92°24'E), and thence along the southwest limit of the Burma Sea to Point Raja in Sumatra; on the south, Adam's Bridge (between India and Sri Lanka) and a line from Dondra Head, the south point of Sri Lanka, to Poeloe Bras in Sumatra.",
+    "Basin countries are Bangladesh, India, Indonesia, Myanmar, Sri Lanka and Thailand. Important ports along the bay include Chennai, Ennore, Chittagong, Colombo, Kolkata-Haldia, Mongla, Paradip, Port Blair, Visakhapatnam and Thoothukudi. The bay's outlying islands, the Andaman and Nicobar Islands, and its great river deltas — above all the Ganges-Brahmaputra delta and the Sundarbans — shape its human geography as much as its open water does (Wikipedia)."
+  ],
+  "monsoon": [
+    "From January to October the bay's current flows northward, in the clockwise circulation pattern called the East Indian Current. The Bay of Bengal monsoon moves in a northwest direction, striking the Nicobar Islands and the Andaman Islands first at the end of May, then the coast of mainland India by the end of June. For the remainder of the year the current runs counterclockwise and southwestward, in the pattern called the East Indian Winter Jet.",
+    "September to December sees very active weather in the Bay of Bengal: the season varsha (monsoon) produces severe cyclones which affect eastern India, and several efforts have been initiated to cope with storm surge. During the summer monsoon (late June through early October), tropical cyclones can also form in the southern Bay of Bengal, proceed northward, and make landfall over the delta region — the combination that makes the bay one of the world's most cyclone-exposed seas."
+  ],
+  "coastalCity": null,
+  "faqs": [
+    {
+      "q": "How large is the Bay of Bengal?",
+      "a": "The Bay of Bengal covers 2,600,000 square kilometres (1,000,000 square miles), making it the largest bay in the world. It stretches about 2,090 kilometres long and 1,610 kilometres wide, with an average depth of 2,600 metres. It forms the northeastern part of the Indian Ocean, between the Indian subcontinent and the Indochinese peninsula, south of the Bengal region."
+    },
+    {
+      "q": "How deep is the Bay of Bengal at its deepest?",
+      "a": "The Bay of Bengal reaches a maximum depth of 4,694 metres (15,400 feet), while its average depth is 2,600 metres. That depth is measured across a bay fed by some of Asia's great rivers — the Ganges, Brahmaputra, Irrawaddy, Godavari, Krishna, Mahanadi and Kaveri — which carry sediment and fresh water into the bay. Its southern limit runs from Sri Lanka to the northwestern point of Sumatra."
+    },
+    {
+      "q": "Where is the Bay of Bengal?",
+      "a": "The Bay of Bengal is the northeastern part of the Indian Ocean, between the Indian subcontinent and the Indochinese peninsula, at about 15 degrees north, 88 degrees east. It is bound by mainland India to the west and northwest, Bangladesh to the north, Myanmar to the northeast and the Andaman and Nicobar Islands to the east, with its southern limit running from Sri Lanka to Sumatra."
+    },
+    {
+      "q": "When are cyclones most active in the Bay of Bengal?",
+      "a": "September to December sees very active weather in the bay, when the varsha (monsoon) season produces severe cyclones affecting eastern India. Cyclones can also form in the southern bay during the summer monsoon, from late June through early October, and proceed northward to make landfall over the delta region. The live wave panel above shows what the bay is doing today, inside that seasonal frame."
+    },
+    {
+      "q": "Which rivers flow into the Bay of Bengal?",
+      "a": "The Ganges-Hooghly, the Padma, the Brahmaputra-Jamuna, the Barak-Surma-Meghna, the Irrawaddy, the Godavari, the Mahanadi, the Brahmani, the Baitarani, the Krishna and the Kaveri all flow into the Bay of Bengal. Their deltas — above all the Ganges-Brahmaputra delta, home to the Sundarbans, the largest mangrove forest in the world — are the bay's defining shores."
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Mahabalipuram-Shore Temple-WUS01954.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/28/Mahabalipuram-Shore_Temple-WUS01954.jpg",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Mahabalipuram-Shore_Temple-WUS01954.jpg",
+      "width": 6000,
+      "height": 4000,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Rainer Halama",
+      "attribution": "\"Mahabalipuram-Shore Temple\" by Rainer Halama — CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "The Shore Temple at Mamallapuram, standing on the shore of the Bay of Bengal in Tamil Nadu, India",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Mahabalipuram-Shore Temple-WUS01995.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Mahabalipuram-Shore_Temple-WUS01995.jpg",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Mahabalipuram-Shore_Temple-WUS01995.jpg",
+      "width": 6000,
+      "height": 4000,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Rainer Halama",
+      "attribution": "\"Mahabalipuram-Shore Temple\" by Rainer Halama — CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "People at the Shore Temple at Mamallapuram, on the Bay of Bengal shore",
+      "sortOrder": 2
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity (part of the Indian Ocean between South and South East Asia), representative coordinates 15° N, 88° E, width 1,610 km, maximum depth 4,694 m",
+      "sourceName": "Wikidata — Q38684 (Bay of Bengal)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q38684",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Area, average depth, length, bounds, southern limit, rivers, beaches, Sundarbans, IHO limits, basin countries, ports, monsoon currents, September-December cyclone activity",
+      "sourceName": "Wikipedia — \"Bay of Bengal\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Bay_of_Bengal",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Figure variants: Wikidata gives the area as 2,172,000 km², while the current Wikipedia infobox gives 2,600,000 km²; the page uses the Wikipedia figure and records the variant here. No other figure in this record is variant-dependent.",
+      "sourceName": "Wikidata Q38684 / Wikipedia — \"Bay of Bengal\" (variant note)",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Bay_of_Bengal",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Summer-monsoon tropical cyclones forming in the southern bay and making landfall over the delta region",
+      "sourceName": "NASA Earth from Space — STS027-39-28, Ganges-Brahmaputra River Delta",
+      "sourceUrl": "https://esrs.jsc.nasa.gov/Collections/EarthFromSpace/photoinfo.pl?PHOTO=STS027-39-28",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Live wave height, direction and period at 15° N, 88° E",
+      "sourceName": "Open-Meteo Marine API",
+      "sourceUrl": "https://open-meteo.com/",
+      "checkedAt": "2026-10-28"
+    },
+    {
+      "claim": "Photographs: licence (CC BY-SA 4.0, copyright holder line on both file pages), author, dimensions (6,000 x 4,000 each), camera location Mamallapuram",
+      "sourceName": "Wikimedia Commons — file pages for the two photographs above",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mahabalipuram-Shore_Temple-WUS01954.jpg",
+      "checkedAt": "2026-10-28"
+    }
+  ]
+};
+
+export const BUILT_OCEANS: Ocean[] = [PACIFIC_OCEAN, ATLANTIC_OCEAN, INDIAN_OCEAN, ARCTIC_OCEAN, SOUTHERN_OCEAN, MEDITERRANEAN_SEA, CARIBBEAN_SEA, SOUTH_CHINA_SEA, RED_SEA, BERING_SEA, CORAL_SEA, PERSIAN_GULF, TASMAN_SEA, BALTIC_SEA, NORTH_SEA, BAY_OF_BENGAL];
 
 export const PUBLISHED_OCEANS: Ocean[] = [ARABIAN_SEA];
 
@@ -2545,6 +2727,28 @@ export function monsoonSeason(timezone: string, slug = 'arabian-sea'): { name: s
   // Indian Ocean run on the monsoon frame below; each other ocean gets
   // its own documented seasonal pattern. Frames are climatology; the
   // live panel beside them is today's measurement — never mixed.
+  // Final30 A9 (bay-of-bengal): this bay runs on the monsoon, but
+  // its own cyclone calendar differs from the Arabian Sea default
+  // below — September to December is its severe-cyclone season
+  // (Wikipedia), so it gets its own frame, inserted here (ahead of
+  // the pacific block) so it never collides with the black-sea
+  // branch's insertion point in the sibling PR.
+  if (slug === 'bay-of-bengal') {
+    if (month >= 9 && month <= 12)
+      return {
+        name: 'Cyclone season — September to December',
+        text: 'The severe-cyclone frame: September to December sees very active weather in the bay, with severe cyclones affecting eastern India (pattern per Wikipedia). Compare the live waves above — today\u2019s actual sea, inside the seasonal frame.',
+      };
+    if (month >= 6 && month <= 8)
+      return {
+        name: 'Southwest monsoon season',
+        text: 'The summer monsoon frame: the monsoon strikes the Nicobar and Andaman Islands at the end of May and the mainland coast by the end of June, and the bay\u2019s current runs northward as the East Indian Current (pattern per Wikipedia). Compare the live waves above — today\u2019s actual sea, inside the seasonal frame.',
+      };
+    return {
+      name: 'Pre-monsoon / winter-jet frame',
+      text: 'The quieter frame: the bay\u2019s current still runs northward into the early year, and for the remainder of the year it runs counterclockwise and southwestward as the East Indian Winter Jet (pattern per Wikipedia). Compare the live waves above — today\u2019s actual sea, inside the seasonal frame.',
+    };
+  }
   if (slug === 'pacific-ocean') {
     if (month >= 6 && month <= 11)
       return {
