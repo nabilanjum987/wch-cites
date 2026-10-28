@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import SportsPage from './SportsClient';
 import CityPageImage from '@/components/city/CityPageImage';
 import { getCityData } from '@/lib/getCityData';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 
 // Server wrapper: the interactive sports page lives in SportsClient.tsx
 // (a client component). Metadata must be exported from a server
@@ -34,8 +36,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function Page({ params }: PageProps) {
   const p = await params;
   const initialCity = await getCityData(p.country, p.province, p.city);
+  // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+  const cityName = initialCity?.name ?? titleCaseSlug(p.city);
+  const provinceName = initialCity?.province ?? titleCaseSlug(p.province);
+  const countryName = initialCity?.country ?? titleCaseSlug(p.country);
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, p.country, provinceName, p.province, cityName, p.city, 'Sports', 'sports'))} />
+      <JsonLd data={cityJsonLd(cityName, p.city, provinceName, p.province, countryName, p.country)} />
       <CityPageImage citySlug={p.city} variant="sports" />
       <SportsPage initialCity={initialCity} />
     </>
