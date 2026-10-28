@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import './globals.css'
 import Navbar from '@/components/shared/Navbar'
 import TickerBar from '@/components/shared/TickerBar'
@@ -17,7 +18,14 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const tickerItems = await getMarketTickerItems().catch(() => []);
+  // P8 — page city for the ticker's prayer entry: city pages live at
+  // /<country>/<province>/<city>/..., so the city slug is the 3rd path
+  // segment. Anything else (homepage, country/province pages, hubs)
+  // yields no match and getMarketTickerItems falls back to Lahore.
+  const pathname = (await headers()).get('x-wch-pathname') ?? '';
+  const segs = pathname.split('/').filter(Boolean);
+  const pageCity = segs.length >= 3 ? segs[2] : undefined;
+  const tickerItems = await getMarketTickerItems(pageCity).catch(() => []);
   return (
     <html lang='en' suppressHydrationWarning>
       <head>

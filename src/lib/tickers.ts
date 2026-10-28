@@ -109,7 +109,7 @@ export const PUBLISHED_CITIES = [
 
 const cityPath = (c: (typeof PUBLISHED_CITIES)[number]) => `/pakistan/${c.province}/${c.slug}`;
 
-export async function getMarketTickerItems(): Promise<MarketItem[]> {
+export async function getMarketTickerItems(pageCitySlug?: string): Promise<MarketItem[]> {
   const items: MarketItem[] = [];
   const [cg, silver, fx, fng, popTotal, popGrowth] = await Promise.all([
     jget('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold,bitcoin&vs_currencies=usd,pkr&include_24hr_change=true', 300),
@@ -171,13 +171,18 @@ export async function getMarketTickerItems(): Promise<MarketItem[]> {
       live: { type: 'population', base: estimate, perSecond, at: Date.now() },
     });
   }
-  const lahore = PUBLISHED_CITIES[0];
-  const np = await nextPrayer(lahore.lat, lahore.lng, lahore.tz).catch(() => null);
+  // P8 — the prayer entry follows the PAGE's city, not always Lahore.
+  // The caller (root layout) passes the city slug parsed from the request
+  // pathname; an unknown/absent slug falls back to Lahore, exactly as
+  // before, so the homepage and non-city pages are unchanged. Only this
+  // block changes — every other ticker entry above is untouched.
+  const prayerCity = PUBLISHED_CITIES.find((c) => c.slug === pageCitySlug) ?? PUBLISHED_CITIES[0];
+  const np = await nextPrayer(prayerCity.lat, prayerCity.lng, prayerCity.tz).catch(() => null);
   if (np) {
     items.push({
-      label: `${lahore.label} Prayer`,
+      label: `${prayerCity.label} Prayer`,
       value: `${np.name} ${np.time}`,
-      href: `${cityPath(lahore)}/prayer-times`,
+      href: `${cityPath(prayerCity)}/prayer-times`,
       live: { type: 'prayer', at: np.at },
     });
   }
