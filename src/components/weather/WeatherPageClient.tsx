@@ -1043,6 +1043,52 @@ function AQIAffiliateCard() {
   );
 }
 
+// ─── A3 (final30): keyword H1 + AEO FAQ ────────────────────────────────
+// Only the three in-scope slugs get the "... Weather Today" H1 and the
+// FAQ below; every other city keeps the generic "{City} Weather" H1 and
+// no FAQ. Reserve cities are never named here. FAQ answers are 50–70
+// words each, describe only what this page itself shows, and name the
+// live sources (OpenWeatherMap / Open-Meteo) — no invented figures.
+
+const WEATHER_TODAY_H1: Record<string, string> = {
+  lahore: 'Lahore Weather Today',
+  multan: 'Multan Weather Today',
+  islamabad: 'Islamabad Weather Today',
+}
+
+function WeatherTodayFaq({ cityName }: { cityName: string }) {
+  const faqs: Array<{ q: string; a: string }> = [
+    {
+      q: `What is the weather in ${cityName} today?`,
+      a: `The live conditions card at the top of this page shows ${cityName}’s current temperature and condition, plus feels-like temperature, humidity, wind, pressure, visibility and UV index, sourced from OpenWeatherMap and Open-Meteo data. Check the hourly forecast below it for the next hours, and the 10-day forecast for the week ahead. If the live feed is briefly unavailable, the page says so instead of showing an estimate.`,
+    },
+    {
+      q: `Will it rain in ${cityName} today?`,
+      a: `Check the hourly forecast on this page: each hour shows a rain probability, and the 10-day forecast shows the same chance for each day ahead. A high percentage means rain is likely at that hour, so carry an umbrella and allow extra travel time. A low percentage means mostly dry conditions, but a brief shower can still occur, so recheck the hourly forecast before heading out.`,
+    },
+    {
+      q: `What should I wear in ${cityName} today?`,
+      a: `Use the What to Wear section on this page, which suggests clothing for morning, afternoon, evening and night based on the live temperature at each time of day. Light layers suit warm afternoons, while a jacket helps on cooler mornings and evenings. If rain is forecast, add a waterproof layer or umbrella. Always recheck the live temperature before leaving, since conditions can change during the day.`,
+    },
+  ]
+  return (
+    <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
+      <h2 className="text-lg font-bold text-white mb-4 px-1">{cityName} Weather Today — Questions Answered</h2>
+      <div className="space-y-4">
+        {faqs.map((f) => (
+          <div key={f.q} className="rounded-xl border border-white/8 p-4">
+            <h3 className="font-bold text-white mb-2">{f.q}</h3>
+            <p className="text-gray-300 leading-relaxed text-sm">{f.a}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-gray-600 leading-relaxed text-sm mt-4 px-1">
+        Conditions, forecasts and air quality on this page are live data from OpenWeatherMap and Open-Meteo, not a fixed daily summary.
+      </p>
+    </motion.section>
+  )
+}
+
 // ─── Main component ─────────────────────────────────────────────────────
 
 interface WeatherPageProps { cityName: string; country: string; province: string; lat: number; lng: number; timezone: string; citySlug?: string; initialWeather?: WeatherData | null; initialSunMoon?: SunMoonData | null; initialAqi?: AQIData | null }
@@ -1097,7 +1143,7 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
             <ChevronRight size={14} />
             <span className="text-white font-medium">{cityName}</span>
           </nav>
-          <h1 className="text-white text-3xl sm:text-4xl font-bold">{cityName} Weather</h1>
+          <h1 className="text-white text-3xl sm:text-4xl font-bold">{WEATHER_TODAY_H1[citySlug ?? ''] ?? `${cityName} Weather`}</h1>
           <p className="text-white/70 text-base mt-2">Live conditions & detailed forecast</p>
         </div>
       </header>
@@ -1268,6 +1314,9 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
             ) : <LoadingSkeleton />}
           </motion.div>
         )}
+
+        {/* A3 FAQ: only on the three keyword-targeted city pages. */}
+        {WEATHER_TODAY_H1[citySlug ?? ''] && <WeatherTodayFaq cityName={cityName} />}
       </div>
 
       {/* Footer */}

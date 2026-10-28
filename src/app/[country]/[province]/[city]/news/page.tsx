@@ -15,9 +15,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cityData = await getCityData(country, province, city);
   const cityName = cityData?.name ?? city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   const countryName = cityData?.country ?? country.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  // A12 (final30, folded into A3): Lahore only targets "lahore news today".
+  // Every other city keeps the generic title/meta below.
+  const isLahore = city === 'lahore';
   return {
-    title: `${cityName} News — Latest Headlines | WorldCityHub`,
-    description: `Latest ${cityName} news: breaking stories, local headlines and the global events affecting ${cityName}, ${countryName}.`,
+    title: isLahore ? 'Lahore News Today | WorldCityHub' : `${cityName} News — Latest Headlines | WorldCityHub`,
+    description: isLahore
+      ? 'Lahore news today: the latest Lahore headlines, breaking stories and local updates, aggregated from published sources and updated through the day.'
+      : `Latest ${cityName} news: breaking stories, local headlines and the global events affecting ${cityName}, ${countryName}.`,
     alternates: { canonical: `https://worldcityhub.vercel.app/${country}/${province}/${city}/news` },
   };
 }

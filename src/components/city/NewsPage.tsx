@@ -537,7 +537,9 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               <div className="lg:col-span-2 space-y-4">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-                  Top Stories
+                  {/* A12 (final30): Lahore only targets "lahore news today" as
+                      this H2; every other city keeps "Top Stories". */}
+                  {city === 'lahore' ? 'Lahore News Today' : 'Top Stories'}
                 </h2>
                 <p className="text-gray-300 leading-relaxed text-sm">
                   {generateTopStoriesParagraph(cityData?.name || city)}
