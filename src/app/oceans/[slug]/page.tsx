@@ -84,6 +84,8 @@ const FACTS_SLUGS = new Set([
   'baltic-sea',
   'south-china-sea',
   'arabian-sea',
+  'black-sea',
+  'bay-of-bengal',
 ]);
 
 function oceanFact(ocean: Ocean, label: string): string | null {
