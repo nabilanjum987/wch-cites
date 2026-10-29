@@ -49,11 +49,17 @@ const LIVE_PLACES = [
 // no noindex; per-URL results in the PR evidence pack). The 16th ocean
 // detail page, arabian-sea, is already listed in staticPages above and is
 // deliberately NOT repeated here, so no URL appears twice.
+// 2026-10-29 (auditor): black-sea + bay-of-bengal added after the same
+// live verification (HTTP 200 + real content + facts Q&A rendering +
+// self-canonical + no noindex) once their records and facts sections
+// landed via PRs #138/#147.
 const LIVE_OCEANS = [
   'arctic-ocean',
   'atlantic-ocean',
   'baltic-sea',
+  'bay-of-bengal',
   'bering-sea',
+  'black-sea',
   'caribbean-sea',
   'coral-sea',
   'indian-ocean',
