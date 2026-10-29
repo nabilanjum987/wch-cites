@@ -18,15 +18,15 @@ const titleCase = (s: string) => s.split('-').map(w => w.charAt(0).toUpperCase()
 const WEATHER_TODAY_META: Record<string, { title: string; description: string }> = {
   lahore: {
     title: 'Lahore Weather Today | WorldCityHub',
-    description: 'Lahore weather today: live conditions, hourly and 7-day forecast, air quality, sunrise and sunset, and what to wear in Lahore, Punjab, Pakistan.',
+    description: 'Lahore weather today: live conditions, hourly and 10-day forecast, air quality, sunrise and sunset, and what to wear in Lahore, Punjab, Pakistan.',
   },
   multan: {
     title: 'Multan Weather Today | WorldCityHub',
-    description: 'Multan weather today: live conditions, hourly and 7-day forecast, air quality, sunrise and sunset, and what to wear in Multan, Punjab, Pakistan.',
+    description: 'Multan weather today: live conditions, hourly and 10-day forecast, air quality, sunrise and sunset, and what to wear in Multan, Punjab, Pakistan.',
   },
   islamabad: {
     title: 'Islamabad Weather Today | WorldCityHub',
-    description: 'Islamabad weather today: live conditions, hourly and 7-day forecast, air quality, sunrise and sunset, and what to wear in Islamabad, Pakistan.',
+    description: 'Islamabad weather today: live conditions, hourly and 10-day forecast, air quality, sunrise and sunset, and what to wear in Islamabad, Pakistan.',
   },
 }
 
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = titleCase(p.city), province = titleCase(p.province), country = titleCase(p.country)
   const targeted = WEATHER_TODAY_META[p.city]
   const title = targeted?.title ?? `${city} Weather & 7-Day Forecast | WorldCityHub`
-  const description = targeted?.description ?? `${city} weather today: conditions, hourly & 7-day forecast, air quality & what to wear — ${city}, ${province}, ${country}.`
+  const description = targeted?.description ?? `${city} weather today: conditions, hourly & 10-day forecast, air quality & what to wear — ${city}, ${province}, ${country}.`
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/weather`
   return {
     title,
