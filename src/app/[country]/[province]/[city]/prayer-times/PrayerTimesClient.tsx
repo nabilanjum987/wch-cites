@@ -18,6 +18,7 @@ import { fetchGoldRates, fetchSilverRates } from '../../../../../lib/apis/rates'
 import type { GoldSpotSource } from '../../../../../lib/gold';
 import { LAHORE_FAITH_SECTIONS } from '../../../../../lib/data/faiths-lahore-a11';
 import { getFaithSectionsForCity, nextRamadan, moonPhaseInfo } from '../../../../../lib/data/faith-profiles';
+import { getCityMosqueFacts } from '../../../../../lib/data/city-mosque-facts';
 import { getPrayerSeo, CITY_COORDS, LIVE_CITY_COORDS } from '../../../../../lib/data/prayer-keywords';
 import { HIJRI_MONTHS, fetchHadith } from '../../../../../lib/apis/islamic';
 import {
@@ -350,6 +351,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
   // has not resolved yet the time slot reads 'loading' (one word, so the
   // count stays in range) and the timetable above shows the live value.
   const prayerSeo = getPrayerSeo(citySlug);
+  const mosqueFacts = getCityMosqueFacts(citySlug);
   const fajrT = times ? formatTime(times.Fajr) : 'loading';
   const maghribT = times ? formatTime(times.Maghrib) : 'loading';
   const asrT = times ? formatTime(times.Asr) : 'loading';
@@ -968,26 +970,27 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
               <FlagCard color={colorAt(1)}>
                 <FlagSectionTitle icon={MapPin} title={`Mosques in ${city.name}`} subtitle="Featured + nearest mosque finder" color={colorAt(1)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
-                  {`${city.name} is home to over 2,000 mosques, from the iconic Badshahi Mosque in the Walled City to neighbourhood mosques in every district. The Badshahi Mosque, built by Emperor Aurangzeb in 1673, can accommodate 100,000 worshippers simultaneously and remains one of the world's most magnificent religious structures. Data Darbar, the shrine of Sufi saint Hazrat Data Ganj Bakhsh, is open 24 hours and draws pilgrims from across Pakistan and the Muslim world.`}
+                  {mosqueFacts
+                    ? mosqueFacts.intro
+                    : `${city.name}'s mosques range from large congregational Jamia mosques to neighbourhood mosques in every district — use the finder below to locate the nearest one.`}
                 </p>
+                {mosqueFacts && mosqueFacts.mosques.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                  {[
-                    { name: 'Badshahi Mosque', area: 'Walled City', capacity: '100,000', built: '1673 AD', icon: '🕌' },
-                    { name: 'Data Darbar Shrine', area: 'Bhati Gate', capacity: 'Open 24hrs', built: '11th Century', icon: '⭐' },
-                    { name: 'Masjid Shuhada', area: 'Mall Road', capacity: '5,000', built: '1960s', icon: '🕌' },
-                    { name: 'Jamia Masjid Garhi Shahu', area: 'Garhi Shahu', capacity: '3,000', built: 'Historic', icon: '🕌' },
-                  ].map((m) => (
+                  {mosqueFacts.mosques.map((m) => (
                     <div key={m.name} className="rounded-xl p-4 border flex items-start gap-3"
                       style={{ backgroundColor: `${colorAt(1)}10`, borderColor: `${colorAt(1)}25` }}>
                       <span className="text-2xl">{m.icon}</span>
                       <div>
                         <div className="text-white font-semibold text-sm">{m.name}</div>
                         <div className="text-white/50 text-xs mt-0.5">{m.area} · Built {m.built}</div>
+                        {m.capacity && (
                         <div className="text-xs mt-1" style={{ color: colorAt(1) }}>Capacity: {m.capacity}</div>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
+                )}
                 <a href={`https://www.openstreetmap.org/search?query=mosque+in+${city.name}`}
                   target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white border transition-all hover:opacity-80"
@@ -1041,23 +1044,15 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
               <FlagCard color={colorAt(0)}>
                 <FlagSectionTitle title={`Prayer in ${city.name} — By the Numbers`} color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-4">
-                  {city.name} is one of South Asia's most religiously vibrant cities with an estimated
-                  13,160,000 Muslim residents comprising 94% of the total population. The city's 2,000+
-                  mosques accommodate the five daily prayers with the Badshahi Mosque alone capable of
-                  hosting 100,000 worshippers simultaneously. Friday prayers in {city.name} draw
-                  particularly large congregations, with major mosques reporting attendance of 10,000
-                  to 80,000 worshippers weekly. Prayer time in {city.name} today spans from Fajr at{' '}
+                  {mosqueFacts ? `${mosqueFacts.statsLead} ` : ''}
+                  Prayer time in {city.name} today spans from Fajr at{' '}
                   {times ? formatTime(times.Fajr) : '5:01 AM'} to Isha at{' '}
                   {times ? formatTime(times.Isha) : '9:02 PM'} — a window covering all five
-                  obligatory daily prayers across the city's 1,772 km² area.
+                  obligatory daily prayers.
                 </p>
+                {mosqueFacts && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {[
-                    { value: '13.16M', label: 'Muslim population', icon: '👥' },
-                    { value: '2,000+', label: 'Mosques in city', icon: '🕌' },
-                    { value: '94%', label: 'Muslim majority', icon: '☪️' },
-                    { value: '100,000', label: 'Badshahi capacity', icon: '⭐' },
-                  ].map((stat) => (
+                  {mosqueFacts.stats.map((stat) => (
                     <div key={stat.label} className="rounded-xl p-4 border text-center"
                       style={{ backgroundColor: `${colorAt(0)}10`, borderColor: `${colorAt(0)}30` }}>
                       <div className="text-2xl mb-1">{stat.icon}</div>
@@ -1066,6 +1061,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                     </div>
                   ))}
                 </div>
+                )}
               </FlagCard>
 
               {/* ── Jumua (Friday) Special ── */}
@@ -1075,7 +1071,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                   <p className="text-white/70 leading-relaxed text-sm mb-5">
                     Friday is the most blessed day of the week in Islam, and Jumu&apos;ah (the Friday congregational
                     prayer) replaces the Dhuhr prayer for Muslim men attending the mosque. In {city.name}, mosques
-                    fill well before the khutbah (sermon) begins, with the Badshahi Mosque and major neighbourhood
+                    fill well before the khutbah (sermon) begins, with the major Jamia mosques and neighbourhood
                     mosques reporting their largest weekly congregations today. It is recommended to perform ghusl,
                     wear clean clothes, and arrive early to secure a place in the main prayer hall.
                   </p>
