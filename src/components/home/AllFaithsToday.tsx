@@ -1,4 +1,13 @@
 'use client';
+// final30 B12 — HIDDEN, not deleted. This component is currently
+// UNRENDERED (HomeClient §11 no longer mounts it) because every card
+// hard-codes June 2026 dates and date-specific events, and no live
+// source in the codebase feeds all seven calendars (Aladhan: Hijri
+// only; prayer-page Panchang: day-of-year approximation, not a true
+// tithi; Nanakshahi: no codebase method). Do NOT re-enable it by
+// editing these dates by hand — that just moves the staleness. It
+// returns only when a live multi-faith calendar feed exists and all
+// seven cards (dates AND events) are computed from it.
 import { Calendar } from 'lucide-react';
 
 const faithCalendars = [
