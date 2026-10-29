@@ -81,3 +81,31 @@ export const CITY_COORDS: Record<string, CityCoords> = {
   multan: { lat: 30.1978, lng: 71.4711, timezone: 'Asia/Karachi' },
   peshawar: { lat: 34.008, lng: 71.57849, timezone: 'Asia/Karachi' },
 };
+
+// ── PR3 (B7): live comparison-table coordinates ──────────────────────────
+// The "Compare", "Nearby Cities" and "Around the World" tables used to
+// carry hard-coded times (summer values that went stale). They now fetch
+// live Aladhan times (method 1, school 1 — the same method as Lahore)
+// for these coordinates, and show a dash until a live response arrives:
+// no stored time is ever shown as current again. Coordinates are from
+// the repo's own prayer-tables files where available (gujranwala,
+// faisalabad, rawalpindi, multan, karachi, islamabad, dubai, istanbul,
+// london, new-york, cairo via prayer-tables-batch2), from
+// src/lib/getCityData.ts (mecca), or standard geographic coordinates
+// (medina, jakarta).
+export const LIVE_CITY_COORDS: Record<string, CityCoords> = {
+  karachi: { lat: 24.8608, lng: 67.0104, timezone: 'Asia/Karachi' },
+  islamabad: { lat: 33.72148, lng: 73.04329, timezone: 'Asia/Karachi' },
+  gujranwala: { lat: 32.15567, lng: 74.18705, timezone: 'Asia/Karachi' },
+  faisalabad: { lat: 31.41554, lng: 73.08969, timezone: 'Asia/Karachi' },
+  rawalpindi: { lat: 33.59733, lng: 73.0479, timezone: 'Asia/Karachi' },
+  multan: { lat: 30.19679, lng: 71.47824, timezone: 'Asia/Karachi' },
+  dubai: { lat: 25.269722222222, lng: 55.309444444444, timezone: 'Asia/Dubai' },
+  mecca: { lat: 21.3891, lng: 39.8579, timezone: 'Asia/Riyadh' },
+  medina: { lat: 24.5247, lng: 39.5692, timezone: 'Asia/Riyadh' },
+  istanbul: { lat: 41.01, lng: 28.960277777778, timezone: 'Europe/Istanbul' },
+  jakarta: { lat: -6.2088, lng: 106.8456, timezone: 'Asia/Jakarta' },
+  cairo: { lat: 30.044444444444, lng: 31.235833333333, timezone: 'Africa/Cairo' },
+  london: { lat: 51.507222222222, lng: -0.1275, timezone: 'Europe/London' },
+  'new-york': { lat: 40.712777777778, lng: -74.006111111111, timezone: 'America/New_York' },
+};

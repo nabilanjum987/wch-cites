@@ -18,7 +18,7 @@ import { fetchGoldRates, fetchSilverRates } from '../../../../../lib/apis/rates'
 import type { GoldSpotSource } from '../../../../../lib/gold';
 import { LAHORE_FAITH_SECTIONS } from '../../../../../lib/data/faiths-lahore-a11';
 import { getFaithSectionsForCity, nextRamadan, moonPhaseInfo } from '../../../../../lib/data/faith-profiles';
-import { getPrayerSeo, CITY_COORDS } from '../../../../../lib/data/prayer-keywords';
+import { getPrayerSeo, CITY_COORDS, LIVE_CITY_COORDS } from '../../../../../lib/data/prayer-keywords';
 import { HIJRI_MONTHS, fetchHadith } from '../../../../../lib/apis/islamic';
 import {
   fetchBibleVerse,
@@ -130,6 +130,10 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
   const [goldPerGram, setGoldPerGram] = useState<number | null>(initialZakat?.goldPerGram ?? null);
   const [silverPerGram, setSilverPerGram] = useState<number | null>(initialZakat?.silverPerGram ?? null);
   const [goldSource, setGoldSource] = useState<GoldSpotSource | null>(initialZakat?.goldSource ?? null);
+  // PR3 (B7): live times for the comparison / nearby / world tables.
+  // Empty until each city's live Aladhan response arrives — a dash is
+  // rendered in place of a missing value, never a stored time.
+  const [liveCityTimes, setLiveCityTimes] = useState<Record<string, PrayerTimes | null>>({});
   const [todayData, setTodayData] = useState<any>(null);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [hadith, setHadith] = useState<{ text: string; narrator: string; book: string } | null>(null);
@@ -181,14 +185,23 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
     // exactly that (method 1, school 1). The old call used method 5 /
     // school 0 (Egypt / Shafi'i), which is why the timetable Asr did not
     // match the Hanafi label in the method section.
-    fetchPrayerTimes(city.lat, city.lng, 1, 1, today.toLocaleDateString("en-GB")).then((data) => {
+    fetchPrayerTimes(city.lat, city.lng, 1, 1, today.toLocaleDateString("en-GB").replace(/\//g, '-')).then((data) => {
       setTodayData(data);
       setTimes(data.timings);
     });
-    fetchPrayerTimes(city.lat, city.lng, 1, 0, today.toLocaleDateString("en-GB")).then((data) => {
+    fetchPrayerTimes(city.lat, city.lng, 1, 0, today.toLocaleDateString("en-GB").replace(/\//g, '-')).then((data) => {
       if (data?.timings?.Asr) setShafiiAsr(data.timings.Asr);
     });
     fetchWeeklyPrayerTimes(city.lat, city.lng, 1, 1).then(setWeeklyData);
+    // PR3 (B7): live times for the comparison / nearby / world tables —
+    // same Aladhan method as this page (method 1, school 1). Each city
+    // fetches at its own coordinates; failures leave that city as a dash.
+    Object.entries(LIVE_CITY_COORDS).forEach(([slug, c]) => {
+      // Dash date: Aladhan 404s on the slash form (DD/MM/YYYY).
+      fetchPrayerTimes(c.lat, c.lng, 1, 1, today.toLocaleDateString("en-GB").replace(/\//g, '-')).then((data) => {
+        if (data?.timings) setLiveCityTimes((prev) => ({ ...prev, [slug]: data.timings }));
+      });
+    });
     // P13(b): live bullion via the site's existing rates mechanism.
     fetch('https://open.er-api.com/v6/latest/USD')
       .then((r) => (r.ok ? r.json() : null))
@@ -277,19 +290,26 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
     URL.revokeObjectURL(url);
   };
 
+  // PR3 (B7): comparison cities are slug-only now — their times come
+  // from the live fetch above, never from a stored value. The old
+  // hard-coded times (including the P13(f) 28 Oct 2026 snapshot) went
+  // stale, which is exactly what this PR removes.
   const comparisonCities = useMemo(
     () => [
-      // P13(f): Karachi matches the Nearby Cities table AND the page's
-      // own data source (Aladhan, Karachi method/Hanafi, 28 Oct 2026:
-      // Fajr 05:20, Maghrib 17:55, Isha 19:12). The old 5:08 AM here
-      // contradicted the 5:20 in the other table on the same page.
-      { name: 'Karachi', fajr: '5:20 AM', maghrib: '5:55 PM', isha: '7:12 PM' },
-      { name: 'Islamabad', fajr: '4:52 AM', maghrib: '7:08 PM', isha: '8:32 PM' },
-      { name: 'Dubai', fajr: '4:42 AM', maghrib: '7:14 PM', isha: '8:42 PM' },
-      { name: 'Mecca', fajr: '4:46 AM', maghrib: '6:52 PM', isha: '8:22 PM' },
+      { name: 'Karachi', slug: 'karachi' },
+      { name: 'Islamabad', slug: 'islamabad' },
+      { name: 'Dubai', slug: 'dubai' },
+      { name: 'Mecca', slug: 'mecca' },
     ],
     []
   );
+  // Live time for a comparison-table city, or a dash while its live
+  // response is missing — never a stored time shown as current.
+  const liveTime = (slug: string, key: keyof PrayerTimes): string => {
+    const t = liveCityTimes[slug];
+    return t ? formatTime(t[key]) : '—';
+  };
+  const liveNote = 'Fetched live from Aladhan for today (Karachi method, Hanafi). A dash means the live response has not arrived — no stored time is shown in its place.';
 
   if (!city) {
     return (
@@ -823,13 +843,18 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                     </thead>
                     <tbody>
                       {[
-                        { city: city.name, fajr: times?.Fajr || '5:01', dhuhr: times?.Dhuhr || '12:30', asr: times?.Asr || '4:02', mgh: times?.Maghrib || '7:38', isha: times?.Isha || '9:02', current: true },
-                        { city: 'Gujranwala', fajr: '5:03', dhuhr: '12:31', asr: '4:01', mgh: '7:37', isha: '9:01', current: false },
-                        { city: 'Faisalabad', fajr: '5:05', dhuhr: '12:33', asr: '4:00', mgh: '7:35', isha: '8:59', current: false },
-                        { city: 'Rawalpindi', fajr: '5:08', dhuhr: '12:35', asr: '3:59', mgh: '7:33', isha: '8:57', current: false },
-                        { city: 'Multan', fajr: '4:58', dhuhr: '12:28', asr: '4:04', mgh: '7:41', isha: '9:06', current: false },
-                        { city: 'Islamabad', fajr: '5:07', dhuhr: '12:34', asr: '3:59', mgh: '7:33', isha: '8:57', current: false },
-                        { city: 'Karachi', fajr: '5:20', dhuhr: '12:16', asr: '4:19', mgh: '5:55', isha: '7:12', current: false },
+                        // PR3 (B7): every row is live now. The current-city
+                        // row uses the page's own live timetable; the
+                        // others use the live per-city fetch. The old
+                        // hard-coded rows (stale summer values) are gone,
+                        // including for Rawalpindi, Multan and Islamabad.
+                        { city: city.name, fajr: times ? formatTime(times.Fajr) : '—', dhuhr: times ? formatTime(times.Dhuhr) : '—', asr: times ? formatTime(times.Asr) : '—', mgh: times ? formatTime(times.Maghrib) : '—', isha: times ? formatTime(times.Isha) : '—', current: true },
+                        { city: 'Gujranwala', fajr: liveTime('gujranwala', 'Fajr'), dhuhr: liveTime('gujranwala', 'Dhuhr'), asr: liveTime('gujranwala', 'Asr'), mgh: liveTime('gujranwala', 'Maghrib'), isha: liveTime('gujranwala', 'Isha'), current: false },
+                        { city: 'Faisalabad', fajr: liveTime('faisalabad', 'Fajr'), dhuhr: liveTime('faisalabad', 'Dhuhr'), asr: liveTime('faisalabad', 'Asr'), mgh: liveTime('faisalabad', 'Maghrib'), isha: liveTime('faisalabad', 'Isha'), current: false },
+                        { city: 'Rawalpindi', fajr: liveTime('rawalpindi', 'Fajr'), dhuhr: liveTime('rawalpindi', 'Dhuhr'), asr: liveTime('rawalpindi', 'Asr'), mgh: liveTime('rawalpindi', 'Maghrib'), isha: liveTime('rawalpindi', 'Isha'), current: false },
+                        { city: 'Multan', fajr: liveTime('multan', 'Fajr'), dhuhr: liveTime('multan', 'Dhuhr'), asr: liveTime('multan', 'Asr'), mgh: liveTime('multan', 'Maghrib'), isha: liveTime('multan', 'Isha'), current: false },
+                        { city: 'Islamabad', fajr: liveTime('islamabad', 'Fajr'), dhuhr: liveTime('islamabad', 'Dhuhr'), asr: liveTime('islamabad', 'Asr'), mgh: liveTime('islamabad', 'Maghrib'), isha: liveTime('islamabad', 'Isha'), current: false },
+                        { city: 'Karachi', fajr: liveTime('karachi', 'Fajr'), dhuhr: liveTime('karachi', 'Dhuhr'), asr: liveTime('karachi', 'Asr'), mgh: liveTime('karachi', 'Maghrib'), isha: liveTime('karachi', 'Isha'), current: false },
                       ].map((row) => (
                         <tr key={row.city}
                           className="border-b border-white/5"
@@ -846,6 +871,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                     </tbody>
                   </table>
                 </div>
+                <p className="text-white/40 text-xs mt-4">{liveNote}</p>
               </FlagCard>
 
               {/* ── World Prayer Times ── */}
@@ -858,14 +884,16 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    { city: 'Mecca', flag: '🇸🇦', fajr: '5:02 AM', maghrib: '7:02 PM' },
-                    { city: 'Medina', flag: '🇸🇦', fajr: '5:05 AM', maghrib: '7:05 PM' },
-                    { city: 'Dubai', flag: '🇦🇪', fajr: '4:52 AM', maghrib: '6:58 PM' },
-                    { city: 'Istanbul', flag: '🇹🇷', fajr: '4:30 AM', maghrib: '8:02 PM' },
-                    { city: 'Jakarta', flag: '🇮🇩', fajr: '4:42 AM', maghrib: '6:12 PM' },
-                    { city: 'Cairo', flag: '🇪🇬', fajr: '4:15 AM', maghrib: '7:25 PM' },
-                    { city: 'London', flag: '🇬🇧', fajr: '3:52 AM', maghrib: '8:45 PM' },
-                    { city: 'New York', flag: '🇺🇸', fajr: '4:28 AM', maghrib: '7:58 PM' },
+                    // PR3 (B7): live values only — the old hard-coded
+                    // summer grid is gone.
+                    { city: 'Mecca', flag: '🇸🇦', slug: 'mecca' },
+                    { city: 'Medina', flag: '🇸🇦', slug: 'medina' },
+                    { city: 'Dubai', flag: '🇦🇪', slug: 'dubai' },
+                    { city: 'Istanbul', flag: '🇹🇷', slug: 'istanbul' },
+                    { city: 'Jakarta', flag: '🇮🇩', slug: 'jakarta' },
+                    { city: 'Cairo', flag: '🇪🇬', slug: 'cairo' },
+                    { city: 'London', flag: '🇬🇧', slug: 'london' },
+                    { city: 'New York', flag: '🇺🇸', slug: 'new-york' },
                   ].map((c) => (
                     <div key={c.city} className="rounded-xl p-3 border"
                       style={{ backgroundColor: `${colorAt(1)}10`, borderColor: `${colorAt(1)}25` }}>
@@ -873,11 +901,12 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                         <span>{c.flag}</span>
                         <span className="text-white font-medium text-xs">{c.city}</span>
                       </div>
-                      <div className="text-xs text-white/60">Fajr: <span className="text-white">{c.fajr}</span></div>
-                      <div className="text-xs text-white/60 mt-0.5">Maghrib: <span className="text-white">{c.maghrib}</span></div>
+                      <div className="text-xs text-white/60">Fajr: <span className="text-white">{liveTime(c.slug, 'Fajr')}</span></div>
+                      <div className="text-xs text-white/60 mt-0.5">Maghrib: <span className="text-white">{liveTime(c.slug, 'Maghrib')}</span></div>
                     </div>
                   ))}
                 </div>
+                <p className="text-white/40 text-xs mt-4">{liveNote}</p>
               </FlagCard>
 
               {/* ── Calculation Method ── */}
@@ -1174,14 +1203,15 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                       {comparisonCities.map((c) => (
                         <tr key={c.name} className="border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                           <td className="py-2 pr-4 text-white/70">{c.name}</td>
-                          <td className="py-2 pr-4 text-white/60">{c.fajr}</td>
-                          <td className="py-2 pr-4 text-white/60">{c.maghrib}</td>
-                          <td className="py-2 pr-4 text-white/60">{c.isha}</td>
+                          <td className="py-2 pr-4 text-white/60">{liveTime(c.slug, 'Fajr')}</td>
+                          <td className="py-2 pr-4 text-white/60">{liveTime(c.slug, 'Maghrib')}</td>
+                          <td className="py-2 pr-4 text-white/60">{liveTime(c.slug, 'Isha')}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
+                <p className="text-white/40 text-xs mt-4">{liveNote}</p>
               </FlagCard>
 
             </motion.div>
