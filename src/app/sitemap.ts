@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { getSupabase } from '@/lib/supabase'
+import { CANONICAL_PAIRS } from '@/lib/compare'
 
 // The sitemap merges live Supabase cities, so it must be generated per
 // request — a static build-time sitemap kept serving stale city URLs
@@ -121,11 +122,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/privacy`, changeFrequency: 'monthly', priority: 0.3 },
     { url: `${baseUrl}/sources`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/conflicts`, changeFrequency: 'daily', priority: 0.6 },
-    { url: `${baseUrl}/compare/lahore-vs-karachi`, changeFrequency: 'daily', priority: 0.6 },
-    { url: `${baseUrl}/compare/lahore-vs-islamabad`, changeFrequency: 'daily', priority: 0.6 },
-    { url: `${baseUrl}/compare/karachi-vs-islamabad`, changeFrequency: 'daily', priority: 0.6 },
-    { url: `${baseUrl}/compare/faisalabad-vs-lahore`, changeFrequency: 'daily', priority: 0.5 },
-    { url: `${baseUrl}/compare/rawalpindi-vs-islamabad`, changeFrequency: 'daily', priority: 0.5 },
     { url: `${baseUrl}/my-location`, changeFrequency: 'weekly', priority: 0.5 },
     // Golden templates (marathon Q9/Q10): a route enters the sitemap
     // only when its page is fully server-rendered with real data.
@@ -147,6 +143,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // description 114.
     { url: `${baseUrl}/pakistan/islamabad-capital-territory`, changeFrequency: 'daily', priority: 0.7 },
   ]
+
+  // Compare pairs (B6): generated from the ONE canonical pair registry in
+  // src/lib/compare.ts, and from nowhere else. Exactly the registry pairs
+  // appear (10 today: 6 city, 3 province, 1 country); the Rawalpindi stub
+  // pair is gone because Rawalpindi is not in the registry.
+  const comparePages: MetadataRoute.Sitemap = CANONICAL_PAIRS.map((p) => ({
+    url: `${baseUrl}/compare/${p.slug}`,
+    changeFrequency: 'daily' as const,
+    priority: p.kind === 'city' ? 0.6 : 0.5,
+  }))
 
   const horoscopePages: MetadataRoute.Sitemap = HOROSCOPE_SIGNS.map((sign) => ({
     url: `${baseUrl}/horoscope/${sign}`,
@@ -187,7 +193,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ]
 
-  const pages: MetadataRoute.Sitemap = [...staticPages, ...horoscopePages, ...cityPages, ...profilePages, ...placePages, ...oceanPages]
+  const pages: MetadataRoute.Sitemap = [...staticPages, ...comparePages, ...horoscopePages, ...cityPages, ...profilePages, ...placePages, ...oceanPages]
   const seen = new Set(pages.map((p) => p.url))
 
   // Bonus: any additional active cities that appear in Supabase later are

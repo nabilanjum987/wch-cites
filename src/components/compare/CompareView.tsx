@@ -1,13 +1,23 @@
 import Link from 'next/link';
-import { aqiScore, cityPath, POPULAR_PAIRS, findCompareCity, type CityCompareData } from '@/lib/compare';
+import { aqiScore, cityPath, COMPARE_PRAYER_METHOD_LABEL, POPULAR_PAIRS, findCompareCity, type CityCompareData } from '@/lib/compare';
 import { censusPopulationOr, hasCensusPopulation } from '@/lib/census2023';
 import PopulationPie from '@/components/PopulationPie';
+import JsonLd from '@/components/seo/JsonLd';
+import { FaqBlock, type AeoFaq } from '@/components/aeo/AnswerLayer';
 
 // Server-rendered side-by-side comparison (Page 15 of the locked plan,
 // honest-data subset). Winners are named per category, but the verdict
-// is always two-sided and priority-based — the plan forbids an absolute
+// is always two-sided and priority-based: the plan forbids an absolute
 // "best city" claim. Categories without a reliable free data source
 // (cost of living, safety indices, salaries) are omitted, not estimated.
+//
+// Scorecard rule (S4): only measured-quality categories are tallied
+// (weather comfort and air quality). City size is information, printed
+// in the basics table and in the "bigger" answer below; it is never
+// counted as a win, and no row outside the scorecard bolds a "winner".
+
+const NA = 'n/a';
+const PLACEHOLDER_TAGLINE = 'A city waiting to be discovered';
 
 function fmtPop(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
@@ -37,10 +47,10 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
   const aqiWinner = aqiA != null && aqiB != null
     ? (aqiA === aqiB ? null : aqiA > aqiB ? 'a' : 'b') : null;
   // Population figures: the census total whenever the city carries one
-  // (F3's single store), otherwise the incoming figure unchanged — so
-  // the Population row, the scorecard and the pie below can never
+  // (F3's single store), otherwise the incoming figure unchanged, so
+  // the Population row, the verdict and the pie below can never
   // disagree. The pie renders only when BOTH sides have a census figure.
-  // F3 — the "2023 census" label applies only when BOTH sides carry a
+  // F3: the "2023 census" label applies only when BOTH sides carry a
   // PBS Census-2023 figure; other pairs keep the plain label, so a
   // non-census city is never presented as census-counted.
   const popKey = (d: CityCompareData) => `${d.ref.countrySlug}/${d.ref.provinceSlug}/${d.ref.citySlug}`;
@@ -50,13 +60,110 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
   const popLabel = bothCensus ? 'Population (2023 census)' : 'Population';
   const biggerWinner = popA === popB ? null : popA > popB ? 'a' : 'b';
 
+  // The scorecard tallies measured-quality categories only (S4).
   const categories: { label: string; winner: 'a' | 'b' | null; detail: string }[] = [
-    { label: 'Weather comfort right now', winner: comfortWinner as 'a' | 'b' | null, detail: `Comfort score ${a.comfort ?? '—'} vs ${b.comfort ?? '—'} (WCH-computed from live feels-like, humidity and wind)` },
-    { label: 'Air quality right now', winner: aqiWinner as 'a' | 'b' | null, detail: `US AQI ${a.aqi ?? '—'} (${a.aqiLevel ?? 'unknown'}) vs ${b.aqi ?? '—'} (${b.aqiLevel ?? 'unknown'})` },
-    { label: 'City size', winner: biggerWinner as 'a' | 'b' | null, detail: `Population ${fmtPop(popA)} vs ${fmtPop(popB)}` },
+    { label: 'Weather comfort right now', winner: comfortWinner as 'a' | 'b' | null, detail: `Comfort score ${a.comfort ?? NA} vs ${b.comfort ?? NA} (WCH-computed from live feels-like, humidity and wind)` },
+    { label: 'Air quality right now', winner: aqiWinner as 'a' | 'b' | null, detail: `US AQI ${a.aqi ?? NA} (${a.aqiLevel ?? 'unknown'}) vs ${b.aqi ?? NA} (${b.aqiLevel ?? 'unknown'})` },
   ];
   const winsA = categories.filter((c) => c.winner === 'a').length;
   const winsB = categories.filter((c) => c.winner === 'b').length;
+  // Verdict sentence (B5): name the ACTUAL leader, whichever side it is,
+  // and say "level" on a tie. Never hard-code side A.
+  const verdictLine = winsA > winsB
+    ? `${nameA} leads ${winsA}–${winsB}`
+    : winsB > winsA
+      ? `${nameB} leads ${winsB}–${winsA}`
+      : `the two are level at ${winsA}–${winsB}`;
+
+  // "Known for" (S3): hide the row whenever either side's tagline is the
+  // placeholder (or empty); real taglines still show.
+  const knownFor = (d: CityCompareData) => (d.city.famous_for ?? '').trim();
+  // Display form: the city packages' own taglines carry em dashes; the
+  // compare pages render none (B2 sweep), so they are normalised here
+  // at render time. The placeholder/empty test above uses the raw value.
+  const knownForDisplay = (d: CityCompareData) => knownFor(d).replace(/ — /g, ': ').replace(/—/g, '-');
+  const showKnownFor = knownFor(a) !== '' && knownFor(b) !== ''
+    && knownFor(a) !== PLACEHOLDER_TAGLINE && knownFor(b) !== PLACEHOLDER_TAGLINE;
+
+  const basicsRows: [string, string, string][] = [
+    [popLabel, fmtPop(popA), fmtPop(popB)],
+    ['Province / State', a.city.province, b.city.province],
+    ['Country', a.city.country, b.city.country],
+    ['Timezone', a.city.timezone, b.city.timezone],
+    ['Coordinates', `${a.city.lat.toFixed(2)}, ${a.city.lng.toFixed(2)}`, `${b.city.lat.toFixed(2)}, ${b.city.lng.toFixed(2)}`],
+    ...(showKnownFor ? [['Known for', knownForDisplay(a), knownForDisplay(b)] as [string, string, string]] : []),
+  ];
+
+  // AEO questions (B3): headings with direct answers composed from this
+  // page's own data. The SAME array feeds the visible FaqBlock and the
+  // FAQPage node in the JSON-LD graph below, so they cannot drift.
+  const faqs: AeoFaq[] = [];
+  {
+    const bigName = biggerWinner === 'b' ? nameB : nameA;
+    const bigPop = biggerWinner === 'b' ? popB : popA;
+    const smallName = biggerWinner === 'b' ? nameA : nameB;
+    const smallPop = biggerWinner === 'b' ? popA : popB;
+    faqs.push({
+      q: `Which is bigger, ${nameA} or ${nameB}?`,
+      a: biggerWinner == null
+        ? `${nameA} and ${nameB} match on population at ${popA.toLocaleString('en-US')} people each${bothCensus ? ' (PBS Census 2023)' : ''}.`
+        : `${bigName} is bigger by population: ${bigPop.toLocaleString('en-US')} people${bothCensus ? ' in the PBS Census 2023' : ''}, against ${smallPop.toLocaleString('en-US')} in ${smallName}. City size is shown as information only; it is not counted in the scorecard.`,
+    });
+  }
+  if (a.aqi != null && b.aqi != null) {
+    const cleanName = aqiWinner === 'b' ? nameB : aqiWinner === 'a' ? nameA : null;
+    faqs.push({
+      q: `Which has cleaner air today, ${nameA} or ${nameB}?`,
+      a: cleanName == null
+        ? `Neither: both cities read US AQI ${a.aqi} (${a.aqiLevel ?? 'level unavailable'}) right now. ${nameA} reads ${a.aqi} and ${nameB} reads ${b.aqi}.`
+        : `${cleanName} has cleaner air right now: US AQI ${aqiWinner === 'a' ? a.aqi : b.aqi} (${(aqiWinner === 'a' ? a.aqiLevel : b.aqiLevel) ?? 'level unavailable'}) in ${cleanName}, against US AQI ${aqiWinner === 'a' ? b.aqi : a.aqi} (${(aqiWinner === 'a' ? b.aqiLevel : a.aqiLevel) ?? 'level unavailable'}) in ${aqiWinner === 'a' ? nameB : nameA}. Air quality is live and changes through the day; this page updates hourly.`,
+    });
+  }
+  if (a.comfort != null && b.comfort != null) {
+    const comfyName = comfortWinner === 'b' ? nameB : comfortWinner === 'a' ? nameA : null;
+    faqs.push({
+      q: `Which is more comfortable right now, ${nameA} or ${nameB}?`,
+      a: comfyName == null
+        ? `Level: both cities score ${a.comfort} out of 100 on the WCH comfort score right now (${nameA} feels like ${a.feelsLike}°C, ${nameB} feels like ${b.feelsLike}°C).`
+        : `${comfyName} is more comfortable right now, scoring ${comfortWinner === 'a' ? a.comfort : b.comfort} out of 100 on the WCH comfort score, against ${comfortWinner === 'a' ? b.comfort : a.comfort} in ${comfortWinner === 'a' ? nameB : nameA}. The score is computed from live feels-like temperature, humidity and wind; the formula is published in the method note on this page.`,
+    });
+  }
+  if (a.temp != null && b.temp != null) {
+    faqs.push({
+      q: `What is the weather in ${nameA} and ${nameB} right now?`,
+      a: `${nameA} is ${a.temp}°C${a.condition ? ` with ${a.condition.toLowerCase()}` : ''} (feels like ${a.feelsLike}°C) and ${nameB} is ${b.temp}°C${b.condition ? ` with ${b.condition.toLowerCase()}` : ''} (feels like ${b.feelsLike}°C), from the live weather feed; this page updates hourly.`,
+    });
+  }
+
+  const pairSlug = `${a.ref.citySlug}-vs-${b.ref.citySlug}`;
+  const pairUrl = `https://worldcityhub.vercel.app/compare/${pairSlug}`;
+  const graph = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'WorldCityHub', item: 'https://worldcityhub.vercel.app/' },
+          { '@type': 'ListItem', position: 2, name: 'Compare Cities', item: 'https://worldcityhub.vercel.app/compare' },
+          { '@type': 'ListItem', position: 3, name: `${nameA} vs ${nameB}`, item: pairUrl },
+        ],
+      },
+      {
+        '@type': 'WebPage',
+        name: `${nameA} vs ${nameB} | WorldCityHub`,
+        url: pairUrl,
+        description: `${nameA} vs ${nameB} compared with live data: current weather, air quality, today's prayer times, population and a measured scorecard.`,
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+    ],
+  };
 
   const otherPairs = POPULAR_PAIRS.filter(
     ([x, y]) => !(x === a.ref.citySlug && y === b.ref.citySlug) && !(x === b.ref.citySlug && y === a.ref.citySlug),
@@ -64,14 +171,15 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
 
   return (
     <div className="space-y-8">
+      <JsonLd data={graph} />
       {/* Quick Verdict */}
       <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
         <h2 className="text-lg font-bold text-white">Quick Verdict</h2>
         <p className="mt-2 text-sm leading-relaxed text-gray-300">
           Right now, {comfortWinner === 'a' ? nameA : comfortWinner === 'b' ? nameB : 'neither city'} has the more
           comfortable weather{aqiWinner ? `, and ${aqiWinner === 'a' ? nameA : nameB} has the cleaner air` : ''}.
-          On the categories we can measure live, {nameA} leads {winsA}–{winsB}. But the better city depends on
-          your priorities — there is no single winner for everyone:
+          On the categories we can measure live, {verdictLine}. But the better city depends on
+          your priorities: there is no single winner for everyone:
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div className="rounded-xl border border-white/10 p-4">
@@ -81,7 +189,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
               {aqiWinner === 'a' && <li>cleaner air matters most to you right now</li>}
               {biggerWinner === 'a' && <li>you prefer a larger city ({fmtPop(popA)} people)</li>}
               {biggerWinner === 'b' && <li>you prefer a smaller, less sprawling city</li>}
-              <li>you want its full live dashboard — weather, prayer times, rates and news in one place</li>
+              <li>you want its full live dashboard: weather, prayer times, rates and news in one place</li>
             </ul>
           </div>
           <div className="rounded-xl border border-white/10 p-4">
@@ -91,7 +199,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
               {aqiWinner === 'b' && <li>cleaner air matters most to you right now</li>}
               {biggerWinner === 'b' && <li>you prefer a larger city ({fmtPop(popB)} people)</li>}
               {biggerWinner === 'a' && <li>you prefer a smaller, less sprawling city</li>}
-              <li>you want its full live dashboard — weather, prayer times, rates and news in one place</li>
+              <li>you want its full live dashboard: weather, prayer times, rates and news in one place</li>
             </ul>
           </div>
         </div>
@@ -99,7 +207,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
 
       {/* Live Conditions */}
       <section>
-        <h2 className="mb-3 text-lg font-bold text-white">Live Conditions — Right Now</h2>
+        <h2 className="mb-3 text-lg font-bold text-white">Live Conditions, Updated Hourly</h2>
         <div className="overflow-x-auto rounded-2xl border border-white/10">
           <table className="w-full text-sm">
             <thead>
@@ -110,19 +218,20 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
               </tr>
             </thead>
             <tbody>
-              <Row label="Local time" va={a.localTime || '—'} vb={b.localTime || '—'} />
-              <Row label="Temperature" va={a.temp != null ? `${a.temp}°C` : '—'} vb={b.temp != null ? `${b.temp}°C` : '—'} />
-              <Row label="Feels like" va={a.feelsLike != null ? `${a.feelsLike}°C` : '—'} vb={b.feelsLike != null ? `${b.feelsLike}°C` : '—'} />
-              <Row label="Conditions" va={a.condition ?? '—'} vb={b.condition ?? '—'} />
-              <Row label="Humidity" va={a.humidity != null ? `${a.humidity}%` : '—'} vb={b.humidity != null ? `${b.humidity}%` : '—'}
-                better={a.humidity != null && b.humidity != null ? (a.humidity === b.humidity ? null : a.humidity < b.humidity ? 'a' : 'b') : null} />
-              <Row label="Wind" va={a.windKmh != null ? `${a.windKmh} km/h` : '—'} vb={b.windKmh != null ? `${b.windKmh} km/h` : '—'} />
-              <Row label="Air quality (US AQI)" va={a.aqi != null ? `${a.aqi} · ${a.aqiLevel ?? ''}` : '—'} vb={b.aqi != null ? `${b.aqi} · ${b.aqiLevel ?? ''}` : '—'}
+              <Row label="Local time" va={a.localTime || NA} vb={b.localTime || NA} />
+              <Row label="Temperature" va={a.temp != null ? `${a.temp}°C` : NA} vb={b.temp != null ? `${b.temp}°C` : NA} />
+              <Row label="Feels like" va={a.feelsLike != null ? `${a.feelsLike}°C` : NA} vb={b.feelsLike != null ? `${b.feelsLike}°C` : NA} />
+              {(a.condition != null || b.condition != null) && (
+                <Row label="Conditions" va={a.condition ?? NA} vb={b.condition ?? NA} />
+              )}
+              <Row label="Humidity" va={a.humidity != null ? `${a.humidity}%` : NA} vb={b.humidity != null ? `${b.humidity}%` : NA} />
+              <Row label="Wind" va={a.windKmh != null ? `${a.windKmh} km/h` : NA} vb={b.windKmh != null ? `${b.windKmh} km/h` : NA} />
+              <Row label="Air quality (US AQI)" va={a.aqi != null ? `${a.aqi} · ${a.aqiLevel ?? ''}` : NA} vb={b.aqi != null ? `${b.aqi} · ${b.aqiLevel ?? ''}` : NA}
                 better={aqiWinner} />
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-xs text-gray-500">Live weather and air quality measured at render time (OpenWeather / Open-Meteo air quality).</p>
+        <p className="mt-2 text-xs text-gray-500">Live weather and air quality from OpenWeather and Open-Meteo air quality; this page updates hourly.</p>
       </section>
 
       {/* Prayer Times */}
@@ -145,14 +254,14 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
                     <tr key={p.name} className="border-b border-white/5 last:border-0">
                       <td className="px-4 py-2.5 text-gray-400">{p.name}</td>
                       <td className="px-4 py-2.5 text-right text-gray-200">{p.time}</td>
-                      <td className="px-4 py-2.5 text-right text-gray-200">{other?.time ?? '—'}</td>
+                      <td className="px-4 py-2.5 text-right text-gray-200">{other?.time ?? NA}</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
-          <p className="mt-2 text-xs text-gray-500">Calculated for each city&apos;s coordinates (Aladhan). Times differ because the cities sit at different longitudes.</p>
+          <p className="mt-2 text-xs text-gray-500">Calculated for each city&apos;s coordinates with {COMPARE_PRAYER_METHOD_LABEL}. Times differ because the cities sit at different longitudes.</p>
         </section>
       )}
 
@@ -161,14 +270,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
         <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <h2 className="text-lg font-bold text-white">Population & Basics</h2>
           <div className="mt-3 space-y-2.5 text-sm">
-            {[
-              [popLabel, fmtPop(popA), fmtPop(popB)],
-              ['Province / State', a.city.province, b.city.province],
-              ['Country', a.city.country, b.city.country],
-              ['Timezone', a.city.timezone, b.city.timezone],
-              ['Coordinates', `${a.city.lat.toFixed(2)}, ${a.city.lng.toFixed(2)}`, `${b.city.lat.toFixed(2)}, ${b.city.lng.toFixed(2)}`],
-              ['Known for', a.city.famous_for, b.city.famous_for],
-            ].map(([label, va, vb]) => (
+            {basicsRows.map(([label, va, vb]) => (
               <div key={label} className="grid grid-cols-[110px_1fr_1fr] gap-2 border-b border-white/5 pb-2 last:border-0">
                 <span className="text-gray-500">{label}</span>
                 <span className="text-gray-200">{va}</span>
@@ -176,7 +278,7 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
               </div>
             ))}
           </div>
-          {/* Population share pie — only when both sides carry a PBS
+          {/* Population share pie: only when both sides carry a PBS
             Census-2023 figure, so the pie and the Population row above
             always show the same two numbers. */}
           {bothCensus && (
@@ -188,13 +290,13 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
                   { label: nameA, value: popA },
                   { label: nameB, value: popB },
                 ]}
-                source="PBS Census-2023"
+                source="PBS Census 2023"
               />
             </div>
           )}
           {a.ref.countrySlug === b.ref.countrySlug && (
             <p className="mt-4 rounded-xl bg-white/[0.04] p-3 text-xs leading-relaxed text-gray-400">
-              Both cities are in {a.city.country} and share one national gold market and currency — see live rates for{' '}
+              Both cities are in {a.city.country} and share one national gold market and currency: see live rates for{' '}
               <Link href={`${cityPath(a.ref)}/rates`} className="text-emerald-300 underline">{nameA}</Link> and{' '}
               <Link href={`${cityPath(b.ref)}/rates`} className="text-emerald-300 underline">{nameB}</Link>.
               Country-level economy data (World Bank) is on the{' '}
@@ -219,12 +321,27 @@ export default function CompareView({ a, b }: { a: CityCompareData; b: CityCompa
             ))}
           </div>
           <p className="mt-4 text-xs leading-relaxed text-gray-500">
-            Scores use only live, measurable data. Categories like cost of living, safety indices and salaries are
-            deliberately not scored — there is no reliable free source for them, and this page does not estimate
-            what it cannot measure.
+            Scores use only live, measurable data. City size is not scored: it is printed as information in
+            Population & Basics. Categories like cost of living, safety indices and salaries are deliberately
+            not scored: there is no reliable free source for them, and this page does not estimate what it
+            cannot measure.
+          </p>
+          {/* Method (S7 + M2): the exact formulas behind the scores. */}
+          <p className="mt-3 text-xs leading-relaxed text-gray-500">
+            How the scores are calculated: Comfort score = 100 - |feels-like - 22°C| x 3, minus a humidity
+            penalty of 0.4 per point above 60% and a wind penalty of 0.5 per km/h above 25 km/h, clamped
+            between 5 and 100. AQI score = 100 - (US AQI / 3), clamped between 0 and 100. Prayer times use{' '}
+            {COMPARE_PRAYER_METHOD_LABEL}.
           </p>
         </section>
       </div>
+
+      {/* AEO: question headings with direct answers (same array as schema) */}
+      <FaqBlock
+        faqs={faqs}
+        source="Answers composed from this page's own figures: PBS Census 2023 populations where both cities carry one, and the live weather and air-quality feeds above (this page updates hourly)."
+        title={`${nameA} vs ${nameB}: questions and answers`}
+      />
 
       {/* Other comparisons + explore */}
       <section className="grid gap-6 lg:grid-cols-2">

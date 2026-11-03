@@ -1,14 +1,21 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import CompareTool from '@/components/compare/CompareTool';
 import CompareView from '@/components/compare/CompareView';
-import { getPairCompare, findCompareCity, getProvinceCompare, getCountryPairCompare, findProvince } from '@/lib/compare';
+import {
+  getPairCompare, findCompareCity, getProvinceCompare, getCountryPairCompare,
+  findProvince, findCanonicalPair, type CanonicalPair,
+} from '@/lib/compare';
 import EntityCompareView from '@/components/compare/EntityCompareView';
 
 // Replaces the original client page, which rendered a hard-coded
-// `mockComparison` object — invented cost-of-living / safety / culture
+// `mockComparison` object: invented cost-of-living / safety / culture
 // scores presented as real data. This version assembles the comparison
 // from live sources only (see src/lib/compare.ts).
+//
+// Pair routing (B6): the canonical registry in lib/compare.ts is the
+// only source of compare URLs. A reversed pair permanent-redirects to
+// its registry form; a pair outside the registry 404s.
 
 export const revalidate = 3600;
 
@@ -16,57 +23,61 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-function parsePair(slug: string): [string, string] | null {
+function splitPair(slug: string): [string, string] | null {
   const parts = slug.split('-vs-');
   if (parts.length !== 2) return null;
-  const [a, b] = parts;
-  if (!findCompareCity(a) || !findCompareCity(b) || a === b) return null;
-  return [a, b];
+  return [parts[0], parts[1]];
+}
+
+function resolvePair(slug: string): { pair: CanonicalPair; reversed: boolean } | null {
+  const parts = splitPair(slug);
+  if (!parts) return null;
+  return findCanonicalPair(parts[0], parts[1]);
+}
+
+function entityNames(pair: CanonicalPair): [string, string] {
+  if (pair.kind === 'country') return ['Pakistan', 'India'];
+  return [findProvince(pair.a)!.name, findProvince(pair.b)!.name];
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const parsed = parsePair(slug);
-  if (!parsed) {
-    const ent = parseEntityPair(slug);
-    if (ent) {
-      const nA = ent.kind === 'country' ? 'Pakistan' : findProvince(ent.a)!.name;
-      const nB = ent.kind === 'country' ? 'India' : findProvince(ent.b)!.name;
-      return {
-        title: `${nA} vs ${nB} — Compared with Real Figures | WorldCityHub`,
-        description: `${nA} vs ${nB} compared on one verified figure set: census and World Bank data, the same indicators for both sides, with a one-line verdict.`,
-        alternates: { canonical: `https://worldcityhub.vercel.app/compare/${slug}` },
-      };
-    }
-    return { title: 'Compare Cities | WorldCityHub' };
+  const resolved = resolvePair(slug);
+  if (!resolved) return { title: 'Compare Cities | WorldCityHub' };
+  const { pair } = resolved;
+  const canonical = `https://worldcityhub.vercel.app/compare/${pair.slug}`;
+  if (pair.kind === 'city') {
+    const nameA = findCompareCity(pair.a)!.label;
+    const nameB = findCompareCity(pair.b)!.label;
+    return {
+      title: `${nameA} vs ${nameB} | WorldCityHub`,
+      description: `${nameA} vs ${nameB} compared with live data: current weather, air quality, today's prayer times, population and a measured scorecard.`,
+      alternates: { canonical },
+    };
   }
-  const [a, b] = parsed;
-  const nameA = findCompareCity(a)!.label;
-  const nameB = findCompareCity(b)!.label;
+  const [nA, nB] = entityNames(pair);
+  // Entity titles (S1): the short pattern below keeps the longest pair,
+  // "Punjab vs Khyber Pakhtunkhwa | WorldCityHub", at 43 characters.
+  // Descriptions (S2) are kind-specific: provinces cite PBS Census 2023
+  // only, the country pair cites the World Bank only. No cross-claims.
   return {
-    title: `${nameA} vs ${nameB} — Compared Live | WorldCityHub`,
-    description: `${nameA} vs ${nameB} compared with live data: current weather, air quality, today's prayer times, population and a measured scorecard.`,
-    alternates: { canonical: `https://worldcityhub.vercel.app/compare/${slug}` },
+    title: `${nA} vs ${nB} | WorldCityHub`,
+    description: pair.kind === 'province'
+      ? `${nA} vs ${nB} compared on PBS Census 2023 figures: population, area, density and urban share for both provinces, plus live capital weather.`
+      : `${nA} vs ${nB} compared on World Bank figures: population, GDP, inflation, unemployment and life expectancy, the same indicators for both sides.`,
+    alternates: { canonical },
   };
-}
-
-function parseEntityPair(slug: string): { kind: 'province' | 'country'; a: string; b: string } | null {
-  const parts = slug.split('-vs-');
-  if (parts.length !== 2) return null;
-  const [a, b] = parts;
-  if (a === b) return null;
-  if (a === 'pakistan' && b === 'india') return { kind: 'country', a, b };
-  if (findProvince(a) && findProvince(b)) return { kind: 'province', a, b };
-  return null;
 }
 
 export default async function CompareSlugPage({ params }: PageProps) {
   const { slug } = await params;
-  const parsed = parsePair(slug);
-  if (!parsed) {
-    const ent = parseEntityPair(slug);
-    if (!ent) notFound();
-    const data = ent.kind === 'country' ? await getCountryPairCompare() : await getProvinceCompare(ent.a, ent.b);
+  const resolved = resolvePair(slug);
+  if (!resolved) notFound();
+  const { pair, reversed } = resolved;
+  if (reversed) permanentRedirect(`/compare/${pair.slug}`);
+
+  if (pair.kind !== 'city') {
+    const data = pair.kind === 'country' ? await getCountryPairCompare() : await getProvinceCompare(pair.a, pair.b);
     if (!data) notFound();
     return (
       <main className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
@@ -75,8 +86,8 @@ export default async function CompareSlugPage({ params }: PageProps) {
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-400">
           {data.kind === 'province'
-            ? 'Province against province on the 2023 census figure set — the same counts for both sides, plus live weather in each capital.'
-            : 'Country against country on one World Bank dataset — a row appears only where both countries report the same indicator.'}
+            ? 'Province against province on the 2023 census figure set: the same counts for both sides, plus live weather in each capital.'
+            : 'Country against country on one World Bank dataset: a row appears only where both countries report the same indicator.'}
         </p>
         <div className="mt-8">
           <EntityCompareView data={data} />
@@ -84,8 +95,8 @@ export default async function CompareSlugPage({ params }: PageProps) {
       </main>
     );
   }
-  const [aSlug, bSlug] = parsed;
-  const data = await getPairCompare(aSlug, bSlug);
+
+  const data = await getPairCompare(pair.a, pair.b);
   if (!data) notFound();
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
@@ -93,11 +104,11 @@ export default async function CompareSlugPage({ params }: PageProps) {
         {data.a.city.name} vs {data.b.city.name}
       </h1>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-400">
-        Side-by-side with live data only — weather, air quality, prayer times and population, measured at the
-        same moment for both cities.
+        Side-by-side with live data only: weather, air quality, prayer times and population, measured at the
+        same moment for both cities. This page updates hourly.
       </p>
       <div className="mt-6">
-        <CompareTool initialA={aSlug} initialB={bSlug} />
+        <CompareTool initialA={pair.a} initialB={pair.b} />
       </div>
       <div className="mt-8">
         <CompareView a={data.a} b={data.b} />
