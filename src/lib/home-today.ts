@@ -94,11 +94,19 @@ export async function getTodaysWorld(): Promise<TodaysWorldData> {
   const todayPk = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' }));
   const iso = `${todayPk.getFullYear()}-${String(todayPk.getMonth() + 1).padStart(2, '0')}-${String(todayPk.getDate()).padStart(2, '0')}`;
   const year = todayPk.getFullYear();
-  for (const c of EVENT_COUNTRIES) {
-    const holidays = await jget(`https://date.nager.at/api/v3/PublicHolidays/${year}/${c.code}`, 3600);
+  // Speed pass (2026-11-03): the per-country holiday lists are
+  // independent (each cached 1h), so they are fetched in parallel and
+  // the winner is still the FIRST country in EVENT_COUNTRIES order
+  // with a holiday today — the same pick the old sequential loop made
+  // when it broke on the first hit.
+  const holidayLists = await Promise.all(
+    EVENT_COUNTRIES.map((c) => jget(`https://date.nager.at/api/v3/PublicHolidays/${year}/${c.code}`, 3600)),
+  );
+  for (let i = 0; i < EVENT_COUNTRIES.length; i++) {
+    const holidays = holidayLists[i];
     const hit = Array.isArray(holidays) ? holidays.find((h: any) => h.date === iso) : null;
     if (hit) {
-      out.event = { name: hit.name, country: c.name, href: c.href };
+      out.event = { name: hit.name, country: EVENT_COUNTRIES[i].name, href: EVENT_COUNTRIES[i].href };
       break;
     }
   }

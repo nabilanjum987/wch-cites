@@ -463,6 +463,30 @@ export default async function CityPage({
 
   const hourlyList = (hourly?.list as Array<Record<string, unknown>> | undefined)?.slice(0, 8) ?? [];
 
+  // Day/night for the hourly strip is decided from each entry's own
+  // timestamp against today's sunrise/sunset (sunrise-sunset.org,
+  // formatted=0, so UTC ISO instants), shifted by whole days so an
+  // entry past midnight is judged against the right day's window.
+  // The forecast block's sys.pod marker is NOT trusted: it disagrees
+  // with the sun times for some blocks (a 3am Lahore entry rendered a
+  // sun in the 3 Nov 2026 live audit, while 9pm and 12am were right).
+  // When the sun fetch failed there is no window, and only then does
+  // the pod marker decide, exactly as before.
+  const sunWindow = (() => {
+    const sr = sunrise ? new Date(sunrise).getTime() : NaN;
+    const ss = sunset ? new Date(sunset).getTime() : NaN;
+    if (!Number.isFinite(sr) || !Number.isFinite(ss) || ss <= sr) return null;
+    return { sr, ss };
+  })();
+  const isNightAt = (ms: number, pod: string | undefined): boolean => {
+    if (!sunWindow || !Number.isFinite(ms)) return pod === 'n';
+    const DAY_MS = 86_400_000;
+    for (const k of [-1, 0, 1]) {
+      if (ms >= sunWindow.sr + k * DAY_MS && ms <= sunWindow.ss + k * DAY_MS) return false;
+    }
+    return true;
+  };
+
   // ── City Assistant (Phase 1) snapshot ──────────────────────────────────
   // ONLY values this page already loaded (same feeds as the panels above).
   // The bot renders exactly these — never a fetched, guessed or cross-city
@@ -686,8 +710,8 @@ export default async function CityPage({
             )}
 
             {/* Hourly forecast: the whole strip opens the weather page.
-                Icons follow the forecast's own day/night marker (sys.pod),
-                so night hours never show a sun. */}
+                Icons follow the day's actual sunrise/sunset (see
+                isNightAt above), so night hours never show a sun. */}
             {hourlyList.length > 0 && (
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="block overflow-x-auto" aria-label={`Hourly forecast for ${city}: full weather page`}>
                 <div className="flex gap-3 pb-2" style={{ minWidth: 'max-content' }}>
@@ -696,7 +720,11 @@ export default async function CityPage({
                     const time = new Date(t).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' });
                     const hTemp = (h.main as Record<string, number>)?.temp;
                     const hDesc = (h.weather as Array<Record<string, string>>)?.[0]?.main;
-                    const isNight = (h.sys as Record<string, string> | undefined)?.pod === 'n';
+                    // Entry instant: the forecast's Unix dt (UTC) is
+                    // unambiguous; dt_txt is UTC text, parsed as UTC
+                    // in the fallback (never as local time).
+                    const entryMs = typeof h.dt === 'number' ? h.dt * 1000 : new Date(t.replace(' ', 'T') + 'Z').getTime();
+                    const isNight = isNightAt(entryMs, (h.sys as Record<string, string> | undefined)?.pod);
                     const icon =
                       hDesc === 'Rain' || hDesc === 'Drizzle' ? '🌧'
                       : hDesc === 'Thunderstorm' ? '⛈'
@@ -1079,22 +1107,43 @@ export default async function CityPage({
               </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {(citySlug === 'lahore' ? [
-                { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque' },
-                { name: 'Lahore Fort', type: 'UNESCO Heritage', slug: 'lahore-fort' },
+                // Card photos (2026-11-03): one licensed photo per place,
+                // vendored under public/images/places/cards/ at card size.
+                // Badshahi: repo asset (Zapata1000, CC BY-SA 4.0, registry
+                // VERIFIED). Fort: Commons "Lahore Fort view from
+                // Baradari.jpg" (Rohaan Bhatti, CC BY-SA 3.0, verified via
+                // Commons API extmetadata). Shalimar / Data Darbar /
+                // Walled City / Museum: card-size derivatives of the B8
+                // place-page photos (media-registry places-b8 records).
+                { name: 'Badshahi Mosque', type: 'Mughal Mosque', slug: 'badshahi-mosque', img: '/images/places/cards/badshahi-mosque.webp', alt: 'Courtyard of Badshahi Mosque, Lahore', credit: 'Zapata1000 · CC BY-SA 4.0' },
+                { name: 'Lahore Fort', type: 'UNESCO Heritage', slug: 'lahore-fort', img: '/images/places/cards/lahore-fort.webp', alt: 'Alamgiri Gate of Lahore Fort', credit: 'Rohaan Bhatti · CC BY-SA 3.0' },
                 // D18: the four newly published Lahore places.
-                { name: 'Shalimar Gardens', type: 'Mughal Gardens', slug: 'shalimar-gardens' },
-                { name: 'Data Darbar', type: 'Sufi Shrine', slug: 'data-darbar' },
-                { name: 'Walled City', type: 'Historic District', slug: 'walled-city' },
-                { name: 'Lahore Museum', type: 'Museum', slug: 'lahore-museum' },
+                { name: 'Shalimar Gardens', type: 'Mughal Gardens', slug: 'shalimar-gardens', img: '/images/places/cards/shalimar-gardens.webp', alt: 'Shalimar Gardens, Lahore', credit: 'M Umair Astro · CC BY-SA 4.0' },
+                { name: 'Data Darbar', type: 'Sufi Shrine', slug: 'data-darbar', img: '/images/places/cards/data-darbar.webp', alt: 'Data Darbar shrine, Lahore', credit: 'Guilhem Vellut · CC BY 2.0' },
+                { name: 'Walled City', type: 'Historic District', slug: 'walled-city', img: '/images/places/cards/walled-city.webp', alt: 'A street in the Walled City, Lahore', credit: 'Guilhem Vellut · CC BY 2.0' },
+                { name: 'Lahore Museum', type: 'Museum', slug: 'lahore-museum', img: '/images/places/cards/lahore-museum.webp', alt: 'Lahore Museum on The Mall', credit: 'Muhammad Ashar · CC BY-SA 3.0' },
               ] : []).map((place) => (
                 <a
                   key={place.slug}
                   href={`/places/${place.slug}`}
-                  className="rounded-xl p-4 border border-white/10 hover:border-green-500/40 transition" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+                  className="rounded-xl overflow-hidden border border-white/10 hover:border-green-500/40 transition block" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                 >
-                  <div className="font-medium text-sm text-white">{place.name}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{place.type}</div>
-                  <div className="text-xs mt-2 font-medium" style={{ color: '#34d399' }}>Open today? →</div>
+                  {place.img && (
+                    <figure>
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={place.img} alt={place.alt} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+                      </div>
+                      <figcaption className="px-3 py-1 text-[10px] text-gray-500">
+                        {place.alt}: {place.credit}, via Wikimedia Commons
+                      </figcaption>
+                    </figure>
+                  )}
+                  <div className="p-4">
+                    <div className="font-medium text-sm text-white">{place.name}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">{place.type}</div>
+                    <div className="text-xs mt-2 font-medium" style={{ color: '#34d399' }}>Open today? →</div>
+                  </div>
                 </a>
               ))}
             </div>
@@ -1240,12 +1289,13 @@ export default async function CityPage({
             </div>
             {/* ── Population pies (PBS Census-2023 splits) ───────────────────
               Rendered only where a verified split exists: urban/rural for
-              Karachi + Islamabad, "100% urban (district)" text for Lahore
-              (a one-slice pie is a defect), faith pies for Karachi +
-              Islamabad. Lahore has NO faith pie: its PBS Table 9 district
-              row was not directly sighted and secondary summaries disagree
-              on the Sikh / Scheduled Castes split — see
-              @/lib/census2023-splits. Other cities get no pie block. */}
+              Karachi + Islamabad, "100% urban (district)" text plus a
+              100% bar for Lahore (a one-slice pie is a defect), faith
+              pies for Karachi + Islamabad. Lahore has NO faith pie or
+              faith bar: its PBS Table 9 district row was not directly
+              sighted and secondary summaries disagree on the Sikh /
+              Scheduled Castes split — see @/lib/census2023-splits.
+              Other cities get no pie block. */}
             {(() => {
               const urbanRural = urbanRuralSlicesFor(cityKey);
               const faith = faithSlicesForCity(cityKey);
@@ -1269,6 +1319,32 @@ export default async function CityPage({
                       <div className="text-white font-semibold text-sm">Urban vs rural population</div>
                       <div className="text-gray-500 text-xs mt-0.5">Lahore District · Total {glance?.population}</div>
                       <p className="mt-4 text-sm text-gray-300">100% urban (district)</p>
+                      {/* Chart visual for the one verified Lahore split
+                          (owner audit, 3 Nov 2026): a 100% bar, not a
+                          pie — a one-slice pie is a defect. Every figure
+                          is the card's own: urban = the district total
+                          printed above, rural = 0, both from the same
+                          PBS Census-2023 line the source note cites.
+                          No faith visual ships for Lahore: see the
+                          census2023-splits note on the unsighted
+                          Table 9 district row. */}
+                      <div className="mt-4" role="img" aria-label="Urban versus rural population for Lahore District: 100 percent urban, 0 percent rural">
+                        <div className="h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}>
+                          <div className="h-full" style={{ width: '100%', backgroundColor: '#0C7A3D' }} />
+                        </div>
+                        <ul className="mt-2 space-y-1.5 text-sm">
+                          <li className="flex items-baseline gap-2">
+                            <span className="inline-block w-3 h-3 rounded-sm flex-shrink-0 self-center" style={{ backgroundColor: '#0C7A3D' }} />
+                            <span className="text-gray-300">Urban</span>
+                            <span className="text-gray-500 ml-auto text-right">{glance?.population} · 100%</span>
+                          </li>
+                          <li className="flex items-baseline gap-2">
+                            <span className="inline-block w-3 h-3 rounded-sm flex-shrink-0 self-center" style={{ backgroundColor: '#34d399' }} />
+                            <span className="text-gray-300">Rural</span>
+                            <span className="text-gray-500 ml-auto text-right">0 · 0%</span>
+                          </li>
+                        </ul>
+                      </div>
                       <p className="mt-4 text-xs text-gray-500">Source: PBS Census-2023. The entire Lahore District population lives in urban areas.</p>
                     </div>
                   ) : null}
@@ -1334,6 +1410,27 @@ export default async function CityPage({
                 {generateNearbyCitiesAfter(city)}
               </p>
             </p>
+            {/* Preset compare chips, duplicated inside Nearby Cities
+                (owner audit, 3 Nov 2026): the comparisons belong with
+                the nearby cities they name. This is a DUPLICATE, not a
+                move — the standalone Compare section below keeps its
+                own chips and behaviour, unchanged. */}
+            {(COMPARE_LINKS[citySlug] ?? []).length > 0 && (
+              <div className="mt-6">
+                <div className="text-sm text-gray-400 mb-3">Compare {city} with a nearby city:</div>
+                <div className="flex gap-3 flex-wrap">
+                  {(COMPARE_LINKS[citySlug] ?? []).map((c) => (
+                    <a
+                      key={c.pair}
+                      href={`/compare/${c.pair}`}
+                      className="text-sm px-4 py-2 rounded-full transition border border-green-500/30 hover:border-green-400/60 hover:bg-green-500/20 text-gray-300 hover:text-white"
+                    >
+                      {city} vs {c.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
 
           {/* ══ SECTION 19: PUBLIC HOLIDAYS ══════════════════════════════════ */}

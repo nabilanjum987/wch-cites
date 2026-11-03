@@ -112,7 +112,17 @@ const cityPath = (c: (typeof PUBLISHED_CITIES)[number]) => `/pakistan/${c.provin
 
 export async function getMarketTickerItems(pageCitySlug?: string): Promise<MarketItem[]> {
   const items: MarketItem[] = [];
-  const [cg, gold, silver, fx, fng, popTotal, popGrowth] = await Promise.all([
+  // P8 — the prayer entry follows the PAGE's city, not always Lahore.
+  // The caller (TickerBarSlot, the Suspense-wrapped child of the root
+  // layout) passes the city slug parsed from the request pathname; an
+  // unknown/absent slug falls back to Lahore, exactly as before.
+  // (The selection itself is pure, so it is computed up front: the
+  // prayer fetch and the Brent CSV are independent of every other
+  // source and join the single parallel batch below — speed pass,
+  // 2026-11-03. They previously added two sequential round-trips
+  // after the batch. Item order in the output is unchanged.)
+  const prayerCity = PUBLISHED_CITIES.find((c) => c.slug === pageCitySlug) ?? PUBLISHED_CITIES[0];
+  const [cg, gold, silver, fx, fng, popTotal, popGrowth, brentCsv, np] = await Promise.all([
     jget('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true', 300),
     getGoldSpot().catch(() => null),
     jget('https://api.gold-api.com/price/XAG', 300),
@@ -120,8 +130,9 @@ export async function getMarketTickerItems(pageCitySlug?: string): Promise<Marke
     jget('https://api.alternative.me/fng/?limit=1', 900),
     jget('https://api.worldbank.org/v2/country/WLD/indicator/SP.POP.TOTL?format=json&per_page=1', 86400),
     jget('https://api.worldbank.org/v2/country/WLD/indicator/SP.POP.GROW?format=json&per_page=1', 86400),
+    tget('https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILBRENTEU', 3600),
+    nextPrayer(prayerCity.lat, prayerCity.lng, prayerCity.tz).catch(() => null),
   ]);
-  const brentCsv = await tget('https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILBRENTEU', 3600);
 
   // F4: gold from the shared canonical spot (gold-api XAU); the tola
   // converts through this render's own FX snapshot — the same
@@ -176,14 +187,9 @@ export async function getMarketTickerItems(pageCitySlug?: string): Promise<Marke
       live: { type: 'population', base: estimate, perSecond, at: Date.now() },
     });
   }
-  // P8 — the prayer entry follows the PAGE's city, not always Lahore.
-  // The caller (TickerBarSlot, the Suspense-wrapped child of the root
-  // layout) passes the city slug parsed from the request pathname; an
-  // unknown/absent slug falls back to Lahore, exactly as
-  // before, so the homepage and non-city pages are unchanged. Only this
-  // block changes — every other ticker entry above is untouched.
-  const prayerCity = PUBLISHED_CITIES.find((c) => c.slug === pageCitySlug) ?? PUBLISHED_CITIES[0];
-  const np = await nextPrayer(prayerCity.lat, prayerCity.lng, prayerCity.tz).catch(() => null);
+  // The prayer entry itself (P8): `np` and `prayerCity` are resolved in
+  // the parallel batch at the top of this function; only the push
+  // remains here, in its original position at the end of the items.
   if (np) {
     items.push({
       label: `${prayerCity.label} Prayer`,
@@ -197,21 +203,32 @@ export async function getMarketTickerItems(pageCitySlug?: string): Promise<Marke
 
 export async function getWebsiteTickerItems(): Promise<SiteItem[]> {
   const items: SiteItem[] = [];
+  // Speed pass (2026-11-03): every fetch this ticker needs is
+  // independent of the others, so they all fire in ONE parallel batch
+  // instead of the previous step-by-step sequence of awaits (prayers,
+  // then temperatures, then gold, then the Taj, then the sea, then
+  // holidays). The items are then assembled in exactly the original
+  // order below; jget/getGoldPkr/nextPrayer already fail soft to null,
+  // so the batch cannot sink the whole ticker.
+  const [prayers, temps, goldPkr, taj, sea, holidays] = await Promise.all([
+    Promise.all(PUBLISHED_CITIES.map((c) => nextPrayer(c.lat, c.lng, c.tz).catch(() => null))),
+    Promise.all(
+      PUBLISHED_CITIES.map((c) =>
+        jget(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lng}&current=temperature_2m`, 600),
+      ),
+    ),
+    getGoldPkr().catch(() => null),
+    jget('https://api.open-meteo.com/v1/forecast?latitude=27.175&longitude=78.0419&current=temperature_2m', 600),
+    jget('https://marine-api.open-meteo.com/v1/marine?latitude=16&longitude=64&current=wave_height', 600),
+    jget(`https://date.nager.at/api/v3/PublicHolidays/${new Date().getUTCFullYear()}/PK`, 3600),
+  ]);
   // 1) Next prayers in the published cities.
-  const prayers = await Promise.all(
-    PUBLISHED_CITIES.map((c) => nextPrayer(c.lat, c.lng, c.tz).catch(() => null)),
-  );
   prayers.forEach((np, i) => {
     const c = PUBLISHED_CITIES[i];
     if (np) items.push({ text: `${c.label} · next prayer ${np.name} at ${np.time}`, href: `${cityPath(c)}/prayer-times` });
   });
   // 2) Hottest published city right now (Open-Meteo).
   try {
-    const temps = await Promise.all(
-      PUBLISHED_CITIES.map((c) =>
-        jget(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lng}&current=temperature_2m`, 600),
-      ),
-    );
     let best: { c: (typeof PUBLISHED_CITIES)[number]; t: number } | null = null;
     temps.forEach((w, i) => {
       const t = w?.current?.temperature_2m;
@@ -223,7 +240,6 @@ export async function getWebsiteTickerItems(): Promise<SiteItem[]> {
   // gold-api publishes spot only, and the PAXG 24h change would be a
   // second, unlabelled PAXG figure next to an XAU price — the /rates
   // chart + 24h change stay the one labelled PAXG exception.
-  const goldPkr = await getGoldPkr().catch(() => null);
   if (goldPkr) {
     const tola = Math.round(goldPkr.perTola);
     items.push({ text: `Gold today · Rs ${pkr0.format(tola)}/tola`, href: '/rates' });
@@ -235,25 +251,19 @@ export async function getWebsiteTickerItems(): Promise<SiteItem[]> {
   // otherwise the plain published-page item, like the compares below.
   // No other wonder/ocean items exist until their pages publish (L3).
   const tajPlain = { text: 'Wonder · Taj Mahal — the full page is live', href: '/wonders/taj-mahal' };
-  try {
-    const taj = await jget('https://api.open-meteo.com/v1/forecast?latitude=27.175&longitude=78.0419&current=temperature_2m', 600);
-    const tt = taj?.current?.temperature_2m;
-    items.push(typeof tt === 'number'
-      ? { text: `Taj Mahal right now · ${Math.round(tt)}°C in Agra`, href: '/wonders/taj-mahal' }
-      : tajPlain);
-  } catch { items.push(tajPlain); }
+  // `taj` and `sea` arrive from the parallel batch at the top (jget
+  // fails soft to null, which selects the plain item, as before).
+  const tt = taj?.current?.temperature_2m;
+  items.push(typeof tt === 'number'
+    ? { text: `Taj Mahal right now · ${Math.round(tt)}°C in Agra`, href: '/wonders/taj-mahal' }
+    : tajPlain);
   const seaPlain = { text: 'Ocean · Arabian Sea — the full page is live', href: '/oceans/arabian-sea' };
-  try {
-    const sea = await jget('https://marine-api.open-meteo.com/v1/marine?latitude=16&longitude=64&current=wave_height', 600);
-    const wh = sea?.current?.wave_height;
-    items.push(typeof wh === 'number'
-      ? { text: `Arabian Sea today · waves ${wh.toFixed(1)} m`, href: '/oceans/arabian-sea' }
-      : seaPlain);
-  } catch { items.push(seaPlain); }
+  const wh = sea?.current?.wave_height;
+  items.push(typeof wh === 'number'
+    ? { text: `Arabian Sea today · waves ${wh.toFixed(1)} m`, href: '/oceans/arabian-sea' }
+    : seaPlain);
   // 5) A public holiday in Pakistan today.
   try {
-    const year = new Date().getUTCFullYear();
-    const holidays = await jget(`https://date.nager.at/api/v3/PublicHolidays/${year}/PK`, 3600);
     const todayPk = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' }));
     const iso = `${todayPk.getFullYear()}-${String(todayPk.getMonth() + 1).padStart(2, '0')}-${String(todayPk.getDate()).padStart(2, '0')}`;
     const hit = Array.isArray(holidays) ? holidays.find((h: any) => h.date === iso) : null;

@@ -51,6 +51,16 @@ export const CITY_IMAGES: Record<string, Partial<Record<CityImageVariant, CityIm
     events: img('karachi-events.webp', 'Frere Hall, Karachi', 'Photo: Aliubair · CC BY-SA 4.0', 1600, 1066),
     rates: img('karachi-rates.webp', 'Empress Market, Saddar, Karachi', 'Photo: Siddiqi · CC BY 4.0', 1600, 1132),
   },
+  // Faisalabad + Rawalpindi heroes were licensed and added to the repo
+  // by the Pakistan country batch (credits recorded in CountryClient);
+  // they are wired here so the Nearby Cities cards render photo +
+  // credit like the Islamabad/Karachi cards (owner audit, 3 Nov 2026).
+  faisalabad: {
+    hero: img('faisalabad-hero.webp', 'Ghanta Ghar, Faisalabad', 'Photo: Bijay Chaurasia · CC BY-SA 4.0', 800, 450),
+  },
+  rawalpindi: {
+    hero: img('rawalpindi-hero.webp', 'Saddar, Rawalpindi', 'Photo: Idontknow1213 · CC BY-SA 4.0', 800, 471),
+  },
   islamabad: {
     hero: img('islamabad-hero.webp', 'Faisal Mosque, Islamabad', 'Photo: Guilhem Vellut · CC BY 2.0', 1600, 1200),
     prayer: img('islamabad-prayer.webp', 'Faisal Mosque fountain area, Islamabad', 'Photo: Shahzaib Damn Cruze · CC BY-SA 4.0', 1600, 634),

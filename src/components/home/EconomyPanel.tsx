@@ -50,24 +50,24 @@ function Card({ label, sub, children }: { label: string; sub: string; children: 
 }
 
 export default async function EconomyPanel() {
-  const [gdpJ, growthJ, inflationJ, unempJ, popJ] = await Promise.all([
+  // Speed pass (2026-11-03): the GDP history fetch below is independent
+  // of the five headline indicators (a different URL), so it joins the
+  // same Promise.all instead of adding a second sequential round-trip.
+  const [gdpJ, growthJ, inflationJ, unempJ, popJ, seriesJson] = await Promise.all([
     jget('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&per_page=3'),
     jget('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=3'),
     jget('https://api.worldbank.org/v2/country/WLD/indicator/FP.CPI.TOTL.ZG?format=json&per_page=3'),
     jget('https://api.worldbank.org/v2/country/WLD/indicator/SL.UEM.TOTL.ZS?format=json&per_page=3'),
     jget('https://api.worldbank.org/v2/country/WLD/indicator/SP.POP.TOTL?format=json&per_page=3'),
+    // GDP history (2015 to latest) from the Bank's series, drawn as a
+    // trend chart like the one this panel has always carried.
+    jget('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&per_page=15&date=2015:2030'),
   ]);
   const gdp = latest(gdpJ);
   const growth = latest(growthJ);
   const inflation = latest(inflationJ);
   const unemp = latest(unempJ);
   const pop = latest(popJ);
-
-  // GDP history (2015 to latest) from the Bank's series, drawn as a
-  // trend chart like the one this panel has always carried.
-  const seriesJson = await jget(
-    'https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&per_page=15&date=2015:2030',
-  );
   const series: { year: string; v: number }[] = (Array.isArray(seriesJson?.[1]) ? seriesJson[1] : [])
     .filter((r: any) => typeof r?.value === 'number')
     .map((r: any) => ({ year: String(r.date), v: r.value as number }))

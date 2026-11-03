@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import HomeClient from './HomeClient';
 import WebsiteTicker from '@/components/home/WebsiteTicker';
 import MyCitySection from '@/components/home/MyCitySection';
@@ -70,17 +71,23 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(HOME_JSON_LD) }}
       />
+    {/* Speed pass (2026-11-03): every data panel sits behind its own
+        Suspense boundary (the same pattern the root layout uses for
+        TickerBarSlot), so the page shell and hero stream immediately
+        and each section lands as its data arrives, instead of the
+        first byte waiting for the slowest upstream feed. Fallbacks are
+        null, matching the layout ticker's precedent. */}
     <HomeClient
-      newsSlot={<NewsPanel />}
-      ticker2Slot={<WebsiteTicker />}
-      myCitySlot={<MyCitySection />}
-      todaysWorldSlot={<TodaysWorld />}
-      factCardsSlot={<FactCards />}
-      financeSlot={<FinanceFigures />}
-      eventsSlot={<EventsPanel />}
-      economySlot={<EconomyPanel />}
-      sportsSlot={<SportsPanel />}
-      conflictsSlot={<ConflictsPanel />}
+      newsSlot={<Suspense fallback={null}><NewsPanel /></Suspense>}
+      ticker2Slot={<Suspense fallback={null}><WebsiteTicker /></Suspense>}
+      myCitySlot={<Suspense fallback={null}><MyCitySection /></Suspense>}
+      todaysWorldSlot={<Suspense fallback={null}><TodaysWorld /></Suspense>}
+      factCardsSlot={<Suspense fallback={null}><FactCards /></Suspense>}
+      financeSlot={<Suspense fallback={null}><FinanceFigures /></Suspense>}
+      eventsSlot={<Suspense fallback={null}><EventsPanel /></Suspense>}
+      economySlot={<Suspense fallback={null}><EconomyPanel /></Suspense>}
+      sportsSlot={<Suspense fallback={null}><SportsPanel /></Suspense>}
+      conflictsSlot={<Suspense fallback={null}><ConflictsPanel /></Suspense>}
     />
     </>
   );

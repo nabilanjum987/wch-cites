@@ -12,14 +12,16 @@ export default async function CountryInventory({ countrySlug }: { countrySlug: s
   const cityMap = new Map<string, { slug: string; name: string; province_slug: string }>();
   try {
     const sb = getSupabase();
-    const { data: ctry } = await sb.from('countries').select('name').eq('slug', countrySlug).maybeSingle();
+    // Speed pass (2026-11-03): the three reads are independent (all
+    // keyed by countrySlug), so they run in parallel instead of three
+    // sequential round-trips.
+    const [{ data: ctry }, { data: provs }, { data: cities }] = await Promise.all([
+      sb.from('countries').select('name').eq('slug', countrySlug).maybeSingle(),
+      sb.from('provinces').select('slug,name').eq('country_slug', countrySlug),
+      sb.from('cities').select('slug,name,province_slug').eq('country_slug', countrySlug),
+    ]);
     if (ctry?.name) countryName = ctry.name as string;
-    const { data: provs } = await sb.from('provinces').select('slug,name').eq('country_slug', countrySlug);
     if (provs) provinces = provs as { slug: string; name: string }[];
-    const { data: cities } = await sb
-      .from('cities')
-      .select('slug,name,province_slug')
-      .eq('country_slug', countrySlug);
     for (const c of cities ?? []) {
       cityMap.set(c.slug as string, {
         slug: c.slug as string,

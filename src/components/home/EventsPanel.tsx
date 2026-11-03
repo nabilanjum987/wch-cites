@@ -41,12 +41,16 @@ export default async function EventsPanel() {
   const weekIso = isoOf(new Date(now.getTime() + 7 * dayMs));
 
   const years = [...new Set([now.getFullYear(), new Date(now.getTime() + 7 * dayMs).getFullYear()])];
-  const all: Holiday[] = [];
-  for (const { code, name } of COUNTRIES) {
-    for (const y of years) {
-      all.push(...(await fetchHolidays(code, name, y).catch(() => [])));
-    }
-  }
+  // Speed pass (2026-11-03): the country × year fetches are independent
+  // (each is a full-year list, cached 1h), so they run in parallel
+  // instead of one awaited round-trip at a time. Result order is
+  // unchanged: country order, then year order, flattened.
+  const perFeed = await Promise.all(
+    COUNTRIES.flatMap(({ code, name }) =>
+      years.map((y) => fetchHolidays(code, name, y).catch(() => [] as Holiday[])),
+    ),
+  );
+  const all: Holiday[] = perFeed.flat();
   const upcoming = all
     .filter((h) => h.date >= todayIso && h.date <= weekIso)
     .sort((a, b) => a.date.localeCompare(b.date))
