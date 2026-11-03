@@ -37,6 +37,12 @@ const PROFILES = [
     tag: 'Lahore · 1877–1938',
     img: '/images/home28/pers-iqbal.webp', imgAlt: 'Portrait of Allama Iqbal', credit: 'Iqbal Academy Pakistan · public domain',
     pos: 'object-top',
+    // Iqbal's head fills his portrait edge to edge (hair touches the
+    // source's own top), so cover-cropping always reads as a cut face
+    // on this wide card. He is shown whole instead: the full photo,
+    // contained on a mat sampled from the portrait's own backdrop.
+    fit: 'contain',
+    mat: 'radial-gradient(120% 120% at 50% 30%, #5a5452 0%, #3c3839 55%, #2a2728 100%)',
   },
   {
     slug: 'imran-khan',
@@ -54,9 +60,9 @@ export default function PersonalitiesPanel() {
       {PROFILES.map((p) => (
         <Link key={p.slug} href={`/personalities/${p.slug}`} className="no-underline group">
           <div className="rounded-2xl border t-border t-card overflow-hidden transition-all t-group-border-hover-25 h-full">
-            <div className="relative aspect-[4/5] overflow-hidden">
+            <div className="relative aspect-[4/5] overflow-hidden" style={p.mat ? { background: p.mat } : undefined}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={p.img} alt={p.imgAlt} width={600} height={600} loading="lazy" decoding="async" className={`absolute inset-0 h-full w-full object-cover ${p.pos}`} />
+              <img src={p.img} alt={p.imgAlt} width={600} height={600} loading="lazy" decoding="async" className={`absolute inset-0 h-full w-full ${p.fit === 'contain' ? 'object-contain' : `object-cover ${p.pos}`}`} />
             </div>
             <div className="p-5">
               <div className="t-text-40 text-xs uppercase tracking-wide mb-1">{p.tag}</div>
