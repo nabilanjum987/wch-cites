@@ -1,10 +1,16 @@
 /**
- * SEO paragraph generators — WorldCityHub Province Page
+ * SEO paragraph generators: WorldCityHub Province Page
  *
  * TWO paragraphs per section: para_before (above data) + para_after (below data)
  * Target: 8 sections × ~200 words × 2 = 3,000+ words per province page.
  * All paragraphs use real live data variables for genuine uniqueness per province.
  * Pattern mirrors src/lib/paragraphs/city.ts exactly.
+ *
+ * Copy rules (owner review, 3 Nov 2026): no em dashes anywhere in
+ * rendered copy; a lead paragraph never says "above" about the data
+ * block that sits below it; no claim the page's own data cannot support
+ * (the cost section compares populations, not prices, and the emergency
+ * close no longer claims every number is national).
  */
 
 const MONTHS = ["January","February","March","April","May","June",
@@ -19,7 +25,7 @@ function now() {
 
 export function generateOverviewParagraph(province: string, country: string, capital: string): string {
   const { month, year } = now();
-  return `${province} is one of ${country}'s primary administrative regions, anchored by ${capital} as its capital and carrying its own distinct population, land area, and economic footprint within the wider country. The figures above — population, area, and GDP contribution — give the essential reference points for understanding ${province}'s scale and significance relative to the rest of ${country}. Through ${month} ${year}, these fundamentals provide context for everything else covered on this page, from the province's major cities to its leading industries.`;
+  return `${province} is one of ${country}'s primary administrative regions, anchored by ${capital} as its capital and carrying its own distinct population, land area, and economic footprint within the wider country. The figures below, population, area, and GDP contribution, give the essential reference points for understanding ${province}'s scale and significance relative to the rest of ${country}. Through ${month} ${year}, these fundamentals provide context for everything else covered on this page, from the province's major cities to its leading industries.`;
 }
 
 export function generateOverviewAfter(province: string, country: string): string {
@@ -31,67 +37,72 @@ export function generateOverviewAfter(province: string, country: string): string
 
 export function generateCitiesParagraph(province: string): string {
   const { month, year } = now();
-  return `${province}'s major cities above each carry their own population, current weather, and distinct local character, together forming the urban backbone of the wider province. Tapping through to any city above leads to its own dedicated page with considerably deeper coverage — weather forecasts, prayer times, local rates, news, events, and more — making this grid a launching point rather than a complete picture in itself. Through ${month} ${year}, these cities represent where the large majority of ${province}'s population, economic activity, and daily life is concentrated.`;
+  return `${province}'s major cities below each carry their own population, current weather, and distinct local character, together forming the urban backbone of the wider province. Tapping through to any city below leads to its own dedicated page with considerably deeper coverage: weather forecasts, prayer times, local rates, news, events, and more, making this grid a launching point rather than a complete picture in itself. Through ${month} ${year}, these cities represent where the large majority of ${province}'s population, economic activity, and daily life is concentrated.`;
 }
 
 export function generateCitiesAfter(province: string): string {
   const { month, year } = now();
-  return `Population figures shown alongside each city above reveal the relative scale of urban centres across ${province}, useful context for understanding which cities serve as genuine economic and population hubs versus smaller regional centres. Each city's character within ${province} often differs meaningfully — some built around heavy industry, others around agriculture, trade, or administration — a variation that becomes clearer when exploring each city's individual dedicated page. Through ${month} ${year}, this grid offers the fastest way to navigate from a province-level view down to the specific city-level detail covered elsewhere on this site.`;
+  return `Population figures shown alongside each city above reveal the relative scale of urban centres across ${province}, useful context for understanding which cities serve as genuine economic and population hubs versus smaller regional centres. Each city's character within ${province} often differs meaningfully: some built around heavy industry, others around agriculture, trade, or administration, a variation that becomes clearer when exploring each city's individual dedicated page. Through ${month} ${year}, this grid offers the fastest way to navigate from a province-level view down to the specific city-level detail covered elsewhere on this site.`;
 }
 
 // ─── 3. WEATHER ACROSS PROVINCE ──────────────────────────────────────────────
 
 export function generateWeatherParagraph(province: string): string {
   const { month, year } = now();
-  return `Current conditions across ${province}'s major cities above give a quick comparative snapshot of weather variation within the province, useful for travel planning or simply understanding how climate shifts across different parts of ${province} on a given day. Provinces spanning significant geographic distance often see meaningfully different conditions between their northern and southern, or coastal and inland, cities even on the same date in ${month} ${year}. This condensed view complements the fuller weather forecasts available on each individual city's dedicated weather page elsewhere on this site.`;
+  return `Current conditions across ${province}'s major cities below give a quick comparative snapshot of weather variation within the province, useful for travel planning or simply understanding how climate shifts across different parts of ${province} on a given day. Provinces spanning significant geographic distance often see meaningfully different conditions between their northern and southern, or coastal and inland, cities even on the same date in ${month} ${year}. This condensed view complements the fuller weather forecasts available on each individual city's dedicated weather page elsewhere on this site.`;
 }
 
 export function generateWeatherAfter(province: string): string {
   const { month, year } = now();
-  return `This snapshot updates live alongside each city's individual weather page, ensuring the temperatures shown above always reflect current conditions across ${province} rather than a static daily average. For anyone planning travel within ${province} or deciding between cities for a visit, comparing conditions side by side like this is considerably faster than checking each city's forecast individually. Through ${month} ${year} and across the seasons, this comparative view becomes especially useful during periods when different parts of ${province} are experiencing notably different weather from each other.`;
+  return `This snapshot is fetched live from the same weather service behind each city's individual weather page, so the temperatures shown above reflect current conditions across ${province} rather than a static daily average. For anyone planning travel within ${province} or deciding between cities for a visit, comparing conditions side by side like this is considerably faster than checking each city's forecast individually. Through ${month} ${year} and across the seasons, this comparative view becomes especially useful during periods when different parts of ${province} are experiencing notably different weather from each other.`;
 }
 
 // ─── 4. PROVINCE ECONOMY ─────────────────────────────────────────────────────
 
 export function generateEconomyParagraph(province: string, country: string): string {
   const { month, year } = now();
-  return `${province}'s economic contribution to ${country} above reflects the province's role within the wider national economy, a figure shaped by its mix of industries, population, and infrastructure relative to the rest of the country. Provincial GDP contribution doesn't always track proportionally with population share — some provinces punch above their population weight economically due to concentrated industry or trade activity, while others contribute a smaller economic share relative to how many people live there. Through ${month} ${year}, this economic snapshot offers context for understanding ${province}'s significance within ${country} beyond population figures alone.`;
+  return `${province}'s economic contribution to ${country} below reflects the province's role within the wider national economy, a figure shaped by its mix of industries, population, and infrastructure relative to the rest of the country. Provincial GDP contribution doesn't always track proportionally with population share: some provinces punch above their population weight economically due to concentrated industry or trade activity, while others contribute a smaller economic share relative to how many people live there. Through ${month} ${year}, this economic snapshot offers context for understanding ${province}'s significance within ${country} beyond population figures alone.`;
 }
 
 export function generateEconomyAfter(province: string, country: string): string {
   const { month, year } = now();
-  return `The population share figure above, alongside the GDP contribution, together reveal whether ${province}'s economic weight within ${country} is proportional to, above, or below its population share — a useful indicator of relative economic productivity and development concentration within the province. This economic snapshot connects directly to the Major Industries section further down this page, where the specific sectors driving ${province}'s contribution to ${country}'s economy are detailed individually. Through ${month} ${year}, understanding this economic role provides useful context for ${province}'s broader significance within the national conversation.`;
+  return `The population share figure above, alongside the GDP contribution, together reveal whether ${province}'s economic weight within ${country} is proportional to, above, or below its population share, a useful indicator of relative economic productivity and development concentration within the province. This economic snapshot connects directly to the Major Industries section further down this page, where the specific sectors driving ${province}'s contribution to ${country}'s economy are detailed individually. Through ${month} ${year}, understanding this economic role provides useful context for ${province}'s broader significance within the national conversation.`;
 }
 
 // ─── 4b. GROWTH DASHBOARD (World Bank 10-year trends) ─────────────────────────
 
 export function generateProvinceGrowthParagraph(province: string, country: string): string {
   const { month, year } = now();
-  return `While ${province}-specific economic series are harder to find than national data, the national-level GDP, population, and exports trends below from World Bank Open Data give essential context for the economic environment ${province} operates within. As one of ${country}'s constituent provinces, ${province}'s own trajectory is closely tied to — though not identical to — these national patterns, since provincial growth typically tracks national growth with a province-specific premium or discount depending on local industry mix. As of ${month} ${year}, this ten-year view captures the broader economic backdrop against which ${province}'s own contribution should be read.`;
+  return `While ${province}-specific economic series are harder to find than national data, the national-level GDP, population, and exports trends below from World Bank Open Data give essential context for the economic environment ${province} operates within. As one of ${country}'s constituent provinces, ${province}'s own trajectory is closely tied to, though not identical to, these national patterns, since provincial growth typically tracks national growth with a province-specific premium or discount depending on local industry mix. As of ${month} ${year}, this ten-year view captures the broader economic backdrop against which ${province}'s own contribution should be read.`;
 }
 
 export function generateProvinceGrowthAfter(province: string, country: string): string {
   const { month, year } = now();
-  return `Reading these national trends alongside ${province}'s own GDP contribution percentage further up this page gives a fuller picture — whether ${province} is gaining or losing share of ${country}'s growing or shrinking economy over time. Through ${month} ${year}, this combined view of national trajectory and provincial share offers a more complete economic picture than either figure provides alone.`;
+  return `Reading these national trends alongside ${province}'s own GDP contribution percentage further up this page gives a fuller picture: whether ${province} is gaining or losing share of ${country}'s growing or shrinking economy over time. Through ${month} ${year}, this combined view of national trajectory and provincial share offers a more complete economic picture than either figure provides alone.`;
 }
 
-// ─── 4c. COST OF LIVING COMPARISON ────────────────────────────────────────────
+// ─── 4c. CITY POPULATION COMPARISON ───────────────────────────────────────────
+// Honest retitle (owner audit, 3 Nov 2026): the old "cost of living"
+// table derived its index from population by formula, which is not
+// cost data. The table now honestly compares city populations, and
+// these paragraphs describe exactly that, with no rent, groceries or
+// transport cost promise.
 
 export function generateCostOfLivingParagraph(province: string): string {
   const { month, year } = now();
-  return `Cost of living varies meaningfully even within a single province, shaped by each city's size, industry base, and housing demand. The comparison below sets ${province}'s major cities side by side across rent, groceries, transport, and overall cost index, helping residents, job-seekers, and businesses understand where their money goes furthest within ${province}. As of ${month} ${year}, these figures offer a relative comparison rather than absolute pricing, since on-the-ground costs shift with inflation, season, and local market conditions.`;
+  return `The table below sets ${province}'s major cities side by side by population, the clearest single measure of each city's scale within the province. Population shapes almost everything about a city, from housing demand and public services to the size of its markets and workforce, so this ranking gives residents, job-seekers, and businesses a quick sense of where each city stands. As of ${month} ${year}, the comparison is a scale reference only: it does not price rent, food, or transport, which vary street by street and are not published as an official city index.`;
 }
 
 export function generateCostOfLivingAfter(province: string): string {
   const { month, year } = now();
-  return `These city-to-city cost differences within ${province} often mirror — and sometimes exceed — cost gaps seen between entire provinces or even countries, underscoring that "where in ${province}" can matter as much as "which province" for household budgeting. Through ${month} ${year}, checking back periodically captures how these relative cost positions shift as cities within ${province} grow and develop at different rates.`;
+  return `These population gaps within ${province} are often large: the biggest city can hold several times the population of the smallest centre listed, a difference that shows up in everything from hospital capacity to the depth of local job markets. Through ${month} ${year}, checking back as new census and estimate figures are published keeps this comparison current as cities within ${province} grow at different rates.`;
 }
 
 // ─── 5. MAJOR INDUSTRIES ─────────────────────────────────────────────────────
 
 export function generateIndustriesParagraph(province: string): string {
   const { month, year } = now();
-  return `${province}'s major industries above represent the economic sectors driving employment, exports, and GDP contribution across the province, each shaped by ${province}'s particular geography, resources, and historical economic development. Understanding this industrial mix explains a great deal about daily life in ${province} — which sectors offer the most local employment, what goods and services the region is known for producing, and how the province's economy is likely to respond to broader national or global economic shifts through ${month} ${year}.`;
+  return `${province}'s major industries below represent the economic sectors driving employment, exports, and GDP contribution across the province, each shaped by ${province}'s particular geography, resources, and historical economic development. Understanding this industrial mix explains a great deal about daily life in ${province}: which sectors offer the most local employment, what goods and services the region is known for producing, and how the province's economy is likely to respond to broader national or global economic shifts through ${month} ${year}.`;
 }
 
 export function generateIndustriesAfter(province: string, country: string): string {
@@ -103,19 +114,19 @@ export function generateIndustriesAfter(province: string, country: string): stri
 
 export function generateProductsParagraph(province: string): string {
   const { month, year } = now();
-  return `${province}'s famous products above represent the goods the province has built a genuine reputation for, whether agricultural specialties, manufactured items, or craft traditions passed down through generations of local producers. Products marked with particular distinction typically carry recognition well beyond ${province}'s own borders, sometimes becoming genuinely associated with the province's identity in broader national or even international perception. Through ${month} ${year}, this list connects directly to the industries covered in the previous section, since these products are often the tangible output of ${province}'s leading economic sectors.`;
+  return `${province}'s famous products below represent the goods the province has built a genuine reputation for, whether agricultural specialties, manufactured items, or craft traditions passed down through generations of local producers. Products marked with particular distinction typically carry recognition well beyond ${province}'s own borders, sometimes becoming genuinely associated with the province's identity in broader national or even international perception. Through ${month} ${year}, this list connects directly to the industries covered in the previous section, since these products are often the tangible output of ${province}'s leading economic sectors.`;
 }
 
 export function generateProductsAfter(province: string): string {
   const { month, year } = now();
-  return `These products often trace back to specific local conditions unique to ${province} — particular soil and climate for agricultural goods, or specific craft traditions and skilled labor pools for manufactured items — making them genuinely difficult to replicate elsewhere even within the same country. For visitors to ${province}, seeking out these famous products locally, whether at markets or directly from producers, often provides a more authentic experience than purchasing the same items shipped elsewhere. Through ${month} ${year}, this list continues to reflect the products most closely associated with ${province}'s economic and cultural identity.`;
+  return `These products often trace back to specific local conditions unique to ${province}: particular soil and climate for agricultural goods, or specific craft traditions and skilled labor pools for manufactured items, making them genuinely difficult to replicate elsewhere even within the same country. For visitors to ${province}, seeking out these famous products locally, whether at markets or directly from producers, often provides a more authentic experience than purchasing the same items shipped elsewhere. Through ${month} ${year}, this list continues to reflect the products most closely associated with ${province}'s economic and cultural identity.`;
 }
 
 // ─── 7. NOTABLE LANDMARKS ────────────────────────────────────────────────────
 
 export function generateLandmarksParagraph(province: string, capital: string): string {
   const { month, year } = now();
-  return `${province}'s notable landmarks above, concentrated largely around ${capital}, represent the historical, religious, and civic sites that define the province's physical and cultural heritage. These landmarks often serve as the first stop for visitors to ${province} and remain genuine points of local pride for residents, connecting the province's present to its history across generations. Through ${month} ${year}, this selection offers a starting point for exploring ${province} beyond its economic and demographic statistics covered elsewhere on this page.`;
+  return `${province}'s notable landmarks below, concentrated largely around ${capital}, represent the historical, religious, and civic sites that define the province's physical and cultural heritage. These landmarks often serve as the first stop for visitors to ${province} and remain genuine points of local pride for residents, connecting the province's present to its history across generations. Through ${month} ${year}, this selection offers a starting point for exploring ${province} beyond its economic and demographic statistics covered elsewhere on this page.`;
 }
 
 export function generateLandmarksAfter(province: string, capital: string): string {
@@ -127,10 +138,10 @@ export function generateLandmarksAfter(province: string, capital: string): strin
 
 export function generateEmergencyParagraph(province: string, country: string): string {
   const { month, year } = now();
-  return `The emergency contact numbers above for police, ambulance, and fire services apply across ${province} and the whole of ${country}, essential information worth knowing before you need it whether you're a long-term resident of the province or simply visiting. These numbers connect to the same national emergency response services covered on ${country}'s main country page, working consistently regardless of which specific city or district within ${province} you happen to be in. Through ${month} ${year}, saving these numbers directly to a phone is a small but genuinely worthwhile precaution for anyone spending time in ${province}.`;
+  return `The emergency contact numbers below for police, ambulance, and fire services apply across ${province} and the whole of ${country}, essential information worth knowing before you need it whether you're a long-term resident of the province or simply visiting. These numbers connect to the same national emergency response services covered on ${country}'s main country page, working consistently regardless of which specific city or district within ${province} you happen to be in. Through ${month} ${year}, saving these numbers directly to a phone is a small but genuinely worthwhile precaution for anyone spending time in ${province}.`;
 }
 
 export function generateEmergencyAfter(province: string, country: string): string {
   const { month, year } = now();
-  return `These emergency numbers remain identical across every province within ${country}, since emergency response is organised at the national level rather than varying province by province, meaning the same numbers apply whether you're in ${province} or anywhere else in ${country}. For broader national context beyond ${province} specifically — country-wide economic data, national holidays, or neighbouring countries — ${country}'s main country page elsewhere on this site offers that wider view. Through ${month} ${year}, this page's combination of province-specific detail and these universally applicable emergency numbers rounds out a complete picture of life in ${province}.`;
+  return `The police, ambulance, and fire numbers are national: they connect you to the same services whether you're in ${province} or anywhere else in ${country}. Disaster response, by contrast, is organised province by province, so where a province runs its own disaster-management helpline it is listed above under that province's own name rather than shared across provinces. For broader national context beyond ${province} specifically, including country-wide economic data, national holidays, or neighbouring countries, ${country}'s main country page elsewhere on this site offers that wider view. Through ${month} ${year}, this page's combination of province-specific detail and these emergency numbers rounds out a complete picture of life in ${province}.`;
 }

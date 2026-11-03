@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, 3 Nov 2026 (arfa-karim)",
+  "records": [
+    {
+      "local_path": "/images/personalities/arfa-karim.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/33/Arfa_Karim_Randhawa_%2815073795462%29.jpg",
+      "author": "Muhammad Imran Saeed",
+      "license": "CC BY 2.0",
+      "commons_title": "File:Arfa Karim Randhawa (15073795462).jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Arfa Karim Randhawa (15073795462).jpg on 2026-11-03 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Arfa Karim Randhawa (15073795462).jpg."
+    }
+  ],
+  "notes": "Added by the province-template fix (3 Nov 2026) to replace wrong/reused Pexels photos on province pages. Local file is a webp conversion (~800px) of the Commons original."
+}

@@ -138,7 +138,7 @@ const PROVINCES: Record<string, Province[]> = {
   PK: [
     { name: 'Punjab', slug: 'punjab', capital: 'Lahore', population: 127688922, area: 205344, tagline: 'Most populous province', cities: ['Lahore', 'Multan', 'Faisalabad'] },
     { name: 'Sindh', slug: 'sindh', capital: 'Karachi', population: 55696147, area: 140914, tagline: 'Economic heartbeat', cities: ['Karachi', 'Hyderabad', 'Sukkur'] },
-    { name: 'Khyber Pakhtunkhwa', slug: 'khyber-pakhtunkhwa', capital: 'Peshawar', population: 40856097, area: 74521, tagline: 'Land of mountains', cities: ['Peshawar', 'Abbottabad', 'Swat'] },
+    { name: 'Khyber Pakhtunkhwa', slug: 'khyber-pakhtunkhwa', capital: 'Peshawar', population: 40856097, area: 101741, tagline: 'Land of mountains', cities: ['Peshawar', 'Abbottabad', 'Swat'] },
     { name: 'Balochistan', slug: 'balochistan', capital: 'Quetta', population: 14894402, area: 347190, tagline: 'Largest province', cities: ['Quetta', 'Gwadar', 'Turbat'] },
     { name: 'Gilgit-Baltistan', slug: 'gilgit-baltistan', capital: 'Gilgit', population: 1800000, area: 72497, tagline: 'Roof of the world', cities: ['Gilgit', 'Skardu', 'Hunza'] },
     { name: 'Azad Kashmir', slug: 'azad-kashmir', capital: 'Muzaffarabad', population: 4045000, area: 13297, tagline: 'Heaven on earth', cities: ['Muzaffarabad', 'Mirpur', 'Rawalakot'] },

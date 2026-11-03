@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, 3 Nov 2026 (swat-valley)",
+  "records": [
+    {
+      "local_path": "/images/places/swat-valley.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/16/Swat_River_Kalam.jpg",
+      "author": "Mian Saqib Asif",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Swat River Kalam.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Swat River Kalam.jpg on 2026-11-03 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Swat River Kalam.jpg."
+    }
+  ],
+  "notes": "Added by the province-template fix (3 Nov 2026) to replace wrong/reused Pexels photos on province pages. Local file is a webp conversion (~800px) of the Commons original."
+}

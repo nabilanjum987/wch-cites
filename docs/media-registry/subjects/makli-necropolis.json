@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, 3 Nov 2026 (makli-necropolis)",
+  "records": [
+    {
+      "local_path": "/images/places/makli-necropolis.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Makli_Necropolis_near_Thatta_province_of_sindh_pakistan_image_2.jpg",
+      "author": "Nadirkhanbrahui",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Makli Necropolis near Thatta province of sindh pakistan image 2.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Makli Necropolis near Thatta province of sindh pakistan image 2.jpg on 2026-11-03 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Makli Necropolis near Thatta province of sindh pakistan image 2.jpg."
+    }
+  ],
+  "notes": "Added by the province-template fix (3 Nov 2026) to replace wrong/reused Pexels photos on province pages. Local file is a webp conversion (~800px) of the Commons original."
+}

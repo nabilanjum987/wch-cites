@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, 3 Nov 2026 (mohenjo-daro)",
+  "records": [
+    {
+      "local_path": "/images/places/mohenjo-daro.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Mohenjo-daro.jpg",
+      "author": "Saqib Qayyum",
+      "license": "CC BY-SA 3.0",
+      "commons_title": "File:Mohenjo-daro.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Mohenjo-daro.jpg on 2026-11-03 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Mohenjo-daro.jpg."
+    }
+  ],
+  "notes": "Added by the province-template fix (3 Nov 2026) to replace wrong/reused Pexels photos on province pages. Local file is a webp conversion (~800px) of the Commons original."
+}

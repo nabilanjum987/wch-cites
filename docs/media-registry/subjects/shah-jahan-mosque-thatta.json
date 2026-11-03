@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, 3 Nov 2026 (shah-jahan-mosque-thatta)",
+  "records": [
+    {
+      "local_path": "/images/places/shah-jahan-mosque-thatta.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/13/Shah_Jahan_Mosque_Thatta_Sindh_Pakistan5.jpg",
+      "author": "Naseerullah0862",
+      "license": "CC BY-SA 3.0",
+      "commons_title": "File:Shah Jahan Mosque Thatta Sindh Pakistan5.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Shah Jahan Mosque Thatta Sindh Pakistan5.jpg on 2026-11-03 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Shah Jahan Mosque Thatta Sindh Pakistan5.jpg."
+    }
+  ],
+  "notes": "Added by the province-template fix (3 Nov 2026) to replace wrong/reused Pexels photos on province pages. Local file is a webp conversion (~800px) of the Commons original."
+}
