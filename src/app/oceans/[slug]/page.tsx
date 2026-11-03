@@ -18,12 +18,12 @@ import { formatLocalTime, formatLocalDate } from '@/lib/wonders';
 import OceanClock from './OceanClock';
 import OceanMap from './OceanMap';
 
-// Golden Ocean template (WP5 / marathon Q10) — SERVER component on
+// Golden Ocean template (WP5 / marathon Q10), SERVER component on
 // the golden wonder pattern. Facts: Wikidata Q58705 + Wikipedia,
 // every claim sourced on the page. Live layer: Open-Meteo Marine API
 // at the sea's representative point (16°N, 64°E) + Karachi coastal
 // weather. The old client shell's invented conditions ratings, port
-// throughputs and marine-life lists are GONE — nothing renders here
+// throughputs and marine-life lists are GONE: nothing renders here
 // without a source.
 export const revalidate = 1800;
 
@@ -63,59 +63,53 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 // ── Final30 A9: facts-intent sections ─────────────────────────────────────
-// H2 "{Name} facts" with H3 AEO questions, rendered ONLY for the nine
-// briefed oceans that have a record (see below). Every answer is composed
+// H2 "{Name} facts" with H3 AEO questions. Every answer is composed
 // from the ocean's own key-facts rows (Total area, Average depth, Maximum
 // depth, Deepest point, Seabed, Representative point) and its partOfName /
-// coastal city — 50–70 words each, no figure invented. H3 wordings are
+// coastal city, 50–70 words each, no figure invented. H3 wordings are
 // kept distinct from the existing FAQ bank ("How big is…?", "What is the
 // deepest point…?", "How deep is…?") so the FAQPage schema below never
-// carries an exact-duplicate question. The brief's Black Sea and Bay of
-// Bengal items are NOT built here: no record/page exists for either in
-// src/lib/oceans.ts, and inventing a thin record would break the golden
-// template's sourcing standard (reported back to the coordinator).
-const FACTS_SLUGS = new Set([
-  'pacific-ocean',
-  'atlantic-ocean',
-  'mediterranean-sea',
-  'red-sea',
-  'caribbean-sea',
-  'north-sea',
-  'baltic-sea',
-  'south-china-sea',
-  'arabian-sea',
-  'black-sea',
-  'bay-of-bengal',
-]);
-
+// carries an exact-duplicate question. The section originally rendered
+// only for a briefed slug list; the S5 fix (3 Nov 2026) dropped the gate
+// so every ocean renders it from its own facts, and a record missing the
+// rows an honest answer needs (area, maximum depth, representative
+// point) still renders nothing.
 function oceanFact(ocean: Ocean, label: string): string | null {
   return ocean.facts.find((f) => f.label === label)?.value ?? null;
 }
 
 function oceanFactsQa(ocean: Ocean): { q: string; a: string }[] {
-  if (!FACTS_SLUGS.has(ocean.slug)) return [];
   const area = oceanFact(ocean, 'Total area');
   const avg = oceanFact(ocean, 'Average depth');
   const max = oceanFact(ocean, 'Maximum depth');
   const deepest = oceanFact(ocean, 'Deepest point');
   const seabed = oceanFact(ocean, 'Seabed');
   const point = oceanFact(ocean, 'Representative point');
-  // All nine briefed oceans carry area + max depth + representative point;
+  // Every ocean record carries area + max depth + representative point;
   // without them no honest answer can be composed, so render nothing.
   if (!area || !max || !point) return [];
   const middle = deepest ? ` Its deepest point is ${deepest}.` : seabed ? ` Its seabed is ${seabed}.` : '';
+  // Polar records sample waves at the nearest open-water point, not at the
+  // representative point, so their answers must say so.
+  const fmtC = (v: number) => String(Math.round(Math.abs(v) * 100) / 100);
+  const fmtP = (la: number, ln: number) => `${fmtC(la)}° ${la >= 0 ? 'N' : 'S'}, ${fmtC(ln)}° ${ln >= 0 ? 'E' : 'W'}`;
+  const sampleOffset =
+    ocean.sampleLat !== undefined && ocean.sampleLng !== undefined && (ocean.sampleLat !== ocean.lat || ocean.sampleLng !== ocean.lng);
+  const waveWhere = sampleOffset
+    ? `today's waves at the nearest open-water point (${fmtP(ocean.sampleLat as number, ocean.sampleLng as number)}), because the representative point is ice-covered`
+    : `today's waves at the sea's representative point`;
   const qa: { q: string; a: string }[] = [
     {
       q: `What is the total area of the ${ocean.name}?`,
-      a: `The ${ocean.name} covers ${area}${avg ? `, with an average depth of ${avg} and a maximum depth of ${max}` : `, with a maximum depth of ${max}`}.${middle} All figures on this page are shown with their sources in the key facts panel, and the live panel above measures today's waves at the sea's representative point.`,
+      a: `The ${ocean.name} covers ${area}${avg ? `, with an average depth of ${avg} and a maximum depth of ${max}` : `, with a maximum depth of ${max}`}.${middle} All figures on this page are shown with their sources in the key facts panel, and the live panel above measures ${waveWhere}.`,
     },
     {
       q: `What is the maximum depth of the ${ocean.name}?`,
-      a: `The maximum depth of the ${ocean.name} is ${max}.${middle}${avg ? ` Its average depth is ${avg}, and its total area is ${area}.` : ` Its total area is ${area}.`} Depth and area figures on this page carry their sources in the key facts panel above. The live panel above measures today's waves at the sea's representative point.`,
+      a: `The maximum depth of the ${ocean.name} is ${max}.${middle}${avg ? ` Its average depth is ${avg}, and its total area is ${area}.` : ` Its total area is ${area}.`} Depth and area figures on this page carry their sources in the key facts panel above. The live panel above measures ${waveWhere}.`,
     },
     {
       q: `Where is the ${ocean.name} located?`,
-      a: `The ${ocean.name} is part of the ${ocean.partOfName}. Its representative point is ${point}, the same point the live wave panel measures. It covers ${area} and reaches a maximum depth of ${max}.${ocean.coastalCity ? ` On its shore, this page's live panel carries ${ocean.coastalCity.name} coastal weather.` : ` Its shores, connections and seasons are set out in the geography and season sections below, and the live panel above measures today's waves at its representative point.`}`,
+      a: `The ${ocean.name} is part of the ${ocean.partOfName}. Its representative point is ${point}${sampleOffset ? ', and the live wave panel measures waves at the nearest open-water point because that point is ice-covered' : ', the same point the live wave panel measures'}. It covers ${area} and reaches a maximum depth of ${max}.${ocean.coastalCity ? ` On its shore, this page's live panel carries ${ocean.coastalCity.name} coastal weather.` : ` Its shores, connections and seasons are set out in the geography and season sections below, and the live panel above measures ${waveWhere}.`}`,
     },
   ];
   if (ocean.slug === 'arabian-sea') {
@@ -136,7 +130,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
   if (!ocean) notFound();
 
   const live = await getOceanLive(ocean);
-  // Final30 A9: facts-intent H3 questions (empty for out-of-brief oceans).
+  // Final30 A9: facts-intent H3 questions, composed for every ocean.
   const factsQa = oceanFactsQa(ocean);
   const hero = oceanHero(ocean);
   const gallery = ocean.media.filter((m) => m.role !== 'hero');
@@ -146,7 +140,20 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
   const clockTimezone = coast?.timezone ?? ocean.marineTimezone;
   const localTime = formatLocalTime(clockTimezone);
   const localDate = formatLocalDate(clockTimezone);
-  const pointLabel = `${Math.abs(ocean.lat)}° ${ocean.lat >= 0 ? 'N' : 'S'}, ${Math.abs(ocean.lng)}° ${ocean.lng >= 0 ? 'E' : 'W'}`;
+  // M1: round coordinates the way the fact cards print them (79.14° N,
+  // 3.24° W), never the raw Wikidata decimals (79.1386°).
+  const fmtCoord = (v: number) => String(Math.round(Math.abs(v) * 100) / 100);
+  const fmtPoint = (la: number, ln: number) =>
+    `${fmtCoord(la)}° ${la >= 0 ? 'N' : 'S'}, ${fmtCoord(ln)}° ${ln >= 0 ? 'E' : 'W'}`;
+  const pointLabel = fmtPoint(ocean.lat, ocean.lng);
+  // S3: polar pages sample the marine feed at the nearest open-water point, so
+  // every live figure on those pages is labelled with the sampled point.
+  const sampleLat = ocean.sampleLat ?? ocean.lat;
+  const sampleLng = ocean.sampleLng ?? ocean.lng;
+  const sampleIsOffset = sampleLat !== ocean.lat || sampleLng !== ocean.lng;
+  const samplePointLabel = fmtPoint(sampleLat, sampleLng);
+  // M3: a sample "returned" only when the feed gave an actual wave height.
+  const hasSample = live !== null && live.waveHeight !== null;
   const areaChip = ocean.facts.find((f) => f.label === 'Total area')?.value.split('(')[0].trim();
   const depthChip = ocean.facts.find((f) => f.label === 'Maximum depth')?.value;
   const googleKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || null;
@@ -188,7 +195,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
     <main className="min-h-screen bg-[#0a0e1a] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
-        {/* 1 — Breadcrumb + H1 + chips */}
+        {/* 1: Breadcrumb + H1 + chips */}
         <nav aria-label="Breadcrumb" className="text-sm text-gray-400">
           <Link href="/" className="hover:text-white">Home</Link>
           <span className="mx-2">/</span>
@@ -207,7 +214,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
             </span>
           )}
           <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-gray-200">
-            {coast ? `${coast.name} time` : 'Ocean point time (UTC)'}: <OceanClock timezone={clockTimezone} initial={localTime} /> · {localDate}
+            {coast ? `${coast.name} time (${coast.timezone})` : `Ocean point time (${ocean.marineTimezone})`}: <OceanClock timezone={clockTimezone} initial={localTime} /> · {localDate}
           </span>
           {live && live.waveHeight !== null && (
             <span className="rounded-full bg-emerald-500/15 px-3.5 py-1.5 text-xs font-semibold text-emerald-300">
@@ -216,7 +223,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           )}
         </div>
 
-        {/* 2 — Hero */}
+        {/* 2: Hero */}
         <figure className="mt-6">
           <div className="relative overflow-hidden rounded-2xl border border-white/10">
             <Image
@@ -237,13 +244,13 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           </figcaption>
         </figure>
 
-        {/* 3 — QUICK ANSWER: the sea today */}
+        {/* 3: QUICK ANSWER: the sea today */}
         {live && (
           <div className="mt-8 rounded-2xl border border-sky-400/25 bg-sky-400/5 p-5">
-            <h2 className="text-lg font-bold text-sky-200">The sea today — the quick answer</h2>
+            <h2 className="text-lg font-bold text-sky-200">The sea today: the quick answer</h2>
             <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="text-xs uppercase tracking-wide text-gray-400">Waves (open sea, {pointLabel})</p>
+                <p className="text-xs uppercase tracking-wide text-gray-400">Waves (open sea, {samplePointLabel})</p>
                 <p className="mt-1 text-sm font-semibold text-white">
                   {live.waveHeight !== null ? `${live.waveHeight.toFixed(2)} m · ${seaStateLabel(live.waveHeight)}` : 'Feed unavailable'}
                 </p>
@@ -252,11 +259,20 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
                     ? `Swell from ${compass(live.waveDirection)} (${Math.round(live.waveDirection)}°) · period ${live.wavePeriod.toFixed(1)} s`
                     : ''}
                 </p>
+                {sampleIsOffset && (
+                  <p className="mt-1 text-xs text-gray-400">
+                    Live waves sampled at the nearest open-water point ({samplePointLabel}): the point itself is ice-covered.
+                  </p>
+                )}
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-gray-400">{coast ? `${coast.name} coast weather` : 'Coastal weather'}</p>
                 <p className="mt-1 text-sm font-semibold text-white">
-                  {live.coast ? `${Math.round(live.coast.tempNow)}°C · ${weatherLabel(live.coast.weatherCode)}` : 'Feed unavailable'}
+                  {live.coast
+                    ? `${Math.round(live.coast.tempNow)}°C · ${weatherLabel(live.coast.weatherCode)}`
+                    : coast
+                      ? 'Feed unavailable'
+                      : 'No published coastal city yet'}
                 </p>
                 <p className="mt-1 text-xs text-gray-400">
                   {live.coast ? `Wind ${Math.round(live.coast.windKmh)} km/h · today ${Math.round(live.coast.tempMin)}–${Math.round(live.coast.tempMax)}°C` : ''}
@@ -265,20 +281,24 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
               <div>
                 <p className="text-xs uppercase tracking-wide text-gray-400">Coastal sun today</p>
                 <p className="mt-1 text-sm font-semibold text-white">
-                  {live.coast ? `${live.coast.sunrise} – ${live.coast.sunset}` : '—'}
+                  {live.coast ? `${live.coast.sunrise} – ${live.coast.sunset}` : coast ? 'Feed unavailable' : 'No published coastal city yet'}
                 </p>
-                <p className="mt-1 text-xs text-gray-400">Sunrise – sunset {coast ? `at ${coast.name} (local)` : '— no published coastal city yet'}</p>
+                <p className="mt-1 text-xs text-gray-400">Sunrise – sunset {coast ? `at ${coast.name} (local)` : 'no published coastal city yet'}</p>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-gray-400">Season frame</p>
                 <p className="mt-1 text-sm font-semibold text-white">{season.name}</p>
-                <p className="mt-1 text-xs text-gray-400">Live data: Open-Meteo Marine, sampled {live.sampledAt.replace('T', ' ')} ({coast ? `${coast.name} time` : 'UTC'})</p>
+                <p className="mt-1 text-xs text-gray-400">
+                  {hasSample
+                    ? `Live data: Open-Meteo Marine, sampled ${live.sampledAt.replace('T', ' ')} (${clockTimezone})`
+                    : 'Live data: Open-Meteo Marine, no sample returned at the last check'}
+                </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* 4 — Key facts */}
+        {/* 4: Key facts */}
         <Section title="Key facts">
           <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             {ocean.facts.map((f) => (
@@ -291,7 +311,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           </dl>
         </Section>
 
-        {/* 4b — Final30 A9: facts-intent section (briefed oceans only) */}
+        {/* 4b: Final30 A9 facts-intent section (every ocean, own facts) */}
         {factsQa.length > 0 && (
           <Section title={`${ocean.name} facts`}>
             <div className="max-w-3xl space-y-6">
@@ -305,14 +325,14 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           </Section>
         )}
 
-        {/* 5 — THERE TODAY live dashboard */}
+        {/* 5: THERE TODAY live dashboard */}
         {live && (
-          <Section title="There today — live conditions">
+          <Section title="There today: live conditions">
             <div className="grid gap-4 lg:grid-cols-3">
               <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-                <p className="text-sm text-gray-400">Open sea — waves through today</p>
+                <p className="text-sm text-gray-400">Open sea: waves through today</p>
                 <p className="mt-1 text-4xl font-bold">
-                  {live.waveHeight !== null ? `${live.waveHeight.toFixed(2)} m` : '—'}
+                  {live.waveHeight !== null ? `${live.waveHeight.toFixed(2)} m` : 'No data'}
                   {live.waveHeight !== null && (
                     <span className="ml-2 text-base font-medium text-gray-300">{seaStateLabel(live.waveHeight)}</span>
                   )}
@@ -321,7 +341,18 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
                   {live.waveDirection !== null && <li>Swell direction: from {compass(live.waveDirection)} ({Math.round(live.waveDirection)}°)</li>}
                   {live.wavePeriod !== null && <li>Wave period: {live.wavePeriod.toFixed(1)} seconds</li>}
                   <li className="text-xs text-gray-500">
-                    Open-Meteo Marine API at the sea&apos;s representative point (Wikidata: 16° N, 64° E), sampled {live.sampledAt.replace('T', ' ')}.
+                    {sampleIsOffset ? (
+                      <>
+                        Open-Meteo Marine API. Live waves sampled at the nearest open-water point ({samplePointLabel}): the
+                        point itself ({pointLabel}) is ice-covered.
+                        {hasSample ? ` Sampled ${live.sampledAt.replace('T', ' ')}.` : ''}
+                      </>
+                    ) : (
+                      <>
+                        Open-Meteo Marine API at the sea&apos;s representative point ({pointLabel})
+                        {hasSample ? `, sampled ${live.sampledAt.replace('T', ' ')}` : ''}.
+                      </>
+                    )}
                   </li>
                 </ul>
                 {live.hourlyWaves.length > 1 && (
@@ -333,7 +364,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
                         const max = Math.max(...heights, 0.5);
                         const pct = Math.max(8, (h.height / max) * 100);
                         return (
-                          <div key={h.time} className="flex flex-1 flex-col items-center gap-1" title={`${h.time.slice(11, 16)} — ${h.height.toFixed(2)} m`}>
+                          <div key={h.time} className="flex flex-1 flex-col items-center gap-1" title={`${h.time.slice(11, 16)}, ${h.height.toFixed(2)} m`}>
                             <span className="text-[10px] text-gray-400">{h.height.toFixed(1)}</span>
                             <div className="w-full rounded-t bg-sky-400/70" style={{ height: `${pct}%` }} />
                             <span className="text-[10px] text-gray-500">{h.time.slice(11, 13)}</span>
@@ -346,7 +377,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
               </div>
               {coast ? (
                 <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-                  <p className="text-sm text-gray-400">On the coast — {coast.name}, {coast.countryName}</p>
+                  <p className="text-sm text-gray-400">On the coast: {coast.name}, {coast.countryName}</p>
                   {live.coast ? (
                     <>
                       <p className="mt-1 text-4xl font-bold">
@@ -375,7 +406,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
                   <p className="text-sm text-gray-400">On the coast</p>
                   <p className="mt-2 text-sm leading-relaxed text-gray-300">
                     WorldCityHub has no published coastal city on this ocean yet, so this page carries the
-                    open-ocean live panel only — no city is dressed up as a coast it does not stand on.
+                    open-ocean live panel only, no city is dressed up as a coast it does not stand on.
                     Coastal coverage joins when that city&apos;s own guide passes the QA gate.
                   </p>
                 </div>
@@ -391,7 +422,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           </Section>
         )}
 
-        {/* 6 — The story */}
+        {/* 6: The story */}
         <Section title={`The story of this ${ocean.name.includes('Ocean') ? 'ocean' : 'sea'}`}>
           <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
             {ocean.intro.map((p, i) => (
@@ -400,18 +431,18 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
             <p className="text-sm text-gray-400">
               Read more:{' '}
               <a href={`https://en.wikipedia.org/wiki/${ocean.wikiTitle}`} target="_blank" rel="noopener noreferrer" className="text-sky-300 underline">
-                Wikipedia — {ocean.name}
+                Wikipedia: {ocean.name}
               </a>{' '}
               ·{' '}
               <a href={`https://www.wikidata.org/wiki/${ocean.wikidataQid}`} target="_blank" rel="noopener noreferrer" className="text-sky-300 underline">
-                Wikidata — {ocean.wikidataQid}
+                Wikidata: {ocean.wikidataQid}
               </a>
             </p>
           </div>
         </Section>
 
-        {/* 7 — Geography */}
-        <Section title="Geography — shores & connections">
+        {/* 7: Geography */}
+        <Section title="Geography: shores & connections">
           <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
             {ocean.geography.map((p, i) => (
               <p key={i}>{p}</p>
@@ -419,7 +450,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           </div>
         </Section>
 
-        {/* 8 — The monsoon sea */}
+        {/* 8: The monsoon sea */}
         <Section title={ocean.seasonTitle}>
           <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
             {ocean.monsoon.map((p, i) => (
@@ -428,16 +459,21 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           </div>
         </Section>
 
-        {/* 9 — SEE IT LIVE */}
+        {/* 9: SEE IT LIVE */}
         <Section title="See it live">
           <OceanMap lat={ocean.lat} lng={ocean.lng} name={ocean.name} googleKey={googleKey} />
           <p className="mt-2 text-sm text-gray-400">
-            The marker is the {ocean.name.includes('Ocean') ? 'ocean' : 'sea'}&apos;s representative point from Wikidata ({pointLabel}) — the same point the live wave
-            panel measures.
+            The marker is the {ocean.name.includes('Ocean') ? 'ocean' : 'sea'}&apos;s representative point from Wikidata ({pointLabel}).
+            {sampleIsOffset
+              ? ` The live wave panel samples the nearest open-water point at ${samplePointLabel}, because the point itself is ice-covered.`
+              : ' It is the same point the live wave panel measures.'}
           </p>
         </Section>
 
-        {/* 10 — From space & shore (gallery) */}
+        {/* 10: From space & shore (gallery). S4: the section renders only
+            when the record actually has gallery items, so a hero-only
+            record (Black Sea) never shows an empty gallery heading. */}
+        {gallery.length > 0 && (
         <Section title="From space & from the shore">
           <div className="grid gap-4 sm:grid-cols-3">
             {gallery.map((m) => (
@@ -459,9 +495,10 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
             ))}
           </div>
         </Section>
+        )}
 
-        {/* 11 — Coastal city (published coastal city only; never a fake shore) */}
-        <Section title="On its shore — our city guide">
+        {/* 11: Coastal city (published coastal city only; never a fake shore) */}
+        <Section title="On its shore: our city guide">
           {coast ? (
             <div className="rounded-xl border border-white/10 bg-white/5 p-5">
               <h3 className="text-lg font-semibold text-white">{coast.name}, {coast.countryName}</h3>
@@ -483,13 +520,13 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
             </div>
           ) : (
             <p className="max-w-3xl text-sm leading-relaxed text-gray-300">
-              WorldCityHub has no published coastal city on this {oceanWord} yet — city guides join this block as they
+              WorldCityHub has no published coastal city on this {oceanWord} yet, city guides join this block as they
               publish, and nothing is linked before it is real.
             </p>
           )}
         </Section>
 
-        {/* 12 — FAQs + sources & credits + related */}
+        {/* 12: FAQs + sources & credits + related */}
         <Section title="Frequently asked questions">
           <div className="space-y-3">
             {ocean.faqs.map((f) => (
@@ -505,7 +542,7 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
           <ul className="space-y-2 text-sm text-gray-300">
             {ocean.sources.map((s) => (
               <li key={s.claim}>
-                <span className="text-gray-400">{s.claim} — </span>
+                <span className="text-gray-400">{s.claim}: </span>
                 <a href={s.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-sky-300 underline">
                   {s.sourceName}
                 </a>{' '}
@@ -532,15 +569,14 @@ export default async function OceanPage({ params }: { params: Promise<{ slug: st
 
         <Section title="More oceans">
           <p className="max-w-3xl text-sm leading-relaxed text-gray-300">
-            The {ocean.name} is the first WorldCityHub ocean guide built to the golden standard — sourced facts,
-            licensed photography, and a live marine layer. The Pacific, Atlantic, Indian, Southern and Arctic oceans
-            follow the same standard, one verified ocean at a time; they are listed on the oceans hub as content until
-            their guides are real.
+            The {ocean.name} is one of eighteen WorldCityHub ocean guides, and every guide in the family is built
+            to the same golden standard: sourced facts, licensed photography, and a live marine layer. All eighteen
+            guides are complete, and the rest of the family is linked below and on the oceans hub.
           </p>
           {/* P10: sibling detail links, server-rendered in this template
               (getSiblingOceans: complete builds only, never unfinished
               oceans). When this ocean has a published coastal city, its
-              live city guide — the page's place link — is listed here too;
+              live city guide, the page's place link, is listed here too;
               oceans without a coastal city list no place link, per the
               missing-data rule. */}
           <div className="mt-4 flex flex-wrap gap-2">

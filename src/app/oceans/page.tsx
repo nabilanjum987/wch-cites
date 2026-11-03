@@ -3,10 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getHubOceans, getOceanLive, oceanHero, seaStateLabel } from '@/lib/oceans';
 
-// Oceans hub (WP5 / marathon Q10; final28-P1) — server-rendered,
+// Oceans hub (WP5 / marathon Q10; final28-P1), server-rendered,
 // mirroring the wonders hub treatment. The list is generated from
 // data: every ocean in the hub list is a live, complete detail page
-// (all 16 verified HTTP 200 with facts, FAQs, sources and gallery
+// (all 18 verified HTTP 200 with facts, FAQs, sources and gallery
 // before linking). No ocean is listed without a link.
 export const revalidate = 1800;
 
@@ -15,7 +15,7 @@ const BASE = 'https://worldcityhub.vercel.app';
 export const metadata: Metadata = {
   title: 'Oceans of the World: Live Waves, Weather & Facts',
   description:
-    'Ocean guides with sourced facts (Wikidata & Wikipedia), licensed credited photos, and a live marine layer — waves and coastal weather today.',
+    'Ocean guides with sourced facts (Wikidata & Wikipedia), licensed credited photos, and a live marine layer: waves and coastal weather today.',
   alternates: { canonical: `${BASE}/oceans` },
 };
 
@@ -30,7 +30,7 @@ export default async function OceansIndex() {
     '@type': 'CollectionPage',
     name: 'Oceans of the World',
     description:
-      'Ocean guides with sourced facts (Wikidata & Wikipedia), licensed credited photos, and a live marine layer — waves and coastal weather today.',
+      'Ocean guides with sourced facts (Wikidata & Wikipedia), licensed credited photos, and a live marine layer: waves and coastal weather today.',
     url: `${BASE}/oceans`,
     mainEntity: {
       '@type': 'ItemList',
@@ -55,7 +55,7 @@ export default async function OceansIndex() {
         </nav>
         <h1 className="mt-3 text-4xl font-bold sm:text-5xl">Oceans of the World</h1>
         <p className="mt-3 max-w-3xl leading-relaxed text-gray-300">
-          An ocean guide with a pulse: the verified facts — size, depth, shores, the monsoon that rules it — checked
+          An ocean guide with a pulse: the verified facts, size, depth, shores, the monsoon that rules it, checked
           against Wikidata and Wikipedia, plus a live marine layer no static page can offer: today&apos;s wave height
           and swell from the Open-Meteo Marine API and the weather on its coasts right now. Every photograph is openly
           licensed and credited. Guides publish one at a time, only when every figure can be traced to its source.

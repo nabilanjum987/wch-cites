@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 
-// SEE IT LIVE map block for oceans — same contract as the wonder
+// SEE IT LIVE map block for oceans, same contract as the wonder
 // template: Google Maps Embed tabs (Map / Satellite) when
 // NEXT_PUBLIC_GOOGLE_MAPS_KEY exists, OpenStreetMap embed fallback
 // until then, and a Google Earth link at the representative point
 // either way (Google offers no Earth embed; a link is the honest
 // route). Oceans have no Street View, so no street-view tab is
-// offered — nothing is promised that cannot be delivered.
+// offered, nothing is promised that cannot be delivered.
 export default function OceanMap({
   lat,
   lng,
@@ -61,7 +61,7 @@ export default function OceanMap({
       {!googleKey && (
         <p className="mt-2 text-sm text-gray-400">
           Map shown via OpenStreetMap. The satellite tab switches on automatically when the site&apos;s Google Maps
-          key is added — no page change needed.
+          key is added, with no page change needed.
         </p>
       )}
       <a

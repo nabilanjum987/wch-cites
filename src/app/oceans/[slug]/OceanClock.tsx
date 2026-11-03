@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-// Live clock island for the golden ocean page — the server renders the
+// Live clock island for the golden ocean page: the server renders the
 // initial time into the HTML; this island only keeps it ticking.
 export default function OceanClock({ timezone, initial }: { timezone: string; initial: string }) {
   const [time, setTime] = useState(initial);
