@@ -51,11 +51,11 @@ export default async function ConflictsPanel() {
         </>
       ) : (
         <p className="sub-desc">
-          The UNHCR figures feed is unreachable right now — the conflicts hub carries the full picture.
+          The UNHCR figures feed is unreachable right now. The conflicts hub carries the full picture.
         </p>
       )}
       <Link href="/conflicts" className="inline-flex items-center gap-2 t-link text-sm font-medium no-underline">
-        The conflicts hub — verified figures, peace efforts, how to help →
+        The conflicts hub: verified figures, peace efforts, how to help →
       </Link>
     </div>
   );

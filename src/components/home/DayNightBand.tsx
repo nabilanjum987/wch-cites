@@ -82,7 +82,7 @@ export default function DayNightBand() {
       <div className="max-w-6xl mx-auto">
         <div className="rounded-3xl border t-border t-card px-4 py-4 sm:px-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="text-sm font-bold uppercase tracking-[0.18em] t-amber">Day &amp; Night — Live</h2>
+            <h2 className="text-sm font-bold uppercase tracking-[0.18em] t-amber">Day &amp; Night: Live</h2>
             <p className="text-xs t-text-50 tabular-nums">{utcLabel} · the shaded half of the planet is in night right now</p>
           </div>
           <svg viewBox="0 30 720 300" className="mt-2 block h-52 w-full sm:h-64" role="img"
@@ -121,7 +121,7 @@ export default function DayNightBand() {
           <p className="mt-1 text-[11px] leading-relaxed t-text-35">
             Diagram computed live from the UTC clock: the sun&apos;s position uses the subsolar longitude and today&apos;s solar
             declination; gold dots are in daylight, blue dots in night. The six cities match the world clocks above. Simplified
-            coastline — a diagram, not a survey map.
+            coastline. It is a diagram, not a survey map.
           </p>
         </div>
       </div>

@@ -165,8 +165,8 @@ export default function HeroClocks() {
             </button>
             <p className="sub-desc mt-2">
               {unavailable
-                ? 'Location is unavailable right now — the world clocks below are all yours.'
-                : 'See your own city as the big clock. Location stays on your device — never saved.'}
+                ? 'Location is unavailable right now. The world clocks below are all yours.'
+                : 'See your own city as the big clock. Location stays on your device and is never saved.'}
             </p>
           </div>
         )}
@@ -179,7 +179,7 @@ export default function HeroClocks() {
         ))}
       </div>
       <p className="sub-desc mt-6 text-center max-w-xl mx-auto">
-        Six cities. Six time zones. One planet turning — somewhere on earth it is already tomorrow.
+        Six cities. Six time zones. One planet turning, and somewhere on earth it is already tomorrow.
       </p>
     </div>
   );

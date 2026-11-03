@@ -41,7 +41,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
     <>
       {/* ── HERO — WORLD TIME RIGHT NOW (§3) ── */}
       <AuroraBackground>
-        <section className="relative flex items-center justify-center px-4 py-24 overflow-hidden">
+        <section className="home-hero relative flex items-center justify-center px-4 py-24 overflow-hidden">
           <motion.div className="absolute top-20 right-1/4 w-72 h-72 bg-indigo-500/20 rounded-full filter blur-3xl"
             animate={{ y: [0, -50, 0] }} transition={{ duration: 8, repeat: Infinity }} />
           <motion.div className="absolute bottom-20 left-1/4 w-72 h-72 bg-cyan-500/20 rounded-full filter blur-3xl"
@@ -56,7 +56,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
                 className="text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed"
                 style={{ color: COLORS.textSecondary }}>
-                Live weather, prayer times, gold rates, local news and cultural heritage for cities across 195 countries — in one place, updated every day.
+                Live weather, prayer times, gold rates, local news and cultural heritage for cities across 195 countries, in one place, updated every day.
               </motion.p>
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}
                 className="max-w-2xl mx-auto mb-10">
@@ -112,39 +112,39 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
 
       {/* ── §5 TODAY'S WORLD — server slot (Q5) ── */}
       <Section bg="dark" title="Today's World"
-        desc="One planet, one day. Right now the sun is about to rise somewhere, one city is baking and another is freezing — and somewhere a whole country has the day off. These lines are computed live from weather stations across a sixteen-city world sample, and they change every day.">
+        desc="One planet, one day. Right now the sun is about to rise somewhere, one city is baking and another is freezing, and somewhere a whole country has the day off. These lines are computed live from weather stations across a sixteen-city world sample, and they change every day.">
         {todaysWorldSlot}
         {factCardsSlot}
       </Section>
 
       {/* ── §6 WONDERS (Q5 — deep links HOLD per L1) ── */}
       <Section bg="darker" title="Seven Wonders of the World"
-        desc="Forty-five centuries of human ambition compressed into seven structures. A wall that took 1,000 years to build. A tomb that took 22 years and 20,000 workers. A colosseum that held 80,000 spectators in 80 AD. Each wonder on WorldCityHub is getting its own page with visiting conditions, photography guides and architectural detail.">
+        desc="Seven structures built across forty-five centuries. A wall that took 1,000 years to build. A tomb that took 22 years and 20,000 workers. A colosseum that held 80,000 spectators in 80 AD. Each wonder on WorldCityHub is getting its own page with visiting conditions, photography guides and architectural detail.">
         <FeaturedWonders />
       </Section>
 
       {/* ── §7 CONTINENTS (Q5) ── */}
       <Section bg="dark" title="Explore by Continent"
-        desc="Seven continents. 195 countries. Thousands of cities. Asia alone holds more than half the world's population. Every continent leads to its countries, every country to its provinces, every province to its cities — a complete geographical tree from the largest landmass to the smallest city street.">
+        desc="Seven continents. 195 countries. Thousands of cities. Asia alone holds more than half the world's population. Every continent leads to its countries, every country to its provinces, and every province to its cities. Together they form a complete geographical tree, from the largest landmass to the smallest city street.">
         <ExploreByContinent />
       </Section>
 
       {/* ── §8 OCEANS (Q5 — deep links HOLD per L1) ── */}
-      <Section bg="darker" title="Five Oceans — One World Ocean"
+      <Section bg="darker" title="Five Oceans: One World Ocean"
         desc="The Pacific alone covers more area than every landmass on earth combined. The Indian Ocean's monsoon season determines whether hundreds of millions of South Asians have enough water to grow food. The Arctic is melting at a rate that will redraw coastlines within this century. Each ocean is getting its own page with live surface conditions, marine life, seasonal patterns, and the cities that live by what happens offshore.">
         <OceansToday />
       </Section>
 
       {/* ── §9 COUNTRIES (Q5) ── */}
       <Section bg="dark" title="Countries of the World"
-        desc="Each sovereign nation gets a dedicated page covering its provinces, major cities, economy dashboard, cultural heritage, national teams, neighbouring countries, and faith landscape. The country page is where you understand a nation before you visit, invest, relocate, or simply want to know more than the headline.">
+        desc="Each sovereign nation gets a dedicated page covering its provinces, major cities, economy dashboard, cultural heritage, national teams, neighbouring countries, and faith landscape. The country page brings all of this together in one place, so you can understand a nation before you visit, invest or relocate.">
         <FeaturedCountries />
       </Section>
 
       {/* ── §9A WORLD CAPITALS (Q5 — Sayyed's amendment) ── */}
       <div id="capitals">
       <Section bg="darker" title="World Capitals"
-        desc="Capitals are where a country keeps its government, its oldest streets and usually its biggest airport — and 'capital of…' is one of the most-asked questions on the web. Here the capitals are alive: each one shows its flag, its local time right now and its current temperature, and links through to its country page.">
+        desc="Capitals are where a country keeps its government, its oldest streets and usually its biggest airport. 'Capital of…' is also one of the most-asked questions on the web. Here each capital shows its flag, its local time right now and its current temperature, and links through to its country page.">
         <WorldCapitals />
       </Section>
       </div>
@@ -152,8 +152,8 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       {/* ── §10 CITIES (Q5 — published cities only; anchor added by
           Polish Card 5 so the navbar's Cities link lands here) ── */}
       <div id="cities">
-      <Section bg="dark" title="Cities of the World — Live"
-        desc="Every published city on WorldCityHub carries live weather, prayer times, gold and currency rates, local news and events — the same figures you see on these cards, updated through the day. Click any city to go deep.">
+      <Section bg="dark" title="Cities of the World: Live"
+        desc="Every published city on WorldCityHub carries live weather, prayer times, gold and currency rates, local news and events. These are the same figures you see on these cards, updated through the day. Click any city to open its full page.">
         <FeaturedCitiesGrid />
       </Section>
       </div>
@@ -181,7 +181,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
           longer claims today's seven-calendar dates. */}
       <div id="faiths">
       <Section bg="darker" title="The World by Faith"
-        desc="Religion shapes how 8 billion people measure time, name their days, build their cities, and mark the passages of life. WorldCityHub covers all seven major traditions — prayer schedules for Muslims, mass times for Christians, puja timings for Hindus, Shabbat for Jews, meditation sessions for Buddhists, Nitnem for Sikhs. Below: the seven traditions, and today's prayer times for every published city.">
+        desc="Religion shapes how 8 billion people measure time, name their days, build their cities, and mark the passages of life. WorldCityHub covers all seven major traditions: prayer schedules for Muslims, mass times for Christians, puja timings for Hindus, Shabbat for Jews, meditation sessions for Buddhists, Nitnem for Sikhs. Below: the seven traditions, and today's prayer times for every published city.">
         <ExploreByReligion />
       </Section>
       </div>
@@ -189,7 +189,7 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       {/* ── §12 FINANCE — anchor per link map; figures INSIDE the panel ── */}
       <div id="finance">
       <Section bg="dark" title="Live Market Rates"
-        desc="Gold at London fix. Bitcoin's 24-hour move. Brent crude after OPEC's last decision. Eight major currency pairs against the dollar. The Fear and Greed Index telling you what the market is feeling right now — not what it felt yesterday. Every figure links through to the full rates page where you can convert to local currency, calculate Zakat, and track 30-day price history.">
+        desc="Gold at London fix. Bitcoin's 24-hour move. Brent crude after OPEC's last decision. Eight major currency pairs against the dollar. The Fear and Greed Index, which shows what the market is feeling right now. Every figure links through to the full rates page where you can convert to local currency, calculate Zakat, and track 30-day price history.">
         <GlobalMarketSnapshot />
         {financeSlot}
         <TrendCharts />
@@ -199,28 +199,28 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       {/* ── §13 EVENTS — server slot ── */}
       <div id="events">
       <Section bg="darker" title="Events and Holidays"
-        desc="What is on, and who has the day off. Public holidays are the skeleton of a city's week — they decide its traffic, its markets and its mood before a single event is announced. These are the real holidays falling today and over the next seven days, plus the events pages of every published city.">
+        desc="What is on, and who has the day off. Public holidays are the skeleton of a city's week. They decide its traffic, its markets and its mood before a single event is announced. These are the real holidays falling today and over the next seven days, from the world holiday feed.">
         {eventsSlot}
       </Section>
       </div>
 
       {/* ── §14 NEWS — category tabs, server slot ── */}
       <div id="news">
-      <Section bg="dark" title="Live Updates — News by Category"
-        desc="Events that matter, sorted the way you actually follow them — your country, your money, your health, your team. Pick a category; the headlines are the latest the wire services have published, and every one opens on the full news page with its source.">
+      <Section bg="dark" title="Live Updates: News by Category"
+        desc="Events that matter, sorted the way you actually follow them: your country, your money, your health, your team. Pick a category; the headlines are the latest the wire services have published, and every one opens on the full news page with its source.">
         {newsSlot}
       </Section>
       </div>
 
       {/* ── §15 HOROSCOPE ── */}
       <Section bg="darker" title="Stars, Signs and Sacred Calendars"
-        desc="Seven traditions. One sky. Whether you follow Western astrology, the Chinese zodiac, Vedic Jyotish, the Islamic Hijri calendar, the Hebrew Mazalot, Buddhist Era dating or the Sikh Nanakshahi calendar — today's date, your sign, and this year's cosmic character are all here. The universe does not speak one language.">
+        desc="Seven traditions. One sky. Whether you follow Western astrology, the Chinese zodiac, Vedic Jyotish, the Islamic Hijri calendar, the Hebrew Mazalot, Buddhist Era dating or the Sikh Nanakshahi calendar, today's date, your sign, and this year's character are all here.">
         <HoroscopeSection />
       </Section>
 
       {/* ── §16 PERSONALITIES — published profiles only ── */}
       <Section bg="dark" title="Personalities"
-        desc="Cities are remembered by their people. These are the full published profiles on WorldCityHub today — the lives, the work and the arguments, written to be read, not skimmed. More profiles join as each one is verified and completed.">
+        desc="Cities are remembered by their people. These are the full published profiles on WorldCityHub today: the lives, the work and the arguments, written in full. More profiles join as each one is verified and completed.">
         <PersonalitiesPanel />
       </Section>
 
@@ -237,36 +237,40 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
       </Section>
 
       {/* ── §19 ECONOMY — server slot ── */}
-      <Section bg="darker" title="Economy — Pakistan"
-        desc="Five numbers describe an economy before any headline does: how big it is, how fast it is growing, what inflation is doing to its kitchens, how many of its people are out of work, and how many people it feeds. These are Pakistan's, straight from the World Bank, each with its data year.">
+      <Section bg="darker" title="Economy: World"
+        desc="Five numbers describe an economy before any headline does: how big it is, how fast it is growing, what inflation is doing to its kitchens, how many of its people are out of work, and how many people it feeds. These are the world's, straight from the World Bank, each with its data year.">
         {economySlot}
       </Section>
 
       {/* ── §20 SPORTS — server slot ── */}
       <div id="sports">
       <Section bg="dark" title="Sports"
-        desc="Pakistan plays, and the whole country stops. Cricket first, hockey and football behind it — these are the national teams' next scheduled fixtures from the live sports feed, and the door into sport city by city.">
+        desc="The world's game, live. Football, cricket, basketball and tennis, wherever they are being played. These are the major fixtures from today's world sport, from the live sports feed, and every card opens the sports news page.">
         {sportsSlot}
       </Section>
       </div>
 
-      {/* ── §21 CONFLICTS — server slot; hub link only ── */}
-      <Section bg="darker" title="Conflicts and Displacement"
-        desc="Behind every conflict headline is a count of people who cannot go home. These are the United Nations' own displacement figures — refugees, the internally displaced, asylum seekers and the stateless — kept current on the conflicts hub with whitelisted sources and a standing peace-efforts record.">
-        {conflictsSlot}
-      </Section>
-
-      {/* ── §22 COMPARE ── */}
+      {/* ── §21 COMPARE — moved UP by the Stage 2 order ruling
+          (2026-11-03): Compare sits above Conflicts, which closes
+          the content sections. The #compare anchor moves with it;
+          nav and deep links still resolve. ── */}
       <div id="compare">
-      <Section bg="dark" title="Compare Cities"
-        desc="Two cities, one screen, no arguments left unsettled. Live weather, air quality and prayer times side by side, with a verdict drawn only from measured figures. Start with the classic — Lahore against Karachi — or pick your own pairing from the published cities.">
+      <Section bg="darker" title="Compare Cities"
+        desc="Two cities, one screen, no arguments left unsettled. Live weather, air quality and prayer times side by side, with a verdict drawn only from measured figures. Start with the classic pairing, Lahore against Karachi, or pick your own pairing from the published cities.">
         <CompareSection />
       </Section>
       </div>
 
+      {/* ── §22 CONFLICTS — server slot; hub link only. LAST content
+          section (Stage 2 order ruling, 2026-11-03). ── */}
+      <Section bg="dark" title="Conflicts and Displacement"
+        desc="Behind every conflict headline is a count of people who cannot go home. These are the United Nations' own displacement figures: refugees, the internally displaced, asylum seekers and the stateless. They are kept current on the conflicts hub with whitelisted sources and a standing peace-efforts record.">
+        {conflictsSlot}
+      </Section>
+
       {/* ── §23 MY LOCATION ── */}
       <Section bg="darker" title="Your City, Your Page"
-        desc="Everything on this homepage becomes personal on the My Location page: your nearest published city, its weather, its prayers, its rates — computed on your device, never saved anywhere. One tap is the last invitation.">
+        desc="One tap and this page knows your city: your nearest published city, with its weather, its prayers and its rates, worked out on your device and never saved anywhere.">
         <Link href="/my-location"
           className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 px-6 py-3 text-sm font-semibold t-onbrand transition-colors no-underline">
           Open My Location →

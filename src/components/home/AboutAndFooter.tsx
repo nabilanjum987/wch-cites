@@ -51,14 +51,19 @@ export default function AboutAndFooter() {
               </div>
               <p className="t-g400 text-base leading-relaxed mb-4">
                 WorldCityHub was built on one simple idea: every city on earth deserves its own
-                page with real, useful, daily-updated information. Not just a Wikipedia summary,
-                but live weather, prayer and faith times, gold rates, local news, heritage
-                products, famous people, and cultural events all in one place.
+                page with real, useful, daily-updated information. Each page carries live weather,
+                prayer and faith times, gold rates, local news, heritage products, famous people,
+                and cultural events, all in one place.
               </p>
               <p className="t-g400 text-base leading-relaxed">
                 We are building live city pages across 195 countries, with data updated throughout the day.
                 Whether you are a traveller, a member of a diaspora community, a student, or
                 just someone curious about the world, WorldCityHub is built for you.
+              </p>
+              <p className="t-g400 text-base leading-relaxed mt-4">
+                Behind every page is a person who checks it by hand, because a city is someone's
+                home, not just a pin on a map. We would rather show less and have it right than
+                show more and have it wrong.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -108,7 +113,7 @@ export default function AboutAndFooter() {
             <div className="flex items-center gap-2">
               <Globe className="w-5 h-5 text-indigo-400" />
               <span className="t-text font-bold">WorldCityHub</span>
-              <span className="t-g600 text-sm">— Every City. Every Culture. Every Day.</span>
+              <span className="t-g600 text-sm">Every City. Every Culture. Every Day.</span>
             </div>
             <p className="t-g600 text-sm">
               © {new Date().getFullYear()} WorldCityHub. All rights reserved.

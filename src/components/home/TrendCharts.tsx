@@ -102,7 +102,7 @@ function ChartCard({ title, series, format, source }: {
       )}
       {series === 'failed' && (
         <div className="mt-3 flex h-20 items-center text-sm t-text-50">
-          Live series unavailable right now — <Link href="/rates" className="ml-1 t-amber hover:underline">see the Rates page</Link>
+          Live series unavailable right now. <Link href="/rates" className="ml-1 t-amber hover:underline">See the Rates page</Link>
         </div>
       )}
       {typeof series === 'object' && (
@@ -150,14 +150,14 @@ export default function TrendCharts() {
   return (
     <div className="mt-6">
       <h3 className="text-lg font-bold t-text">30-Day Trends</h3>
-      <p className="sub-desc mt-1">Live series drawn from the same feeds as the Rates page — fetched when you open this page, never cached or invented.</p>
+      <p className="sub-desc mt-1">Live series drawn from the same feeds as the Rates page. Fetched when you open this page, never cached or invented.</p>
       <div className="mt-4 grid gap-4 md:grid-cols-3">
-        <ChartCard title="Gold — per troy ounce (USD)" series={gold} format={usd0}
-          source="Source: CoinGecko PAX Gold market chart — the feed behind the Rates page gold history." />
+        <ChartCard title="Gold: per troy ounce (USD)" series={gold} format={usd0}
+          source="Source: CoinGecko PAX Gold market chart, the feed behind the Rates page gold history." />
         <ChartCard title="Bitcoin (USD)" series={btc} format={usd0}
           source="Source: CoinGecko Bitcoin market chart, daily closes." />
         <ChartCard title="US Dollar → Pakistani Rupee" series={pkr} format={(n) => `Rs ${n.toFixed(2)}`}
-          source="Source: dated daily snapshots of the published currency dataset (@fawazahmed0/currency-api) — the feed behind the Rates page currency history." />
+          source="Source: dated daily snapshots of the published currency dataset (@fawazahmed0/currency-api), the feed behind the Rates page currency history." />
       </div>
     </div>
   );

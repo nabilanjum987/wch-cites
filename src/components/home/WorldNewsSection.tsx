@@ -41,7 +41,7 @@ export default async function WorldNewsSection() {
       {items.length === 0 ? (
         <div className="rounded-xl border t-border t-card p-6 text-center mb-6">
           <p className="sub-desc">
-            Live headlines are unavailable right now — we never fill this space with placeholder
+            Live headlines are unavailable right now. We never fill this space with placeholder
             stories. City news pages carry the latest local coverage.
           </p>
         </div>

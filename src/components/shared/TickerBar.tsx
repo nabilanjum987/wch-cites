@@ -2,22 +2,32 @@
 
 import { useEffect, useState } from 'react';
 import type { MarketItem } from '@/lib/tickers';
+import { useVisitorCity } from '@/components/home/useVisitorCity';
 
 // Ticker 1 — the market ticker (WP2 Slice 1). All figures are fetched
 // SERVER-side (see src/lib/tickers.ts) and arrive as props, so the real
 // values are present in the server HTML. This component only animates:
 // the marquee scroll, the world-population tick, and the prayer
 // countdown. It never invents or fetches a figure itself.
-export default function TickerBar({ items }: { items: MarketItem[] }) {
+// Stage 2 gate (owner rule, 2026-11-03): when `gatePrayer` is set by
+// the slot, the prayer entry is a default city's (Lahore's) and stays
+// hidden until the visitor has used My Location on this device; the
+// shared visitor-city state (localStorage, opt-in only) is the key.
+export default function TickerBar({ items, gatePrayer = false }: { items: MarketItem[]; gatePrayer?: boolean }) {
   const [paused, setPaused] = useState(false);
   const [now, setNow] = useState(() => Date.now());
+  const { visitor } = useVisitorCity();
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  if (!items.length) return null;
+  const visible = gatePrayer && !visitor
+    ? items.filter((i) => i.live?.type !== 'prayer')
+    : items;
+
+  if (!visible.length) return null;
 
   const fmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
 
@@ -59,8 +69,8 @@ export default function TickerBar({ items }: { items: MarketItem[] }) {
         className="ticker-track flex w-max items-center gap-8 whitespace-nowrap px-4 py-1.5 text-[13px]"
         style={{ animationPlayState: paused ? 'paused' : 'running' }}
       >
-        {items.map((item, i) => renderItem(item, i))}
-        {items.map((item, i) => renderItem(item, items.length + i, true))}
+        {visible.map((item, i) => renderItem(item, i))}
+        {visible.map((item, i) => renderItem(item, visible.length + i, true))}
       </div>
     </div>
   );

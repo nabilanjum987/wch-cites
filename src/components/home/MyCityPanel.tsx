@@ -4,7 +4,9 @@
 // Panel = trailer, city page = film: glanceable figures only, no ads,
 // every figure clicks through to its city subpage. Initial data is
 // fetched SERVER-side for the default city (Lahore) and arrives as
-// props, so the figures are in the server HTML. If the visitor opted
+// props. Stage 2 (2026-11-03): the figures render only after the
+// visitor opts in via My Location (see the gate below); before that
+// the panel is an invitation. If the visitor opted
 // in to location earlier (hero), the panel quietly switches to his
 // nearest PUBLISHED city and refetches that city's figures client-side
 // from the same keyless APIs; a small note says the city was chosen
@@ -142,7 +144,17 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
   const [substituted, setSubstituted] = useState(false);
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [factIdx, setFactIdx] = useState(0);
-  const { visitor } = useVisitorCity();
+  const { visitor, locating, unavailable, request } = useVisitorCity();
+  // Stage 2 gate (owner rule, 2026-11-03): NO city data before the
+  // visitor clicks My Location. The panel therefore opens in an
+  // invitation state and reveals the city figures only once the
+  // opt-in exists on this device (the shared visitor-city state).
+  // The server HTML carries the invitation, never a default city's
+  // figures. Everything below the gate is the panel as it was.
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    if (visitor) setRevealed(true);
+  }, [visitor]);
 
   useEffect(() => {
     const t = setInterval(() => setNowMs(Date.now()), 1000);
@@ -205,6 +217,34 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
   // When the panel switches cities, the flag follows the new city.
   const flagCode = (data.countryCode || '').toLowerCase();
   const flagBgSrc = flagCode ? (FLAG_BG_LARGE[flagCode] ?? `/images/flags/${flagCode}.png`) : null;
+
+  if (!revealed) {
+    return (
+      <section className="py-14 px-4 lg:py-6 t-bg-2" aria-label="My City">
+        <div className="max-w-6xl mx-auto">
+          <div className="relative rounded-3xl overflow-hidden border t-border t-card p-6 md:p-8 lg:p-5">
+            <div className="text-[11px] font-bold uppercase tracking-[0.2em] t-emerald mb-1">My City</div>
+            <h2 className="text-3xl md:text-4xl lg:text-2xl font-bold t-text">Your city, on this page</h2>
+            <p className="sub-desc mt-2 max-w-xl">
+              Tap My Location and this panel fills with your nearest published city: its weather,
+              its next prayer, its gold rate and its headlines. Your location stays on your
+              device and is never saved anywhere.
+            </p>
+            <button onClick={request} disabled={locating}
+              className="inline-flex items-center gap-2 rounded-full bg-emerald-500/90 hover:bg-emerald-400 px-6 py-3 text-sm font-semibold t-onbrand transition-colors mt-5 disabled:opacity-60">
+              <MapPin className="w-4 h-4" /> {locating ? 'Finding your city…' : 'Use My Location'}
+            </button>
+            {unavailable && (
+              <p className="sub-desc mt-3">
+                Location was not available on this device. You can still open any city from
+                the search at the top of the page.
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-14 px-4 lg:py-6 t-bg-2" aria-label="My City">

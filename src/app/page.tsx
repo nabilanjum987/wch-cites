@@ -16,14 +16,14 @@ import ConflictsPanel from '@/components/home/ConflictsPanel';
 // data) world news section is passed in as a slot.
 
 export const metadata: Metadata = {
-  title: 'WorldCityHub — Every City, Live: Weather, Prayer & Rates',
+  title: 'WorldCityHub · Every City, Live: Weather, Prayer & Rates',
   description:
-    'Every city, live: real weather, prayer times, gold and currency rates, news and events for cities worldwide — starting with Pakistan, free forever.',
+    'Every city, live: real weather, prayer times, gold and currency rates, news and events for cities worldwide, starting with Pakistan, free forever.',
   alternates: { canonical: 'https://worldcityhub.vercel.app/' },
   openGraph: {
-    title: 'WorldCityHub — Every City, Live: Weather, Prayer & Rates',
+    title: 'WorldCityHub · Every City, Live: Weather, Prayer & Rates',
     description:
-      'Real weather, prayer times, rates, news and events for cities worldwide — free forever.',
+      'Real weather, prayer times, rates, news and events for cities worldwide, free forever.',
     url: 'https://worldcityhub.vercel.app/',
     siteName: 'WorldCityHub',
     type: 'website',
@@ -47,7 +47,7 @@ const HOME_JSON_LD = {
       name: 'WorldCityHub',
       url: 'https://worldcityhub.vercel.app',
       description:
-        'Every city, live: real weather, prayer times, gold and currency rates, news and events for cities worldwide — starting with Pakistan, free forever.',
+        'Every city, live: real weather, prayer times, gold and currency rates, news and events for cities worldwide, starting with Pakistan, free forever.',
     },
     {
       '@type': 'WebSite',

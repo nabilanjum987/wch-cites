@@ -129,7 +129,7 @@ export default function HoroscopeSection() {
         <Link href="/horoscope"
           className="inline-block px-6 py-2.5 rounded-full border text-sm font-medium t-text-70 t-hover-text transition-all no-underline"
           style={{ borderColor: 'var(--border-15)', backgroundColor: 'var(--card)' }}>
-          Full Horoscope — All Traditions →
+          Full Horoscope: All Traditions →
         </Link>
       </div>
     </div>

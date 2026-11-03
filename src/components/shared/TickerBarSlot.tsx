@@ -1,6 +1,6 @@
 import { headers } from 'next/headers'
 import TickerBar from '@/components/shared/TickerBar'
-import { getMarketTickerItems } from '@/lib/tickers'
+import { getMarketTickerItems, PUBLISHED_CITIES } from '@/lib/tickers'
 
 // P8 rework (billi FAIL fix) — the ticker fetch lives HERE, in a
 // Suspense-wrapped child of the root layout, NOT in the root layout
@@ -22,5 +22,11 @@ export default async function TickerBarSlot() {
   const segs = pathname.split('/').filter(Boolean)
   const pageCity = segs.length >= 3 ? segs[2] : undefined
   const tickerItems = await getMarketTickerItems(pageCity).catch(() => [])
-  return <TickerBar items={tickerItems} />
+  // Stage 2 (owner rule, 2026-11-03): on non-city pages the prayer
+  // entry is the Lahore FALLBACK, and a default city's prayer is
+  // city-specific data — it may only appear after the visitor uses
+  // My Location. On a published city's own page the prayer entry is
+  // that page's content and always shows. TickerBar applies the gate.
+  const onCityPage = !!pageCity && PUBLISHED_CITIES.some((c) => c.slug === pageCity)
+  return <TickerBar items={tickerItems} gatePrayer={!onCityPage} />
 }

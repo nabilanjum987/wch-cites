@@ -23,27 +23,29 @@ const CARD_LINES: Record<string, string> = {
   'multan-blue-pottery': 'Cobalt-blue Kashigari pottery of Multan',
 };
 
-// Polish Card 4: ONE verified real photo for the panel — Multan's own
-// potters, c. 1902 (Fred Bremner, public domain, via Wikimedia Commons;
-// licence record: docs/media-registry/subjects/multan-blue-pottery.json).
-// The registry's unrecorded Unsplash URLs are NOT used. The Lahori
-// Khussa card gets no photo: the only verified Commons khussa image
-// found is a Sindhi khussa stall (Kandhkot) — wrong city, rejected in
-// the record file rather than mislabelled.
-const PHOTOS: Record<string, { img: string; alt: string; caption: string; credit: string }> = {
-  'multan-blue-pottery': {
-    img: '/images/home/multan-pottery.webp',
-    alt: 'Potters in Multan with their decorated plates and vases outside their shop, photographed by Fred Bremner around 1902',
-    caption: 'Multan potters with their ware, c. 1902',
-    credit: 'Fred Bremner · public domain',
-  },
-};
+// Stage 3 (2026-11-03, owner review): the card standard is a real
+// photo OF THE PRODUCT ITSELF. The Multan card's earlier photo
+// (Fred Bremner, c. 1902, public domain) shows the potters, not the
+// pottery, so it is removed from this panel; the file and its licence
+// record stay in the media registry
+// (docs/media-registry/subjects/multan-blue-pottery.json). Repeated
+// Wikimedia Commons searches in this pass found NO verified
+// open-licence product photo for either homepage product: no Multan
+// blue pottery ware shot, and the only verified Commons khussa image
+// remains the Sindhi khussa stall (Kandhkot), wrong city, rejected
+// rather than mislabelled. Both cards therefore render without a
+// photo until a verified product photo is sourced; the PHOTOS
+// mechanism below is kept for that day. The registry's unrecorded
+// Unsplash URLs are NOT used.
+const PHOTOS: Record<string, { img: string; alt: string; caption: string; credit: string }> = {};
 
+// Vendored flag files beside the origin line (emoji flags render as
+// bare country-code letters on Windows). Countries without a vendored
+// flag render no flag at all.
 const COUNTRY_FLAGS: Record<string, string> = {
-  Pakistan: '🇵🇰',
-  India: '🇮🇳',
-  Italy: '🇮🇹',
-  Turkey: '🇹🇷',
+  Pakistan: '/images/flags/pk.png',
+  India: '/images/flags/in.png',
+  Turkey: '/images/flags/tr.svg',
 };
 
 export default function HeritageSpotlight() {
@@ -54,7 +56,7 @@ export default function HeritageSpotlight() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {products.map((p) => {
           const style = STYLE[p.slug] ?? DEFAULT_STYLE;
-          const flag = COUNTRY_FLAGS[p.origin.country] ?? '🌍';
+          const flagImg = COUNTRY_FLAGS[p.origin.country];
           return (
             <div key={p.slug}>
               <div
@@ -83,8 +85,11 @@ export default function HeritageSpotlight() {
                 </div>
                 <div>
                   <div className="t-text font-bold">{p.name}</div>
-                  <div className="flex items-center gap-1 sub-desc mt-0.5">
-                    <span>{flag}</span>
+                  <div className="flex items-center gap-1.5 sub-desc mt-0.5">
+                    {flagImg && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={flagImg} alt={`Flag of ${p.origin.country}`} width={24} height={16} loading="lazy" decoding="async" className="rounded-sm shadow shrink-0" />
+                    )}
                     <span>{p.origin.city}, {p.origin.country}</span>
                   </div>
                 </div>
@@ -95,7 +100,7 @@ export default function HeritageSpotlight() {
         })}
       </div>
       <p className="sub-desc mt-4">
-        Full product stories — the makers, the method, where to buy fairly — open as each product page passes review →
+        Full product stories, the makers, the method, where to buy fairly, open as each product page passes review →
       </p>
     </div>
   );

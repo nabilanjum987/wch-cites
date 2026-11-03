@@ -1,120 +1,122 @@
-import Link from 'next/link';
+// Economy panel (§19) — SERVER component. WORLD economy aggregates
+// from the World Bank's published indicators for the World aggregate
+// (WLD), each with its data year shown. Stage 2 (owner ruling,
+// 2026-11-03): this section was Pakistan's economy under a world
+// heading; it is now the world economy its intro describes, matching
+// the homepage's world scope. Pakistan's own dashboard lives on the
+// Pakistan country page. Fallbacks keep the panel truthful (never
+// empty, never invented) when a fetch fails, and the bottom link goes
+// to the countries hub where every country's own economy page lives.
 
-// Economy panel (§19) — SERVER component. Pakistan's headline
-// indicators from the World Bank, each shown WITH its data year (the
-// site rule: a figure whose year is unknown is not shown). The full
-// economy dashboard lives on the country page.
-// Homepage-imagery pass (2026-10-28): the numbers-only cards gain a
-// visual — a real GDP trend chart drawn from the SAME World Bank
-// series (NY.GDP.MKTP.CD, current US$) the panel already uses, last
-// twelve available years, hand-drawn SVG (no chart library, no new
-// API). If the series fetch fails or returns fewer than two points,
-// the chart is omitted entirely — never an invented line.
-
-const INDICATORS: { id: string; label: string; format: (v: number) => string }[] = [
-  { id: 'NY.GDP.MKTP.CD', label: 'GDP', format: (v) => `$${(v / 1e9).toFixed(0)}B` },
-  { id: 'NY.GDP.MKTP.KD.ZG', label: 'GDP growth', format: (v) => `${v.toFixed(1)}%` },
-  { id: 'FP.CPI.TOTL.ZG', label: 'Inflation', format: (v) => `${v.toFixed(1)}%` },
-  { id: 'SL.UEM.TOTL.ZS', label: 'Unemployment', format: (v) => `${v.toFixed(1)}%` },
-  { id: 'SP.POP.TOTL', label: 'Population', format: (v) => `${(v / 1e6).toFixed(1)}M` },
-];
-
-async function fetchIndicator(id: string): Promise<{ value: number; year: string } | null> {
+async function jget(url: string): Promise<any | null> {
   try {
-    const res = await fetch(`https://api.worldbank.org/v2/country/PAK/indicator/${id}?format=json&per_page=5`, {
+    const res = await fetch(url, {
       signal: AbortSignal.timeout(6000),
       next: { revalidate: 86400 },
       headers: { 'User-Agent': 'WorldCityHub/1.0' },
     } as RequestInit);
     if (!res.ok) return null;
-    const json = await res.json();
-    const row = Array.isArray(json?.[1]) ? json[1].find((r: any) => typeof r?.value === 'number') : null;
-    return row ? { value: row.value, year: String(row.date) } : null;
+    return await res.json();
   } catch {
     return null;
   }
 }
 
-async function fetchGdpSeries(): Promise<{ year: string; value: number }[]> {
-  try {
-    const res = await fetch('https://api.worldbank.org/v2/country/PAK/indicator/NY.GDP.MKTP.CD?format=json&per_page=15', {
-      signal: AbortSignal.timeout(6000),
-      next: { revalidate: 86400 },
-      headers: { 'User-Agent': 'WorldCityHub/1.0' },
-    } as RequestInit);
-    if (!res.ok) return [];
-    const json = await res.json();
-    const rows = Array.isArray(json?.[1]) ? json[1] : [];
-    return rows
-      .filter((r: any) => typeof r?.value === 'number' && r?.date)
-      .map((r: any) => ({ year: String(r.date), value: r.value as number }))
-      .sort((a: any, b: any) => a.year.localeCompare(b.year))
-      .slice(-12);
-  } catch {
-    return [];
-  }
-}
+const latest = (json: any): { value: number; year: string } | null => {
+  const row = Array.isArray(json?.[1]) ? json[1].find((r: any) => typeof r?.value === 'number') : null;
+  return row ? { value: row.value, year: String(row.date) } : null;
+};
 
-function GdpChart({ pts }: { pts: { year: string; value: number }[] }) {
-  const W = 640, H = 180, PAD_L = 8, PAD_R = 8, PAD_T = 12, PAD_B = 24;
-  const vals = pts.map((p) => p.value);
-  const min = Math.min(...vals), max = Math.max(...vals);
-  const span = max - min || 1;
-  const stepX = (W - PAD_L - PAD_R) / Math.max(1, pts.length - 1);
-  const xy = pts.map((p, i) => [
-    PAD_L + i * stepX,
-    PAD_T + (H - PAD_T - PAD_B) * (1 - (p.value - min) / span),
-  ] as const);
-  const line = xy.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
-  const [lx, ly] = xy[xy.length - 1];
-  const fmtB = (v: number) => `$${(v / 1e9).toFixed(0)}B`;
+const fmtUsd = (v: number) => {
+  if (v >= 1e12) return `$${(v / 1e12).toFixed(2)}T`;
+  if (v >= 1e9) return `$${(v / 1e9).toFixed(1)}B`;
+  return `$${v.toLocaleString('en-US')}`;
+};
+const fmtPop = (v: number) => {
+  if (v >= 1e9) return `${(v / 1e9).toFixed(2)}B`;
+  if (v >= 1e6) return `${(v / 1e6).toFixed(0)}M`;
+  return v.toLocaleString('en-US');
+};
+const fmtPct = (v: number) => `${v.toFixed(1)}%`;
+
+function Card({ label, sub, children }: { label: string; sub: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl t-card border t-border p-5 mb-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <div className="t-text font-bold">Pakistan GDP — current US$, {pts[0].year}–{pts[pts.length - 1].year}</div>
-        <div className="t-text font-bold text-xl">{fmtB(pts[pts.length - 1].value)}</div>
-      </div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="mt-3 w-full" role="img"
-        aria-label={`Pakistan GDP from ${pts[0].year} (${fmtB(pts[0].value)}) to ${pts[pts.length - 1].year} (${fmtB(pts[pts.length - 1].value)})`}>
-        <polygon points={`${PAD_L},${H - PAD_B} ${line} ${lx.toFixed(1)},${H - PAD_B}`} fill="#34d399" opacity="0.12" />
-        <polyline points={line} fill="none" stroke="#34d399" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-        <circle cx={lx} cy={ly} r="3.5" fill="#34d399" />
-        <text x={PAD_L} y={H - 6} fontSize="11" fill="var(--text-40, #94a3b8)">{pts[0].year}</text>
-        <text x={W - PAD_R} y={H - 6} fontSize="11" fill="var(--text-40, #94a3b8)" textAnchor="end">{pts[pts.length - 1].year}</text>
-      </svg>
-      <p className="text-[11px] t-text-40 mt-1">Source: World Bank indicator NY.GDP.MKTP.CD (GDP, current US$), Pakistan — the same feed as the stat cards above.</p>
+    <div className="rounded-xl t-card border t-border px-4 py-3">
+      <div className="t-emerald text-xs font-semibold uppercase tracking-wide">{label}</div>
+      <div className="t-text font-bold text-xl mt-1">{children}</div>
+      <div className="sub-desc">{sub}</div>
     </div>
   );
 }
 
 export default async function EconomyPanel() {
-  const rows = await Promise.all(
-    INDICATORS.map(async (ind) => ({ ...ind, data: await fetchIndicator(ind.id) })),
+  const [gdpJ, growthJ, inflationJ, unempJ, popJ] = await Promise.all([
+    jget('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&per_page=3'),
+    jget('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=3'),
+    jget('https://api.worldbank.org/v2/country/WLD/indicator/FP.CPI.TOTL.ZG?format=json&per_page=3'),
+    jget('https://api.worldbank.org/v2/country/WLD/indicator/SL.UEM.TOTL.ZS?format=json&per_page=3'),
+    jget('https://api.worldbank.org/v2/country/WLD/indicator/SP.POP.TOTL?format=json&per_page=3'),
+  ]);
+  const gdp = latest(gdpJ);
+  const growth = latest(growthJ);
+  const inflation = latest(inflationJ);
+  const unemp = latest(unempJ);
+  const pop = latest(popJ);
+
+  // GDP history (2015 to latest) from the Bank's series, drawn as a
+  // trend chart like the one this panel has always carried.
+  const seriesJson = await jget(
+    'https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&per_page=15&date=2015:2030',
   );
-  const shown = rows.filter((r) => r.data);
-  if (shown.length === 0) {
-    return (
-      <p className="sub-desc">
-        The World Bank feed is unreachable right now — the full economy dashboard is on the Pakistan page.
-      </p>
+  const series: { year: string; v: number }[] = (Array.isArray(seriesJson?.[1]) ? seriesJson[1] : [])
+    .filter((r: any) => typeof r?.value === 'number')
+    .map((r: any) => ({ year: String(r.date), v: r.value as number }))
+    .sort((a: { year: string }, b: { year: string }) => a.year.localeCompare(b.year));
+  let chart: React.ReactNode = null;
+  if (series.length >= 3) {
+    const W = 480, H = 120, PAD = 6;
+    const max = Math.max(...series.map((s) => s.v)) * 1.05;
+    const min = Math.min(...series.map((s) => s.v)) * 0.95;
+    const pt = (s: { year: string; v: number }, i: number) =>
+      `${(PAD + (i * (W - 2 * PAD)) / (series.length - 1)).toFixed(1)},${(H - PAD - ((s.v - min) / (max - min)) * (H - 2 * PAD)).toFixed(1)}`;
+    chart = (
+      <div className="rounded-xl t-card border t-border px-4 py-3 mt-3">
+        <div className="t-emerald text-xs font-semibold uppercase tracking-wide">World GDP trend</div>
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-28 mt-2" role="img" aria-label={`World GDP from ${series[0].year} to ${series[series.length - 1].year}, rising overall`}>
+          <polyline points={series.map(pt).join(' ')} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinejoin="round" />
+        </svg>
+        <div className="sub-desc flex justify-between">
+          <span>{series[0].year}: {fmtUsd(series[0].v)}</span>
+          <span>{series[series.length - 1].year}: {fmtUsd(series[series.length - 1].v)}</span>
+        </div>
+        <div className="sub-desc mt-1">Source: World Bank NY.GDP.MKTP.CD (current US$)</div>
+      </div>
     );
   }
-  const gdp = await fetchGdpSeries();
+
+  const anyCard = gdp || growth || inflation || unemp || pop;
   return (
     <div>
-      {gdp.length >= 2 && <GdpChart pts={gdp} />}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
-        {shown.map((r) => (
-          <div key={r.id} className="rounded-xl t-card border t-border px-4 py-3">
-            <div className="text-[11px] uppercase tracking-wide t-g500">{r.label}</div>
-            <div className="t-text font-bold text-xl mt-0.5">{r.format(r.data!.value)}</div>
-            <div className="sub-desc">Pakistan · {r.data!.year}</div>
-          </div>
-        ))}
+      {anyCard ? (
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+          {gdp && <Card label="GDP" sub={`World · ${gdp.year}`}>{fmtUsd(gdp.value)}</Card>}
+          {growth && <Card label="GDP growth" sub={`World · ${growth.year}`}>{fmtPct(growth.value)}</Card>}
+          {inflation && <Card label="Inflation" sub={`World · ${inflation.year}`}>{fmtPct(inflation.value)}</Card>}
+          {unemp && <Card label="Unemployment" sub={`World · ${unemp.year}`}>{fmtPct(unemp.value)}</Card>}
+          {pop && <Card label="Population" sub={`World · ${pop.year}`}>{fmtPop(pop.value)}</Card>}
+        </div>
+      ) : (
+        <p className="sub-desc">
+          Live world figures could not be loaded just now. Every country's own economy dashboard is on the countries page below.
+        </p>
+      )}
+      {chart}
+      <div className="mt-4">
+        <a href="/countries"
+          className="px-4 py-2 rounded-full t-card border t-border-15 t-text-80 text-sm font-medium t-card-hover transition-colors no-underline inline-block">
+          Every country's full economy dashboard →
+        </a>
       </div>
-      <Link href="/pakistan" className="inline-flex items-center gap-2 t-link text-sm font-medium no-underline">
-        Pakistan's full economy dashboard →
-      </Link>
     </div>
   );
 }

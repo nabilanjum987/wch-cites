@@ -59,45 +59,46 @@ export default function FeaturedWonders() {
     <div className="mb-4">
       {tajTemp != null && (
         <p className="sub-desc">
-          Right now at the Taj Mahal in Agra: <span className="t-text font-semibold">{tajTemp}°C</span> — the marble changes colour with the light through the day.
+          Right now at the Taj Mahal in Agra: <span className="t-text font-semibold">{tajTemp}°C</span>. The marble changes colour with the light through the day.
         </p>
       )}
       <div className="overflow-hidden rounded-2xl">
         <div ref={trackRef} className="flex gap-4" style={{ width: 'max-content' }}>
           {doubled.map((w, i) => {
+            // Stage 3 card standard (2026-11-03): a visual zone on
+            // top (the Taj Mahal's real photo, or a plain emoji glyph
+            // on the card tint for wonders with no photo yet) and ALL
+            // data below it. Nothing sits on the photo: the mosque
+            // emoji that used to overlay the Taj Mahal photo is gone.
             const card = (
-              <div className="relative h-44 rounded-2xl overflow-hidden border"
+              <div className="rounded-2xl overflow-hidden border h-full"
                 style={{ borderColor: `${w.color}40`, background: `linear-gradient(135deg, ${w.color}20, var(--bg))` }}>
                 {'img' in w && w.img ? (
-                  <>
+                  <div className="relative h-28 overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={w.img} alt={w.imgAlt} width={640} height={421} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,15,30,0.92) 0%, rgba(10,15,30,0.35) 55%, rgba(10,15,30,0.15) 100%)' }} />
-                  </>
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-15 select-none pointer-events-none">{w.emoji}</div>
-                )}
-                <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
-                  <div className="text-3xl">{w.emoji}</div>
-                  <div>
-                    <div className="t-text font-bold text-sm leading-tight">{w.name}</div>
-                    <div className="sub-desc mt-0.5">{w.country}</div>
-                    <div className="sub-desc mt-1">{w.desc}</div>
-                    {'credit' in w && w.credit && <div className="t-force-dark text-[9px] t-text-50 mt-1">{w.credit}</div>}
                   </div>
+                ) : (
+                  <div className="h-28 flex items-center justify-center text-6xl opacity-25 select-none" aria-hidden="true">{w.emoji}</div>
+                )}
+                <div className="p-4">
+                  <div className="t-text font-bold text-sm leading-tight">{w.name}</div>
+                  <div className="sub-desc mt-0.5">{w.country}</div>
+                  <div className="sub-desc mt-1">{w.desc}</div>
+                  {'credit' in w && w.credit && <div className="text-[10px] t-text-40 mt-2">{w.credit}</div>}
                 </div>
               </div>
             );
             return (
               <div key={i} className="flex-shrink-0 w-52">
-                {'href' in w && w.href ? <Link href={w.href} className="block">{card}</Link> : card}
+                {'href' in w && w.href ? <Link href={w.href} className="block h-full">{card}</Link> : card}
               </div>
             );
           })}
         </div>
       </div>
       <p className="sub-desc mt-4">
-        The Taj Mahal&rsquo;s full page is live now — live visiting conditions, history and photography guides. The other wonders open one by one as each passes review.{' '}
+        The Taj Mahal&rsquo;s full page is live now, with live visiting conditions, history and photography guides. The other wonders open one by one as each passes review.{' '}
         <Link href="/wonders" className="t-text-70 underline underline-offset-4 t-hover-text">Explore all wonders →</Link>
       </p>
     </div>

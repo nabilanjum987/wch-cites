@@ -16,15 +16,21 @@ import NewsTabs, { type NewsCategoryData } from './NewsTabs';
 // docs/media-registry/subjects/homepage-imagery-2026-10-28.json),
 // captioned with its date so it is never mistaken for today's news.
 
+// Stage 2 (owner ruling, 2026-11-03): the fixed "Pakistan" tab is
+// GONE — a world site does not hard-code one country. In its place
+// NewsTabs adds two personal tabs client-side once the visitor has
+// opted in via My Location: "Your Country" and "Your City", fetched
+// from the same GNews feed. A "Celebrities" category joins the fixed
+// list below (a real GNews query, like every other category).
 const CATEGORIES: { slug: string; label: string; query: string }[] = [
   { slug: 'world', label: 'World', query: 'world news' },
-  { slug: 'pakistan', label: 'Pakistan', query: 'Pakistan' },
   { slug: 'finance', label: 'Finance', query: 'stock markets economy finance' },
   { slug: 'crypto', label: 'Crypto', query: 'cryptocurrency bitcoin' },
   { slug: 'health', label: 'Health', query: 'health medicine' },
   { slug: 'science', label: 'Science', query: 'science discovery' },
   { slug: 'technology', label: 'Technology', query: 'technology' },
   { slug: 'sports', label: 'Sports', query: 'sports' },
+  { slug: 'celebrities', label: 'Celebrities', query: 'celebrity entertainment news' },
 ];
 
 export default async function NewsPanel() {

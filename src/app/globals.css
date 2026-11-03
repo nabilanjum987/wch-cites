@@ -153,11 +153,32 @@
   /* --space-subdesc is theme-independent: inherited from :root. */
 }
 
+/* Stage 2 (2026-11-03): homepage hero, LIGHT mode only. The owner
+   found the light hero washed out: the animated headline's pastel
+   indigo-to-cyan gradient sits on the near-white light background
+   and loses contrast, and the two decorative colour blobs wash the
+   panel further. Scoped to the hero section (class .home-hero, set
+   in HomeClient) so no other page or section is affected; dark mode
+   keeps the original look, which the owner approved. */
+[data-theme="light"] .home-hero h1 {
+  background-image: linear-gradient(to right, #4338ca, #7e22ce, #0e7490);
+}
+[data-theme="light"] .home-hero .blur-3xl {
+  opacity: 0.4;
+}
+
 /* ─── GLOBAL BASE ─────────────────────────────────────────────────────────── */
 html, body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg);
   color: var(--text);
+  /* G2 (owner rule, 2026-11-03): words never break across lines with a
+     hyphen. Automatic hyphenation is off for all site text; words wrap
+     whole and spacing absorbs the difference. The property inherits, so
+     this one rule covers every text scope unless a component opts back
+     in (none should). */
+  hyphens: none;
+  -webkit-hyphens: none;
 }
 
 /* ─── SEMANTIC THEME CLASSES (Polish Card 5) ────────────────────────────────
@@ -365,7 +386,12 @@ input::placeholder, textarea::placeholder {
   line-height: 1.625;
   color: var(--text-40);
   text-align: justify;
-  hyphens: auto;
+  /* Was hyphens: auto, the direct cause of words splitting across
+     lines ("some-where", "deter-mines") in the homepage intro
+     paragraphs, which are .sub-desc blocks. Off per G2 (see the
+     html, body rule above); justification now works through word
+     spacing only. */
+  hyphens: none;
   margin-bottom: var(--space-subdesc);
 }
 

@@ -15,20 +15,36 @@ import Link from 'next/link';
 // docs/media-registry/subjects/homepage-imagery-2026-10-28.json).
 // 'Others' (folk traditions) is pictured by a Shinto shrine's torii
 // path, captioned as exactly that.
+// Stage 3 pass (2026-11-03, owner review): the Islam card now shows
+// the Kaaba in Mecca, Islam's most important place, reusing the
+// existing licensed asset ctry-saudi.webp (Moataz Egbaria,
+// CC BY-SA 3.0, the same credit recorded in FeaturedCountries).
+// The Hinduism card now shows Varanasi and the Ganges, Hinduism's
+// holiest city and river (new asset faith-varanasi.webp: Babasteve,
+// CC BY 2.0, via Wikimedia Commons, licence verified on the file
+// page File:Varanasiganga.jpg). Buddhism keeps Wat Arun for now: a
+// Mahabodhi Temple (Bodh Gaya) swap was researched, but the Commons
+// file pages could not be loaded for licence verification in this
+// pass, so no unverified image was shipped. The faith signs are
+// Unicode TEXT glyphs: the U+FE0E variation selector forces text
+// presentation, so no sign renders as a coloured emoji in a box.
+// Sikhism uses U+262C (Adi Shakti), a text glyph, in place of the
+// emoji-only khanda. Photo credits sit below the photo as captions,
+// never on the image.
 const FAITHS = [
-  { name: 'Islam',       emoji: '☪️',  followers: '≈1.9B followers', color: '#01411C', desc: 'Prayer times & Hajj',
-    img: '/images/home28/faith-islam.webp', imgAlt: 'The Sheikh Zayed Grand Mosque in Abu Dhabi', credit: 'Francesco Bini · CC BY-SA 4.0' },
-  { name: 'Christianity',emoji: '✝️',  followers: '≈2.4B followers', color: '#1e3a8a', desc: 'Mass & calendar',
+  { name: 'Islam',       sign: '☪︎',  followers: '≈1.9B followers', color: '#01411C', desc: 'Prayer times & Hajj',
+    img: '/images/home28/ctry-saudi.webp', imgAlt: 'The Kaaba in Mecca', credit: 'Moataz Egbaria · CC BY-SA 3.0' },
+  { name: 'Christianity',sign: '✝︎',  followers: '≈2.4B followers', color: '#1e3a8a', desc: 'Mass & calendar',
     img: '/images/home28/faith-christianity.webp', imgAlt: "St. Peter's Basilica in Vatican City", credit: 'Alvesgaspar · CC BY-SA 4.0' },
-  { name: 'Hinduism',    emoji: '🕉️',  followers: '≈1.2B followers', color: '#FF6B00', desc: 'Puja & festivals',
-    img: '/images/home28/faith-hinduism.webp', imgAlt: 'The Brihadisvara Temple during Maha Shivaratri', credit: 'Rainer Halama · CC BY-SA 4.0' },
-  { name: 'Buddhism',    emoji: '☸️',  followers: '≈535M followers', color: '#8B5CF6', desc: 'Meditation times',
+  { name: 'Hinduism',    sign: 'ॐ',  followers: '≈1.2B followers', color: '#FF6B00', desc: 'Puja & festivals',
+    img: '/images/home28/faith-varanasi.webp', imgAlt: 'The ghats of Varanasi on the Ganges', credit: 'Babasteve · CC BY 2.0' },
+  { name: 'Buddhism',    sign: '☸︎',  followers: '≈535M followers', color: '#8B5CF6', desc: 'Meditation times',
     img: '/images/home28/faith-buddhism.webp', imgAlt: 'Wat Arun temple in Bangkok', credit: 'Diego Delso · CC BY-SA 3.0' },
-  { name: 'Judaism',     emoji: '✡️',  followers: '≈15M followers',  color: '#2563EB', desc: 'Shabbat & calendar',
+  { name: 'Judaism',     sign: '✡︎',  followers: '≈15M followers',  color: '#2563EB', desc: 'Shabbat & calendar',
     img: '/images/home28/faith-judaism.webp', imgAlt: 'The Western Wall in Jerusalem', credit: 'Golasso · CC BY-SA 4.0' },
-  { name: 'Sikhism',     emoji: '🪯',  followers: '≈25M followers',  color: '#F59E0B', desc: 'Nitnem & calendar',
+  { name: 'Sikhism',     sign: '☬',  followers: '≈25M followers',  color: '#F59E0B', desc: 'Nitnem & calendar',
     img: '/images/home28/faith-sikhism.webp', imgAlt: 'The Golden Temple in Amritsar', credit: 'Shagil Kannur · CC BY-SA 4.0' },
-  { name: 'Others',      emoji: '🌀',  followers: '≈1.2B followers', color: '#6B7280', desc: 'Folk traditions',
+  { name: 'Others',      sign: '✦',  followers: '≈1.2B followers', color: '#6B7280', desc: 'Folk traditions',
     img: '/images/home28/faith-others.webp', imgAlt: 'Torii path with lanterns at Fushimi Inari shrine, Kyoto', credit: 'Basile Morin · CC BY-SA 4.0' },
 ];
 
@@ -46,14 +62,14 @@ export default function ExploreByReligion() {
           <div key={f.name}>
             <div className="rounded-2xl border overflow-hidden flex flex-col"
               style={{ background: `linear-gradient(135deg, ${f.color}20, var(--bg))`, borderColor: `${f.color}30` }}>
-              <div className="relative h-24 overflow-hidden shrink-0">
+              <div className="relative h-36 overflow-hidden shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={f.img} alt={f.imgAlt} width={600} height={200} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
-                <span className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[9px] px-1.5 py-0.5 rounded-tl-md">{f.credit}</span>
+                <img src={f.img} alt={f.imgAlt} width={600} height={320} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
               </div>
-              <div className="p-4 flex flex-col justify-between gap-2 grow">
+              <p className="px-4 pt-2 text-[10px] t-text-40">Photo: {f.credit}</p>
+              <div className="px-4 pb-4 pt-1 flex flex-col justify-between gap-2 grow">
                 <div className="flex items-center justify-between">
-                  <span className="text-3xl">{f.emoji}</span>
+                  <span className="text-3xl">{f.sign}</span>
                   <span className="text-xs t-text-40">{f.followers}</span>
                 </div>
                 <div>

@@ -70,9 +70,9 @@ export default function WorldCapitals() {
             <Link key={c.capital} href={`/${c.countrySlug}`} className="no-underline group">
               <div className="rounded-2xl border t-border t-card overflow-hidden transition-all t-group-border-hover-25 group-hover:scale-[1.02]">
                 {thumb && (
-                  <div className="relative h-16 overflow-hidden">
+                  <div className="relative h-32 overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={thumb.img} alt={thumb.alt} width={600} height={160} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+                    <img src={thumb.img} alt={thumb.alt} width={600} height={320} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
                   </div>
                 )}
                 <div className="p-4 pt-3 flex flex-col gap-2">
