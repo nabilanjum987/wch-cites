@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-// /contact — created in Q8 (link map §24). Routes everything to the
+// /contact: created in Q8 (link map §24). Routes everything to the
 // site's one improvement form; publishes no invented email, phone or
 // postal address (none exists to publish).
 
 export const metadata: Metadata = {
   title: 'Contact WorldCityHub | WorldCityHub',
   description:
-    'Report a wrong figure, suggest missing information or a new place through the WorldCityHub improvement form — every suggestion is reviewed by a human.',
+    'Report a wrong figure, suggest missing information or a new place through the WorldCityHub improvement form, every suggestion is reviewed by a human.',
   alternates: { canonical: 'https://worldcityhub.vercel.app/contact' },
   openGraph: {
     title: 'Contact WorldCityHub | WorldCityHub',
@@ -28,8 +28,8 @@ export default function ContactPage() {
         <h1 className="text-4xl md:text-5xl font-bold mb-6">Talk to WorldCityHub</h1>
         <div className="space-y-5 text-white/70 leading-relaxed">
           <p>
-            The fastest way to reach us — for a wrong figure, out-of-date information, a
-            missing place, or a broken page — is the improvement form. It covers every
+            The fastest way to reach us, for a wrong figure, out-of-date information, a
+            missing place, or a broken page, is the improvement form. It covers every
             city and country on the site:
           </p>
           <p>
@@ -42,7 +42,7 @@ export default function ContactPage() {
           </p>
           <p>
             Tell us which page you mean and what should change. Every suggestion is read
-            by a human and checked against a source before anything on the site changes —
+            by a human and checked against a source before anything on the site changes,
             nothing is published automatically.
           </p>
           <p>

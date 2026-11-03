@@ -1,5 +1,5 @@
 /**
- * SEO paragraph generators — WorldCityHub Heritage Products Page
+ * SEO paragraph generators: WorldCityHub Heritage Products Page
  *
  * TWO paragraphs per section: para_before (above data) + para_after (below data)
  * Target: 6 sections × ~180 words × 2 = 2,100+ words per product page.
@@ -20,7 +20,7 @@ export function generateStoryAfter(name: string, city: string): string {
 // ─── 2. HOW IT IS MADE ───────────────────────────────────────────────────────
 
 export function generateMakingParagraph(name: string): string {
-  return `The production process above breaks down exactly how ${name} is traditionally made, from raw materials through each step of skilled craftsmanship to the finished product. This level of process detail matters for anyone wanting to genuinely understand what they're purchasing — the materials, the skill required, and the time investment that goes into producing authentic ${name} rather than a mass-manufactured imitation.`;
+  return `The production process above breaks down exactly how ${name} is traditionally made, from raw materials through each step of skilled craftsmanship to the finished product. This level of process detail matters for anyone wanting to genuinely understand what they're purchasing, the materials, the skill required, and the time investment that goes into producing authentic ${name} rather than a mass-manufactured imitation.`;
 }
 
 export function generateMakingAfter(name: string): string {
@@ -30,7 +30,7 @@ export function generateMakingAfter(name: string): string {
 // ─── 3. PRODUCT TYPES & PRICES ───────────────────────────────────────────────
 
 export function generateTypesParagraph(name: string): string {
-  return `${name} comes in several distinct categories above, each with its own size, characteristics, and price range reflecting differences in materials, craftsmanship time, and intended use. Understanding these variations matters before purchasing, since the right choice depends heavily on what you're actually looking for — a smaller decorative piece versus a larger, more substantial item carries very different price expectations and practical considerations.`;
+  return `${name} comes in several distinct categories above, each with its own size, characteristics, and price range reflecting differences in materials, craftsmanship time, and intended use. Understanding these variations matters before purchasing, since the right choice depends heavily on what you're actually looking for, a smaller decorative piece versus a larger, more substantial item carries very different price expectations and practical considerations.`;
 }
 
 export function generateTypesAfter(name: string): string {

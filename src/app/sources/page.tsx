@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 
-// /sources — created in Q8 (link map §24 marks it BUILD: "the sources
+// /sources: created in Q8 (link map §24 marks it BUILD: "the sources
 // page the trust model needs"). Every provider below actually powers
 // part of the live site today; what each one feeds is stated plainly.
 
 export const metadata: Metadata = {
   title: 'Data Sources | WorldCityHub',
   description:
-    'Where WorldCityHub data comes from: OpenWeatherMap, Aladhan, CoinGecko, World Bank, GNews, UNHCR, Open-Meteo, FRED and more — and what each source powers.',
+    'Where WorldCityHub data comes from: OpenWeatherMap, Aladhan, CoinGecko, World Bank, GNews, UNHCR, Open-Meteo, FRED and more, and what each source powers.',
   alternates: { canonical: 'https://worldcityhub.vercel.app/sources' },
   openGraph: {
     title: 'Data Sources | WorldCityHub',
@@ -25,10 +25,10 @@ const SOURCES: { name: string; powers: string; url: string }[] = [
   { name: 'Aladhan', powers: 'Prayer times and the Hijri calendar (Karachi method)', url: 'https://aladhan.com' },
   { name: 'sunrise-sunset.org', powers: 'Sunrise, sunset and daylight length', url: 'https://sunrise-sunset.org' },
   { name: 'CoinGecko', powers: 'Cryptocurrency prices, plus the PAX Gold series behind the rates-page gold history and 24h change', url: 'https://www.coingecko.com' },
-  { name: 'gold-api.com', powers: 'Gold (XAU) and silver (XAG) spot prices — the canonical metals feed for every surface', url: 'https://gold-api.com' },
-  { name: 'ExchangeRate-API (open endpoint)', powers: 'Currency exchange rates — one USD-based snapshot, cross-converted for PKR, AED, SAR, GBP and more', url: 'https://www.exchangerate-api.com' },
+  { name: 'gold-api.com', powers: 'Gold (XAU) and silver (XAG) spot prices, the canonical metals feed for every surface', url: 'https://gold-api.com' },
+  { name: 'ExchangeRate-API (open endpoint)', powers: 'Currency exchange rates, one USD-based snapshot, cross-converted for PKR, AED, SAR, GBP and more', url: 'https://www.exchangerate-api.com' },
   { name: 'Published currency dataset (fawazahmed0/currency-api)', powers: 'Dated daily exchange-rate snapshots behind the day-change figures and rate history charts', url: 'https://github.com/fawazahmed0/exchange-api' },
-  { name: 'FRED — Federal Reserve Economic Data', powers: 'Brent crude oil daily spot price', url: 'https://fred.stlouisfed.org' },
+  { name: 'FRED · Federal Reserve Economic Data', powers: 'Brent crude oil daily spot price', url: 'https://fred.stlouisfed.org' },
   { name: 'Alternative.me', powers: 'Crypto Fear & Greed Index', url: 'https://alternative.me' },
   { name: 'World Bank Open Data', powers: 'Economy indicators (GDP, inflation, unemployment and more, each with its data year) and world population', url: 'https://data.worldbank.org' },
   { name: 'GNews', powers: 'Aggregated news headlines (headline, source and link only)', url: 'https://gnews.io' },
@@ -48,7 +48,7 @@ export default function SourcesPage() {
         <h1 className="text-4xl md:text-5xl font-bold mb-6">Data sources</h1>
         <p className="text-white/70 leading-relaxed mb-10">
           Every figure on WorldCityHub comes from one of these public sources. When a
-          source does not respond, the figure is hidden rather than estimated silently —
+          source does not respond, the figure is hidden rather than estimated silently,
           and where a number is an estimate, the page says so and explains the method.
         </p>
         <div className="space-y-3">
