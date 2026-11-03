@@ -14,6 +14,11 @@ interface PersonalityHeroProps {
   // at all (see below) — never an empty placeholder block.
   imageCredit?: string;
   imageLicence?: string;
+  // B4: Tailwind object-position class for the photo, measured per
+  // portrait so the complete head (hair to chin) stays inside the
+  // 4/5 frame. Supplied by the page from the data layer's
+  // PERSONALITY_HERO_POSITIONS map; defaults to object-top.
+  imagePositionClass?: string;
   birthDate?: string;
   deathDate?: string;
   nationality?: string;
@@ -26,6 +31,7 @@ export function PersonalityHero({
   imageUrl,
   imageCredit,
   imageLicence,
+  imagePositionClass = 'object-top',
   birthDate,
   deathDate,
   nationality,
@@ -55,7 +61,7 @@ export function PersonalityHero({
                 <img
                   src={imageUrl}
                   alt={name}
-                  className="w-full h-auto object-cover aspect-square"
+                  className={`w-full aspect-[4/5] object-cover ${imagePositionClass}`}
                 />
               </motion.div>
               {imageCredit && (

@@ -1,6 +1,6 @@
 // ── Personalities seed data (WP9 / marathon Q14) ────────────────────────────
 // Extracted VERBATIM from the hard-coded profiles that used to live in
-// src/app/personalities/[slug]/page.tsx — no facts added, removed or
+// src/app/personalities/[slug]/page.tsx, no facts added, removed or
 // embellished. This is the fallback dataset used while migration
 // 0005_personalities.sql is unapplied, and the source the migration's
 // seed rows were generated from.
@@ -46,7 +46,11 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     slug: 'allama-iqbal',
     name: 'Allama Iqbal',
     title: 'Poet-Philosopher & Spiritual Father of Pakistan',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Allama_Iqbal.jpg',
+    // B6: local extended-canvas portrait (head y 12–77% of frame);
+    // the previous value hotlinked upload.wikimedia.org.
+    imageUrl: '/images/home28/pers-iqbal-wide.webp',
+    imageCredit: 'Iqbal Academy Pakistan',
+    imageLicence: 'public domain',
     birthDate: '9 November 1877',
     deathDate: '21 April 1938',
     nationality: 'British Indian (Pakistani)',
@@ -76,14 +80,14 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { title: 'The Reconstruction of Religious Thought in Islam', year: '1930', description: 'His most important philosophical prose work in English.', type: 'Philosophy' },
     ],
     quotes: [
-      { text: 'Khudi ko kar buland itna ke har taqdeer se pehle, Khuda bande se khud pooche bata teri raza kya hai.', context: 'From Bang-e-Dra — on elevating the self' },
+      { text: 'Khudi ko kar buland itna ke har taqdeer se pehle, Khuda bande se khud pooche bata teri raza kya hai.', context: 'From Bang-e-Dra, on elevating the self' },
       { text: 'Nations are born in the hearts of poets, they prosper and die in the hands of politicians.', context: 'Widely attributed to Iqbal (attributed saying, not verbatim-sourced)' },
       { text: 'Rise above sectional interests and private ambitions... Pass from matter to spirit.', context: 'Allahabad Address, 1930' },
     ],
     descriptionSections: [
       { title: 'Early Life & Education', content: 'Born in Sialkot in 1877, Iqbal showed early aptitude for Persian and Urdu poetry. He studied at Government College Lahore under Sir Thomas Arnold, who encouraged him to study Western philosophy. He later studied at Cambridge, then earned a doctorate in Munich with his thesis on Persian metaphysics.' },
-      { title: 'Philosophy of Khudi (Self)', content: 'Iqbal\'s central philosophical concept is Khudi — the development of the individual self through action, love and creative power. Drawing on Rumi, Nietzsche and Bergson, he argued that spiritual vitality begins with self-affirmation, not self-negation. This philosophy became the intellectual foundation for Muslim political awakening in South Asia.' },
-      { title: 'Legacy in Pakistan', content: 'Iqbal\'s Allahabad Address of 1930 is considered the intellectual seed of Pakistan. He is buried at the entrance of Lahore\'s Badshahi Mosque. His birthday, 9 November (Iqbal Day), is a public holiday in Pakistan — restored by federal notification in 2022 after a suspension that began in 2015.' },
+      { title: 'Philosophy of Khudi (Self)', content: 'Iqbal\'s central philosophical concept is Khudi, the development of the individual self through action, love and creative power. Drawing on Rumi, Nietzsche and Bergson, he argued that spiritual vitality begins with self-affirmation, not self-negation. This philosophy became the intellectual foundation for Muslim political awakening in South Asia.' },
+      { title: 'Legacy in Pakistan', content: 'Iqbal\'s Allahabad Address of 1930 is considered the intellectual seed of Pakistan. He is buried at the entrance of Lahore\'s Badshahi Mosque. His birthday, 9 November, is marked in Pakistan as Iqbal Day.' },
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Muhammad_Iqbal',
     amazonSearch: 'https://www.amazon.com/s?k=allama+iqbal+books',
@@ -93,7 +97,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     name: 'Imran Khan',
     title: 'Cricketer, Philanthropist & Former Prime Minister',
     // P9: local WebP from Wikimedia Commons "Imran Khan 2012.jpg"
-    // (World Economic Forum, CC BY-SA 2.0) — see docs/personality-photos-p9.md.
+    // (World Economic Forum, CC BY-SA 2.0), see docs/personality-photos-p9.md.
     imageUrl: '/images/personalities/imran-khan.webp',
     imageCredit: 'World Economic Forum, via Wikimedia Commons',
     imageLicence: 'CC BY-SA 2.0',
@@ -102,17 +106,17 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    description: 'Imran Khan is one of the greatest all-round cricketers in history, leading Pakistan to its only ICC Cricket World Cup title in 1992. He later founded Shaukat Khanum Cancer Hospital and PTI political party, becoming Pakistan\'s 22nd Prime Minister in 2018.',
+    description: 'Imran Khan is widely regarded as one of the finest all-rounders of his era, and he led Pakistan to its only ICC Cricket World Cup title in 1992. He later founded Shaukat Khanum Cancer Hospital and PTI political party, becoming Pakistan\'s 22nd Prime Minister in 2018.',
     primaryColor: '#006400',
     timeline: [
       { year: '1971', title: 'Test debut', description: 'Made Test cricket debut for Pakistan at Edgbaston, Birmingham.' },
       { year: '1992', title: 'World Cup victory', description: 'Led Pakistan to its only Cricket World Cup title at the Melbourne Cricket Ground.' },
-      { year: '1994', title: 'Shaukat Khanum Hospital', description: 'Opened Pakistan\'s first dedicated cancer hospital, where — by the hospital\'s own published figures — more than 75% of patients are treated free of charge or with financial support.' },
+      { year: '1994', title: 'Shaukat Khanum Hospital', description: 'Opened Pakistan\'s first dedicated cancer hospital, where, by the hospital\'s own published figures, more than 75% of patients are treated free of charge or with financial support.' },
       { year: '1996', title: 'Founded PTI', description: 'Founded Pakistan Tehreek-e-Insaf political party with an anti-corruption platform.' },
       { year: '2018', title: 'Prime Minister', description: 'Elected as Pakistan\'s 22nd Prime Minister after PTI\'s election victory.' },
     ],
     achievements: [
-      { icon: '🏆', title: 'World Cup Champion', description: 'Led Pakistan to the 1992 Cricket World Cup — the team\'s only World Cup win.' },
+      { icon: '🏆', title: 'World Cup Champion', description: 'Led Pakistan to the 1992 Cricket World Cup, the team\'s only World Cup win.' },
       { icon: '🏥', title: 'Cancer Hospital Founder', description: 'Founded Shaukat Khanum Memorial Cancer Hospital treating thousands annually.' },
       { icon: '📿', title: '362 Test Wickets', description: 'One of only eight players to have scored 3,000 runs and taken 300 wickets in Tests.' },
       { icon: '🎓', title: 'Namal University', description: 'Founded Namal University in Mianwali to provide higher education to rural Pakistan.' },
@@ -126,8 +130,8 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { text: 'I am not a politician by nature. I came into politics because I saw the direction in which the country was heading.', context: 'Interview, 2013' },
     ],
     descriptionSections: [
-      { title: 'Cricket Career', content: 'Imran Khan played international cricket for Pakistan from 1971 to 1992, captaining the side for much of that period. His all-round ability — combining 362 Test wickets with 3,807 Test runs — placed him among the greatest all-rounders of the 20th century.' },
-      { title: 'Humanitarian Work', content: 'After retiring from cricket, Imran devoted himself to philanthropy. Shaukat Khanum Memorial Cancer Hospital, which he built in memory of his mother, now treats more than 75% of its patients free of charge or with financial support (the hospital\'s own published figure) and is the largest cancer-care network in Pakistan.' },
+      { title: 'Cricket Career', content: 'Imran Khan played international cricket for Pakistan from 1971 to 1992, captaining the side for much of that period. His all-round ability, combining 362 Test wickets with 3,807 Test runs, placed him among the greatest all-rounders of the 20th century.' },
+      { title: 'Humanitarian Work', content: 'After retiring from cricket, Imran devoted himself to philanthropy. Shaukat Khanum Memorial Cancer Hospital, which he built in memory of his mother, now treats more than 75% of its patients free of charge or with financial support (the hospital\'s own published figure) and forms what Shaukat Khanum describes as the largest cancer-care network in Pakistan.' },
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Imran_Khan',
     amazonSearch: 'https://www.amazon.com/s?k=imran+khan+books',
@@ -138,7 +142,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     name: 'Faiz Ahmed Faiz',
     title: 'Poet of Resistance & Romance',
     // P9: local WebP from Wikimedia Commons "Faiz, London 1983.jpg"
-    // (Amarjit Chandan, CC BY-SA 4.0) — see docs/personality-photos-p9.md.
+    // (Amarjit Chandan, CC BY-SA 4.0), see docs/personality-photos-p9.md.
     imageUrl: '/images/personalities/faiz-ahmed-faiz.webp',
     imageCredit: 'Amarjit Chandan, via Wikimedia Commons',
     imageLicence: 'CC BY-SA 4.0',
@@ -148,13 +152,13 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    description: 'Faiz Ahmed Faiz, born in Narowal district and formed by Lahore, fused romance and revolution in Urdu poetry like no one before him. Editor, trade unionist and exile, he spent his last years in Lahore, where he died in 1984 and where his verse remains part of the city’s air.',
+    description: 'Faiz Ahmed Faiz, born in Narowal district and formed by Lahore, fused romance and revolution in Urdu poetry. Editor, trade unionist and exile, he spent his last years in Lahore, where he died in 1984 and where his verse remains part of the city’s air.',
     primaryColor: '#7A1F1F',
     timeline: [
       { year: '1911', title: 'Born near Sialkot', description: 'Born in Kala Qader village, Sialkot district (now Narowal).' },
       { year: '1935', title: 'First collection', description: 'Begins publishing the poetry that becomes Naqsh-e-Faryadi (1941).' },
       { year: '1947', title: 'Editor in Lahore', description: 'Becomes the first editor of the Pakistan Times in Lahore.' },
-      { year: '1979', title: 'Lenin Peace Prize', description: 'Receives the Lenin Peace Prize for his poetry and activism.' },
+      { year: '1962', title: 'Lenin Peace Prize', description: 'Receives the Lenin Peace Prize for his poetry and activism.' },
       { year: '1984', title: 'Dies in Lahore', description: 'Passes away in Lahore; his funeral draws the city’s literary world.' },
     ],
     achievements: [
@@ -165,11 +169,11 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     works: [
       { title: 'Naqsh-e-Faryadi', year: '1941', description: 'First major collection, blending love and social conscience.', type: 'Poetry' },
       { title: 'Nuskha Haye Wafa', description: 'The collected works (kulliyat) of his poetry.', type: 'Poetry' },
-      { title: 'Mujh Se Pehli Si Mohabbat', description: 'His most quoted poem — a turn from private love to public sorrow.', type: 'Poem' },
+      { title: 'Mujh Se Pehli Si Mohabbat', description: 'His most quoted poem, a turn from private love to public sorrow.', type: 'Poem' },
     ],
     quotes: [
-      { text: 'Mujh se pehli si mohabbat mere mehboob na maang', context: 'From his poem "Mujh Se Pehli Si Mohabbat" — Do not ask of me, my love, the love I once had for you' },
-      { text: 'Bol ke lab azaad hain tere', context: 'From his poem "Bol" — Speak, for your lips are free' },
+      { text: 'Mujh se pehli si mohabbat mere mehboob na maang', context: 'From his poem "Mujh Se Pehli Si Mohabbat": Do not ask of me, my love, the love I once had for you' },
+      { text: 'Bol ke lab azaad hain tere', context: 'From his poem "Bol": Speak, for your lips are free' },
     ],
     descriptionSections: [],
     wikiUrl: 'https://en.wikipedia.org/wiki/Faiz_Ahmed_Faiz',
@@ -184,7 +188,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    description: 'Habib Jalib, born in Hoshiarpur and settled in Lahore, was Pakistan’s street-corner revolutionary poet — jailed by successive regimes, he recited defiance to crowds in plain, unforgettable language. Lahore was his stage and his home until his death in 1993.',
+    description: 'Habib Jalib, born in Hoshiarpur and settled in Lahore, was Pakistan’s street-corner revolutionary poet, jailed by successive regimes, he recited defiance to crowds in plain, unforgettable language. Lahore was his stage and his home until his death in 1993.',
     primaryColor: '#5B3A1E',
     timeline: [
       { year: '1928', title: 'Born in Hoshiarpur', description: 'Born in British Punjab; migrates to Pakistan after Partition.' },
@@ -198,11 +202,11 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { icon: '🎤', title: 'Public Mushaira Legend', description: 'Drew vast crowds with direct, musical Urdu.' },
     ],
     works: [
-      { title: 'Dastoor', description: 'His signature poem of defiance against unjust rule — "Main nahin manta" (I refuse to accept).', type: 'Poem' },
+      { title: 'Dastoor', description: 'His signature poem of defiance against unjust rule, "Main nahin manta" (I refuse to accept).', type: 'Poem' },
       { title: 'Kuliyat-e-Habib Jalib', description: 'Collected works of his poetry.', type: 'Poetry' },
     ],
     quotes: [
-      { text: 'Main nahin manta, main nahin janta.', context: 'From his poem "Dastoor" — I do not accept, I do not acknowledge (this unjust order).' },
+      { text: 'Main nahin manta, main nahin janta.', context: 'From his poem "Dastoor": I do not accept, I do not acknowledge (this unjust order).' },
     ],
     descriptionSections: [],
     wikiUrl: 'https://en.wikipedia.org/wiki/Habib_Jalib',
@@ -217,7 +221,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    description: 'Ashfaq Ahmed, born in Muktsar and based in Lahore, wrote fiction and drama steeped in Punjabi soil and Sufi reflection. His radio and television presence — above all the storytelling persona of Baba Sahib in "Zavia" — made him a household sage across Pakistan.',
+    description: 'Ashfaq Ahmed, born in Muktsar and based in Lahore, wrote fiction and drama steeped in Punjabi soil and Sufi reflection. His radio and television presence, above all the storytelling persona of Baba Sahib in "Zavia", made him a household sage across Pakistan.',
     primaryColor: '#33523B',
     timeline: [
       { year: '1925', title: 'Born in Muktsar', description: 'Born in Punjab’s Muktsar; educated at Government College Lahore.' },
@@ -231,7 +235,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { icon: '🏅', title: 'Pride of Performance', description: 'Received Pakistan’s Pride of Performance and Sitara-e-Imtiaz.' },
     ],
     works: [
-      { title: 'Aik Mohabbat Sau Afsanay', description: 'One love, a hundred tales — his signature story collection.', type: 'Stories' },
+      { title: 'Aik Mohabbat Sau Afsanay', description: 'One love, a hundred tales, his signature story collection.', type: 'Stories' },
       { title: 'Gaddarya', year: '1948', description: 'Early novel of Partition-era Punjab.', type: 'Novel' },
       { title: 'Zavia', description: 'Television talks in the voice of the wise elder.', type: 'TV' },
     ],
@@ -249,7 +253,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    description: 'Bano Qudsia, born in Amritsar and settled in Lahore after Partition, wrote "Raja Gidh" — among the most debated Urdu novels of the twentieth century. Wife of Ashfaq Ahmed, she built her own towering reputation in fiction and drama from Lahore.',
+    description: 'Bano Qudsia, born in Amritsar and settled in Lahore after Partition, wrote "Raja Gidh", among the most debated Urdu novels of the twentieth century. Wife of Ashfaq Ahmed, she built her own towering reputation in fiction and drama from Lahore.',
     primaryColor: '#6E3B5C',
     timeline: [
       { year: '1928', title: 'Born in Amritsar', description: 'Born in British Punjab; migrates to Lahore in 1947.' },
@@ -262,7 +266,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { icon: '🏅', title: 'Hilal-e-Imtiaz', description: 'Received one of Pakistan’s highest civil awards.' },
     ],
     works: [
-      { title: 'Raja Gidh', year: '1981', description: 'The vulture king — a novel of sin, heredity and society.', type: 'Novel' },
+      { title: 'Raja Gidh', year: '1981', description: 'The vulture king, a novel of sin, heredity and society.', type: 'Novel' },
       { title: 'Aatish-e-Zer-e-Paa', description: 'Stories of women and inner conflict.', type: 'Stories' },
     ],
     quotes: [],
@@ -279,7 +283,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    description: 'Abdus Salam, born in Jhang and educated at Government College Lahore, shared the 1979 Nobel Prize in Physics for electroweak unification — the first Pakistani and first Muslim Nobel laureate in science. He founded the ICTP in Trieste so scientists from the developing world could work at the frontier.',
+    description: 'Abdus Salam, born in Jhang and educated at Government College Lahore, shared the 1979 Nobel Prize in Physics for electroweak unification, the first Pakistani and first Muslim Nobel laureate in science. He founded the ICTP in Trieste so scientists from the developing world could work at the frontier.',
     primaryColor: '#1F3A5F',
     timeline: [
       { year: '1926', title: 'Born in Jhang', description: 'Born in Punjab; a prodigy at Government College Lahore and Cambridge.' },
@@ -304,14 +308,14 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
   'noor-jehan': {
     slug: 'noor-jehan',
     name: 'Noor Jehan',
-    title: 'Malika-e-Tarannum — Queen of Melody',
+    title: 'Malika-e-Tarannum: Queen of Melody',
     birthDate: '21 September 1926',
     deathDate: '23 December 2000',
     nationality: 'Pakistani',
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    description: 'Noor Jehan, born Allah Rakhi Wasai in Kasur, became the defining voice of South Asian film music — first in Lahore’s studios and Bombay, then as the grande dame of Pakistan’s own cinema. Her wartime anthem singing in 1965 made her a national institution.',
+    description: 'Noor Jehan, born Allah Rakhi Wasai in Kasur, became the defining voice of South Asian film music, first in Lahore’s studios and Bombay, then as the grande dame of Pakistan’s own cinema. Her wartime anthem singing in 1965 made her a national institution.',
     primaryColor: '#7A5B12',
     timeline: [
       { year: '1926', title: 'Born in Kasur', description: 'Born into a family of musicians in Kasur, Punjab.' },
@@ -344,7 +348,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    description: 'Amrita Pritam, born in Gujranwala and formed in Lahore’s literary circles, became the foremost woman’s voice in Punjabi letters. Her elegy "Ajj Aakhaan Waris Shah Nu" — addressed to Punjab’s great Sufi poet amid Partition’s violence — is recited on both sides of the border.',
+    description: 'Amrita Pritam, born in Gujranwala and formed in Lahore’s literary circles, became the foremost woman’s voice in Punjabi letters. Her elegy "Ajj Aakhaan Waris Shah Nu", addressed to Punjab’s great Sufi poet amid Partition’s violence, is recited on both sides of the border.',
     primaryColor: '#8A3324',
     timeline: [
       { year: '1919', title: 'Born in Gujranwala', description: 'Born in Punjab; begins publishing poetry as a teenager.' },
@@ -360,10 +364,10 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     works: [
       { title: 'Ajj Aakhaan Waris Shah Nu', year: '1947', description: 'Ode to Waris Shah over a wounded Punjab.', type: 'Poem' },
       { title: 'Pinjar', year: '1950', description: 'Novel of a woman abducted in Partition’s chaos; later a film.', type: 'Novel' },
-      { title: 'Rasidi Ticket', year: '1976', description: 'Her candid autobiography — "The Revenue Stamp".', type: 'Memoir' },
+      { title: 'Rasidi Ticket', year: '1976', description: 'Her candid autobiography, "The Revenue Stamp".', type: 'Memoir' },
     ],
     quotes: [
-      { text: 'Ajj aakhaan Waris Shah nu, kiton qabran vichon bol.', context: 'Opening of her 1947 elegy: "Today I call on Waris Shah — speak, from among the graves."' },
+      { text: 'Ajj aakhaan Waris Shah nu, kiton qabran vichon bol.', context: 'Opening of her 1947 elegy: "Today I call on Waris Shah, speak, from among the graves."' },
     ],
     descriptionSections: [],
     wikiUrl: 'https://en.wikipedia.org/wiki/Amrita_Pritam',
@@ -371,14 +375,14 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
   'muhammad-ali-jinnah': {
     slug: 'muhammad-ali-jinnah',
     name: 'Muhammad Ali Jinnah',
-    title: 'Quaid-e-Azam — Founder of Pakistan',
+    title: 'Quaid-e-Azam: Founder of Pakistan',
     birthDate: '25 December 1876',
     deathDate: '11 September 1948',
     nationality: 'Pakistani',
     city: 'Karachi', citySlug: 'karachi',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Sindh', provinceSlug: 'sindh',
-    description: 'Muhammad Ali Jinnah, born in Karachi, was the barrister who led the Pakistan Movement and became the country’s first Governor-General in 1947. Karachi is his birthplace, his political cradle and his burial place — the mausoleum Mazar-e-Quaid stands at the city’s heart.',
+    description: 'Muhammad Ali Jinnah, born in Karachi, was the barrister who led the Pakistan Movement and became the country’s first Governor-General in 1947. Karachi is his birthplace, his political cradle and his burial place, the mausoleum Mazar-e-Quaid stands at the city’s heart.',
     primaryColor: '#01411C',
     timeline: [
       { year: '1876', title: 'Born in Karachi', description: 'Born in Wazir Mansion, Karachi, to a Khoja merchant family.' },
@@ -406,14 +410,14 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
   'fatima-jinnah': {
     slug: 'fatima-jinnah',
     name: 'Fatima Jinnah',
-    title: 'Madar-e-Millat — Mother of the Nation',
+    title: 'Madar-e-Millat: Mother of the Nation',
     birthDate: '31 July 1893',
     deathDate: '9 July 1967',
     nationality: 'Pakistani',
     city: 'Karachi', citySlug: 'karachi',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Sindh', provinceSlug: 'sindh',
-    description: 'Fatima Jinnah, born in Karachi, was a dental surgeon who left her practice to stand beside her brother Muhammad Ali Jinnah through the Pakistan Movement. In 1965 she contested the presidency itself, and Pakistan remembers her as Madar-e-Millat — Mother of the Nation.',
+    description: 'Fatima Jinnah, born in Karachi, was a dental surgeon who left her practice to stand beside her brother Muhammad Ali Jinnah through the Pakistan Movement. In 1965 she contested the presidency itself, and Pakistan remembers her as Madar-e-Millat: Mother of the Nation.',
     primaryColor: '#2E5E4E',
     timeline: [
       { year: '1893', title: 'Born in Karachi', description: 'Born in Karachi, youngest of the Jinnah siblings.' },
@@ -437,14 +441,14 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
   'abdul-sattar-edhi': {
     slug: 'abdul-sattar-edhi',
     name: 'Abdul Sattar Edhi',
-    title: 'Humanitarian — Founder of the Edhi Foundation',
+    title: 'Humanitarian: Founder of the Edhi Foundation',
     birthDate: '28 February 1928',
     deathDate: '8 July 2016',
     nationality: 'Pakistani',
     city: 'Karachi', citySlug: 'karachi',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Sindh', provinceSlug: 'sindh',
-    description: 'Abdul Sattar Edhi, born in Bantva, Gujarat and settled in Karachi, built from one small dispensary the largest volunteer ambulance and welfare network in Pakistan — orphanages, shelters, morgues and homes for the abandoned, run on donations and radical simplicity. Karachi was his base for seven decades.',
+    description: 'Abdul Sattar Edhi, born in Bantva, Gujarat and settled in Karachi, built from one small dispensary the largest volunteer ambulance and welfare network in Pakistan, orphanages, shelters, morgues and homes for the abandoned, run on donations and radical simplicity. Karachi was his base for seven decades.',
     primaryColor: '#3E5C50',
     timeline: [
       { year: '1928', title: 'Born in Bantva', description: 'Born in Gujarat; migrates to Karachi at Partition.' },
@@ -476,7 +480,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Karachi', citySlug: 'karachi',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Sindh', provinceSlug: 'sindh',
-    description: 'Sadequain, born Syed Ahmed Ali in Amroha and based in Karachi, fused calligraphy and modern painting into a style recognised worldwide — giant murals, cactus-thorn figures and Quranic calligraphy panels, most of them given away rather than sold. He died in Karachi in 1987.',
+    description: 'Sadequain, born Syed Ahmed Ali in Amroha and based in Karachi, fused calligraphy and modern painting into a style recognised worldwide, giant murals, cactus-thorn figures and Quranic calligraphy panels, most of them given away rather than sold. He died in Karachi in 1987.',
     primaryColor: '#4A2E5C',
     timeline: [
       { year: '1923', title: 'Born in Amroha', description: 'Born in British India; trains as a calligrapher-copyist.' },
@@ -490,7 +494,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { icon: '🎁', title: 'Art Given Away', description: 'Donated the bulk of his enormous output to institutions and friends.' },
     ],
     works: [
-      { title: 'Frere Hall Ceiling, Karachi', description: 'His vast calligraphic ceiling mural — a Karachi landmark.', type: 'Mural' },
+      { title: 'Frere Hall Ceiling, Karachi', description: 'His vast calligraphic ceiling mural, a Karachi landmark.', type: 'Mural' },
       { title: 'Rubaiyat Illustrations', description: 'Illustrated editions of Omar Khayyam’s quatrains in his own hand.', type: 'Illustration' },
     ],
     quotes: [],
@@ -500,14 +504,14 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
   'mehdi-hasan': {
     slug: 'mehdi-hasan',
     name: 'Mehdi Hasan',
-    title: 'Shahenshah-e-Ghazal — King of Ghazal',
+    title: 'Shahenshah-e-Ghazal: King of Ghazal',
     birthDate: '18 July 1927',
     deathDate: '13 June 2012',
     nationality: 'Pakistani',
     city: 'Karachi', citySlug: 'karachi',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Sindh', provinceSlug: 'sindh',
-    description: 'Mehdi Hasan, born in Luna, Rajasthan and settled in Karachi, gave the Urdu ghazal its modern concert voice — a classically trained, velvet delivery that made poets from Ghalib to Faiz beloved of millions. Pakistan named him Shahenshah-e-Ghazal, the Emperor of Ghazal.',
+    description: 'Mehdi Hasan, born in Luna, Rajasthan and settled in Karachi, gave the Urdu ghazal its modern concert voice, a classically trained, velvet delivery that made poets from Ghalib to Faiz beloved of millions. Pakistan named him Shahenshah-e-Ghazal, the Emperor of Ghazal.',
     primaryColor: '#274156',
     timeline: [
       { year: '1927', title: 'Born in Luna', description: 'Born into a family of court musicians in Rajasthan.' },
@@ -521,7 +525,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { icon: '🏅', title: 'Pride of Performance', description: 'Among many national honours for a six-decade career.' },
     ],
     works: [
-      { title: 'Ranjish Hi Sahi', description: 'His signature ghazal — longing rendered in velvet.', type: 'Song' },
+      { title: 'Ranjish Hi Sahi', description: 'His signature ghazal, longing rendered in velvet.', type: 'Song' },
       { title: 'Ab Ke Hum Bichde', description: 'The farewell ghazal generations know by heart.', type: 'Song' },
     ],
     quotes: [],
@@ -538,7 +542,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Islamabad', citySlug: 'islamabad',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Islamabad Capital Territory', provinceSlug: 'islamabad-capital-territory',
-    description: 'Abdul Qadeer Khan, born in Bhopal and settled in Pakistan, was the metallurgist who built and led the Khan Research Laboratories at Kahuta, near Islamabad — the centre of Pakistan’s uranium enrichment programme. The capital was his home and workplace for the decisive decades of his career.',
+    description: 'Abdul Qadeer Khan, born in Bhopal and settled in Pakistan, was the metallurgist who built and led the Khan Research Laboratories at Kahuta, near Islamabad, the centre of Pakistan’s uranium enrichment programme. The capital was his home and workplace for the decisive decades of his career.',
     primaryColor: '#31456B',
     timeline: [
       { year: '1936', title: 'Born in Bhopal', description: 'Born in British India; migrates to Pakistan in 1952.' },
@@ -548,7 +552,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     ],
     achievements: [
       { icon: '🔬', title: 'Built KRL', description: 'Founded and led the laboratories at the heart of the enrichment programme.' },
-      { icon: '🏅', title: 'Nishan-e-Imtiaz (twice)', description: 'Received Pakistan’s highest civil award twice — a rare distinction.' },
+      { icon: '🏅', title: 'Nishan-e-Imtiaz (twice)', description: 'Received Pakistan’s highest civil award twice, a rare distinction.' },
       { icon: '🎓', title: 'Metallurgist', description: 'Trained in Berlin, Delft and Leuven in physical metallurgy.' },
     ],
     works: [
@@ -568,7 +572,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     city: 'Islamabad', citySlug: 'islamabad',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Islamabad Capital Territory', provinceSlug: 'islamabad-capital-territory',
-    description: 'Benazir Bhutto, born in Karachi, led the Pakistan Peoples Party from exile to power and twice governed from Islamabad as prime minister — the first woman to lead a Muslim-majority country. She was assassinated in Rawalpindi in 2007 while campaigning for a third term.',
+    description: 'Benazir Bhutto, born in Karachi, led the Pakistan Peoples Party from exile to power and twice governed from Islamabad as prime minister, the first woman to lead a Muslim-majority country. She was assassinated in Rawalpindi in 2007 while campaigning for a third term.',
     primaryColor: '#7A2040',
     timeline: [
       { year: '1953', title: 'Born in Karachi', description: 'Born to Zulfikar Ali Bhutto and Begum Nusrat Bhutto.' },
@@ -619,6 +623,60 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     descriptionSections: [],
     wikiUrl: 'https://en.wikipedia.org/wiki/Pervez_Musharraf',
   },
+  // ── B5 (personalities family fix): Malala's full record ────────────────
+  // Her production row carried only a title + summary (migration 0019);
+  // the timeline, achievements, works and quotes below are the fallback
+  // source while migration 0022 backfills the database row with the
+  // same content. Facts are the established record: born 12 July 1997
+  // in Mingora, Swat; the 2009 BBC Urdu diary as Gul Makai; the 2011
+  // National Youth Peace Prize; shot by the Pakistani Taliban on
+  // 9 October 2012; the UN speech of 12 July 2013; Malala Fund
+  // co-founded 2013; the 2014 Nobel Peace Prize at 17, shared with
+  // Kailash Satyarthi; UN Messenger of Peace 2017, the youngest ever.
+  'malala-yousafzai': {
+    slug: 'malala-yousafzai',
+    name: 'Malala Yousafzai',
+    title: 'Nobel Peace Laureate',
+    imageUrl: '/images/personalities/malala-yousafzai.webp',
+    imageCredit: 'flowcomm, via Wikimedia Commons',
+    imageLicence: 'CC BY 2.0',
+    birthDate: '12 July 1997',
+    nationality: 'Pakistani',
+    city: 'Mingora', citySlug: 'mingora',
+    country: 'Pakistan', countrySlug: 'pakistan',
+    province: 'Khyber Pakhtunkhwa', provinceSlug: 'khyber-pakhtunkhwa',
+    description: 'Malala Yousafzai, born in Mingora, Swat, is a Pakistani education activist and the youngest Nobel Peace Prize laureate, honoured in 2014.',
+    primaryColor: '#115E59',
+    timeline: [
+      { year: '1997', title: 'Born in Mingora', description: 'Born on 12 July 1997 in Mingora, in Pakistan\'s Swat Valley.' },
+      { year: '2009', title: 'The Gul Makai diary', description: 'Writes an anonymous diary for BBC Urdu under the name Gul Makai, describing life under the Pakistani Taliban\'s ban on girls\' education in Swat.' },
+      { year: '2011', title: 'National Youth Peace Prize', description: 'Receives Pakistan\'s first National Youth Peace Prize for her campaigning for girls\' education.' },
+      { year: '2012', title: 'Shot by the Pakistani Taliban', description: 'On 9 October 2012 she is shot by the Pakistani Taliban for her outspoken campaigning. She survives the attack.' },
+      { year: '2013', title: 'Speaks at the United Nations', description: 'On her 16th birthday, 12 July 2013, she addresses the United Nations in New York. The same year she co-founds the Malala Fund to campaign for girls\' education worldwide.' },
+      { year: '2014', title: 'Nobel Peace Prize', description: 'Awarded the Nobel Peace Prize at 17, the youngest laureate in the prize\'s history, sharing the award with Kailash Satyarthi.' },
+      { year: '2017', title: 'UN Messenger of Peace', description: 'Named a United Nations Messenger of Peace, the youngest person to hold the role.' },
+    ],
+    achievements: [
+      { icon: '🏆', title: 'Youngest Nobel Laureate', description: 'Received the Nobel Peace Prize in 2014 at 17, the youngest laureate ever, shared with Kailash Satyarthi.' },
+      { icon: '✍️', title: 'The Gul Makai Diary', description: 'Her 2009 BBC Urdu diary, written under a pen name at 11, first brought Swat\'s ban on girls\' schooling to the world.' },
+      { icon: '🎓', title: 'Malala Fund Co-founder', description: 'Co-founded the Malala Fund in 2013 to campaign for girls\' right to education around the world.' },
+      { icon: '🕊️', title: 'UN Messenger of Peace', description: 'Named a United Nations Messenger of Peace in 2017, the youngest person appointed to the role.' },
+    ],
+    works: [
+      { title: 'I Am Malala', year: '2013', description: 'Her memoir, written with Christina Lamb, telling the story of her childhood in Swat and the attack that made her a global voice.', type: 'Book' },
+      { title: 'Malala\'s Magic Pencil', year: '2017', description: 'A picture book for young readers about wishing for a better world and working to change it.', type: 'Book' },
+      { title: 'We Are Displaced', year: '2019', description: 'Stories of refugee girls from around the world, introduced by her own experience of displacement.', type: 'Book' },
+    ],
+    quotes: [
+      { text: 'One child, one teacher, one book, one pen can change the world.', context: 'Address to the United Nations Youth Assembly, 12 July 2013' },
+      { text: 'I raise up my voice — not so that I can shout, but so that those without a voice can be heard.', context: 'Documented statement of her campaign\'s message' },
+    ],
+    descriptionSections: [
+      { title: 'The Diary of Gul Makai', content: 'Malala grew up in Mingora, the main town of the Swat Valley, where her father ran a school. When the Pakistani Taliban moved to ban girls\' education in Swat, she began writing an anonymous diary for BBC Urdu under the name Gul Makai, describing everyday life under the ban. She was 11 years old. As her identity became known she spoke publicly for girls\' schooling, and in 2011 she received Pakistan\'s National Youth Peace Prize.' },
+      { title: 'A Global Voice for Girls\' Education', content: 'On 9 October 2012 Malala was shot by the Pakistani Taliban for her campaigning. She survived, and her recovery carried her cause to a worldwide audience. On 12 July 2013, her 16th birthday, she addressed the United Nations; the same year she co-founded the Malala Fund. In 2014 she received the Nobel Peace Prize at 17, the youngest laureate in its history, and in 2017 she became the youngest UN Messenger of Peace.' },
+    ],
+    wikiUrl: 'https://en.wikipedia.org/wiki/Malala_Yousafzai',
+  },
   // ── P3 (final28, 2026-10-28): two profiles that were live stubs ─────────
   // Their production database rows carried only the old-shape fields
   // (profession, birth/death year, birth city), so the detail template
@@ -628,7 +686,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
   // evidence pack. No image: no portrait URL was verified this pass, and
   // the hero renders its no-image panel rather than a guessed URL.
   // Titles are kept short on purpose: the page title formula is
-  // `${name} — ${title} | WorldCityHub`, so these two stay within the
+  // `${name}, ${title} | WorldCityHub`, so these two stay within the
   // 60-character title gate even before the P4 meta-generator fix.
   'nusrat-fateh-ali-khan': {
     slug: 'nusrat-fateh-ali-khan',
@@ -644,7 +702,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     primaryColor: '#7A2E1F',
     timeline: [
       { year: '1948', title: 'Born in Lyallpur', description: 'Born on 13 October 1948 in Lyallpur, now Faisalabad, into a family of qawwals led by his father, Fateh Ali Khan.' },
-      { year: '1964', title: 'First performance at father\'s chehlum', description: 'Following his father\'s death in 1964, sings at his father\'s chehlum — his first public performance, at age 15 — and trains with his uncles Mubarak Ali Khan and Salamat Ali Khan.' },
+      { year: '1964', title: 'First performance at father\'s chehlum', description: 'Following his father\'s death in 1964, sings at his father\'s chehlum, his first public performance, at age 15, and trains with his uncles Mubarak Ali Khan and Salamat Ali Khan.' },
       { year: '1965', title: 'First performance as leader', description: 'His first performance as leader of the family qawwali party comes in March 1965, at a studio recording broadcast as part of Radio Pakistan\'s Jashn-e-Baharan festival; he had become lead singer alongside his uncle Mubarak Ali Khan in 1964.' },
       { year: '1971', title: 'Leads the family party', description: 'Becomes head of the family qawwali party after the death of his uncle Mubarak Ali Khan.' },
       { year: '1980s', title: 'Signed in Britain', description: 'Signed by Oriental Star Agencies in Birmingham in the early 1980s and begins taking qawwali to audiences beyond Pakistan.' },
@@ -696,12 +754,12 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { year: '1992', title: 'World Cup winner', description: 'Stars in Pakistan\'s World Cup final win over England at Melbourne: a quick 33 with the bat and 3 for 49 with the ball, earning man of the match.' },
       { year: '1996', title: '257 not out', description: 'Scores 257 not out against Zimbabwe at Sheikhupura, including 12 sixes.' },
       { year: '1999', title: 'World Cup final as captain', description: 'Captains Pakistan to the World Cup final, where Australia win at Lord\'s.' },
-      { year: '2003', title: 'Retires', description: 'Retires from international cricket after the 2003 World Cup, with 414 Test wickets and 502 ODI wickets — the first bowler to 500 ODI wickets.' },
+      { year: '2003', title: 'Retires', description: 'Retires from international cricket after the 2003 World Cup, with 414 Test wickets and 502 ODI wickets, the first bowler to 500 ODI wickets.' },
       { year: '2009', title: 'ICC Hall of Fame', description: 'Inducted into the ICC Cricket Hall of Fame.' },
       { year: '2022', title: 'Sultan: A Memoir', description: 'Publishes his memoir Sultan, written with Gideon Haigh.' },
     ],
     achievements: [
-      { icon: '🏏', title: '916 International Wickets', description: '414 wickets in 104 Tests and 502 in 356 one-day internationals — the first bowler to reach 500 ODI wickets.' },
+      { icon: '🏏', title: '916 International Wickets', description: '414 wickets in 104 Tests and 502 in 356 one-day internationals, the first bowler to reach 500 ODI wickets.' },
       { icon: '🏆', title: 'World Cup Winner (1992)', description: 'Man of the match in the 1992 World Cup final, with 33 runs and 3 for 49 against England at Melbourne.' },
       { icon: '🎯', title: 'Sultan of Swing', description: 'Master of swing in both directions and of reverse swing with the old ball, plus a lethal yorker.' },
       { icon: '🏅', title: 'ICC Hall of Fame (2009)', description: 'Inducted into the ICC Cricket Hall of Fame in 2009; named a Wisden Cricketer of the Year in 1993.' },
@@ -715,7 +773,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
       { text: 'We were artists and we learnt the art from Imran.', context: 'Wisden interview, 2020' },
     ],
     descriptionSections: [
-      { title: 'The Sultan of Swing', content: 'Wasim was a left-arm fast bowler who could swing the new ball both ways and, as it aged, make it reverse — a skill he and Waqar Younis turned into Pakistan\'s signature weapon in the 1990s. His yorker at the death and his control at pace made him dangerous in every phase of a one-day innings, and his batting — crowned by 257 not out against Zimbabwe — made him a genuine all-rounder.' },
+      { title: 'The Sultan of Swing', content: 'Wasim was a left-arm fast bowler who could swing the new ball both ways and, as it aged, make it reverse, a skill he and Waqar Younis turned into Pakistan\'s signature weapon in the 1990s. His yorker at the death and his control at pace made him dangerous in every phase of a one-day innings, and his batting, crowned by 257 not out against Zimbabwe, made him a genuine all-rounder.' },
       { title: 'After Playing', content: 'After retiring in 2003 Wasim stayed in the game as a coach and commentator, including a long association with Kolkata Knight Riders in the Indian Premier League, and in 2022 he published Sultan: A Memoir with Gideon Haigh. He remains one of the most recognisable voices in world cricket commentary.' },
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Wasim_Akram',

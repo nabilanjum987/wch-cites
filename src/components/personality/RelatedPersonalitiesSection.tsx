@@ -5,16 +5,23 @@
 // Returns null when there are no related profiles: the template omits
 // the section entirely rather than rendering an empty shell.
 //
-// "See All" target: there is NO /personalities index page in this repo —
-// the live /personalities URL is served by the [country] fallback route
-// as a "Check back soon" country-profile shell, so linking there would
-// be a link to a shell, which the Link Laws forbid. The honest live
-// target is the profile's own city page, whose #personalities section
-// lists that city's profiles (cityHref is passed in as
-// `/{country}/{province}/{city}` and the anchor is appended here).
+// "See All" target: the profile's own city page, whose #personalities
+// section lists that city's profiles (cityHref is passed in as
+// `/{country}/{province}/{city}` and the anchor is appended here). The
+// /personalities hub (B1) indexes every profile, but the city listing
+// is the closest relative of this section, so it stays the target.
+//
+// S2 + B4: the pool functions now fall through to the seed on an empty
+// database result (previously an empty verified-rows response
+// suppressed this section entirely), and each card carries the
+// profile's photo where one exists, framed by the same measured
+// 4/5 + per-slug object-position rule as the profile hero.
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import type { PersonalityProfile } from '@/lib/personalities';
+import {
+  type PersonalityProfile,
+  personalityImagePosition,
+} from '@/lib/personalities';
 
 interface RelatedPersonalitiesSectionProps {
   profiles: PersonalityProfile[];
@@ -49,10 +56,24 @@ export function RelatedPersonalitiesSection({
             <Link
               href={`/personalities/${p.slug}`}
               style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}
-              className="block rounded-xl px-4 py-3 hover:opacity-80 transition"
+              className="block rounded-xl overflow-hidden hover:opacity-80 transition"
             >
-              <span className="block font-semibold text-white text-sm">{p.name}</span>
-              <span className="block text-xs text-gray-400 mt-0.5">{p.title}</span>
+              {p.imageUrl && (
+                <span className="block aspect-[4/5] overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.imageUrl}
+                    alt={p.name}
+                    loading="lazy"
+                    decoding="async"
+                    className={`h-full w-full object-cover ${personalityImagePosition(p.slug)}`}
+                  />
+                </span>
+              )}
+              <span className="block px-4 py-3">
+                <span className="block font-semibold text-white text-sm">{p.name}</span>
+                <span className="block text-xs text-gray-400 mt-0.5">{p.title}</span>
+              </span>
             </Link>
           </li>
         ))}

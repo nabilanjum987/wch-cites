@@ -1,48 +1,57 @@
 /**
  * SEO paragraph generators — WorldCityHub Personality Page
  *
- * TWO paragraphs per section: para_before (above data) + para_after (below data)
- * Target: 4 sections × ~150 words × 2 = 1,200+ words per personality page.
- * Each personality gets genuinely unique copy using name/city/country/title.
- * Pattern mirrors src/lib/paragraphs/city.ts exactly.
+ * TWO short paragraphs per section: para_before (introduces the
+ * section that FOLLOWS it) + para_after (reflects on the section
+ * ABOVE it). Honesty rules (personalities family fix, S3):
+ *   • A paragraph never points at its section as "above" when the
+ *     section follows it, or claims connections the page does not
+ *     contain.
+ *   • No em dashes.
+ *   • The quotes paragraphs make no "own words / original context"
+ *     overclaim: the wording is "well-documented words, with the
+ *     setting where it is reliably recorded".
+ * Each paragraph is composed only from the profile's own fields
+ * (name, city) — no facts are asserted beyond what the section it
+ * frames actually shows.
  */
 
 // ─── 1. LIFE TIMELINE ────────────────────────────────────────────────────────
 
 export function generateTimelineParagraph(name: string, city: string): string {
-  return `The timeline above traces ${name}'s life chronologically, marking the milestones that shaped both an individual life story and a wider legacy connected to ${city}. Reading a life in sequence like this reveals connections a standalone biography section often can't — how early experiences shaped later decisions, how one achievement opened the door to the next, and how ${name}'s path unfolded across the years rather than arriving fully formed. Each entry below links a specific year to a specific turning point worth understanding in its own right.`;
+  return `A life is easiest to follow in the order it was lived. The timeline that follows traces ${name}'s years in sequence: the early life, the turning points and the milestones that built a lasting connection to ${city}. Read in order, each entry shows how one step led to the next.`;
 }
 
 export function generateTimelineAfter(name: string, city: string): string {
-  return `This timeline connects directly to ${city}'s own history elsewhere on this site, since ${name}'s story and the city's story are genuinely intertwined — a connection this page is specifically designed to surface for anyone researching either the individual or the place. Major milestones above often correspond to broader historical moments that shaped ${city} and the wider region during the same period, context worth keeping in mind while reading. Returning to this timeline after reading the fuller description sections above often reveals connections that weren't obvious on a first pass.`;
+  return `Taken together, these entries give the shape of ${name}'s life at a glance, and the outline of a connection to ${city} that the rest of this page fills in. The other sections add the detail behind the milestones: what was achieved, what was made, and what was said along the way.`;
 }
 
 // ─── 2. ACHIEVEMENTS ─────────────────────────────────────────────────────────
 
 export function generateAchievementsParagraph(name: string): string {
-  return `The achievements above represent the specific, verifiable accomplishments that distinguish ${name}'s career and legacy from a more general biography — concrete markers of impact rather than vague claims to significance. Each achievement carries its own context for why it matters, whether a record, a title, an institution founded, or a recognition earned, giving a fuller sense of ${name}'s actual measurable impact beyond reputation alone. Together, these accomplishments form the evidentiary backbone behind ${name}'s broader historical significance.`;
+  return `These are the concrete accomplishments behind ${name}'s reputation: records set, titles earned, institutions founded and honours received. Each entry states what was done and why it matters, so the claim on a reader's attention rests on evidence rather than praise.`;
 }
 
 export function generateAchievementsAfter(name: string): string {
-  return `These achievements above didn't happen in isolation — each connects back to the fuller narrative covered in the timeline and description sections elsewhere on this page, where the path leading to each accomplishment is explained in greater depth. For anyone researching ${name} specifically, this achievements list offers the fastest way to verify the concrete basis behind ${name}'s reputation, useful for citations, reports, or simply confirming claims found elsewhere. Each entry reflects an accomplishment that has stood the test of historical scrutiny.`;
+  return `No achievement stands on its own: each grew out of the years of work traced in this profile's timeline. For the fastest check of what ${name} is remembered for, and the concrete basis for it, this is the section to cite.`;
 }
 
 // ─── 3. FAMOUS WORKS ─────────────────────────────────────────────────────────
 
 export function generateWorksParagraph(name: string): string {
-  return `${name}'s body of work above represents the tangible output behind the achievements and reputation covered elsewhere on this page — the actual books, creative output, or documented contributions that future generations can directly engage with rather than simply read about secondhand. Each entry includes its own context for significance and, where relevant, the year it was produced, situating individual works within ${name}'s broader career arc shown in the timeline above. This list offers a practical starting point for anyone wanting to engage directly with ${name}'s output.`;
+  return `The works listed here are the tangible output of ${name}'s career: the books, poems, recordings and institutions that readers can still engage with directly. Each entry carries its year, where one is recorded, and a note on why it matters.`;
 }
 
 export function generateWorksAfter(name: string): string {
-  return `Many of ${name}'s works listed above remain in print or otherwise accessible today, meaning this list doubles as a practical reading or research list rather than purely a historical record of past output. The progression of works across different years often mirrors the broader timeline covered earlier on this page, with later works frequently reflecting maturity or shifts in focus compared to earlier output. For deeper engagement with ${name}'s actual contributions beyond this page's summary, seeking out these works directly remains the most authentic path.`;
+  return `Read in order, the works show the arc of a career, from early pieces to the mature output that made a reputation. Many remain available today, and they are the most direct route into what ${name} actually contributed.`;
 }
 
 // ─── 4. FAMOUS QUOTES ────────────────────────────────────────────────────────
 
 export function generateQuotesParagraph(name: string): string {
-  return `The quotes above, each given context for when and why they were said, offer a more direct window into ${name}'s own voice and thinking than the third-person biographical sections elsewhere on this page can provide. Quotes carry a particular kind of authenticity — they're ${name}'s own words rather than later interpretation or summary, giving readers direct access to how ${name} actually articulated ideas, values, and perspective during specific moments captured here.`;
+  return `Recorded words are the closest a profile comes to a person's own voice. The quotations here are ${name}'s well-documented words; where a setting is reliably recorded, it is given alongside, so each quote can be read in the circumstances that produced it.`;
 }
 
 export function generateQuotesAfter(name: string): string {
-  return `Each quote above is tied to its original context, whether a specific speech, work, or interview, allowing readers to understand not just what ${name} said but the circumstances that prompted it — context that often changes how a quote should be understood. These quotes frequently connect to specific moments covered in the timeline above, where the fuller circumstances behind each statement are explained in greater depth. Taken together with the rest of this page, these quotes round out a fuller picture of ${name} beyond dates and achievements alone.`;
+  return `Read against the timeline, these words belong to the moments they came from: a speech, a poem, an interview. They are one part of the record this profile assembles, alongside the dated facts of a life and the work that survived it.`;
 }

@@ -1,7 +1,7 @@
-// Extension data — personalities + events for the R4B batch-2 cities
+// Extension data, personalities + events for the R4B batch-2 cities
 // (Round 2 extension, R6B). Build-only dataset mirroring migration 0013.
 // Every birth/death date was checked on Wikidata on 2026-10-22 (QID in
-// each profile’s sources); all rows verified = false — the human
+// each profile’s sources); all rows verified = false, the human
 // verification gate is unchanged. Events follow the R7 pattern
 // (source + last-verified date per row, status draft).
 
@@ -24,7 +24,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
   {
     "slug": "mohammad-hafeez",
     "name": "Mohammad Hafeez",
-    "title": "The Professor — Pakistan All-Rounder",
+    "title": "The Professor: Pakistan All-Rounder",
     "occupation": "Cricketer",
     "birthDate": "17 October 1980",
     "deathDate": null,
@@ -35,7 +35,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Sargodha",
     "provinceName": "Punjab",
     "countryName": "Pakistan",
-    "summary": "Mohammad Hafeez, born in Sargodha in 1980, served Pakistan cricket for two decades as an opening batter and off-spinner — nicknamed 'The Professor' for his analytical game. He captained Pakistan's T20 side and played in the team that won the 2017 Champions Trophy.",
+    "summary": "Mohammad Hafeez, born in Sargodha in 1980, served Pakistan cricket for two decades as an opening batter and off-spinner, nicknamed 'The Professor' for his analytical game. He captained Pakistan's T20 side and played in the team that won the 2017 Champions Trophy.",
     "achievements": [
       {
         "icon": "🏏",
@@ -130,7 +130,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
       {
         "year": "1893",
         "title": "Born in Shahpur",
-        "description": "Born in Hamoka village, Shahpur district — today’s Sargodha division."
+        "description": "Born in Hamoka village, Shahpur district, today’s Sargodha division."
       },
       {
         "year": "1940s",
@@ -170,7 +170,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
   {
     "slug": "mushaf-ali-mir",
     "name": "Mushaf Ali Mir",
-    "title": "Air Chief Marshal — Chief of Air Staff (2000–2003)",
+    "title": "Air Chief Marshal: Chief of Air Staff (2000–2003)",
     "occupation": "Air force officer",
     "birthDate": "5 March 1947",
     "deathDate": "20 February 2003",
@@ -181,7 +181,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Sargodha",
     "provinceName": "Punjab",
     "countryName": "Pakistan",
-    "summary": "Air Chief Marshal Mushaf Ali Mir led the Pakistan Air Force from 2000 until his death in a Fokker F27 crash near Kohat in 2003. PAF Base Mushaf — Sargodha's great air base and the source of its 'City of Eagles' identity — is named in his honour; his association with the city is institutional rather than by birth, and it is recorded that way.",
+    "summary": "Air Chief Marshal Mushaf Ali Mir led the Pakistan Air Force from 2000 until his death in a Fokker F27 crash near Kohat in 2003. PAF Base Mushaf, Sargodha's great air base and the source of its 'City of Eagles' identity, is named in his honour; his association with the city is institutional rather than by birth, and it is recorded that way.",
     "achievements": [
       {
         "icon": "✈️",
@@ -312,7 +312,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Bahawalpur",
     "provinceName": "Punjab",
     "countryName": "Pakistan",
-    "summary": "Sadiq Muhammad Khan IV ruled Bahawalpur state for over three decades of its princely-era consolidation. The Noor Mahal — the city's signature palace — was built in his reign (1872), and the state's treaty relations with the British Crown were formalised in his time.",
+    "summary": "Sadiq Muhammad Khan IV ruled Bahawalpur state for over three decades of its princely-era consolidation. The Noor Mahal, the city's signature palace, was built in his reign (1872), and the state's treaty relations with the British Crown were formalised in his time.",
     "achievements": [
       {
         "icon": "🏰",
@@ -380,7 +380,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Bahawalpur",
     "provinceName": "Punjab",
     "countryName": "Pakistan",
-    "summary": "Sadiq Muhammad Khan V, the twelfth and last ruling Nawab of Bahawalpur (r. 1907–1955), was the first princely ruler to pledge his state's resources to the Allied war effort in 1939, and he acceded Bahawalpur to Pakistan on 7 October 1947. His palaces — Noor Mahal, Darbar Mahal, Gulzar Mahal — remain the city's architectural inheritance.",
+    "summary": "Sadiq Muhammad Khan V, the twelfth and last ruling Nawab of Bahawalpur (r. 1907–1955), was the first princely ruler to pledge his state's resources to the Allied war effort in 1939, and he acceded Bahawalpur to Pakistan on 7 October 1947. His palaces, Noor Mahal, Darbar Mahal, Gulzar Mahal, remain the city's architectural inheritance.",
     "achievements": [
       {
         "icon": "🤝",
@@ -453,7 +453,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Abbottabad",
     "provinceName": "Khyber Pakhtunkhwa",
     "countryName": "Pakistan",
-    "summary": "General Sir James Abbott, the East India Company officer who served as the first Deputy Commissioner of Hazara, founded the town of Abbottabad in January 1853 — and the city still bears his name (Abbott + abad, 'Abbott's town'). His farewell poem 'Abbottabad' is displayed in the city's Lady Garden. (No Wikidata item was located in this pass; dates per his Wikipedia biography.)",
+    "summary": "General Sir James Abbott, the East India Company officer who served as the first Deputy Commissioner of Hazara, founded the town of Abbottabad in January 1853, and the city still bears his name (Abbott + abad, 'Abbott's town'). His farewell poem 'Abbottabad' is displayed in the city's Lady Garden. (No Wikidata item was located in this pass; dates per his Wikipedia biography.)",
     "achievements": [
       {
         "icon": "🏙️",
@@ -510,7 +510,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
   {
     "slug": "sardar-mehtab-abbasi",
     "name": "Sardar Mehtab Ahmed Khan",
-    "title": "Sardar of Abbottabad — former Chief Minister & Governor of KP",
+    "title": "Sardar of Abbottabad: former Chief Minister & Governor of KP",
     "occupation": "Politician",
     "birthDate": "15 December 1952",
     "deathDate": null,
@@ -589,7 +589,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Abbottabad",
     "provinceName": "Khyber Pakhtunkhwa",
     "countryName": "Pakistan",
-    "summary": "Baba Haider Zaman Khan of Abbottabad led the movement demanding a separate Hazara province — the cause that defined Abbottabad's politics after 2010, when the province was renamed Khyber Pakhtunkhwa. A long-serving district nazim, his funeral in 2018 drew the region's political class. (Birth year only on Wikidata: 1936.)",
+    "summary": "Baba Haider Zaman Khan of Abbottabad led the movement demanding a separate Hazara province, the cause that defined Abbottabad's politics after 2010, when the province was renamed Khyber Pakhtunkhwa. A long-serving district nazim, his funeral in 2018 drew the region's political class. (Birth year only on Wikidata: 1936.)",
     "achievements": [
       {
         "icon": "✊",
@@ -652,7 +652,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Sukkur",
     "provinceName": "Sindh",
     "countryName": "Pakistan",
-    "summary": "Syed Khurshid Ahmed Shah, born in Sukkur in 1952, is among Pakistan's longest-serving parliamentarians — repeatedly elected from Sukkur since 1988, a federal minister in several governments, and Leader of the Opposition in the National Assembly (2013–18). (Birth date per Wikidata; some references give 13 April 1952.)",
+    "summary": "Syed Khurshid Ahmed Shah, born in Sukkur in 1952, is among Pakistan's longest-serving parliamentarians, repeatedly elected from Sukkur since 1988, a federal minister in several governments, and Leader of the Opposition in the National Assembly (2013–18). (Birth date per Wikidata; some references give 13 April 1952.)",
     "achievements": [
       {
         "icon": "🏛️",
@@ -704,7 +704,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
   {
     "slug": "mir-muhammad-masum",
     "name": "Mir Muhammad Masum",
-    "title": "Historian of Sindh — author of Tarikh-i-Masumi",
+    "title": "Historian of Sindh: author of Tarikh-i-Masumi",
     "occupation": "Historian and poet",
     "birthDate": "1538",
     "deathDate": "1606",
@@ -715,7 +715,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Sukkur",
     "provinceName": "Sindh",
     "countryName": "Pakistan",
-    "summary": "Mir Muhammad Masum of Bhakkar, in the Sukkur region, was a Mughal-era historian, poet and physician whose Tarikh-i-Masumi (c. 1600) remains a foundational history of Sindh. Sukkur's great minaret — the Minar of Masum Shah — was raised by his son Mir Buzurg in his memory in 1607. (Years per Wikidata Q20101203; the R4B package seed's birth year is corrected here from 1576 to 1538.)",
+    "summary": "Mir Muhammad Masum of Bhakkar, in the Sukkur region, was a Mughal-era historian, poet and physician whose Tarikh-i-Masumi (c. 1600) remains a foundational history of Sindh. Sukkur's great minaret, the Minar of Masum Shah, was raised by his son Mir Buzurg in his memory in 1607. (Years per Wikidata Q20101203; the R4B package seed's birth year is corrected here from 1576 to 1538.)",
     "achievements": [
       {
         "icon": "📜",
@@ -836,7 +836,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Mardan",
     "provinceName": "Khyber Pakhtunkhwa",
     "countryName": "Pakistan",
-    "summary": "Younis Khan, born in Mardan in 1977, is Pakistan's most prolific Test batter — the only Pakistani past 10,000 Test runs — and the captain who lifted the 2009 ICC World Twenty20 trophy at Lord's. Mardan's most famous sporting son.",
+    "summary": "Younis Khan, born in Mardan in 1977, is Pakistan's most prolific Test batter, the only Pakistani past 10,000 Test runs, and the captain who lifted the 2009 ICC World Twenty20 trophy at Lord's. Mardan's most famous sporting son.",
     "achievements": [
       {
         "icon": "🏏",
@@ -909,7 +909,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
     "cityName": "Mardan",
     "provinceName": "Khyber Pakhtunkhwa",
     "countryName": "Pakistan",
-    "summary": "Ameer Haider Khan Hoti of Mardan led Khyber Pakhtunkhwa as its chief minister from 2008 to 2013 — the ANP government that governed through the province's hardest militancy years and renamed the province itself in the 18th Amendment era.",
+    "summary": "Ameer Haider Khan Hoti of Mardan led Khyber Pakhtunkhwa as its chief minister from 2008 to 2013, the ANP government that governed through the province's hardest militancy years and renamed the province itself in the 18th Amendment era.",
     "achievements": [
       {
         "icon": "🏛️",
@@ -1033,7 +1033,7 @@ export const EXTENSION_EVENTS = [
     "ends": "2026-02-15",
     "category": "motorsport",
     "description": "The 21st edition of the TDCP International Cholistan Desert Jeep Rally, organised by the Tourism Development Corporation of Punjab: 120+ drivers over a ~500 km desert route past Derawar and Jamgarh forts, in Prepared, Stock, Women’s, dirt-bike, quad and truck classes. Khalid Hameed Khan won Prepared A in a record 3:54:12 (Dawn/PakWheels results coverage). Dates note: the rally was announced in some schedules for 4–8 February 2026; post-event reporting (Wikipedia, PakWheels, BeNewz) records the held dates as 11–15 February 2026, which this row uses. Seeded retrospectively as a dated edition record (R7 pattern); the next edition’s dates are the organiser’s to announce.",
-    "sourceName": "Wikipedia — Cholistan Desert Jeep Rally; PakWheels (results, 20 Feb 2026)",
+    "sourceName": "Wikipedia, Cholistan Desert Jeep Rally; PakWheels (results, 20 Feb 2026)",
     "sourceUrl": "https://en.wikipedia.org/wiki/Cholistan_Desert_Jeep_Rally"
   }
 ] as const;

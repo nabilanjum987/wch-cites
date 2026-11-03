@@ -75,8 +75,10 @@ const LIVE_OCEANS = [
 
 // Live personalities + places pages (final28 B11). Every slug below was
 // verified live before listing (200 + real content + self-canonical).
-// Deliberately NOT listed: the /personalities and /places index pages
-// (200 but "Check back soon" fallbacks with 0 links) and the 4
+// The /personalities index IS now listed (staticPages below): the B1
+// hub replaced the old "Check back soon" [country]-fallback shell with
+// a real server-rendered index of every profile here. Still NOT
+// listed: the /places index page (still a fallback shell) and the 4
 // unpublished place slugs (Shalimar Gardens, Data Darbar, Walled City,
 // Lahore Museum — all 404 live); sibling item D18 carries those entries
 // when it builds the pages.
@@ -111,6 +113,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/rates`, changeFrequency: 'hourly', priority: 0.7 },
     { url: `${baseUrl}/news`, changeFrequency: 'hourly', priority: 0.6 },
     { url: `${baseUrl}/horoscope`, changeFrequency: 'daily', priority: 0.7 },
+    { url: `${baseUrl}/personalities`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/compare`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/improve`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/about`, changeFrequency: 'monthly', priority: 0.4 },

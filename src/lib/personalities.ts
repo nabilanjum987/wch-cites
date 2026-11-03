@@ -22,9 +22,129 @@ import {
   PERSONALITIES_SEED,
   type PersonalityProfile,
 } from './data/personalities-seed';
+import { EXTENSION_PERSONALITIES } from './data/personalities-extension';
 
 export type { PersonalityProfile };
 export { PERSONALITIES_SEED };
+
+// ── Code-side photo overrides + hero framing (personalities family fix) ────
+// The country page carries the precedent (PERSONALITY_PHOTOS /
+// PERSONALITY_POS in CountryClient.tsx): where a profile's database row
+// has image_url NULL — or, for Iqbal, a hotlinked upload.wikimedia.org
+// URL — the verified local photo is supplied here, keyed by slug, so
+// every surface (detail hero, hub cards, related cards) shows the same
+// photo with the same credit. Database rows are NOT edited from code;
+// the SQL-side equivalents live in migration 0022. An override applies
+// ONLY when the record has no photo or a remote hotlink: a local photo
+// already on the record always wins.
+interface PersonalityImageOverride {
+  imageUrl: string;
+  imageCredit: string;
+  imageLicence: string;
+}
+
+export const PERSONALITY_IMAGE_OVERRIDES: Record<string, PersonalityImageOverride> = {
+  // B6: replaces the hotlinked upload.wikimedia.org portrait. File:
+  // extended-canvas portrait (head y 12–77%, x 6–91% of frame).
+  'allama-iqbal': {
+    imageUrl: '/images/home28/pers-iqbal-wide.webp',
+    imageCredit: 'Iqbal Academy Pakistan',
+    imageLicence: 'public domain',
+  },
+  // File:Muhammad Ali Jinnah.jpg — Ministry of Information &
+  // Broadcasting, Government of Pakistan, public domain.
+  'quaid-e-azam-jinnah': {
+    imageUrl: '/images/personalities/muhammad-ali-jinnah.webp',
+    imageCredit: 'Ministry of Information & Broadcasting, Government of Pakistan',
+    imageLicence: 'public domain',
+  },
+  'muhammad-ali-jinnah': {
+    imageUrl: '/images/personalities/muhammad-ali-jinnah.webp',
+    imageCredit: 'Ministry of Information & Broadcasting, Government of Pakistan',
+    imageLicence: 'public domain',
+  },
+  // File:Abdus Salam 1987.jpg — Bart Molendijk / Anefo, CC BY-SA 3.0 nl.
+  'dr-abdus-salam': {
+    imageUrl: '/images/personalities/abdus-salam.webp',
+    imageCredit: 'Bart Molendijk / Anefo, via Wikimedia Commons',
+    imageLicence: 'CC BY-SA 3.0 nl',
+  },
+  'abdus-salam': {
+    imageUrl: '/images/personalities/abdus-salam.webp',
+    imageCredit: 'Bart Molendijk / Anefo, via Wikimedia Commons',
+    imageLicence: 'CC BY-SA 3.0 nl',
+  },
+  // File:Malala Yousafzai 2023 portrait 2x3.jpg — flowcomm, CC BY 2.0.
+  'malala-yousafzai': {
+    imageUrl: '/images/personalities/malala-yousafzai.webp',
+    imageCredit: 'flowcomm, via Wikimedia Commons',
+    imageLicence: 'CC BY 2.0',
+  },
+  // File:Abdul Sattar Edhi.jpg — Hussain, CC BY-SA 3.0.
+  'abdul-sattar-edhi': {
+    imageUrl: '/images/personalities/abdul-sattar-edhi.webp',
+    imageCredit: 'Hussain, via Wikimedia Commons',
+    imageLicence: 'CC BY-SA 3.0',
+  },
+  // P9 photos (docs/personality-photos-p9.md): these two profiles are
+  // served from database rows whose photos wait on migration 0016;
+  // the seed records carry no photo, so without an override their
+  // heroes and cards render photo-less even though verified local
+  // files exist. Credits per migration 0016.
+  'nusrat-fateh-ali-khan': {
+    imageUrl: '/images/personalities/nusrat-fateh-ali-khan.webp',
+    imageCredit: 'Thomas Rome, via Wikimedia Commons',
+    imageLicence: 'CC BY 2.0',
+  },
+  'wasim-akram': {
+    imageUrl: '/images/personalities/wasim-akram.webp',
+    imageCredit: 'Arijit Basak, via Wikimedia Commons',
+    imageLicence: 'CC BY 2.0',
+  },
+  // File:Oliver Mark - Benazir Bhutto, Dubai 2006 (cropped).jpg —
+  // Oliver Mark, CC BY-SA 4.0 (media registry: VERIFIED). Framing not
+  // yet measured; the hero position map gives object-top like every
+  // other unmeasured portrait.
+  'benazir-bhutto': {
+    imageUrl: '/images/personalities/benazir-bhutto.webp',
+    imageCredit: 'Oliver Mark, via Wikimedia Commons',
+    imageLicence: 'CC BY-SA 4.0',
+  },
+};
+
+// Hero/card object-position per slug, MEASURED from the actual files
+// (owner's complete-head rule: hair to chin inside the 4/5 frame).
+// Unlisted photographed profiles default to 'object-top'.
+export const PERSONALITY_HERO_POSITIONS: Record<string, string> = {
+  'allama-iqbal': 'object-top', // wide canvas: head y 12–77%
+  'faiz-ahmed-faiz': 'object-right', // 800×664, head x 39.5–96%
+  'imran-khan': 'object-top', // head y 0.5–78.9%
+  'wasim-akram': 'object-top', // head y 1.5–79.7%
+  'nusrat-fateh-ali-khan': 'object-[80%_center]', // 402×402, head x 18.5–93.5%
+  'quaid-e-azam-jinnah': 'object-top', // head y 10.8–38.2%, x 61.5–89%
+  'muhammad-ali-jinnah': 'object-top',
+  'dr-abdus-salam': 'object-center', // head x 19.8–74.3%, y 11.5–63%
+  'abdus-salam': 'object-center',
+  'malala-yousafzai': 'object-[center_20%]', // head y 8.8–62%
+  'abdul-sattar-edhi': 'object-top', // head y 5.5–47%
+};
+
+export function personalityImagePosition(slug: string): string {
+  return PERSONALITY_HERO_POSITIONS[slug] ?? 'object-top';
+}
+
+function applyPersonalityOverrides(profile: PersonalityProfile): PersonalityProfile {
+  const o = PERSONALITY_IMAGE_OVERRIDES[profile.slug];
+  if (!o) return profile;
+  const current = profile.imageUrl ?? '';
+  if (current && !/^https?:\/\//i.test(current)) return profile; // local photo wins
+  return {
+    ...profile,
+    imageUrl: o.imageUrl,
+    imageCredit: o.imageCredit,
+    imageLicence: o.imageLicence,
+  };
+}
 
 interface PersonalityRow {
   slug: string;
@@ -105,7 +225,7 @@ function rowToProfile(r: PersonalityRow): PersonalityProfile {
     (s) => !!s && typeof s.name === 'string' && /wikipedia/i.test(s.name),
   );
   const wiki = typeof wikiEntry?.url === 'string' ? wikiEntry.url : undefined;
-  return ensureDescription({
+  return applyPersonalityOverrides(ensureDescription({
     slug: asString(r.slug),
     name: asString(r.name),
     title: asString(r.title),
@@ -129,7 +249,7 @@ function rowToProfile(r: PersonalityRow): PersonalityProfile {
     quotes: asArray(r.quotes),
     descriptionSections: asArray(r.description_sections),
     wikiUrl: wiki,
-  });
+  }));
 }
 
 async function dbQuery(params: Record<string, string>): Promise<PersonalityProfile[] | null> {
@@ -153,8 +273,51 @@ async function dbQuery(params: Record<string, string>): Promise<PersonalityProfi
 
 const seedList = (): PersonalityProfile[] =>
   Object.values(PERSONALITIES_SEED)
-    .map(ensureDescription)
+    .map((p) => applyPersonalityOverrides(ensureDescription(p)))
     .sort((a, b) => a.slug.localeCompare(b.slug));
+
+// ── Consolidated-slug aliases (duplicate-person consolidation) ─────────────
+// The survivors `dr-abdus-salam` / `quaid-e-azam-jinnah` exist only as
+// database rows; the seed carries the same people under the retired
+// slugs. In the seed-fallback environment the survivor URLs resolve to
+// the seed twin (with the survivor's own display name/title/summary,
+// mirroring migration 0019) so the pages behave exactly as they do
+// from the database. In production the database row returns first and
+// this path is never reached.
+const SEED_SLUG_ALIASES: Record<string, string> = {
+  'dr-abdus-salam': 'abdus-salam',
+  'quaid-e-azam-jinnah': 'muhammad-ali-jinnah',
+};
+const SURVIVOR_DISPLAY: Record<string, { name: string; title: string; description: string }> = {
+  'dr-abdus-salam': {
+    name: 'Dr Abdus Salam',
+    title: 'Nobel Laureate Physicist',
+    description: 'Dr Abdus Salam, born in Jhang and educated at Government College Lahore, shared the 1979 Nobel Prize in Physics for electroweak unification.',
+  },
+  'quaid-e-azam-jinnah': {
+    name: 'Quaid-e-Azam Muhammad Ali Jinnah',
+    title: 'Founder',
+    description: "Quaid-e-Azam Muhammad Ali Jinnah, born in Karachi, was the barrister who led the Pakistan Movement and became Pakistan's first Governor-General in 1947.",
+  },
+};
+
+function seedBySlug(slug: string): PersonalityProfile | null {
+  const direct = PERSONALITIES_SEED[slug];
+  if (direct) return applyPersonalityOverrides(ensureDescription(direct));
+  const alias = SEED_SLUG_ALIASES[slug];
+  if (!alias || !PERSONALITIES_SEED[alias]) return null;
+  const twin = PERSONALITIES_SEED[alias];
+  const display = SURVIVOR_DISPLAY[slug];
+  return applyPersonalityOverrides(
+    ensureDescription({
+      ...twin,
+      slug,
+      ...(display
+        ? { name: display.name, title: display.title, description: display.description }
+        : {}),
+    }),
+  );
+}
 
 // ── Single profile (detail page) ────────────────────────────────────────────
 // Tries the database first (any row, so an unverified-but-migrated
@@ -162,8 +325,7 @@ const seedList = (): PersonalityProfile[] =>
 export async function getPersonalityBySlug(slug: string): Promise<PersonalityProfile | null> {
   const rows = await dbQuery({ slug: `eq.${slug}`, limit: '1' });
   if (rows && rows.length > 0) return rows[0];
-  const seed = PERSONALITIES_SEED[slug];
-  return seed ? ensureDescription(seed) : null;
+  return seedBySlug(slug);
 }
 
 export async function getAllPersonalitySlugs(): Promise<string[]> {
@@ -176,7 +338,11 @@ export async function getAllPersonalitySlugs(): Promise<string[]> {
 
 export async function getPersonalitiesByCity(citySlug: string): Promise<PersonalityProfile[]> {
   const rows = await dbQuery({ city_slug: `eq.${citySlug}`, verified: 'eq.true' });
-  if (rows !== null) return rows;
+  // S2 fix: an EMPTY database result (query succeeded, zero verified
+  // rows) must fall through to the seed pool — returning it verbatim
+  // suppressed whole sections (e.g. Related Personalities) whenever
+  // the database answered with no rows for a city.
+  if (rows !== null && rows.length > 0) return rows;
   return seedList().filter((p) => p.citySlug === citySlug);
 }
 
@@ -184,7 +350,7 @@ export async function getPersonalitiesByCity(citySlug: string): Promise<Personal
 // country matches; national figures carry city_slug NULL). §16.
 export async function getPersonalitiesByCountry(countrySlug: string): Promise<PersonalityProfile[]> {
   const rows = await dbQuery({ country_slug: `eq.${countrySlug}`, verified: 'eq.true' });
-  if (rows !== null) return rows;
+  if (rows !== null && rows.length > 0) return rows;
   return seedList().filter((p) => p.countrySlug === countrySlug);
 }
 
@@ -197,7 +363,7 @@ const MONTHS = [
 // the stored birth-date strings (e.g. "9 November 1877").
 export async function getBornToday(date: Date = new Date()): Promise<PersonalityProfile[]> {
   const rows = await dbQuery({ verified: 'eq.true', limit: '500' });
-  const pool = rows ?? seedList();
+  const pool = rows && rows.length > 0 ? rows : seedList();
   const day = date.getDate();
   const month = MONTHS[date.getMonth()];
   return pool.filter((p) => {
@@ -205,6 +371,79 @@ export async function getBornToday(date: Date = new Date()): Promise<Personality
     const m = p.birthDate.trim().match(/^(\d{1,2})\s+([A-Za-z]+)/);
     return !!m && parseInt(m[1], 10) === day && m[2].toLowerCase() === month;
   });
+}
+
+// ── Hub listing (/personalities index, B1) ──────────────────────────────────
+// The canonical profile set: the same 35 slugs the sitemap lists.
+// Resolution order per slug: database row → seed (direct or via the
+// consolidated-slug alias) → extension dataset (the build-only mirror
+// of migration 0013, converted to the profile shape). A slug that no
+// source can resolve is omitted rather than rendered as a shell.
+export const CANONICAL_PROFILE_SLUGS = [
+  'abdul-qadeer-khan', 'abdul-sattar-edhi',
+  'allama-iqbal', 'ameer-haider-khan-hoti', 'amrita-pritam',
+  'ashfaq-ahmed', 'azam-khan-hoti', 'bahawal-khan-i', 'bano-qudsia',
+  'benazir-bhutto', 'dr-abdus-salam', 'faiz-ahmed-faiz', 'fatima-jinnah',
+  'feroz-khan-noon', 'habib-jalib', 'haider-zaman-khan', 'imran-khan',
+  'james-abbott', 'khurshid-ahmed-shah', 'malala-yousafzai',
+  'mehdi-hasan', 'mir-muhammad-masum', 'mohammad-hafeez',
+  'mushaf-ali-mir', 'nasir-hussain-shah',
+  'noor-jehan', 'nusrat-fateh-ali-khan', 'pervez-musharraf',
+  'quaid-e-azam-jinnah', 'sadequain', 'sadiq-muhammad-khan-iv',
+  'sadiq-muhammad-khan-v', 'sardar-mehtab-abbasi',
+  'wasim-akram', 'younis-khan',
+] as const;
+
+function extensionToProfile(e: (typeof EXTENSION_PERSONALITIES)[number]): PersonalityProfile {
+  const wiki = e.sources.find((s) => /wikipedia/i.test(s.name))?.url;
+  return applyPersonalityOverrides(
+    ensureDescription({
+      slug: e.slug,
+      name: e.name,
+      title: e.title,
+      imageUrl: e.imageUrl ?? undefined,
+      imageCredit: e.imageCredit ?? undefined,
+      imageLicence: e.imageLicence ?? undefined,
+      birthDate: e.birthDate || undefined,
+      deathDate: e.deathDate ?? undefined,
+      nationality: e.nationality,
+      city: e.cityName,
+      citySlug: e.citySlug,
+      country: e.countryName,
+      countrySlug: e.countrySlug,
+      province: e.provinceName,
+      provinceSlug: e.provinceSlug,
+      description: e.summary,
+      primaryColor: e.primaryColor || '#01411C',
+      timeline: e.timeline,
+      achievements: e.achievements,
+      works: e.works as PersonalityProfile['works'],
+      quotes: e.quotes as PersonalityProfile['quotes'],
+      descriptionSections: e.descriptionSections as PersonalityProfile['descriptionSections'],
+      wikiUrl: wiki,
+    }),
+  );
+}
+
+export async function getAllPersonalities(): Promise<PersonalityProfile[]> {
+  const rows = await dbQuery({ limit: '500' });
+  const bySlug = new Map((rows ?? []).map((r) => [r.slug, r]));
+  const out: PersonalityProfile[] = [];
+  for (const slug of CANONICAL_PROFILE_SLUGS) {
+    const fromDb = bySlug.get(slug);
+    if (fromDb) {
+      out.push(fromDb);
+      continue;
+    }
+    const fromSeed = seedBySlug(slug);
+    if (fromSeed) {
+      out.push(fromSeed);
+      continue;
+    }
+    const ext = EXTENSION_PERSONALITIES.find((e) => e.slug === slug);
+    if (ext) out.push(extensionToProfile(ext));
+  }
+  return out;
 }
 
 // ── Related personalities (final28: template Section 10) ────────────────────

@@ -9,7 +9,7 @@ import { FamousWorksSection } from '@/components/personality/FamousWorksSection'
 import { FamousQuotesSection } from '@/components/personality/FamousQuotesSection';
 import { PersonalityBreadcrumb } from '@/components/personality/PersonalityBreadcrumb';
 import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
-import { getPersonalityBySlug, getAllPersonalitySlugs, getRelatedPersonalities } from '@/lib/personalities';
+import { getPersonalityBySlug, getAllPersonalitySlugs, getRelatedPersonalities, personalityImagePosition } from '@/lib/personalities';
 import { RelatedPersonalitiesSection } from '@/components/personality/RelatedPersonalitiesSection';
 import { PersonalityDescription } from '@/components/personality/PersonalityDescription';
 import { DirectAnswer, FaqBlock, type AeoFaq } from '@/components/aeo/AnswerLayer';
@@ -32,56 +32,19 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-// ── P4: meta-length helpers ───────────────────────────────────────────────
-// The generator previously sliced every description at exactly 160
-// chars mid-word and let titles run to 77 chars. Both caps are now
-// honoured on a word boundary, for EVERY profile (the helpers operate
-// on whatever record the data layer returns — seed or database — so no
-// per-profile patching is needed):
-//   description ≤ 155 chars, title ≤ 60 chars (decoded).
-// A cut never ends mid-word: the text is cut at the cap, then backed
-// off to the last whitespace inside the cap. If that backing-off would
-// leave a uselessly short fragment (no whitespace at all inside the
-// cap — a single unbroken token longer than the cap, which no live
-// profile has), there is no word-boundary cut to emit, so the helper
-// returns '' rather than a mid-word fragment or invented text. Text
-// is never padded and never invented; titles that already fit are
-// returned byte-identical, and only the over-long title portion is
-// cut (the name and the site suffix are never dropped to make room).
-const META_DESC_MAX = 155;
-const META_TITLE_MAX = 60;
-const SITE_SUFFIX = ' | WorldCityHub';
-
-function cutAtWordBoundary(text: string, max: number): string {
-  const t = text.trim();
-  if (t.length <= max) return t;
-  const head = t.slice(0, max);
-  let lastSpace = -1;
-  for (const m of head.matchAll(/\s/g)) lastSpace = m.index;
-  if (lastSpace > 0) return head.slice(0, lastSpace).trimEnd();
-  return '';
-}
-
-function fitMetaTitle(name: string, title: string): string {
-  const full = `${name} — ${title}${SITE_SUFFIX}`;
-  if (full.length <= META_TITLE_MAX) return full;
-  const titleBudget = META_TITLE_MAX - name.length - 3 - SITE_SUFFIX.length;
-  if (titleBudget >= 1) {
-    const cut = cutAtWordBoundary(title, titleBudget);
-    if (cut) return `${name} — ${cut}${SITE_SUFFIX}`;
-    return `${name}${SITE_SUFFIX}`;
-  }
-  // Even name + suffix alone exceeds 60 (no live profile does): cut
-  // the name itself at a word boundary rather than dropping the suffix.
-  const cutName = cutAtWordBoundary(name, META_TITLE_MAX - SITE_SUFFIX.length);
-  return `${cutName}${SITE_SUFFIX}`;
-}
-
-function fitOgTitle(name: string): string {
-  const full = `${name}${SITE_SUFFIX}`;
-  if (full.length <= META_TITLE_MAX) return full;
-  return `${cutAtWordBoundary(name, META_TITLE_MAX - SITE_SUFFIX.length)}${SITE_SUFFIX}`;
-}
+// ── P4 + B2: meta-length helpers ──────────────────────────────────────────
+// The helpers live in src/lib/seo/meta-fit.ts (shared with the B2
+// acceptance script so the tested code is the shipped code). Caps are
+// honoured on a word boundary for EVERY profile, and after the cut any
+// trailing conjunction / preposition / article / separator is stripped
+// repeatedly — a title can no longer render as
+// "Faiz Ahmed Faiz — Poet of Resistance & | WorldCityHub". A cleaned
+// remainder under 40% of the budget falls back to a clean short form.
+import {
+  fitMetaTitle,
+  fitMetaDescription,
+  fitOgTitle,
+} from '@/lib/seo/meta-fit';
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -94,11 +57,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const desc = (typeof p.description === 'string' ? p.description.trim() : '') || `${p.name} — ${p.title}`;
   return {
     title: fitMetaTitle(p.name, p.title),
-    description: cutAtWordBoundary(desc, META_DESC_MAX),
+    description: fitMetaDescription(desc, p.name, p.title),
     alternates: { canonical: `https://worldcityhub.vercel.app/personalities/${slug}` },
     openGraph: {
       title: fitOgTitle(p.name),
-      description: cutAtWordBoundary(desc, META_DESC_MAX),
+      description: fitMetaDescription(desc, p.name, p.title),
       images: p.imageUrl ? [{ url: p.imageUrl }] : [],
     },
   };
@@ -187,6 +150,62 @@ function usableBirthDate(p: NonNullable<Profile>): string | null {
 // year is usable, so works WITH a year render byte-identically. (The
 // page body's works section needs no guard: FamousWorksSection renders
 // its year line only when a year is present — {work.year && …}.)
+// ─── Date-grammar guard (S4) ─────────────────────────────────────────
+// "… died on …" may only be composed with a COMPLETE date. A year-only
+// record renders "died in {year}" / "born in {year}" — never the
+// ungrammatical "died on 1948" the template previously emitted for
+// rows whose death_date holds a bare year. Returns the full phrase
+// ("died on 11 September 1948" / "died in 1948"), or null when the
+// stored value is neither a full date nor a clean year, in which case
+// the caller omits the claim rather than phrase it wrongly.
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+function lifeDatePhrase(kind: 'born' | 'died', raw?: string | null): string | null {
+  const t = typeof raw === 'string' ? raw.trim() : '';
+  if (!t) return null;
+  if (/^\d{4}$/.test(t)) return `${kind} in ${t}`;
+  const disp = t.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+  if (disp && BIRTH_MONTHS.includes(disp[2].toLowerCase())) return `${kind} on ${t}`;
+  const iso = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (iso) {
+    const month = MONTH_NAMES[Number(iso[2]) - 1];
+    if (month) return `${kind} on ${Number(iso[3])} ${month} ${iso[1]}`;
+  }
+  return null;
+}
+
+// ─── Section-question composer (S5) ──────────────────────────────────
+// The FAQ top-up derives a question from each narrative section title.
+// Two title shapes are safe:
+//   • an epithet of the form "The <noun> of <noun>" ("The Sultan of
+//     Swing") → "Why is {name} called the Sultan of Swing?"
+//   • a plain noun phrase ("Cricket Career", "Early Life & Education")
+//     → "What is {name}'s cricket career?"
+// Anything else (verb-led or article-led titles such as "The Qawwali
+// Tradition", "After Playing", "Going Global", or titles carrying
+// parentheses) is SKIPPED: composing from it produced the broken
+// "What is Wasim Akram's the sultan of swing?" — a skipped top-up is
+// honest, a broken question is not.
+const SECTION_LEAD_STOPWORDS = new Set([
+  'after', 'before', 'during', 'beyond', 'against', 'towards', 'under',
+]);
+function sectionFaqQuestion(name: string, sectionTitle: string): string | null {
+  const t = sectionTitle.trim();
+  const epithet = t.match(/^The\s+(.+)$/i);
+  if (epithet && /\bof\b/i.test(epithet[1])) {
+    return `Why is ${name} called the ${epithet[1]}?`;
+  }
+  if (/^(the|a|an)\b/i.test(t)) return null;
+  const words = t.split(/\s+/);
+  if (words.length === 0 || words.length > 6) return null;
+  if (SECTION_LEAD_STOPWORDS.has(words[0].toLowerCase())) return null;
+  if (/ing$/i.test(words[0])) return null; // gerund-led = verb phrase
+  if (!/^[A-Z][A-Za-z'’\-]*(?:\s+(?:[A-Z][A-Za-z'’\-]*|of|&|and|in|&))*$/.test(t)) return null;
+  return `What is ${name}'s ${t.toLowerCase()}?`;
+}
+
 function usableWorkYear(w: { year?: string | number | null }): string | null {
   const y = w.year;
   if (typeof y === 'number') return Number.isFinite(y) ? String(y) : null;
@@ -268,10 +287,11 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
       ),
     });
   }
-  if (past) {
+  const deathPhrase = lifeDatePhrase('died', p.deathDate);
+  if (past && deathPhrase) {
     faqs.push({
       q: `When did ${p.name} die?`,
-      a: acc(`${p.name} died on ${p.deathDate}.`, [
+      a: acc(`${p.name} ${deathPhrase}.`, [
         timeline[timeline.length - 1]?.description ?? '',
         timeline[timeline.length - 2]?.description ?? '',
         descSentences[0] ?? '',
@@ -282,9 +302,12 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
   // deceased profile with recorded quotes gets it too — it is a bank
   // question (Q4) and the record carries the data for every live profile.
   if (quotes.length > 0) {
+    // S6: a stored context that already ends with a full stop must not
+    // gain a second one from the composer's own appended period.
+    const quoteContext = quotes[0].context?.replace(/[\s.]+$/, '');
     faqs.push({
       q: `What is a famous quote by ${p.name}?`,
-      a: acc(`"${quotes[0].text}"${quotes[0].context ? ` — ${quotes[0].context}.` : ''}`, [
+      a: acc(`"${quotes[0].text}"${quoteContext ? ` — ${quoteContext}.` : ''}`, [
         `More of ${p.name}'s words are collected in the Famous Quotes section of this profile, alongside the timeline, achievements and works that made the name.`,
         quotes[1] ? `Also widely quoted: "${quotes[1].text}"` : '',
         achLine(0),
@@ -309,8 +332,10 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
   // Khan's cricket career like?" from his "Cricket Career" section.)
   for (const section of p.descriptionSections ?? []) {
     if (faqs.length >= 7) break;
+    const q = sectionFaqQuestion(p.name, section.title);
+    if (!q) continue;
     faqs.push({
-      q: `What is ${p.name}'s ${section.title.toLowerCase()}?`,
+      q,
       a: acc(sOf(section.content).join(' '), [descSentences[1] ?? '']),
     });
   }
@@ -438,7 +463,20 @@ export default async function PersonalityPage({ params }: PageProps) {
 
   // Batch 4 Item 2: AEO answer layer data (from this profile's own record).
   const { directAnswer: personalityDirectAnswer, faqs: personalityFaqs } = buildPersonalityAeo(p);
-  const personalityAeoSource = `Profile facts: WorldCityHub personalities dataset${p.wikiUrl ? ' · Wikipedia article linked on this page' : ''} · Full timeline, works & quotes on this profile`;
+  // S3: the completeness claim names ONLY the sections this profile
+  // actually carries — a profile without works or quotes must not
+  // claim them in its source line.
+  const presentSections = [
+    p.timeline.length > 0 ? 'timeline' : null,
+    p.achievements.length > 0 ? 'achievements' : null,
+    p.works.length > 0 ? 'works' : null,
+    p.quotes.length > 0 ? 'quotes' : null,
+  ].filter((s): s is string => s !== null);
+  const presentList =
+    presentSections.length > 1
+      ? `${presentSections.slice(0, -1).join(', ')} and ${presentSections[presentSections.length - 1]}`
+      : (presentSections[0] ?? '');
+  const personalityAeoSource = `Profile facts: WorldCityHub personalities dataset${p.wikiUrl ? ' · Wikipedia article linked on this page' : ''}${presentList ? ` · On this profile: ${presentList}` : ''}`;
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
@@ -457,7 +495,7 @@ export default async function PersonalityPage({ params }: PageProps) {
           <span>/</span>
           <Link href={`/${p.countrySlug}/${p.provinceSlug}/${p.citySlug}`} className="hover:text-gray-700">{p.city}</Link>
           <span>/</span>
-          <span className="text-gray-900 font-medium">{p.name}</span>
+          <span className="text-gray-100 font-medium">{p.name}</span>
         </div>
       </div>
 
@@ -474,6 +512,7 @@ export default async function PersonalityPage({ params }: PageProps) {
             imageUrl={p.imageUrl}
             imageCredit={p.imageCredit}
             imageLicence={p.imageLicence}
+            imagePositionClass={personalityImagePosition(p.slug)}
             birthDate={p.birthDate}
             deathDate={p.deathDate}
             nationality={p.nationality}
@@ -486,7 +525,7 @@ export default async function PersonalityPage({ params }: PageProps) {
       <div className="max-w-5xl mx-auto px-4 -mt-4 mb-6">
         <div style={{ backgroundColor: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)" }} className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm">
           <MapPin size={14} style={{ color: p.primaryColor }} />
-          <span className="text-gray-600">Connected to</span>
+          <span className="text-gray-300">Connected to</span>
           <Link href={`/${p.countrySlug}/${p.provinceSlug}/${p.citySlug}`}
             className="font-semibold hover:underline" style={{ color: p.primaryColor }}>
             {p.city}, {p.country}
@@ -516,11 +555,11 @@ export default async function PersonalityPage({ params }: PageProps) {
         {/* Timeline */}
         {p.timeline.length > 0 && (
           <div>
-            <p className="text-gray-700 leading-relaxed text-sm mt-8 mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mt-8 mb-4">
               {generateTimelineParagraph(p.name, p.city)}
             </p>
             <LifeTimeline events={p.timeline} />
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateTimelineAfter(p.name, p.city)}
             </p>
           </div>
@@ -529,11 +568,11 @@ export default async function PersonalityPage({ params }: PageProps) {
         {/* Achievements */}
         {p.achievements.length > 0 && (
           <div>
-            <p className="text-gray-700 leading-relaxed text-sm mt-8 mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mt-8 mb-4">
               {generateAchievementsParagraph(p.name)}
             </p>
             <AchievementsSection achievements={p.achievements} />
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateAchievementsAfter(p.name)}
             </p>
           </div>
@@ -542,7 +581,7 @@ export default async function PersonalityPage({ params }: PageProps) {
         {/* Famous Works */}
         {p.works.length > 0 && (
           <div>
-            <p className="text-gray-700 leading-relaxed text-sm mt-8 mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mt-8 mb-4">
               {generateWorksParagraph(p.name)}
             </p>
             <FamousWorksSection works={p.works} />
@@ -555,7 +594,7 @@ export default async function PersonalityPage({ params }: PageProps) {
                 </a>
               </div>
             )}
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateWorksAfter(p.name)}
             </p>
           </div>
@@ -564,11 +603,11 @@ export default async function PersonalityPage({ params }: PageProps) {
         {/* Famous Quotes */}
         {p.quotes.length > 0 && (
           <div>
-            <p className="text-gray-700 leading-relaxed text-sm mt-8 mb-4">
+            <p className="text-gray-300 leading-relaxed text-sm mt-8 mb-4">
               {generateQuotesParagraph(p.name)}
             </p>
             <FamousQuotesSection quotes={p.quotes} />
-            <p className="text-gray-600 leading-relaxed text-sm mt-4">
+            <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateQuotesAfter(p.name)}
             </p>
           </div>
@@ -576,9 +615,9 @@ export default async function PersonalityPage({ params }: PageProps) {
 
         {/* Related personalities (template Section 10) — omitted entirely
             when the pool yields no related profile (never an empty shell).
-            "See All" goes to the city page's #personalities listing: no
-            /personalities index exists, and the live /personalities URL
-            is a "Check back soon" country-fallback shell, not a listing. */}
+            "See All" goes to the city page's #personalities listing, the
+            fullest per-city listing; the /personalities hub (B1) indexes
+            every profile across all cities. */}
         <RelatedPersonalitiesSection
           profiles={related}
           city={p.city}
@@ -589,7 +628,7 @@ export default async function PersonalityPage({ params }: PageProps) {
         {p.wikiUrl && (
           <div style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }} className="mt-10 p-4 rounded-2xl flex items-center justify-between">
             <div>
-              <p className="font-semibold text-gray-900 text-sm">Learn More</p>
+              <p className="font-semibold text-gray-100 text-sm">Learn More</p>
               <p className="text-xs text-gray-500 mt-0.5">External sources for deeper reading</p>
             </div>
             <a href={p.wikiUrl} target="_blank" rel="noopener noreferrer"
