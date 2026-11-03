@@ -1,10 +1,10 @@
-// ── WorldCityHub — own events data layer (WP7 / marathon Q12) ──────────────
+// ── WorldCityHub, own events data layer (WP7 / marathon Q12) ──────────────
 // Reads the `events` table created by supabase/migrations/0003_events.sql.
 // Truth + degradation rules (the /improve pattern):
-//   * Only approved + verified events are ever returned — RLS enforces
+//   * Only approved + verified events are ever returned, RLS enforces
 //     this at the database, and the queries below ask for the same.
 //   * While migration 0003 is unapplied (table missing) or Supabase is
-//     unreachable, every function returns an EMPTY list — city pages
+//     unreachable, every function returns an EMPTY list, city pages
 //     fall back silently to their previous behaviour. Nothing is faked.
 
 import type { CityEvent, EventCategory, LevelTab } from '@/types/city';
@@ -135,11 +135,11 @@ export function mapDbEventToCityEvent(ev: WchEvent, cityName: string, country: s
 }
 
 // ── PSL fixture ingestion helper (NOT wired into pages) ─────────────────────
-// TheSportsDB covers the Pakistan Super League (league id 5067) — verified
+// TheSportsDB covers the Pakistan Super League (league id 5067), verified
 // reachable 2026-10-22. Its 2026 season is complete and the 2027 schedule
 // is not yet published, so today this returns only past fixtures. A future
 // cron/ingest job can call this and insert upcoming fixtures into the
-// `events` table (verified, source_name 'TheSportsDB — Pakistan Super
+// `events` table (verified, source_name 'TheSportsDB, Pakistan Super
 // League') once the PCB publishes the next season's schedule.
 export async function fetchPslFixtures(season: string): Promise<WchEvent[]> {
   try {
@@ -159,8 +159,8 @@ export async function fetchPslFixtures(season: string): Promise<WchEvent[]> {
       starts_at: ev.strTimestamp ?? `${ev.dateEvent}T00:00:00Z`,
       ends_at: null,
       category: 'sports' as WchEventCategory,
-      description: `${ev.strLeague} — ${ev.strHomeTeam} vs ${ev.strAwayTeam}`,
-      source_name: 'TheSportsDB — Pakistan Super League',
+      description: `${ev.strLeague}, ${ev.strHomeTeam} vs ${ev.strAwayTeam}`,
+      source_name: 'TheSportsDB, Pakistan Super League',
       source_url: 'https://www.thesportsdb.com/league/5067-Pakistan-Super-League',
       verified: true,
       status: 'approved' as const,

@@ -8,7 +8,6 @@ import {
   generateRecentParagraph, generateRecentAfter,
   generateUpcomingMatchesParagraph, generateUpcomingMatchesAfter,
   generateLiveScoresParagraph, generateLiveScoresAfter,
-  generateStandingsParagraph, generateStandingsAfter,
   generateStadiumsParagraph, generateStadiumsAfter,
   generateOlympicsParagraph, generateOlympicsAfter,
   generateAthletesParagraph, generateAthletesAfter,
@@ -91,24 +90,6 @@ interface TeamPlayer {
   strDescriptionEN: string;
 }
 
-interface StandingsTeam {
-  name: string;
-  played: number;
-  wins: number;
-  draws: number;
-  losses: number;
-  goalsFor: number;
-  goalsAgainst: number;
-  goalDiff: number;
-  points: number;
-}
-
-interface TopScorer {
-  name: string;
-  team: string;
-  goals: number;
-}
-
 interface Stadium {
   id: string;
   name: string;
@@ -146,7 +127,7 @@ interface SportsNews {
 }
 
 // === API LOGIC ===
-const BASE = 'https://www.thesportsdb.com/api/v1/json/2';
+const BASE = 'https://www.thesportsdb.com/api/v1/json/123';
 
 const COUNTRY_SPORT_PRIORITY: Record<string, SportPriority[]> = {
   PK: [
@@ -200,40 +181,6 @@ const COUNTRY_DOMESTIC_LEAGUES: Record<string, DomesticLeague> = {
   US: { id: 'nfl', name: 'National Football League (NFL)', country: 'USA', emoji: '🏈' },
   DE: { id: 'bundesliga', name: 'Bundesliga', country: 'Germany', emoji: '⚽' },
   FR: { id: 'ligue1', name: 'Ligue 1', country: 'France', emoji: '⚽' },
-};
-
-const MOCK_STANDINGS: Record<string, StandingsTeam[]> = {
-  psl: [
-    { name: 'Multan Sultans', played: 10, wins: 7, draws: 0, losses: 3, goalsFor: 85, goalsAgainst: 70, goalDiff: 15, points: 14 },
-    { name: 'Peshawar Zalmi', played: 10, wins: 6, draws: 0, losses: 4, goalsFor: 80, goalsAgainst: 75, goalDiff: 5, points: 12 },
-    { name: 'Islamabad United', played: 10, wins: 5, draws: 0, losses: 5, goalsFor: 78, goalsAgainst: 82, goalDiff: -4, points: 10 },
-    { name: 'Lahore Qalandars', played: 10, wins: 5, draws: 0, losses: 5, goalsFor: 77, goalsAgainst: 80, goalDiff: -3, points: 10 },
-    { name: 'Karachi Kings', played: 10, wins: 4, draws: 0, losses: 6, goalsFor: 72, goalsAgainst: 85, goalDiff: -13, points: 8 },
-  ],
-  ipl: [
-    { name: 'Mumbai Indians', played: 10, wins: 7, draws: 0, losses: 3, goalsFor: 85, goalsAgainst: 70, goalDiff: 15, points: 14 },
-    { name: 'Delhi Capitals', played: 10, wins: 6, draws: 0, losses: 4, goalsFor: 80, goalsAgainst: 75, goalDiff: 5, points: 12 },
-    { name: 'Kolkata Knight Riders', played: 10, wins: 5, draws: 0, losses: 5, goalsFor: 78, goalsAgainst: 82, goalDiff: -4, points: 10 },
-    { name: 'Royal Challengers', played: 10, wins: 5, draws: 0, losses: 5, goalsFor: 77, goalsAgainst: 80, goalDiff: -3, points: 10 },
-    { name: 'Chennai Super Kings', played: 10, wins: 4, draws: 0, losses: 6, goalsFor: 72, goalsAgainst: 85, goalDiff: -13, points: 8 },
-  ],
-};
-
-const MOCK_SCORERS: Record<string, TopScorer[]> = {
-  psl: [
-    { name: 'Babar Azam', team: 'Peshawar Zalmi', goals: 485 },
-    { name: 'Muhammad Hafeez', team: 'Islamabad United', goals: 430 },
-    { name: 'Iftikhar Ahmed', team: 'Karachi Kings', goals: 320 },
-    { name: 'Shoaib Malik', team: 'Multan Sultans', goals: 315 },
-    { name: 'Fakhar Zaman', team: 'Lahore Qalandars', goals: 310 },
-  ],
-  ipl: [
-    { name: 'Virat Kohli', team: 'Royal Challengers', goals: 7000 },
-    { name: 'Rohit Sharma', team: 'Mumbai Indians', goals: 6500 },
-    { name: 'Suresh Raina', team: 'Chennai Super Kings', goals: 5600 },
-    { name: 'MS Dhoni', team: 'Chennai Super Kings', goals: 5400 },
-    { name: 'KL Rahul', team: 'Delhi Capitals', goals: 5200 },
-  ],
 };
 
 const MOCK_STADIUMS: Record<string, Stadium[]> = {
@@ -325,13 +272,18 @@ function codeToColor(code: string): string {
   return colors[code] ?? '#1a1a2e';
 }
 
-async function fetchTodayEvents(sport: string, date: string): Promise<SportEvent[]> {
+// SP2 (subpages fix B): failure and a genuinely empty day are different
+// states. The old version returned [] for both, so a failed feed rendered
+// the false claim "No matches scheduled for today". ok=false means the
+// request failed; ok=true with an empty list means TheSportsDB really
+// returned no events for the day (its free feed answers events: null).
+async function fetchTodayEvents(sport: string, date: string): Promise<{ events: SportEvent[]; ok: boolean }> {
   try {
     const res = await fetch(`${BASE}/eventsday.php?d=${date}&s=${encodeURIComponent(sport)}`, { next: { revalidate: 900 } });
-    if (!res.ok) return [];
+    if (!res.ok) return { events: [], ok: false };
     const data = await res.json();
-    return data.events ?? [];
-  } catch { return []; }
+    return { events: data.events ?? [], ok: true };
+  } catch { return { events: [], ok: false }; }
 }
 
 async function fetchNationalTeam(country: string): Promise<NationalTeam | null> {
@@ -369,14 +321,6 @@ async function fetchRecentResults(teamId: string, limit = 5): Promise<SportEvent
     const data = await res.json();
     return (data.results ?? []).slice(0, limit);
   } catch { return []; }
-}
-
-function getStandings(leagueId: string): StandingsTeam[] {
-  return MOCK_STANDINGS[leagueId] ?? [];
-}
-
-function getTopScorers(leagueId: string): TopScorer[] {
-  return MOCK_SCORERS[leagueId] ?? [];
 }
 
 function getStadiums(code: string): Stadium[] {
@@ -444,7 +388,7 @@ function ScoreCard({ event }: { event: SportEvent }) {
           {hasScore ? (
             <div className="flex items-center gap-1">
               <span className={`text-2xl font-bold ${isLive ? 'text-red-400' : 'text-white'}`}>{event.intHomeScore}</span>
-              <span className="text-gray-400 font-medium">—</span>
+              <span className="text-gray-400 font-medium">-</span>
               <span className={`text-2xl font-bold ${isLive ? 'text-red-400' : 'text-white'}`}>{event.intAwayScore}</span>
             </div>
           ) : (
@@ -555,67 +499,6 @@ function SportSelectorBar({ sports, active, onSelect }: { sports: SportPriority[
         </button>
       ))}
     </div>
-  );
-}
-
-function StandingsTable({ teams }: { teams: StandingsTeam[] }) {
-  return (
-    <motion.div variants={fadeUp} className="bg-transparent rounded-2xl border border-white/8 overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-transparent/4">
-            <tr>
-              <th className="px-3 py-2 text-left font-semibold text-gray-400">#</th>
-              <th className="px-3 py-2 text-left font-semibold text-gray-400">Team</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-400">P</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-400">W</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-400">D</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-400">L</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-400">GD</th>
-              <th className="px-3 py-2 text-center font-semibold text-gray-400">Pts</th>
-            </tr>
-          </thead>
-          <tbody>
-            {teams.map((t, i) => (
-              <tr key={t.name} className={i < 4 ? 'bg-green-500/100/10/50' : ''}>
-                <td className="px-3 py-2 text-gray-500">{i + 1}</td>
-                <td className="px-3 py-2 font-medium text-white">{t.name}</td>
-                <td className="px-3 py-2 text-center text-gray-400">{t.played}</td>
-                <td className="px-3 py-2 text-center text-gray-400">{t.wins}</td>
-                <td className="px-3 py-2 text-center text-gray-400">{t.draws}</td>
-                <td className="px-3 py-2 text-center text-gray-400">{t.losses}</td>
-                <td className="px-3 py-2 text-center text-gray-400">{t.goalDiff > 0 ? '+' : ''}{t.goalDiff}</td>
-                <td className="px-3 py-2 text-center font-bold text-white">{t.points}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </motion.div>
-  );
-}
-
-function TopScorersCard({ scorers }: { scorers: TopScorer[] }) {
-  return (
-    <motion.div variants={fadeUp} className="bg-transparent rounded-2xl border border-white/8 p-4">
-      <h4 className="text-sm font-bold text-gray-300 uppercase tracking-wide mb-3">Top Run Scorers</h4>
-      <div className="space-y-2">
-        {scorers.slice(0, 5).map((s, i) => (
-          <div key={s.name} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
-            <div className="flex items-center gap-2">
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-amber-500/100/15 text-amber-400' : 'bg-transparent/5 text-gray-500'}`}>
-                {i + 1}
-              </span>
-              <div>
-                <p className="text-sm font-medium text-white">{s.name}</p>
-                <p className="text-xs text-gray-400">{s.team}</p>
-              </div>
-            </div>
-            <span className="font-bold text-white">{s.goals.toLocaleString()}</span>
-          </div>
-        ))}
-      </div>
-    </motion.div>
   );
 }
 
@@ -770,7 +653,7 @@ function AffiliateSection() {
   const affiliates = [
     {
       // Q11: two cards here linked to href="#" (dead links, Link Law
-      // L5) and this card claimed an unverifiable "Flat 8% off" — the
+      // L5) and this card claimed an unverifiable "Flat 8% off", the
       // dead cards are removed and the claim is gone. Only cards with
       // a real destination remain.
       title: 'Buy Cricket Gear',
@@ -830,11 +713,10 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
   const [domesticLeague, setDomesticLeague] = useState<DomesticLeague | null>(initialCity ? getDomesticLeague(initialCity.country_code) : null);
   const [activeSport, setActiveSport] = useState<string>(initialCity ? getSportsByCountry(initialCity.country_code)[0]?.id ?? '' : '');
   const [events, setEvents] = useState<SportEvent[]>([]);
+  const [eventsStatus, setEventsStatus] = useState<'loading' | 'ok' | 'failed'>('loading');
   const [nationalTeam, setNationalTeam] = useState<NationalTeam | null>(null);
   const [nextMatches, setNextMatches] = useState<SportEvent[]>([]);
   const [recentResults, setRecentResults] = useState<SportEvent[]>([]);
-  const [standings, setStandings] = useState<StandingsTeam[]>([]);
-  const [topScorers, setTopScorers] = useState<TopScorer[]>([]);
   const [stadiums, setStadiums] = useState<Stadium[]>(initialCity ? getStadiums(initialCity.country_code) : []);
   const [olympics, setOlympics] = useState<OlympicMedals[]>(initialCity ? getOlympicHistory(initialCity.country_code) : []);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
@@ -876,12 +758,14 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
     const sport = sports.find(s => s.id === sportId);
     if (!sport) return;
 
+    setEventsStatus('loading');
     const today = new Date().toISOString().split('T')[0];
-    const [eventsData, team] = await Promise.all([
+    const [todayResult, team] = await Promise.all([
       fetchTodayEvents(sport.tsdbName, today),
       fetchNationalTeam(sport.tsdbName),
     ]);
-    setEvents(eventsData);
+    setEvents(todayResult.events);
+    setEventsStatus(todayResult.ok ? 'ok' : 'failed');
     setNationalTeam(team);
 
     if (team) {
@@ -894,14 +778,6 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
       setRecentResults(recent);
     }
 
-    if (domesticLeague) {
-      const [table, scorers] = await Promise.all([
-        getStandings(domesticLeague.id),
-        getTopScorers(domesticLeague.id),
-      ]);
-      setStandings(table);
-      setTopScorers(scorers);
-    }
   }, [sports, city, domesticLeague]);
 
   useEffect(() => {
@@ -923,10 +799,16 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
   const headerColor = city?.primary_color ?? '#1a1a2e';
   const nextMatch = nextMatches[0];
   // A6 (final30): the primary sports keyword "cricket live score today"
-  // targets exactly ONE page — Lahore sports. Other cities keep the
+  // targets exactly ONE page, Lahore sports. Other cities keep the
   // generic "{City} Sports" H1. The secondary keyword "gaddafi stadium
   // lahore" is likewise Lahore-only (see the block after Live Scores).
   const isLahore = (city?.city_slug ?? params.city) === 'lahore';
+  // SP4 (subpages fix B): this city's own stadium, taken from the stadium
+  // data this page already carries (matched on the record's city field).
+  // Cities whose pages list no home stadium (Islamabad, Peshawar on the
+  // Pakistan list) get Q&A composed from the listed stadiums instead; no
+  // stadium is ever invented for them.
+  const homeStadium = stadiums.find((st) => st.city.toLowerCase() === (city?.name ?? '').toLowerCase()) ?? null;
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="">
@@ -948,13 +830,13 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
             ))}
           </nav>
           <h1 className="text-3xl font-bold text-white">{isLahore ? 'Cricket Live Score Today in Lahore' : `${city?.name ?? ''} Sports`}</h1>
-          <p className="text-white/70 mt-1 text-sm">Live scores, standings, national team & more</p>
+          <p className="text-white/70 mt-1 text-sm">Today&apos;s fixtures and scores from TheSportsDB, plus the national team & stadiums</p>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 space-y-8">
         <motion.section initial="hidden" animate="visible" variants={fadeUp}>
-          <SportSelectorBar sports={sports} active={activeSport} onSelect={s => { setActiveSport(s); setEvents([]); setNationalTeam(null); setNextMatches([]); setRecentResults([]); }} />
+          <SportSelectorBar sports={sports} active={activeSport} onSelect={s => { setActiveSport(s); setEvents([]); setEventsStatus('loading'); setNationalTeam(null); setNextMatches([]); setRecentResults([]); }} />
         </motion.section>
 
         {nextMatch && (
@@ -997,14 +879,22 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
 
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
           <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-lg font-bold text-white">Live Scores Today</h2>
-            <span className="text-sm text-gray-500">— {activeSportLabel}</span>
+            <h2 className="text-lg font-bold text-white">Today&apos;s Fixtures and Scores</h2>
+            <span className="text-sm text-gray-500">- {activeSportLabel}</span>
           </div>
           <p className="text-gray-300 leading-relaxed text-sm mb-4">
             {generateLiveScoresParagraph(activeSportLabel, city?.name ?? '')}
           </p>
           <AnimatePresence mode="wait">
-            {events.length > 0 ? (
+            {eventsStatus === 'failed' ? (
+              <div className="bg-transparent rounded-2xl border border-white/8 p-8 text-center">
+                <p className="text-gray-400 text-sm">Scores are unavailable right now. The sports data feed did not respond, so no fixtures are shown here rather than guessed. Please check back later.</p>
+              </div>
+            ) : eventsStatus === 'loading' ? (
+              <div className="bg-transparent rounded-2xl border border-white/8 p-8 text-center">
+                <p className="text-gray-500 text-sm">Loading today&apos;s {activeSportLabel} fixtures and scores...</p>
+              </div>
+            ) : events.length > 0 ? (
               <motion.div key="events" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
                 {events.map(e => <ScoreCard key={e.idEvent} event={e} />)}
               </motion.div>
@@ -1019,60 +909,89 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
           </p>
         </motion.section>
 
-        {/* A6 (final30) — Lahore-only keyword block. No scores, fixtures
-            or dates are stated here: live data comes only from the
-            TheSportsDB feed in the Live Scores section above, and the
-            stadium facts below repeat this page's own stadium record
-            (Gaddafi Stadium, capacity 27,800, home team Lahore
-            Qalandars). Each H3 answer is 50–70 words. */}
-        {isLahore && (
+        {/* SP4 (subpages fix B): stadium Q&A for EVERY city, generalising
+            the old Lahore-only A6 block. Every fact comes from the
+            stadium records this page already carries: a city with a
+            listed home stadium gets questions about that ground; a city
+            without one gets questions composed from the listed stadiums,
+            with the gap stated plainly. No scores, fixtures or dates are
+            stated here: fixture data comes only from the TheSportsDB
+            feed in the fixtures section above. */}
+        {stadiums.length > 0 && (
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-lg font-bold text-white mb-4">Gaddafi Stadium Lahore</h2>
-            <p className="text-gray-300 leading-relaxed text-sm mb-4">
-              Gaddafi Stadium is Lahore&apos;s best-known cricket ground. This page&apos;s Major Stadiums section lists it with
-              a capacity of 27,800 and Lahore Qalandars as its home team, alongside the National Stadium in Karachi and
-              Multan Cricket Stadium.
-            </p>
-            <h3 className="text-base font-bold text-white mb-2">Where is Gaddafi Stadium?</h3>
-            <p className="text-gray-300 leading-relaxed text-sm mb-4">
-              Gaddafi Stadium stands in Lahore, Punjab, Pakistan, and it is the city&apos;s best-known cricket ground. The
-              stadium appears in this page&apos;s Major Stadiums section with its capacity and home team listed beside it.
-              Visitors looking for the ground should head for Lahore itself, since no other city in Pakistan has a stadium
-              of this name on this page.
-            </p>
-            <h3 className="text-base font-bold text-white mb-2">Which team calls Gaddafi Stadium home?</h3>
-            <p className="text-gray-300 leading-relaxed text-sm mb-4">
-              Lahore Qalandars call Gaddafi Stadium home, according to this page&apos;s stadium data, which lists the Qalandars
-              as the ground&apos;s home team. The stadium&apos;s listed capacity is 27,800, and its entry sits alongside the
-              National Stadium in Karachi and Multan Cricket Stadium in the Major Stadiums section. Supporters of the
-              Qalandars therefore treat this Lahore ground as their team&apos;s home venue.
-            </p>
-            <h3 className="text-base font-bold text-white mb-2">How do I check today&apos;s cricket live score?</h3>
-            <p className="text-gray-300 leading-relaxed text-sm">
-              Use this page&apos;s Live Scores Today section and keep Cricket selected in the sport selector above it. The
-              section loads the day&apos;s cricket fixtures and scores from TheSportsDB&apos;s live feed, showing each match with
-              its league, teams and score, or its scheduled time when play has not started. When no cricket match is
-              scheduled today, the section says so plainly, so an empty result means no match.
-            </p>
-          </motion.section>
-        )}
-
-        {domesticLeague && standings.length > 0 && (
-          <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="text-lg font-bold text-white">{domesticLeague.name}</h2>
-              <span className="text-sm text-gray-500">Standings</span>
-            </div>
-            <p className="text-gray-300 leading-relaxed text-sm mb-4">
-              {generateStandingsParagraph(domesticLeague.name, city?.country ?? '')}
-            </p>
-            <div className="grid md:grid-cols-2 gap-4">
-              <StandingsTable teams={standings} />
-              {topScorers.length > 0 && <TopScorersCard scorers={topScorers} />}
-            </div>
-            <p className="text-gray-400 leading-relaxed text-sm mt-4">
-              {generateStandingsAfter(domesticLeague.name, city?.country ?? '')}
-            </p>
+            {homeStadium ? (
+              <>
+                <h2 className="text-lg font-bold text-white mb-4">{homeStadium.name}</h2>
+                <p className="text-gray-300 leading-relaxed text-sm mb-4">
+                  {homeStadium.name} is {city?.name ?? ''}&apos;s home ground in this page&apos;s stadium data. The Major
+                  Stadiums section below lists it with a capacity of {homeStadium.capacity.toLocaleString()} and{' '}
+                  {homeStadium.team} as its home team
+                  {stadiums.filter((st) => st.id !== homeStadium.id).length > 0
+                    ? `, alongside ${stadiums.filter((st) => st.id !== homeStadium.id).map((st) => st.name).join(' and ')}.`
+                    : '.'}
+                </p>
+                <h3 className="text-base font-bold text-white mb-2">Where is {homeStadium.name}?</h3>
+                <p className="text-gray-300 leading-relaxed text-sm mb-4">
+                  {homeStadium.name} stands in {homeStadium.city}, {homeStadium.country}, and it is the ground this page
+                  lists for {homeStadium.city}. The stadium appears in this page&apos;s Major Stadiums section with its
+                  capacity and home team listed beside it. Visitors looking for the ground should head for{' '}
+                  {homeStadium.city} itself, since no other city in {homeStadium.country} has a stadium of this name on
+                  this page.
+                </p>
+                <h3 className="text-base font-bold text-white mb-2">Which team calls {homeStadium.name} home?</h3>
+                <p className="text-gray-300 leading-relaxed text-sm mb-4">
+                  {homeStadium.team} call {homeStadium.name} home, according to this page&apos;s stadium data, which lists{' '}
+                  {homeStadium.team} as the ground&apos;s home team. The stadium&apos;s listed capacity is{' '}
+                  {homeStadium.capacity.toLocaleString()}, and its entry sits in the Major Stadiums section below.
+                  Supporters of {homeStadium.team} therefore treat this {homeStadium.city} ground as their team&apos;s
+                  home venue.
+                </p>
+                <h3 className="text-base font-bold text-white mb-2">What is the capacity of {homeStadium.name}?</h3>
+                <p className="text-gray-300 leading-relaxed text-sm mb-4">
+                  The listed capacity of {homeStadium.name} is {homeStadium.capacity.toLocaleString()}. Capacities:
+                  commonly published venue figures, shown for reference. The same figure is shown on the stadium&apos;s
+                  card in the Major Stadiums section below, together with its city and home team.
+                </p>
+                {isLahore && (
+                  <>
+                    <h3 className="text-base font-bold text-white mb-2">How do I check today&apos;s cricket live score?</h3>
+                    <p className="text-gray-300 leading-relaxed text-sm">
+                      Use this page&apos;s Today&apos;s Fixtures and Scores section and keep Cricket selected in the sport
+                      selector above it. The section loads the day&apos;s cricket fixtures and scores from TheSportsDB,
+                      showing each match with its league, teams and score, or its scheduled time when play has not
+                      started. When the feed cannot be reached the section says scores are unavailable, and when no
+                      cricket match is scheduled today it says so plainly.
+                    </p>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <h2 className="text-lg font-bold text-white mb-4">Stadium Questions for {city?.name ?? ''}</h2>
+                <p className="text-gray-300 leading-relaxed text-sm mb-4">
+                  This page&apos;s stadium data does not list a home stadium in {city?.name ?? ''}, so no{' '}
+                  {city?.name ?? ''} ground is invented here. The questions below are answered from the stadiums this
+                  page does list for {city?.country ?? ''}.
+                </p>
+                <h3 className="text-base font-bold text-white mb-2">What is the main stadium in {city?.name ?? ''}?</h3>
+                <p className="text-gray-300 leading-relaxed text-sm mb-4">
+                  This page does not list a stadium in {city?.name ?? ''}. Its Major Stadiums section lists{' '}
+                  {stadiums.map((st) => `${st.name} in ${st.city}`).join(', ')} for {city?.country ?? ''}, and those are
+                  the grounds this page can answer questions about. Rather than invent a {city?.name ?? ''} venue, this
+                  page leaves the city&apos;s home ground unstated.
+                </p>
+                <h3 className="text-base font-bold text-white mb-2">Which stadiums does this page list for {city?.country ?? ''}?</h3>
+                <p className="text-gray-300 leading-relaxed text-sm mb-4">
+                  The Major Stadiums section below lists {stadiums.map((st) => `${st.name} (${st.city}, home of ${st.team})`).join('; ')}.
+                  Each card shows the ground&apos;s city, capacity and home team from this page&apos;s stadium data.
+                </p>
+                <h3 className="text-base font-bold text-white mb-2">What are the capacities of the stadiums listed on this page?</h3>
+                <p className="text-gray-300 leading-relaxed text-sm">
+                  {stadiums.map((st) => `${st.name} in ${st.city} holds ${st.capacity.toLocaleString()}`).join('; ')}.
+                  Capacities: commonly published venue figures, shown for reference.
+                </p>
+              </>
+            )}
           </motion.section>
         )}
 
@@ -1083,6 +1002,7 @@ export default function SportsPage({ initialCity }: { initialCity?: City | null 
               {generateStadiumsParagraph(city?.country ?? '')}
             </p>
             <div className="grid md:grid-cols-3 gap-4">{stadiums.map(s => <StadiumCard key={s.id} stadium={s} />)}</div>
+            <p className="text-xs text-gray-500 mt-3">Capacities: commonly published venue figures, shown for reference.</p>
             <p className="text-gray-400 leading-relaxed text-sm mt-4">
               {generateStadiumsAfter(city?.country ?? '')}
             </p>

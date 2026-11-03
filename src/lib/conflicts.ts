@@ -1,10 +1,10 @@
-// Conflicts overview data (Page 17 of the locked plan — the strictest
+// Conflicts overview data (Page 17 of the locked plan, the strictest
 // editorial rules on the site).
 //
 // Sources are restricted to the locked whitelist: UN agencies (UNHCR
 // data API, UN News), ICRC, and wire/international reporting from
 // Reuters, AP, BBC and Al Jazeera. Headlines come through GNews and are
-// FILTERED to that whitelist — anything else is dropped, never shown.
+// FILTERED to that whitelist, anything else is dropped, never shown.
 // No casualty figures from the parties themselves, no partisan sources,
 // no editorialising: titles are reproduced from the wire source with
 // attribution and a link. Peace Efforts is a compulsory section.
@@ -152,9 +152,9 @@ export const MAJOR_CONFLICTS: MajorConflict[] = [
 ];
 
 export const HUMANITARIAN_ORGS = [
-  { name: 'UNHCR — UN Refugee Agency', url: 'https://www.unhcr.org', note: 'Refugee protection and assistance worldwide.' },
-  { name: 'ICRC — Red Cross', url: 'https://www.icrc.org', note: 'Neutral humanitarian protection and assistance in armed conflict.' },
-  { name: 'WFP — World Food Programme', url: 'https://www.wfp.org', note: 'Emergency food assistance in conflict zones.' },
-  { name: 'MSF — Doctors Without Borders', url: 'https://www.msf.org', note: 'Independent medical care where it is needed most.' },
+  { name: 'UNHCR, UN Refugee Agency', url: 'https://www.unhcr.org', note: 'Refugee protection and assistance worldwide.' },
+  { name: 'ICRC, Red Cross', url: 'https://www.icrc.org', note: 'Neutral humanitarian protection and assistance in armed conflict.' },
+  { name: 'WFP, World Food Programme', url: 'https://www.wfp.org', note: 'Emergency food assistance in conflict zones.' },
+  { name: 'MSF, Doctors Without Borders', url: 'https://www.msf.org', note: 'Independent medical care where it is needed most.' },
   { name: 'UNICEF', url: 'https://www.unicef.org', note: 'Children\u2019s aid, water, nutrition and education in emergencies.' },
 ];

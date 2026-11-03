@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import CountryPage from './CountryClient';
 import CountryInventory from '@/components/shared/CountryInventory';
@@ -7,6 +8,28 @@ import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, countryCrumbs, countryJsonLd, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 import { fetchWorldBankLatest, countrySlugToIso2, type WBValues } from '@/lib/apis/worldbank';
 import { gnewsSearch, type NewsArticle } from '@/lib/apis/news';
+import { CAPITALS } from '@/lib/capitals-table';
+
+// D2 (hubs family fix, 3 Nov 2026): the [country] fallback used to serve
+// an indexable "We're building out the full country profile" shell for
+// ANY single-segment slug, so non-country words that are not static
+// routes (/events, /places, /economy, and any nonsense slug) returned
+// 200 with a self-canonical and a mislabelled Country schema. The gate
+// below uses the site's own real country registry: CAPITALS in
+// src/lib/capitals-table.ts, the 198 sovereign-state country slugs the
+// /countries hub table itself lists and links to (the same registry the
+// country packages and the template COUNTRIES set are drawn from).
+// A slug in the registry keeps its current treatment exactly (full
+// template for the built countries, the honest shell for the rest);
+// ANY other slug is a real 404. Static segments (/places, /events,
+// /countries, ...) still take precedence over this dynamic route, and
+// the [country]/[province]/[city] routes below this segment are
+// untouched.
+const REGISTERED_COUNTRY_SLUGS = new Set(CAPITALS.map((c) => c.countrySlug));
+
+function assertRegisteredCountry(slug: string): void {
+  if (!REGISTERED_COUNTRY_SLUGS.has(slug.toLowerCase())) notFound();
+}
 
 // Server wrapper: the interactive country page lives in CountryClient.tsx.
 // Metadata must be exported from a server component, so it lives here —
@@ -21,6 +44,15 @@ const titleCase = (s: string) =>
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const p = await params;
+  // D2 gate (metadata half): a non-registry slug gets no country title,
+  // description or canonical at all, so the 404 response never carries
+  // a mislabelled country identity for a word that is not a country.
+  if (!REGISTERED_COUNTRY_SLUGS.has(p.country.toLowerCase())) {
+    return {
+      title: 'Page Not Found | WorldCityHub',
+      robots: { index: false, follow: false },
+    };
+  }
   const country = titleCase(p.country);
   const title = `${country} — Cities, Weather & Prayer | WorldCityHub`;
   const description = `${country}: provinces and cities with live weather, prayer times, gold & currency rates, news, economy and culture — the ${country} guide.`;
@@ -35,6 +67,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const p = await params;
+  assertRegisteredCountry(p.country);
   // FIX-POP1: population comes from the World Bank (SP.POP.TOTL, latest
   // year) via the same worldbank.ts path as the economy data — never a
   // hard-coded figure. Null when the WB is unreachable; the client then

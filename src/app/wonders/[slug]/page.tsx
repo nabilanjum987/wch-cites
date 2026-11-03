@@ -13,6 +13,7 @@ import {
   weatherLabel,
   whatToWear,
   openStatus,
+  feeVisitorLabel,
   formatLocalTime,
   formatLocalDate,
   haversineKm,
@@ -22,7 +23,7 @@ import WonderClock from './WonderClock';
 import { DirectAnswer } from '@/components/aeo/AnswerLayer';
 import MapEmbed from './MapEmbed';
 
-// Golden Wonder template (WP4 / marathon Q9) — SERVER component.
+// Golden Wonder template (WP4 / marathon Q9), SERVER component.
 // Data: src/lib/wonders.ts (DB-first after migration 0001, baked
 // verified dataset until then) + Open-Meteo live layer, revalidated
 // every 30 minutes. No mock values anywhere; a block whose source is
@@ -41,10 +42,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!wonder) return { title: 'Wonder not found' };
   const hero = heroMedia(wonder);
   const canonical = `${BASE}/wonders/${wonder.slug}`;
+  // Publication-state consistency (D2, wonders-family fix): publishing
+  // is a deliberate act. Built-but-unpublished wonders keep rendering
+  // for QA but carry robots noindex until the owner publishes them;
+  // published wonders (the Taj Mahal) keep normal indexing.
+  const published = PUBLISHED_WONDERS.some((w) => w.slug === wonder.slug);
   return {
     title: wonder.seoTitle,
     description: wonder.seoDescription,
     alternates: { canonical },
+    ...(published ? {} : { robots: { index: false, follow: false } }),
     openGraph: {
       title: wonder.seoTitle,
       description: wonder.seoDescription,
@@ -70,7 +77,7 @@ function Section({ title, children, id }: { title: string; children: React.React
 // every answer is composed from the wonder's own verified record
 // (visitor.fees rows, hoursText, closedDays, gatesText, intro, nearby),
 // 50–70 words each. Wonders whose record carries fees: null deliberately
-// print NO figure — the answer says prices vary and points at the
+// print NO figure, the answer says prices vary and points at the
 // official site instead; no fee or hour is ever invented here. H3
 // wordings are kept distinct from the existing FAQ bank questions so the
 // FAQPage schema below never carries an exact-duplicate question.
@@ -90,13 +97,13 @@ const TICKET_ANSWERS: Record<string, string> = {
   'eiffel-tower':
     "The Eiffel Tower does not publish one fixed ticket price here, because lift and stair fares vary by floor and season, and the official site publishes each day's exact schedule and same-day ticket availability. Timed tickets bought through the official ticket site are the reliable way to skip the longest queues. Source: the Eiffel Tower official site, verified 2026-10-22.",
   colosseum:
-    'The Colosseum does not publish one fixed ticket price here: entry is by timed slot bought through the official ticketing site, and timed booking is effectively mandatory in season. A ticket typically covers the Roman Forum and Palatine Hill within 24 hours. Check the official park site for the current timetable and prices. Source: Parco archeologico del Colosseo — official site, verified 2026-10-22.',
+    'The Colosseum does not publish one fixed ticket price here: entry is by timed slot bought through the official ticketing site, and timed booking is effectively mandatory in season. A ticket typically covers the Roman Forum and Palatine Hill within 24 hours. Check the official park site for the current timetable and prices. Source: Parco archeologico del Colosseo, official site, verified 2026-10-22.',
   'statue-of-liberty':
     'No ticket price is printed for the Statue of Liberty here, because opening arrangements vary by season and are published by the managing authority, which also announces closures for weather, conservation work or ceremonies. Check the official site before visiting for current times, tickets and any closure notices. Source: the official site (nps.gov/stli), verified 2026-10-22.',
   'great-wall-of-china':
     'Great Wall ticket prices are not fixed on this page, because hours and entry fees vary by section and season; the two sections most visitors use, Badaling and Mutianyu outside Beijing, open daily from early morning. Passport-based ticket booking applies to foreign visitors at major sections. Check the official site for the current schedule. Source: The Great Wall official site, verified 2026-10-22.',
   'pyramids-of-giza':
-    "Pyramid ticket prices are not fixed on this page: the Giza Plateau opens daily and hours shift between summer and winter seasons, while inner-pyramid entry is by separate ticket with limited daily numbers. Egypt's Ministry of Tourism and Antiquities publishes the current schedule and prices, so check its site before visiting. Source: Egypt Ministry of Tourism & Antiquities — Egymonuments, verified 2026-10-22.",
+    "Pyramid ticket prices are not fixed on this page: the Giza Plateau opens daily and hours shift between summer and winter seasons, while inner-pyramid entry is by separate ticket with limited daily numbers. Egypt's Ministry of Tourism and Antiquities publishes the current schedule and prices, so check its site before visiting. Source: Egypt Ministry of Tourism & Antiquities, Egymonuments, verified 2026-10-22.",
   'burj-khalifa':
     "Burj Khalifa ticket prices are not fixed on this page, because the operator's prices are dynamic: sunset ('prime') hours carry different prices and sell out first. The At The Top decks open daily from morning to late evening, and entry runs through Dubai Mall's lower ground floor. Check the official ticket site for the current schedule. Source: Burj Khalifa official site / At The Top, verified 2026-10-22.",
 };
@@ -107,13 +114,13 @@ const HOURS_ANSWERS: Record<string, string> = {
   'eiffel-tower':
     "The Eiffel Tower is open every day of the year. Lift and stair hours shift with the season, running mid-morning to late evening and later in summer, and the official site publishes the day's exact schedule and same-day ticket availability. Only exceptional weather or security closures interrupt opening. Source: the Eiffel Tower official site, verified 2026-10-22.",
   colosseum:
-    'The Colosseum opens daily from the morning, and closing follows the sunset through the seasons, with last entry one hour before closing. It closes on 25 December and 1 January. The official park site publishes the current timetable and timed-entry tickets, and timed booking is effectively mandatory in season. Source: Parco archeologico del Colosseo — official site, verified 2026-10-22.',
+    'The Colosseum opens daily from the morning, and closing follows the sunset through the seasons, with last entry one hour before closing. It closes on 25 December and 1 January. The official park site publishes the current timetable and timed-entry tickets, and timed booking is effectively mandatory in season. Source: Parco archeologico del Colosseo, official site, verified 2026-10-22.',
   'statue-of-liberty':
     "The Statue of Liberty's opening arrangements vary by season and are published by the managing authority, so this page prints no fixed opening and closing times. Closures for weather, conservation work or ceremonies are announced by the managing authority. Check the official site before visiting for current times and tickets. Source: the official site (nps.gov/stli), verified 2026-10-22.",
   'great-wall-of-china':
     "Great Wall opening hours and entry fees vary by section and season. The two sections most visitors use, Badaling and Mutianyu outside Beijing, open daily from early morning, while individual sections can close in severe mountain weather. The official site and each section's own announcements publish the current schedule. Source: The Great Wall official site, verified 2026-10-22.",
   'pyramids-of-giza':
-    "The Giza Plateau opens daily in the morning and closes before sunset, with hours shifting between the summer and winter seasons. Inner-pyramid entry is by separate ticket with limited daily numbers. Egypt's Ministry of Tourism and Antiquities publishes the current schedule and prices, so check its site before visiting. Source: Egypt Ministry of Tourism & Antiquities — Egymonuments, verified 2026-10-22.",
+    "The Giza Plateau opens daily in the morning and closes before sunset, with hours shifting between the summer and winter seasons. Inner-pyramid entry is by separate ticket with limited daily numbers. Egypt's Ministry of Tourism and Antiquities publishes the current schedule and prices, so check its site before visiting. Source: Egypt Ministry of Tourism & Antiquities, Egymonuments, verified 2026-10-22.",
   'burj-khalifa':
     "The At The Top observation decks open daily from the morning to late evening, and sunset ('prime') hours carry different prices and sell out first. Entry runs through Dubai Mall's lower ground floor, not the tower's own doors, with security and an exhibition corridor before the lifts. Check the official ticket site for today's schedule. Source: Burj Khalifa official site / At The Top, verified 2026-10-22.",
 };
@@ -173,7 +180,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
   if (!wonder) notFound();
 
   // Fix 3 (billi audit): FAQ list with the fee answer derived from the
-  // record's structured fee rows — single source for schema + visible block.
+  // record's structured fee rows, single source for schema + visible block.
   const faqs = getWonderFaqs(wonder);
   // Final30 A8: keyword plan-visit sections (empty for out-of-brief wonders).
   const planSections = planVisitSections(wonder);
@@ -181,7 +188,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
   const live = await getWonderLive(wonder.lat, wonder.lng, wonder.timezone);
   const hero = heroMedia(wonder);
   const gallery = wonder.media.filter((m) => m.role === 'gallery' || m.role === 'detail');
-  const status = live ? openStatus(live, wonder.timezone) : { open: null as boolean | null, text: '' };
+  const status = live ? openStatus(live, wonder) : { open: null as boolean | null, text: '' };
   const localTime = formatLocalTime(wonder.timezone);
   const localDate = formatLocalDate(wonder.timezone);
   const googleKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || null;
@@ -228,8 +235,8 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
   // ── Batch 4 Item 2: direct-answer block ────────────────────────────────
   // First sentences answer the wonder template's primary mined question
   // ("What time does it open, and what does a ticket cost?"), composed
-  // entirely from this wonder's own verified record — visitor hours,
-  // closing days and official fees — never hard-coded figures. The
+  // entirely from this wonder's own verified record, visitor hours,
+  // closing days and official fees, never hard-coded figures. The
   // template's FAQ block + FAQPage schema already exist (wonder.faqs) and
   // are rendered further down; this item only adds the missing prose
   // direct answer under the heading.
@@ -239,11 +246,11 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
   // row never claims one.
   const freeFeeVisitors = (visitorFees ?? [])
     .filter((f) => /free/i.test(f.amount))
-    .map((f) => f.visitor.toLowerCase());
+    .map((f) => feeVisitorLabel(f.visitor));
   const wonderAnswer = [
     `${wonder.name} ${wonder.visitor.hoursText.charAt(0).toLowerCase()}${wonder.visitor.hoursText.slice(1)}${wonder.visitor.closedDays ? ` ${wonder.visitor.closedDays}` : ''}`,
     visitorFees && visitorFees.length > 0
-      ? `Tickets cost ${visitorFees.filter((f) => !/free/i.test(f.amount)).slice(0, 3).map((f) => `${f.amount} for ${f.visitor.toLowerCase()}`).join(', ')}${freeFeeVisitors.length > 0 ? `, and ${freeFeeVisitors.join(' and ')} enter free` : ''}.`
+      ? `Tickets cost ${visitorFees.filter((f) => !/free/i.test(f.amount)).slice(0, 3).map((f) => `${f.amount} for ${feeVisitorLabel(f.visitor)}`).join(', ')}${freeFeeVisitors.length > 0 ? `, and ${freeFeeVisitors.join(' and ')} enter free` : ''}.`
       : `The visitor panel on this page carries today's opening status, weather and golden-hour windows for the site, checked live.`,
     wonder.unescoId
       ? `It has been a UNESCO World Heritage Site since ${wonder.unescoYear} (site ${wonder.unescoId}).`
@@ -254,7 +261,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
     <main className="min-h-screen bg-[#0a0e1a] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
-        {/* 1 — Breadcrumb + H1 + chips */}
+        {/* 1, Breadcrumb + H1 + chips */}
         <nav aria-label="Breadcrumb" className="text-sm text-gray-400">
           <Link href="/" className="hover:text-white">Home</Link>
           <span className="mx-2">/</span>
@@ -283,15 +290,15 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           )}
         </div>
 
-        {/* 1b — Batch 4 Item 2: direct-answer block, directly under the heading */}
+        {/* 1b, Batch 4 Item 2: direct-answer block, directly under the heading */}
         <div className="mt-6">
           <DirectAnswer
             answer={wonderAnswer}
-            source={`Visitor facts: ${wonder.visitor.sourceName} — verified ${wonder.visitor.lastVerified}${wonder.unescoId ? ` · UNESCO listing: World Heritage Centre, site ${wonder.unescoId}` : ''}`}
+            source={`Visitor facts: ${wonder.visitor.sourceName}, verified ${wonder.visitor.lastVerified}${wonder.unescoId ? ` · UNESCO listing: World Heritage Centre, site ${wonder.unescoId}` : ''}`}
           />
         </div>
 
-        {/* 2 — Hero gallery */}
+        {/* 2, Hero gallery */}
         <figure className="mt-6">
           <div className="relative overflow-hidden rounded-2xl border border-white/10">
             <Image
@@ -329,10 +336,10 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </div>
         )}
 
-        {/* 3 — QUICK ANSWER */}
+        {/* 3, QUICK ANSWER */}
         {live && (
           <div className="mt-8 rounded-2xl border border-amber-400/25 bg-amber-400/5 p-5">
-            <h2 className="text-lg font-bold text-amber-200">Visiting today — the quick answer</h2>
+            <h2 className="text-lg font-bold text-amber-200">Visiting today, the quick answer</h2>
             <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <p className="text-xs uppercase tracking-wide text-gray-400">Status</p>
@@ -363,7 +370,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
                   {wonder.visitor.fees
                     ? wonder.visitor.fees
                         .slice(0, 3)
-                        .map((f) => `${f.visitor.includes('Foreign') ? 'Foreign' : f.visitor.includes('SAARC') ? 'SAARC/BIMSTEC' : 'Indian'} ${f.amount}`)
+                        .map((f) => `${f.visitor} ${f.amount}`)
                         .join(' · ')
                     : 'See visitor guide'}
                 </p>
@@ -373,7 +380,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </div>
         )}
 
-        {/* 4 — Key facts */}
+        {/* 4, Key facts */}
         <Section title="Key facts">
           <dl className="grid grid-cols-2 gap-3 lg:grid-cols-5">
             {wonder.facts.map((f) => (
@@ -386,9 +393,9 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </dl>
         </Section>
 
-        {/* 5 — THERE TODAY live dashboard */}
+        {/* 5, THERE TODAY live dashboard */}
         {live && (
-          <Section title={`There today — live at the ${wonder.name}`}>
+          <Section title={`There today, live at the ${wonder.name}`}>
             <div className="grid gap-4 lg:grid-cols-3">
               <div className="rounded-xl border border-white/10 bg-white/5 p-5">
                 <p className="text-sm text-gray-400">Right now</p>
@@ -412,7 +419,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
                         const max = Math.max(...temps);
                         const pct = max > min ? 25 + ((h.temp - min) / (max - min)) * 75 : 50;
                         return (
-                          <div key={h.time} className="flex flex-1 flex-col items-center gap-1" title={`${h.time.slice(11, 16)} — ${Math.round(h.temp)}°C`}>
+                          <div key={h.time} className="flex flex-1 flex-col items-center gap-1" title={`${h.time.slice(11, 16)}, ${Math.round(h.temp)}°C`}>
                             <span className="text-[10px] text-gray-400">{Math.round(h.temp)}°</span>
                             <div className="w-full rounded-t bg-amber-400/70" style={{ height: `${pct}%` }} />
                             <span className="text-[10px] text-gray-500">{h.time.slice(11, 13)}</span>
@@ -426,10 +433,10 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
               <div className="rounded-xl border border-white/10 bg-white/5 p-5">
                 <p className="text-sm text-gray-400">Sun path today</p>
                 <ul className="mt-2 space-y-2 text-sm text-gray-200">
-                  <li>🌅 Sunrise — <strong>{live.today.sunrise}</strong></li>
-                  <li>☀️ Golden hour (morning) — <strong>{live.goldenMorning.start}–{live.goldenMorning.end}</strong></li>
-                  <li>🌇 Golden hour (evening) — <strong>{live.goldenEvening.start}–{live.goldenEvening.end}</strong></li>
-                  <li>🌆 Sunset — <strong>{live.today.sunset}</strong></li>
+                  <li>🌅 Sunrise, <strong>{live.today.sunrise}</strong></li>
+                  <li>☀️ Golden hour (morning), <strong>{live.goldenMorning.start}–{live.goldenMorning.end}</strong></li>
+                  <li>🌇 Golden hour (evening), <strong>{live.goldenEvening.start}–{live.goldenEvening.end}</strong></li>
+                  <li>🌆 Sunset, <strong>{live.today.sunset}</strong></li>
                 </ul>
                 <p className="mt-3 text-xs text-gray-500">All times local to the site ({wonder.timezone.replace('_', ' ')}).</p>
                 <div className="mt-4 border-t border-white/10 pt-3">
@@ -444,17 +451,17 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
               <div className="rounded-xl border border-emerald-400/25 bg-emerald-400/5 p-5">
                 <p className="text-sm font-semibold text-emerald-200">👕 What to wear today</p>
                 <ul className="mt-2 list-disc space-y-2 pl-5 text-sm leading-relaxed text-gray-200">
-                  {whatToWear(live).map((tip) => (
+                  {whatToWear(live, wonder).map((tip) => (
                     <li key={tip}>{tip}</li>
                   ))}
                 </ul>
-                <p className="mt-3 text-xs text-gray-500">Generated from today&apos;s live temperature, rain, wind and UV at the site — updated with the weather, never written in advance.</p>
+                <p className="mt-3 text-xs text-gray-500">Generated from today&apos;s live temperature, rain, wind and UV at the site, updated with the weather, never written in advance.</p>
               </div>
             </div>
           </Section>
         )}
 
-        {/* 6 — The Story */}
+        {/* 6, The Story */}
         <Section title="The story">
           <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
             {wonder.intro.map((p, i) => (
@@ -462,8 +469,8 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
             ))}
             <p className="text-sm text-gray-400">
               Read more:{' '}
-              <a href="https://en.wikipedia.org/wiki/Taj_Mahal" target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
-                Wikipedia — {wonder.name}
+              <a href={wonder.wikiUrl} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
+                Wikipedia, {wonder.name}
               </a>{' '}
               ·{' '}
               <a href={wonder.officialUrl} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
@@ -473,7 +480,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </div>
         </Section>
 
-        {/* 7 — Architecture */}
+        {/* 7, Architecture */}
         <Section title="Architecture">
           <div className="max-w-3xl space-y-4 leading-relaxed text-gray-300">
             {wonder.architecture.paragraphs.map((p, i) => (
@@ -506,7 +513,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </div>
         </Section>
 
-        {/* 8 — Development timeline */}
+        {/* 8, Development timeline */}
         <Section title="Development timeline">
           <ol className="relative space-y-8 border-l border-white/10 pl-6">
             {wonder.timeline.map((t) => {
@@ -537,21 +544,27 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </ol>
         </Section>
 
-        {/* 9 — Visitor guide */}
+        {/* 9, Visitor guide */}
         <Section title="Visitor guide">
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="rounded-xl border border-white/10 bg-white/5 p-5">
               <h3 className="font-semibold text-white">Hours</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-300">{wonder.visitor.hoursText}</p>
               <p className="mt-1 text-sm leading-relaxed text-gray-300">{wonder.visitor.closedDays}</p>
-              {live && (
+              {live && wonder.visitor.hoursRule?.type === 'sunrise-sunset' && (
                 <p className="mt-2 text-sm text-amber-200">
-                  Today: sunrise {live.today.sunrise} → the gates open 30 minutes before it; the monument closes 30 minutes
-                  before the {live.today.sunset} sunset.
+                  Today: sunrise {live.today.sunrise} → the gates open {wonder.visitor.hoursRule.opensBeforeSunriseMin} minutes before it; the site closes{' '}
+                  {wonder.visitor.hoursRule.closesBeforeSunsetMin} minutes before the {live.today.sunset} sunset.
                 </p>
               )}
               <h3 className="mt-5 font-semibold text-white">Getting in</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-300">{wonder.visitor.gatesText}</p>
+              {wonder.visitor.nightText && (
+                <>
+                  <h3 className="mt-5 font-semibold text-white">At night</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-300">{wonder.visitor.nightText}</p>
+                </>
+              )}
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-5">
               <h3 className="font-semibold text-white">Entry fees (official)</h3>
@@ -590,7 +603,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </div>
         </Section>
 
-        {/* 9b — Final30 A8: keyword plan-visit sections (briefed wonders only) */}
+        {/* 9b, Final30 A8: keyword plan-visit sections (briefed wonders only) */}
         {planSections.map((s) => (
           <Section key={s.h2} title={s.h2}>
             <div className="max-w-3xl space-y-6">
@@ -618,18 +631,18 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </Section>
         ))}
 
-        {/* 10 — SEE IT LIVE */}
+        {/* 10, SEE IT LIVE */}
         <Section title="See it live">
           <MapEmbed lat={wonder.lat} lng={wonder.lng} name={wonder.name} googleKey={googleKey} />
         </Section>
 
-        {/* 11 — Photography */}
-        <Section title="Photography — best spots & today's windows">
+        {/* 11, Photography */}
+        <Section title="Photography, best spots & today's windows">
           {live && (
             <p className="max-w-3xl text-sm leading-relaxed text-gray-300">
               Today&apos;s best windows at the site: <strong className="text-white">{live.goldenMorning.start}–{live.goldenMorning.end}</strong> after
-              sunrise and <strong className="text-white">{live.goldenEvening.start}–{live.goldenEvening.end}</strong> before sunset. The marble reads
-              pinkish in the first light, white at midday and golden towards evening — plan the shot around the light, not the clock alone.
+              sunrise and <strong className="text-white">{live.goldenEvening.start}–{live.goldenEvening.end}</strong> before sunset.
+              {wonder.photoNote ? <> {wonder.photoNote}</> : null}
             </p>
           )}
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -653,7 +666,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </div>
         </Section>
 
-        {/* 12 — Myth vs Fact */}
+        {/* 12, Myth vs Fact */}
         {wonder.myths.length > 0 && (
           <Section title="Myth vs Fact">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -684,8 +697,8 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           </Section>
         )}
 
-        {/* 13 — Nearby */}
-        <Section title="Nearby — same heritage zone">
+        {/* 13, Nearby */}
+        <Section title="Nearby, same heritage zone">
           <div className="grid gap-4 sm:grid-cols-2">
             {wonder.nearby.map((n) => (
               <div key={n.name} className="rounded-xl border border-white/10 bg-white/5 p-5">
@@ -702,11 +715,11 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
             ))}
           </div>
           <p className="mt-3 text-sm text-gray-400">
-            Our full {wonder.cityName} city guide is in preparation — it will link from here the day it publishes.
+            Our full {wonder.cityName} city guide is in preparation, it will link from here the day it publishes.
           </p>
         </Section>
 
-        {/* 14 — FAQs + sources & credits + related */}
+        {/* 14, FAQs + sources & credits + related */}
         <Section title="Frequently asked questions">
           <div className="space-y-3">
             {faqs.map((f) => (
@@ -722,7 +735,7 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
           <ul className="space-y-2 text-sm text-gray-300">
             {wonder.sources.map((s) => (
               <li key={s.claim}>
-                <span className="text-gray-400">{s.claim} — </span>
+                <span className="text-gray-400">{s.claim}: </span>
                 <a href={s.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">
                   {s.sourceName}
                 </a>{' '}
@@ -749,14 +762,14 @@ export default async function WonderPage({ params }: { params: Promise<{ slug: s
 
         <Section title="More wonders">
           <p className="max-w-3xl text-sm leading-relaxed text-gray-300">
-            The {wonder.name} is the first WorldCityHub wonder guide built to the golden standard — every fact sourced,
+            The {wonder.name} is one of the WorldCityHub wonder guides built to the golden standard: every fact sourced,
             every photo licensed and credited, and a live layer (weather, sun, golden hour) that no static encyclopedia
-            page can offer. The other New7Wonders — the Great Wall of China, Petra, Christ the Redeemer, Machu Picchu,
-            Chichen Itza and the Colosseum — are being built to the same standard, one verified wonder at a time.
+            page can offer. More wonder guides are being built to the same standard, one verified wonder at a time, and
+            a guide is linked from here only once it is published.
           </p>
-          {/* P10: sibling detail links, server-rendered in this template
-              (getSiblingWonders: complete builds only, never content-only
-              upcoming wonders). No /places/ link is added here: no live
+          {/* Sibling detail links, server-rendered in this template
+              (getSiblingWonders: PUBLISHED wonders only, so the rail
+              never links to an unfinished page). No /places/ link is added here: no live
               /places/ page matches this wonder's city or nearby sites
               (the only live /places/ slugs are Lahore's), so per the
               missing-data rule the link is omitted, never faked. */}

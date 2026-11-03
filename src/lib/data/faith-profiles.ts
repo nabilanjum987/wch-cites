@@ -8,7 +8,7 @@
 //     their local community warrants: 'medium' for a large minority,
 //     'light' for a small but historically present community.
 //   * If the same profile were used for a Christian-majority city, the
-//     ordering rule promotes Christianity to first/full automatically —
+//     ordering rule promotes Christianity to first/full automatically -
 //     depthFor() derives 'full' from major_religion, never from a
 //     hard-coded city name.
 //   * A city with NO profile entry renders NO faith section at all, so
@@ -17,7 +17,7 @@
 // Lahore data (all facts sourced; see `source` on each entry):
 //   * 2023 Census of Pakistan (via Wikipedia, "Christianity in Punjab,
 //     Pakistan" / "Demographics of Lahore"): Lahore District Christians
-//     602,431 (4.64% of the district; 24.5% of Punjab's Christians — the
+//     602,431 (4.64% of the district; 24.5% of Punjab's Christians, the
 //     largest district count in Punjab, ahead of Faisalabad 308,580);
 //     Lahore city Islam 95.07%, Hinduism 0.02% (2,487), Sikhism 0.006% (715).
 //   * Sacred Heart Cathedral: seat of the Roman Catholic Archdiocese of
@@ -78,7 +78,7 @@ const PROFILES: Record<string, CityFaithProfile> = {
         places: [
           {
             name: 'Badshahi Mosque',
-            detail: 'Walled City; built 1673; capacity 100,000 — see the Mosques section above.',
+            detail: 'Walled City; built 1673; capacity 100,000, see the Mosques section above.',
           },
           {
             name: 'Data Darbar Shrine',
@@ -92,7 +92,7 @@ const PROFILES: Record<string, CityFaithProfile> = {
         faith: 'Christianity',
         baseDepth: 'medium',
         intro:
-          'Lahore District is home to 602,431 Christians (2023 Census) — the largest Christian community of any district in Punjab — so Christianity is covered here in medium depth, with real churches and their listed Sunday services. Times are published schedules and can vary on feast days; check ahead before travelling.',
+          'Lahore District is home to 602,431 Christians (2023 Census), the largest Christian community of any district in Punjab, so Christianity is covered here in medium depth, with real churches and their listed Sunday services. Times are published schedules and can vary on feast days; check ahead before travelling.',
         places: [
           {
             name: 'Sacred Heart Cathedral, Lawrence Road',
@@ -149,9 +149,9 @@ const PROFILES: Record<string, CityFaithProfile> = {
       },
     ],
   },
-  // ── PR2 (A2) — same population rule as Lahore: majority faith first and
+  // ── PR2 (A2), same population rule as Lahore: majority faith first and
   // full (via depthFor, never a hard-coded city name), other faiths at the
-  // depth their community warrants. No service times are claimed here —
+  // depth their community warrants. No service times are claimed here -
   // only places and major festivals; timings come from the live timetable
   // and the faith tabs, and readers are told to check ahead.
   karachi: {
@@ -182,7 +182,7 @@ const PROFILES: Record<string, CityFaithProfile> = {
         faith: 'Christianity',
         baseDepth: 'medium',
         intro:
-          'Karachi’s largest minority faith (2.14% in the 2023 Census), covered here in medium depth, with real churches and their major festivals — Christmas and Easter. Service times vary by church and season; check ahead before travelling.',
+          'Karachi’s largest minority faith (2.14% in the 2023 Census), covered here in medium depth, with real churches and their major festivals, Christmas and Easter. Service times vary by church and season; check ahead before travelling.',
         places: [
           {
             name: 'St Patrick’s Cathedral, Shahrah-e-Iraq, Saddar',
@@ -201,7 +201,7 @@ const PROFILES: Record<string, CityFaithProfile> = {
         faith: 'Hinduism',
         baseDepth: 'light',
         intro:
-          'A community of 1.17% in the 2023 Census, covered here in light depth, with its temples and major festivals — Diwali and Holi. Festival dates follow the Hindu calendar; check ahead before travelling.',
+          'A community of 1.17% in the 2023 Census, covered here in light depth, with its temples and major festivals, Diwali and Holi. Festival dates follow the Hindu calendar; check ahead before travelling.',
         places: [
           {
             name: 'Shri Swaminarayan Mandir, Saddar',
@@ -240,7 +240,7 @@ const PROFILES: Record<string, CityFaithProfile> = {
         faith: 'Christianity',
         baseDepth: 'medium',
         intro:
-          'Islamabad’s largest minority faith (97,281 people in the 2023 Census), covered here in medium depth, with its churches and major festivals — Christmas and Easter. Service times vary by church and season; check ahead before travelling.',
+          'Islamabad’s largest minority faith (97,281 people in the 2023 Census), covered here in medium depth, with its churches and major festivals, Christmas and Easter. Service times vary by church and season; check ahead before travelling.',
         places: [
           {
             name: 'Churches in Islamabad’s residential sectors',
@@ -298,7 +298,7 @@ export function getFaithSectionsForCity(
 
 // ── Next Ramadan: roll-forward list, never a negative countdown ─────────────
 // Expected first-fast dates (astronomical projections, subject to official
-// moon sighting — Ruet-e-Hilal Committee in Pakistan). Sources: Emirates
+// moon sighting, Ruet-e-Hilal Committee in Pakistan). Sources: Emirates
 // Astronomical Society / Gulf News (Ramadan 2027: 8 February 2027) and the
 // published 2027–2030 expected-date table. Later years continue the ~11-day
 // annual drift and stay labelled "expected".
@@ -333,7 +333,7 @@ export function nextRamadan(from: Date = new Date()): { label: string; daysAway:
 }
 
 // ── Next new moon: computed from a verified anchor, always rolls forward ────
-// Anchor: new moon 9 November 2026, 12:02 PKT (07:02 UTC) — timeanddate.com
+// Anchor: new moon 9 November 2026, 12:02 PKT (07:02 UTC), timeanddate.com
 // Punjab lunation table (lunation 1285). The mean synodic month
 // (29.530588853 days) steps from that anchor; dates stay correct at
 // day granularity for the months this page is used over. The result is the
@@ -358,7 +358,7 @@ export function moonPhaseInfo(on: Date = new Date()): {
   const step = SYNODIC_MONTH_DAYS * 86400000;
   let last = new Date(NEW_MOON_ANCHOR_UTC);
   // Step BACKWARD first when `on` predates the anchor (the anchor is
-  // 9 Nov 2026, so every date before it needs this — without it the
+  // 9 Nov 2026, so every date before it needs this, without it the
   // "last" new moon would be the anchor itself and the next one would
   // wrongly skip a whole lunation).
   while (last.getTime() > on.getTime()) last = new Date(last.getTime() - step);

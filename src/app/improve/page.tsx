@@ -1,19 +1,25 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import ImproveForm from '@/components/improve/ImproveForm';
+import JsonLd from '@/components/seo/JsonLd';
+import { hubBreadcrumbJsonLd, hubWebPageJsonLd } from '@/lib/seo/hub';
+
+const DESCRIPTION = 'Know a city or country better than we do? Suggest a correction or missing information for any WorldCityHub page. Every suggestion is human-reviewed.';
 
 export const metadata: Metadata = {
   title: 'Improve a City or Country Page | WorldCityHub',
-  description: 'Know a city or country better than we do? Suggest a correction or missing information for any WorldCityHub page. Every suggestion is human-reviewed.',
+  description: DESCRIPTION,
   alternates: { canonical: 'https://worldcityhub.vercel.app/improve' },
 };
 
 export default function ImprovePage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
+      <JsonLd data={hubWebPageJsonLd('Improve a City or Country Page', '/improve', DESCRIPTION)} />
+      <JsonLd data={hubBreadcrumbJsonLd('Improve', '/improve')} />
       <h1 className="text-3xl font-bold text-white">Improve WorldCityHub</h1>
       <p className="mt-2 text-sm leading-relaxed text-gray-400">
-        One form for every city and every country on this site. Local knowledge beats any database —
+        One form for every city and every country on this site. Local knowledge beats any database,
         if a page about your city or country is wrong or missing something, tell us here.
       </p>
       <ol className="mt-5 grid gap-3 text-sm text-gray-300 sm:grid-cols-3">
@@ -23,7 +29,7 @@ export default function ImprovePage() {
         </li>
         <li className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
           <strong className="text-white">2. A human reviews</strong>
-          <p className="mt-1 text-gray-400">Nothing is published automatically — ever.</p>
+          <p className="mt-1 text-gray-400">Nothing is published automatically, ever.</p>
         </li>
         <li className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
           <strong className="text-white">3. We verify, then update</strong>

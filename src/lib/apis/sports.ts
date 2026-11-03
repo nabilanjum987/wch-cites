@@ -1,4 +1,4 @@
-const BASE = 'https://www.thesportsdb.com/api/v1/json/2';
+const BASE = 'https://www.thesportsdb.com/api/v1/json/123';
 const GNEWS_BASE = 'https://gnews.io/api/v1/search';
 
 export type SportPriority = {
@@ -235,40 +235,6 @@ export interface SportsNews {
 }
 
 // Mock data
-const MOCK_STANDINGS: Record<string, StandingsTeam[]> = {
-  psl: [
-    { name: 'Multan Sultans', played: 10, wins: 7, draws: 0, losses: 3, goalsFor: 85, goalsAgainst: 70, goalDiff: 15, points: 14 },
-    { name: 'Peshawar Zalmi', played: 10, wins: 6, draws: 0, losses: 4, goalsFor: 80, goalsAgainst: 75, goalDiff: 5, points: 12 },
-    { name: 'Islamabad United', played: 10, wins: 5, draws: 0, losses: 5, goalsFor: 78, goalsAgainst: 82, goalDiff: -4, points: 10 },
-    { name: 'Lahore Qalandars', played: 10, wins: 5, draws: 0, losses: 5, goalsFor: 77, goalsAgainst: 80, goalDiff: -3, points: 10 },
-    { name: 'Karachi Kings', played: 10, wins: 4, draws: 0, losses: 6, goalsFor: 72, goalsAgainst: 85, goalDiff: -13, points: 8 },
-  ],
-  ipl: [
-    { name: 'Mumbai Indians', played: 10, wins: 7, draws: 0, losses: 3, goalsFor: 85, goalsAgainst: 70, goalDiff: 15, points: 14 },
-    { name: 'Delhi Capitals', played: 10, wins: 6, draws: 0, losses: 4, goalsFor: 80, goalsAgainst: 75, goalDiff: 5, points: 12 },
-    { name: 'Kolkata Knight Riders', played: 10, wins: 5, draws: 0, losses: 5, goalsFor: 78, goalsAgainst: 82, goalDiff: -4, points: 10 },
-    { name: 'RCB', played: 10, wins: 5, draws: 0, losses: 5, goalsFor: 77, goalsAgainst: 80, goalDiff: -3, points: 10 },
-    { name: 'CSK', played: 10, wins: 4, draws: 0, losses: 6, goalsFor: 72, goalsAgainst: 85, goalDiff: -13, points: 8 },
-  ],
-};
-
-const MOCK_TOP_SCORERS: Record<string, TopScorer[]> = {
-  psl: [
-    { name: 'Babar Azam', team: 'Peshawar Zalmi', goals: 485 },
-    { name: 'Muhammad Hafeez', team: 'Islamabad United', goals: 430 },
-    { name: 'Iftikhar Ahmed', team: 'Karachi Kings', goals: 320 },
-    { name: 'Shoaib Malik', team: 'Multan Sultans', goals: 315 },
-    { name: 'Fakhar Zaman', team: 'Lahore Qalandars', goals: 310 },
-  ],
-  ipl: [
-    { name: 'Virat Kohli', team: 'Royal Challengers Bangalore', goals: 7000 },
-    { name: 'Rohit Sharma', team: 'Mumbai Indians', goals: 6500 },
-    { name: 'Suresh Raina', team: 'Chennai Super Kings', goals: 5600 },
-    { name: 'MS Dhoni', team: 'Chennai Super Kings', goals: 5400 },
-    { name: 'AB de Villiers', team: 'Royal Challengers Bangalore', goals: 5200 },
-  ],
-};
-
 const MOCK_STADIUMS: Record<string, Stadium[]> = {
   pk: [
     {
@@ -465,14 +431,6 @@ export async function fetchRecentResults(teamId: string, limit = 5): Promise<Spo
   } catch {
     return [];
   }
-}
-
-export async function getStandings(leagueId: string): Promise<StandingsTeam[]> {
-  return MOCK_STANDINGS[leagueId] ?? [];
-}
-
-export async function getTopScorers(leagueId: string): Promise<TopScorer[]> {
-  return MOCK_TOP_SCORERS[leagueId] ?? [];
 }
 
 export async function getStadiums(countryCode: string): Promise<Stadium[]> {

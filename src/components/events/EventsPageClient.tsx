@@ -125,17 +125,13 @@ function EventCard({ event, primaryColor, view }: {
               {catCfg && <catCfg.icon size={40} style={{ color: primaryColor }} className="opacity-40" />}
             </div>
         }
-        {live && (
-          <div className="absolute top-2 left-2 px-2 py-0.5 bg-red-500/100/100 text-white text-xs font-bold rounded-full animate-pulse">
-            🔴 Live
-          </div>
-        )}
-        {event.is_free && (
-          <div className="absolute top-2 right-2 px-2 py-0.5 bg-green-500/100/100 text-white text-xs font-bold rounded-full">FREE</div>
-        )}
       </div>
       <div className="p-3">
         <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+          {/* G3 (subpages fix B): LIVE/FREE badges sit below the photo as
+              text, never overlaid on the event image. */}
+          {live && <span className="px-2 py-0.5 bg-red-500/100/100 text-white text-xs font-bold rounded-full animate-pulse">🔴 Live</span>}
+          {event.is_free && <span className="px-2 py-0.5 bg-green-500/100/100 text-white text-xs font-bold rounded-full">FREE</span>}
           <span className={`px-2 py-0.5 text-xs rounded-full ${catCfg?.color ?? 'bg-transparent/5 text-gray-400'}`}>{catCfg?.label ?? event.category}</span>
           <span className="text-xs text-gray-400 capitalize">{event.level}</span>
         </div>
@@ -274,7 +270,7 @@ export default function EventsPageClient({ city, country, province, citySlug, in
             <h1 className="text-3xl font-bold">{city.name} Events</h1>
           </div>
           <p className="text-white/80 text-sm">
-            Discover what's happening in {city.name} — local, national & global events
+            Discover what's happening in {city.name}, local, national & global events
           </p>
           <Link href="/events/submit" className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-semibold transition">
             <Calendar size={13} /> Organising an event? List it for free

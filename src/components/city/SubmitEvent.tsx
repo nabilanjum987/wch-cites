@@ -84,7 +84,7 @@ export default function SubmitEvent({ cityName, countryCode, primaryColor }: Pro
               <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-gray-900">Submit Your Event</h3>
-                  <p className="text-xs text-gray-500 mt-0.5">List FREE on WorldCityHub — we'll review within 24h</p>
+                  <p className="text-xs text-gray-500 mt-0.5">List FREE on WorldCityHub, we'll review within 24h</p>
                 </div>
                 <button onClick={() => setOpen(false)} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
                   <X size={18} className="text-gray-400" />

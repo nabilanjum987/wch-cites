@@ -1,5 +1,5 @@
 /**
- * SEO paragraph generators — WorldCityHub Sports Page
+ * SEO paragraph generators, WorldCityHub Sports Page
  *
  * TWO paragraphs per section: para_before (above data) + para_after (below data)
  * Target: 10 sections × ~200 words × 2 = 3,500+ words per city sports page.
@@ -36,14 +36,14 @@ export function generateRecentParagraph(country: string, sport: string): string 
 
 export function generateRecentAfter(country: string, sport: string): string {
   const { month, year } = now();
-  return `Each result above includes the final score and opponent, letting fans of ${country}'s national team track not just whether they won or lost but the margin and quality of opposition involved — a narrow loss to a top-ranked side reads very differently from a narrow loss to a weaker one. This recent form feeds directly into expectations for the upcoming fixture shown in the Next Match section above, since recent performance is typically the single best predictor of near-term results. Through ${month} ${year}, this rolling window of recent matches continues updating as new results come in.`;
+  return `Each result above includes the final score and opponent, letting fans of ${country}'s national team track not just whether they won or lost but the margin and quality of opposition involved, a narrow loss to a top-ranked side reads very differently from a narrow loss to a weaker one. This recent form feeds directly into expectations for the upcoming fixture shown in the Next Match section above, since recent performance is typically the single best predictor of near-term results. Through ${month} ${year}, this rolling window of recent matches continues updating as new results come in.`;
 }
 
 // ─── 3. UPCOMING MATCHES ─────────────────────────────────────────────────────
 
 export function generateUpcomingMatchesParagraph(country: string, sport: string): string {
   const { month, year } = now();
-  return `Beyond the immediate next fixture, the matches above extend the view further into ${country}'s ${sport.toLowerCase()} calendar, useful for fans planning their viewing schedule or travel around multiple upcoming national team games. Seeing several fixtures laid out together also reveals the broader shape of the season ahead — whether ${country} faces a particularly demanding stretch of fixtures or a lighter run through ${month} ${year}. This forward-looking list complements the Recent Results section above, together giving a complete picture of where the national team has been and where it's headed.`;
+  return `Beyond the immediate next fixture, the matches above extend the view further into ${country}'s ${sport.toLowerCase()} calendar, useful for fans planning their viewing schedule or travel around multiple upcoming national team games. Seeing several fixtures laid out together also reveals the broader shape of the season ahead, whether ${country} faces a particularly demanding stretch of fixtures or a lighter run through ${month} ${year}. This forward-looking list complements the Recent Results section above, together giving a complete picture of where the national team has been and where it's headed.`;
 }
 
 export function generateUpcomingMatchesAfter(country: string, sport: string): string {
@@ -55,36 +55,36 @@ export function generateUpcomingMatchesAfter(country: string, sport: string): st
 
 export function generateLiveScoresParagraph(sport: string, city: string): string {
   const { month, year } = now();
-  return `Live ${sport.toLowerCase()} scores above track every match happening today across the sport, refreshing continuously so scores stay current without needing a manual reload. This section isn't limited to ${city}'s national team specifically — it surfaces the day's broader ${sport.toLowerCase()} activity, useful for fans following the sport more generally rather than just one national side. Through ${month} ${year}, an empty result here simply means no matches in this sport are scheduled today, not that the sport itself is inactive — switching sports using the selector above often reveals a fuller schedule.`;
+  return `The ${sport.toLowerCase()} fixtures and scores above are today's fixtures and scores from TheSportsDB for matches happening today across the sport. This section isn't limited to ${city}'s national team specifically, it surfaces the day's broader ${sport.toLowerCase()} activity, useful for fans following the sport more generally rather than just one national side. Through ${month} ${year}, an empty result here simply means no matches in this sport are scheduled today, not that the sport itself is inactive, and switching sports using the selector above often reveals a fuller schedule. If the feed itself cannot be reached, the section says so instead of showing an empty day.`;
 }
 
 export function generateLiveScoresAfter(sport: string, city: string): string {
   const { month, year } = now();
-  return `Each live score card above updates in real time as matches progress, showing current score, match status, and time elapsed where applicable, giving genuinely live coverage rather than a periodically refreshed snapshot. The sport selector above this section lets ${city} residents switch between whichever sports are most actively followed in the country, since match activity and audience interest both vary considerably by sport and by day. Through ${month} ${year}, checking this section at different points during the day will often surface an entirely different set of live matches as earlier games conclude and new ones begin.`;
+  return `Each score card above shows the fixture or score TheSportsDB holds for that match, with its current score and match status where the feed provides them. The free feed this page uses is refreshed periodically rather than ball by ball, so a score can lag play slightly. The sport selector above this section lets ${city} residents switch between whichever sports are most actively followed in the country, since match activity and audience interest both vary considerably by sport and by day. Through ${month} ${year}, checking this section at different points during the day will often surface a different set of matches as earlier games conclude and new ones begin.`;
 }
 
 // ─── 5. DOMESTIC LEAGUE STANDINGS ────────────────────────────────────────────
 
 export function generateStandingsParagraph(leagueName: string, country: string): string {
   const { month, year } = now();
-  return `${leagueName} standings above show exactly where every club sits in the current season table, ranked by points alongside wins, draws, losses, and goal difference — the full picture behind each team's league position. Domestic league football and cricket carry enormous weight in everyday sporting conversation across ${country}, often generating more sustained week-to-week engagement than international fixtures, which occur far less frequently. Through ${month} ${year}, this table updates after each round of matches, so the standings shown reflect the current state of the season rather than an outdated snapshot.`;
+  return `${leagueName} standings above show exactly where every club sits in the current season table, ranked by points alongside wins, draws, losses, and goal difference, the full picture behind each team's league position. Domestic league football and cricket carry enormous weight in everyday sporting conversation across ${country}, often generating more sustained week-to-week engagement than international fixtures, which occur far less frequently. Through ${month} ${year}, this table updates after each round of matches, so the standings shown reflect the current state of the season rather than an outdated snapshot.`;
 }
 
 export function generateStandingsAfter(leagueName: string, country: string): string {
   const { month, year } = now();
-  return `The top scorers list alongside the standings table highlights which individual players are having the strongest season in ${leagueName}, a detail that often matters as much to fans in ${country} as the team standings themselves, particularly for players being talked about for national team selection. Position in this table directly shapes a club's season narrative — title contention, mid-table stability, or relegation pressure — and that narrative typically intensifies as the season progresses through ${month} ${year}. Together, these two views give a genuinely complete read on the current domestic season.`;
+  return `The top scorers list alongside the standings table highlights which individual players are having the strongest season in ${leagueName}, a detail that often matters as much to fans in ${country} as the team standings themselves, particularly for players being talked about for national team selection. Position in this table directly shapes a club's season narrative, title contention, mid-table stability, or relegation pressure, and that narrative typically intensifies as the season progresses through ${month} ${year}. Together, these two views give a genuinely complete read on the current domestic season.`;
 }
 
 // ─── 6. MAJOR STADIUMS ───────────────────────────────────────────────────────
 
 export function generateStadiumsParagraph(country: string): string {
   const { month, year } = now();
-  return `${country}'s major stadiums above are where the national sporting story has actually been written — host venues for historic matches, record crowds, and the kind of atmosphere that turns a routine fixture into a lasting memory for fans who attended. Each venue carries its own capacity, history, and significance within ${country}'s sporting landscape, often serving multiple sports and hosting both domestic league matches and international fixtures across ${month} ${year} and beyond. For sports tourists or fans relocating to ${country}, this section offers a quick orientation to the country's most significant sporting venues.`;
+  return `${country}'s major stadiums above are where the national sporting story has actually been written, host venues for historic matches, record crowds, and the kind of atmosphere that turns a routine fixture into a lasting memory for fans who attended. Each venue carries its own capacity, history, and significance within ${country}'s sporting landscape, often serving multiple sports and hosting both domestic league matches and international fixtures across ${month} ${year} and beyond. For sports tourists or fans relocating to ${country}, this section offers a quick orientation to the country's most significant sporting venues.`;
 }
 
 export function generateStadiumsAfter(country: string): string {
   const { month, year } = now();
-  return `Stadium capacity figures shown above matter beyond simple scale — they often determine which matches a venue can realistically host, with the largest grounds in ${country} reserved for marquee national team fixtures and major finals rather than routine domestic league games. Many of these venues have evolved considerably over the decades, undergoing renovations and capacity changes that reflect ${country}'s broader sporting infrastructure investment through recent years. Visiting one of these stadiums in person, whether for a match or simply a tour, remains one of the more direct ways to experience ${country}'s sporting culture firsthand through ${month} ${year}.`;
+  return `Stadium capacity figures shown above matter beyond simple scale, they often determine which matches a venue can realistically host, with the largest grounds in ${country} reserved for marquee national team fixtures and major finals rather than routine domestic league games. Many of these venues have evolved considerably over the decades, undergoing renovations and capacity changes that reflect ${country}'s broader sporting infrastructure investment through recent years. Visiting one of these stadiums in person, whether for a match or simply a tour, remains one of the more direct ways to experience ${country}'s sporting culture firsthand through ${month} ${year}.`;
 }
 
 // ─── 7. OLYMPICS HISTORY ─────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ export function generateAthletesAfter(country: string): string {
 
 export function generateNewsParagraph(country: string): string {
   const { month, year } = now();
-  return `The sports news articles above cover the latest developments across ${country}'s sporting landscape, surfacing the stories generating the most current discussion among fans, whether transfer news, team selection decisions, or coverage of recent results. Reading these alongside the live scores, standings, and fixture information elsewhere on this page connects the raw data to the actual narrative driving it — why a particular result matters, or what's at stake in an upcoming fixture, through ${month} ${year}. Each article links to its original source for readers wanting the full story beyond the headline summary shown here.`;
+  return `The sports news articles above cover the latest developments across ${country}'s sporting landscape, surfacing the stories generating the most current discussion among fans, whether transfer news, team selection decisions, or coverage of recent results. Reading these alongside the live scores, standings, and fixture information elsewhere on this page connects the raw data to the actual narrative driving it, why a particular result matters, or what's at stake in an upcoming fixture, through ${month} ${year}. Each article links to its original source for readers wanting the full story beyond the headline summary shown here.`;
 }
 
 export function generateNewsAfter(country: string): string {

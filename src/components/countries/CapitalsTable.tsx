@@ -36,7 +36,7 @@ export default function CapitalsTable({ rows }: { rows: CapitalRowWithTemp[] }) 
         hour: '2-digit', minute: '2-digit', timeZone: tz,
       }).format(now);
     } catch {
-      return '—';
+      return '-';
     }
   };
 
@@ -76,7 +76,7 @@ export default function CapitalsTable({ rows }: { rows: CapitalRowWithTemp[] }) 
                 <td className="px-4 py-2.5 text-white/80">{r.capital}</td>
                 <td className="px-4 py-2.5 font-mono text-cyan-300">{timeFor(r.timezone)}</td>
                 <td className="px-4 py-2.5 text-white/80">
-                  {r.tempC != null ? `${Math.round(r.tempC)}°C` : '—'}
+                  {r.tempC != null ? `${Math.round(r.tempC)}°C` : '-'}
                 </td>
                 <td className="px-4 py-2.5">
                   <Link href={`/${r.countrySlug}`} className="text-cyan-300 hover:text-cyan-200 hover:underline">

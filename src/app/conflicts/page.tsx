@@ -1,15 +1,39 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import JsonLd from '@/components/seo/JsonLd';
+import { hubBreadcrumbJsonLd, hubWebPageJsonLd } from '@/lib/seo/hub';
+import { HubQuestions, type AeoFaq } from '@/components/aeo/HubQuestions';
 import {
   fetchUnhcrTotals, fetchWhitelistNews, sourceName, MAJOR_CONFLICTS, HUMANITARIAN_ORGS,
 } from '@/lib/conflicts';
 import type { NewsArticle } from '@/lib/apis/news';
 
+const DESCRIPTION = 'A factual, educational overview of major conflicts and peace efforts. UNHCR displacement data and whitelisted wire sources only. No sides, no propaganda.';
+
+// AEO questions (hubs family fix, 3 Nov 2026): composed only from this
+// page's own notice and standards sections. No figure is restated, so
+// the answers cannot drift from the page's live UNHCR totals. The same
+// array renders visibly and emits the FAQPage schema (HubQuestions).
+const CONFLICTS_FAQS: AeoFaq[] = [
+  {
+    q: 'Where do the figures on this page come from?',
+    a: 'The displacement figures are UNHCR\u2019s, from the UN refugee agency\u2019s official Refugee Population Statistics, linked under the totals on this page. Statistics come from UN agencies only, and humanitarian data from the ICRC and UN OCHA (ReliefWeb). If a figure cannot be sourced that way, it is not shown, and nothing is estimated in its place.',
+  },
+  {
+    q: 'Which news sources does this page use?',
+    a: 'News on this page is restricted to a whitelist of wire and public-service sources: Reuters, AP, BBC, Al Jazeera, UN News, UNHCR and the ICRC. Partisan outlets and claims from the parties themselves are never used, and every headline is reproduced with attribution and a link to its source.',
+  },
+  {
+    q: 'Does WorldCityHub take a side in these conflicts?',
+    a: 'No. This page is educational and factual only: WorldCityHub takes no political positions and endorses no party to any conflict, uses neutral language throughout, and shows no graphic content. For every conflict it also carries a Peace Efforts section, because the efforts to end a conflict matter as much as the fighting.',
+  },
+];
+
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Conflicts & Peace — Factual World Overview | WorldCityHub',
-  description: 'A factual, educational overview of major conflicts and peace efforts. UNHCR displacement data and whitelisted wire sources only. No sides, no propaganda.',
+  title: 'Conflicts & Peace: Factual World Overview | WorldCityHub',
+  description: DESCRIPTION,
   alternates: { canonical: 'https://worldcityhub.vercel.app/conflicts' },
 };
 
@@ -67,6 +91,8 @@ export default async function ConflictsPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
+      <JsonLd data={hubWebPageJsonLd('Conflicts & Peace: Factual World Overview', '/conflicts', DESCRIPTION)} />
+      <JsonLd data={hubBreadcrumbJsonLd('Conflicts', '/conflicts')} />
       {/* Mandatory notice (locked spec) */}
       <div className="rounded-2xl border border-amber-300/30 bg-amber-400/10 p-4 sm:p-5">
         <p className="text-sm font-semibold text-amber-200">⚠️ Important Notice</p>
@@ -78,15 +104,15 @@ export default async function ConflictsPage() {
         </p>
       </div>
 
-      <h1 className="mt-8 text-3xl font-bold text-white">Conflicts & Peace — World Overview</h1>
+      <h1 className="mt-8 text-3xl font-bold text-white">Conflicts & Peace: World Overview</h1>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-400">
-        A responsible overview of the world&apos;s major conflicts and — always — the efforts to end them.
+        A responsible overview of the world&apos;s major conflicts and, always, the efforts to end them.
         Figures are UNHCR&apos;s; headlines are whitelisted wire reports, reproduced with attribution.
       </p>
 
-      {/* World status — UNHCR totals */}
+      {/* World status, UNHCR totals */}
       <section className="mt-8">
-        <h2 className="text-lg font-bold text-white">World Displacement Status{totals ? ` — UNHCR, end of ${totals.year}` : ''}</h2>
+        <h2 className="text-lg font-bold text-white">World Displacement Status{totals ? `, UNHCR, end of ${totals.year}` : ''}</h2>
         {totals ? (
           <>
             <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
@@ -104,11 +130,11 @@ export default async function ConflictsPage() {
               ))}
             </div>
             <p className="mt-2 text-xs text-gray-500">
-              Source: <a href="https://www.unhcr.org/refugee-statistics/" target="_blank" rel="noopener noreferrer" className="underline">UNHCR Refugee Population Statistics</a> — the UN refugee agency&apos;s official counts.
+              Source: <a href="https://www.unhcr.org/refugee-statistics/" target="_blank" rel="noopener noreferrer" className="underline">UNHCR Refugee Population Statistics</a>, the UN refugee agency&apos;s official counts.
             </p>
           </>
         ) : (
-          <p className="mt-3 text-sm text-gray-400">UNHCR figures are unavailable right now — nothing is estimated in their place.</p>
+          <p className="mt-3 text-sm text-gray-400">UNHCR figures are unavailable right now, nothing is estimated in their place.</p>
         )}
       </section>
 
@@ -137,7 +163,7 @@ export default async function ConflictsPage() {
         </div>
       </section>
 
-      {/* Peace Efforts — compulsory section (locked spec) */}
+      {/* Peace Efforts, compulsory section (locked spec) */}
       <section className="mt-10 rounded-2xl border border-emerald-300/25 bg-emerald-400/[0.06] p-5 sm:p-6">
         <h2 className="text-lg font-bold text-white">🕊️ Peace Efforts</h2>
         <p className="mt-1 max-w-2xl text-sm leading-relaxed text-gray-300">
@@ -148,16 +174,16 @@ export default async function ConflictsPage() {
           <HeadlineList items={peace} />
         </div>
         <p className="mt-4 text-xs text-gray-500">
-          Standing resource: <a href="https://peacemaker.un.org" target="_blank" rel="noopener noreferrer" className="underline">UN Peacemaker</a> — the UN&apos;s mediation and peace-agreement archive.
+          Standing resource: <a href="https://peacemaker.un.org" target="_blank" rel="noopener noreferrer" className="underline">UN Peacemaker</a>, the UN&apos;s mediation and peace-agreement archive.
         </p>
       </section>
 
-      {/* Humanitarian resources — charity rule: NO commission */}
+      {/* Humanitarian resources, charity rule: NO commission */}
       <section className="mt-10">
         <h2 className="text-lg font-bold text-white">Humanitarian Resources</h2>
         <p className="mt-1 text-sm text-gray-400">
           Verified organisations working in these crises. <strong className="text-gray-200">WorldCityHub earns no
-          commission from these links</strong> — they are purely humanitarian.
+          commission from these links</strong>, they are purely humanitarian.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {HUMANITARIAN_ORGS.map((o) => (
@@ -183,6 +209,11 @@ export default async function ConflictsPage() {
           <Link href="/countries" className="text-emerald-300 underline">Country guides</Link>
         </p>
       </section>
+
+      <HubQuestions
+        faqs={CONFLICTS_FAQS}
+        source="Answers composed from this page's own notice and standards sections above (UNHCR figures, the news whitelist, and the no-sides rule)."
+      />
     </main>
   );
 }

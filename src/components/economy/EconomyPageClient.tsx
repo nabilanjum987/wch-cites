@@ -319,7 +319,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
     ? { score: stressScore, level: stressLevel(stressScore), inflation: eco.inflation!, unemployment: eco.unemployment!, debtToGdp: eco.debtToGdp }
     : null;
   // World Bank's real interest rate series is years stale for many
-  // countries (Pakistan stops at 2020) — only show it when reasonably
+  // countries (Pakistan stops at 2020), only show it when reasonably
   // current, and never label it a central-bank/policy rate.
   const showRealRate = eco.realRate != null && (eco.years.realRate ?? 0) >= 2023;
 
@@ -412,7 +412,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <p className="text-sm text-orange-400">
               If you bought groceries for {eco.currencySymbol}1,000 last year, the same basket costs approximately <strong>{eco.currencySymbol}{Math.round(1000 * (1 + (eco.inflation ?? 0) / 100)).toLocaleString()}</strong> today.
               Your money loses <strong>{eco.inflation}%</strong> of its purchasing power every year.
-              {(eco.inflation ?? 0) > 20 ? ' This is very high — savings in cash are being eroded rapidly.' :
+              {(eco.inflation ?? 0) > 20 ? ' This is very high, savings in cash are being eroded rapidly.' :
                (eco.inflation ?? 0) > 8 ? ' This is above global average and affects household budgets noticeably.' :
                ' This is within a manageable range.'}
             </p>
@@ -474,7 +474,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <p className="text-sm text-red-400">
               {countryName}'s national debt is <strong>{eco.debtToGdp}%</strong> of its entire annual GDP.
               Each citizen effectively owes <strong>${(debtPerCitizen ?? 0).toLocaleString()}</strong> as their share of this debt.
-              {(eco.debtToGdp ?? 0) > 100 ? ' A debt-to-GDP ratio above 100% is considered very high — it limits government spending on public services.' :
+              {(eco.debtToGdp ?? 0) > 100 ? ' A debt-to-GDP ratio above 100% is considered very high, it limits government spending on public services.' :
                (eco.debtToGdp ?? 0) > 60 ? ' Above 60% is the EU\'s warning threshold. Servicing this debt consumes a significant portion of the annual budget.' :
                ' This is within manageable levels by global standards.'}
             </p>
@@ -498,7 +498,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             {generateHdiParagraph(countryName)}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {eco.gini != null && <StatCard icon={BarChart3} label="Gini Coefficient" value={eco.gini.toFixed(1)} sub={`${eco.gini > 40 ? 'High Inequality' : eco.gini > 30 ? 'Moderate' : 'Low Inequality'} — World Bank ${eco.years.gini ?? ''}`} color="#10B981" />}
+            {eco.gini != null && <StatCard icon={BarChart3} label="Gini Coefficient" value={eco.gini.toFixed(1)} sub={`${eco.gini > 40 ? 'High Inequality' : eco.gini > 30 ? 'Moderate' : 'Low Inequality'}, World Bank ${eco.years.gini ?? ''}`} color="#10B981" />}
             {eco.literacyRate != null && <StatCard icon={Award} label="Literacy Rate" value={`${eco.literacyRate}%`} sub={`World Bank ${eco.years.literacy ?? ''}`} color="#10B981" trend="up" />}
           </div>
           <div className="space-y-2 bg-transparent rounded-xl border border-white/8 p-4">
@@ -517,7 +517,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
       color: '#10B981',
       title: '10-Year Growth Trends',
       enabled: true,
-      summary: 'GDP, population & exports — World Bank data',
+      summary: 'GDP, population & exports, World Bank data',
       content: (
         <div className="mt-4 space-y-4">
           <p className="text-sm text-gray-300 leading-relaxed">
@@ -581,7 +581,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             <BarChart3 size={28} className="opacity-80" />
             <h1 className="text-3xl font-bold">{countryName} Economy</h1>
           </div>
-          <p className="text-white/80 text-sm">Economic intelligence for {cityName} — data-driven, plain language</p>
+          <p className="text-white/80 text-sm">{countryName} national data (World Bank), presented for readers in {cityName}, in plain language</p>
         </div>
       </div>
 
@@ -608,7 +608,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
                 <p className="text-[11px] text-gray-500 mt-2">Score computed by WorldCityHub from World Bank inflation & unemployment data.</p>
               </>
             ) : (
-              <p className="text-sm text-gray-400">Stress score unavailable — current World Bank inflation/unemployment data for {countryName} could not be loaded.</p>
+              <p className="text-sm text-gray-400">Stress score unavailable, current World Bank inflation/unemployment data for {countryName} could not be loaded.</p>
             )}
             <p className="text-sm text-gray-400 leading-relaxed mt-4">
               {generateStressMeterAfter(countryName, cityName)}
@@ -626,7 +626,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
             {miseryData ? (
               <MiseryTable data={miseryData} countrySlug={country} primaryColor={primaryColor} />
             ) : (
-              <p className="text-sm text-gray-400">Comparison unavailable — World Bank data for the comparison countries could not be loaded.</p>
+              <p className="text-sm text-gray-400">Comparison unavailable, World Bank data for the comparison countries could not be loaded.</p>
             )}
             <p className="text-xs text-gray-400 mt-3">Misery Index = Inflation + Unemployment, from the latest World Bank values for each country. Higher = more economic pain.</p>
             <p className="text-sm text-gray-400 leading-relaxed mt-4">
@@ -638,11 +638,15 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
         {!wb && (
           <div className="flex items-start gap-2 bg-amber-500/10 border border-amber-100 rounded-xl p-4">
             <Info size={15} className="text-amber-500 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-400">Live economic indicators from the World Bank are unavailable for {countryName} right now. Figures will appear here when the data service responds — nothing is estimated or filled in.</p>
+            <p className="text-xs text-amber-400">Live economic indicators from the World Bank are unavailable for {countryName} right now. Figures will appear here when the data service responds, nothing is estimated or filled in.</p>
           </div>
         )}
 
-        {/* Quick stats bar */}
+        {/* Quick stats bar: EC1 (subpages fix B) visible national-data label */}
+        <div>
+          <h2 className="text-base font-bold text-white">{countryName} national data (World Bank)</h2>
+          <p className="text-xs text-gray-400 mt-1">National indicators for {countryName} as a whole, each shown with its World Bank data year, presented for readers in {cityName}.</p>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {eco.gdpBillions != null && <StatCard icon={DollarSign} label="GDP" value={`$${eco.gdpBillions}B`} sub={`World Bank ${eco.years.gdpUsd ?? ''}`} color={primaryColor} />}
           {eco.gdpGrowth != null && <StatCard icon={TrendingUp} label="Growth" value={`${eco.gdpGrowth}%`} sub={`${eco.years.gdpGrowth ?? ''}`} color="#10B981" trend={eco.gdpGrowth > 3 ? 'up' : 'neutral'} />}
@@ -685,6 +689,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
           <div className="flex items-center gap-2 mb-4">
             <Target size={18} style={{ color: primaryColor }} />
             <h2 className="font-bold text-white">Opportunity Index for {cityName}</h2>
+            <span className="text-[11px] px-2 py-0.5 rounded-full border border-white/15 text-gray-300">WorldCityHub computed index</span>
           </div>
           <p className="text-sm text-gray-300 leading-relaxed mb-4">
             {generateOpportunityParagraph(cityName, countryName)}
@@ -722,7 +727,7 @@ export default function EconomyPageClient({ country, province, citySlug, cityDat
               </div>
             ))}
           </div>
-          <p className="text-[11px] text-gray-500 mt-3">Scores computed by WorldCityHub from World Bank indicators — an editorial guide, not an official statistic.</p>
+          <p className="text-[11px] text-gray-500 mt-3">WorldCityHub's own computed index, an editorial guide and not an official statistic. How each score is calculated: Business Environment = 100 - (Financial Stress Score x 0.6) + (GDP growth x 3); Real Estate Potential = 70 - (inflation x 0.8) + (GDP growth x 5); Export Opportunity = 60 + 15 when the country runs a trade deficit (minus 10 otherwise) + (foreign direct investment in $bn x 0.5). Every score is clamped between 10 and 100, and all inputs are the World Bank indicators shown on this page.</p>
           <p className="text-sm text-gray-400 leading-relaxed mt-4">
             {generateOpportunityAfter(cityName, countryName)}
           </p>

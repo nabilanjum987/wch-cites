@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cityName = cityData?.name ?? city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   // A4: the city rates page carries its city's gold keyword in the
   // title (the old "Gold & Currency Rates" title carried no keyword).
-  // Lahore 41 chars, Karachi 42, Islamabad 44 — all within ≤60. The
+  // Lahore 41 chars, Karachi 42, Islamabad 44, all within ≤60. The
   // description names the live gold figure's source (F4 canonical).
   return {
     title: `Gold Price in ${cityName} Today | WorldCityHub`,
@@ -45,7 +45,7 @@ export default async function CityRatesPage({ params }: PageProps) {
     fetchGoldRates(currency.rate_to_usd, currency.code, currency.symbol),
     fetchCryptoData(currency.rate_to_usd, currency.code, currency.symbol),
   ]);
-  // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+  // P6: subpages had no JSON-LD, BreadcrumbList + City (name/URL only).
   // This template fetches no city record, so names come from the route
   // slugs, the same derivation the other templates use as their fallback.
   const cityName = titleCaseSlug(city);
@@ -58,6 +58,9 @@ export default async function CityRatesPage({ params }: PageProps) {
       <CityPageImage citySlug={city} variant="rates" />
       <RatesPageClient
         countrySlug={country}
+        cityName={cityName}
+        provinceSlug={province}
+        citySlug={city}
         initialRates={initialRates}
         initialCrypto={initialCrypto}
       />

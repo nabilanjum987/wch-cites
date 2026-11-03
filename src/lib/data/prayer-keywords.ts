@@ -5,11 +5,13 @@
 // and titles live here, keyed by city slug, instead of being hard-coded
 // into the template. Only the slugs listed here get keyword treatment:
 //
-//   * lahore   — PR1 worked example (exact title/H1/H2/H3 from the brief).
-//   * karachi  — PR2 (A2), following the Lahore model.
-//   * islamabad — PR2 flank ONLY (generic title/H1 + one Fajr H3).
+//   * lahore  , PR1 worked example (exact title/H1/H2/H3 from the brief).
+//   * karachi , PR2 (A2), following the Lahore model.
+//   * multan / peshawar, 3 Nov 2026, following the Lahore model
+//     (no faith-share claim, no places-of-worship H2s: see below).
+//   * islamabad, PR2 flank ONLY (generic title/H1 + one Fajr H3).
 //     The two Very Hard reserve phrases for the capital city are NEVER
-//     written into a title, H1 or H2 anywhere in this cluster —
+//     written into a title, H1 or H2 anywhere in this cluster -
 //     Islamabad's title and H1 stay generic, and its AEO card carries
 //     only the single Fajr flank H3.
 //
@@ -25,11 +27,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface PrayerSeo {
-  /** <title> — always ≤60 chars. */
+  /** <title>, always ≤60 chars. */
   title: string;
-  /** Meta description — always ≤155 chars. */
+  /** Meta description, always ≤155 chars. */
   description: string;
-  /** Page H1. Lowercase keyword form for lahore/karachi; generic otherwise. */
+  /** Page H1. Blueprint form ("Prayer Times in {City} Today") for the
+   *  keyword cities since 3 Nov 2026; generic for islamabad (flank). */
   h1: string;
 }
 
@@ -38,14 +41,39 @@ const SEO: Record<string, PrayerSeo> = {
     title: 'Prayer Times in Lahore Today | WorldCityHub',
     description:
       'Prayer times in Lahore today: live Fajr, Dhuhr, Asr, Maghrib and Isha times, Sehri and Jummah timings, Qibla direction and the full-year calendar.',
-    h1: 'prayer times in lahore',
+    // 3 Nov 2026: H1 takes the blueprint form (title case, with Today),
+    // matching the title; it was the lowercase keyword form before.
+    h1: 'Prayer Times in Lahore Today',
   },
   // PR2 (A2): Karachi follows the Lahore model.
   karachi: {
     title: 'Prayer Times in Karachi Today | WorldCityHub',
     description:
       'Prayer times in Karachi today: live Fajr, Dhuhr, Asr, Maghrib and Isha times, Sehri and Jummah timings, plus Qibla direction and mosques.',
-    h1: 'prayer times in karachi',
+    // 3 Nov 2026: blueprint H1 form, as Lahore above.
+    h1: 'Prayer Times in Karachi Today',
+  },
+  // 3 Nov 2026: Multan and Peshawar join the keyword layer on the
+  // Lahore/Karachi model (title, blueprint H1, keyword H2s and the
+  // Fajr/Sehri/Maghrib/Asr/Jummah AEO H3s in prayer-faqs.ts, composed
+  // from each city's own Aladhan times; CITY_COORDS below already
+  // carried their own coordinates). The sourced record (PR #146)
+  // makes NO faith-share claim for these two cities and the codebase
+  // holds no sourced church/temple/gurdwara listings for them, so no
+  // places-of-worship H2s are added and these descriptions promise
+  // only what the page delivers: the Muslim timetable, Sehri and
+  // Jummah timings, Qibla direction and the calendar.
+  multan: {
+    title: 'Prayer Times in Multan Today | WorldCityHub',
+    description:
+      'Prayer times in Multan today: live Fajr, Dhuhr, Asr, Maghrib and Isha times, Sehri and Jummah timings, Qibla direction and the full-year calendar.',
+    h1: 'Prayer Times in Multan Today',
+  },
+  peshawar: {
+    title: 'Prayer Times in Peshawar Today | WorldCityHub',
+    description:
+      'Prayer times in Peshawar today: live Fajr, Dhuhr, Asr, Maghrib and Isha times, Sehri and Jummah timings, Qibla direction and the calendar.',
+    h1: 'Prayer Times in Peshawar Today',
   },
   // PR2 (A2) flank ONLY: generic title and H1 (the same header text the
   // template already rendered for this city). The single keyword heading
@@ -85,7 +113,7 @@ export const CITY_COORDS: Record<string, CityCoords> = {
 // ── PR3 (B7): live comparison-table coordinates ──────────────────────────
 // The "Compare", "Nearby Cities" and "Around the World" tables used to
 // carry hard-coded times (summer values that went stale). They now fetch
-// live Aladhan times (method 1, school 1 — the same method as Lahore)
+// live Aladhan times (method 1, school 1, the same method as Lahore)
 // for these coordinates, and show a dash until a live response arrives:
 // no stored time is ever shown as current again. Coordinates are from
 // the repo's own prayer-tables files where available (gujranwala,

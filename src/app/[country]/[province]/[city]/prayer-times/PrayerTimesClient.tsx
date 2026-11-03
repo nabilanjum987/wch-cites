@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Calendar, MapPin, Settings, Globe } from 'lucide-react';
@@ -20,6 +21,7 @@ import { LAHORE_FAITH_SECTIONS } from '../../../../../lib/data/faiths-lahore-a11
 import { getFaithSectionsForCity, nextRamadan, moonPhaseInfo } from '../../../../../lib/data/faith-profiles';
 import { getCityMosqueFacts } from '../../../../../lib/data/city-mosque-facts';
 import { getPrayerSeo, CITY_COORDS, LIVE_CITY_COORDS } from '../../../../../lib/data/prayer-keywords';
+import { buildPrayerAeo } from '../../../../../lib/data/prayer-faqs';
 import { HIJRI_MONTHS, fetchHadith } from '../../../../../lib/apis/islamic';
 import {
   fetchBibleVerse,
@@ -106,7 +108,7 @@ export interface InitialPrayerTimes {
 export interface InitialZakatRates {
   goldPerGram: number;
   silverPerGram: number;
-  // F4: which spot served the gold rate — drives the Zakat caption.
+  // F4: which spot served the gold rate, drives the Zakat caption.
   goldSource?: GoldSpotSource;
 }
 
@@ -126,13 +128,13 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
   // spot via the shared helper, PAXG fallback inside; silver gold-api
   // XAG, converted at USD→PKR). Seeded from the server-rendered rates
   // (page.tsx) so figures are in raw HTML; the client fetch below
-  // refreshes them. Null when no live source has responded — figures
+  // refreshes them. Null when no live source has responded, figures
   // are then hidden, never stale.
   const [goldPerGram, setGoldPerGram] = useState<number | null>(initialZakat?.goldPerGram ?? null);
   const [silverPerGram, setSilverPerGram] = useState<number | null>(initialZakat?.silverPerGram ?? null);
   const [goldSource, setGoldSource] = useState<GoldSpotSource | null>(initialZakat?.goldSource ?? null);
   // PR3 (B7): live times for the comparison / nearby / world tables.
-  // Empty until each city's live Aladhan response arrives — a dash is
+  // Empty until each city's live Aladhan response arrives, a dash is
   // rendered in place of a missing value, never a stored time.
   const [liveCityTimes, setLiveCityTimes] = useState<Record<string, PrayerTimes | null>>({});
   const [todayData, setTodayData] = useState<any>(null);
@@ -194,7 +196,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
       if (data?.timings?.Asr) setShafiiAsr(data.timings.Asr);
     });
     fetchWeeklyPrayerTimes(city.lat, city.lng, 1, 1).then(setWeeklyData);
-    // PR3 (B7): live times for the comparison / nearby / world tables —
+    // PR3 (B7): live times for the comparison / nearby / world tables -
     // same Aladhan method as this page (method 1, school 1). Each city
     // fetches at its own coordinates; failures leave that city as a dash.
     Object.entries(LIVE_CITY_COORDS).forEach(([slug, c]) => {
@@ -291,7 +293,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
     URL.revokeObjectURL(url);
   };
 
-  // PR3 (B7): comparison cities are slug-only now — their times come
+  // PR3 (B7): comparison cities are slug-only now, their times come
   // from the live fetch above, never from a stored value. The old
   // hard-coded times (including the P13(f) 28 Oct 2026 snapshot) went
   // stale, which is exactly what this PR removes.
@@ -305,12 +307,12 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
     []
   );
   // Live time for a comparison-table city, or a dash while its live
-  // response is missing — never a stored time shown as current.
+  // response is missing, never a stored time shown as current.
   const liveTime = (slug: string, key: keyof PrayerTimes): string => {
     const t = liveCityTimes[slug];
-    return t ? formatTime(t[key]) : '—';
+    return t ? formatTime(t[key]) : '-';
   };
-  const liveNote = 'Fetched live from Aladhan for today (Karachi method, Hanafi). A dash means the live response has not arrived — no stored time is shown in its place.';
+  const liveNote = 'Fetched live from Aladhan for today (Karachi method, Hanafi). A dash means the live response has not arrived, no stored time is shown in its place.';
 
   if (!city) {
     return (
@@ -345,37 +347,36 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
   // getPrayerSeo() is null for every city except lahore/karachi/islamabad,
   // so all renames below are no-ops elsewhere. Each AEO answer is a direct
   // 50–70 word answer under its H3 (verified by word count at build time);
-  // times are the LIVE timetable values (Hanafi default — the PR #100 Asr
+  // times are the LIVE timetable values (Hanafi default, the PR #100 Asr
   // fix is untouched: Hanafi Asr is times.Asr, Shafi'i stays its own fetch
   // and is only referenced, never substituted, here). When the live fetch
   // has not resolved yet the time slot reads 'loading' (one word, so the
   // count stays in range) and the timetable above shows the live value.
   const prayerSeo = getPrayerSeo(citySlug);
   const mosqueFacts = getCityMosqueFacts(citySlug);
-  const fajrT = times ? formatTime(times.Fajr) : 'loading';
-  const maghribT = times ? formatTime(times.Maghrib) : 'loading';
-  const asrT = times ? formatTime(times.Asr) : 'loading';
-  const dhuhrT = times ? formatTime(times.Dhuhr) : 'loading';
-  const aeoFajr = (c: string) =>
-    `Fajr time in ${c} today is ${fajrT}. The Fajr prayer window opens at true dawn, at ${fajrT}, and closes at sunrise, so worshippers should pray after ${fajrT} and before sunrise. Times on this page use the University of Islamic Sciences, Karachi method with the Hanafi school and are fetched live from Aladhan, so the time shifts slightly each day.`;
-  const aeoSehri = (c: string) =>
-    `Sehri in ${c} today ends at ${fajrT}, when Fajr begins. Worshippers fasting should finish eating and drinking before ${fajrT}, and many stop a few minutes early as a precaution. Sehri is the pre-dawn meal before the fast, and the fast then runs until Maghrib at sunset. This page's Sehri time is the live Fajr time from Aladhan, using the Karachi method.`;
-  const aeoMaghrib = (c: string) =>
-    `Maghrib time in ${c} today is ${maghribT}. Maghrib begins at sunset, when the fast is broken at Iftar during Ramadan, and its prayer window runs until Isha. The time on this page is fetched live from Aladhan using the University of Islamic Sciences, Karachi method, so it moves a minute or two each day as sunset shifts.`;
-  const aeoJummah = (c: string) =>
-    `Jummah prayer in ${c} is held at ${dhuhrT}, replacing the Dhuhr prayer on Fridays. The khutbah, or sermon, begins shortly before the congregational prayer, so worshippers should arrive early to hear it in full. The time shown is today's live Dhuhr time from Aladhan, using the Karachi method, and Friday congregations are the week's largest.`;
-  const aeoAsrLahore =
-    `Asr prayer in Lahore today is at ${asrT}, using the Hanafi school, which is the default on this page. Under the Hanafi school, Asr begins when an object's shadow is twice its length, so it falls later than the Shafi'i start. The live Shafi'i Asr time for today is shown in the Calculation Method section below, fetched from the same source.`;
-  const aeoHanafiVsShafii =
-    `Hanafi Asr is later because the two schools define Asr's start differently. The Hanafi school starts Asr when an object's shadow reaches twice its length, plus the shadow at noon, while the Shafi'i, Maliki and Hanbali schools start it at one shadow length. The same afternoon sun therefore gives a later Hanafi time, often by about an hour.`;
-  const aeoAppsDiffer =
-    `Prayer apps differ because they use different calculation methods, schools and location settings. One app may use the Karachi method while another uses the Muslim World League method, one may follow Hanafi Asr and another Shafi'i Asr, and small differences in latitude, longitude or manual minute adjustments shift results further. Check the method and school settings before comparing times.`;
+  // AEO Q&A from the shared builder (lib/data/prayer-faqs.ts): the
+  // server template emits the FAQPage JSON-LD from this SAME array,
+  // composed from this city's own Aladhan times.
+  const aeoEntries = buildPrayerAeo(citySlug, city.name, times);
   const aeoH3 = 'text-white font-bold text-base mt-5 mb-1';
   const aeoP = 'text-white/70 leading-relaxed text-sm';
 
   return (
     <FlagAuroraBackground palette={palette}>
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+        {/* Breadcrumb (S3): real links, matching the places template.
+            This template previously rendered no visible breadcrumb. */}
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-white/50 flex-wrap">
+          <Link href="/" className="hover:text-white">Home</Link>
+          <span>/</span>
+          <Link href={`/${country}`} className="hover:text-white">{city.country}</Link>
+          <span>/</span>
+          <Link href={`/${country}/${province}`} className="hover:text-white">{city.province}</Link>
+          <span>/</span>
+          <Link href={`/${country}/${province}/${citySlug}`} className="hover:text-white">{city.name}</Link>
+          <span>/</span>
+          <span className="text-white font-medium">Prayer Times</span>
+        </nav>
         {/* Header */}
         <motion.div {...SECTION_FADE} className="text-center pt-4">
           <FlagGradientText
@@ -396,7 +397,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
         </motion.div>
 
         {/* ── Faiths in this city (P13 main defect) ───────────────────────
-            Always rendered — not hidden behind a tab — so the page's
+            Always rendered, not hidden behind a tab, so the page's
             "Faiths Guide" title is true in raw HTML, not only after a
             click. Depth follows the population rule in
             lib/data/faith-profiles.ts: majority faith first/full, then
@@ -441,13 +442,13 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
         })()}
 
         {/* ── final30 A11: Lahore minority-faith keyword sections ────────
-            Always rendered — not hidden behind a tab — so the three
+            Always rendered, not hidden behind a tab, so the three
             keywords are true in raw HTML: 'churches in lahore',
             'hindu temple in lahore', 'gurdwara in lahore' (one H2 each,
             in 2023-Census population order). Lahore ONLY
             (city_slug gate); every other city renders nothing here.
             Content lives in lib/data/faiths-lahore-a11.ts and reuses the
-            Faiths block's card markup above — no design change. The
+            Faiths block's card markup above, no design change. The
             majority faith is not repeated: it is covered in full across
             this page already (PR #100 population rule). */}
         {city.city_slug === 'lahore' && (
@@ -511,7 +512,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
 
               {/* Prayer Times Table */}
               <FlagCard color={colorAt(1)}>
-                <FlagSectionTitle icon={Clock} title={citySlug === 'lahore' ? 'namaz timings lahore' : citySlug === 'karachi' ? 'namaz timings karachi' : 'Prayer Times Today'} color={colorAt(1)} />
+                <FlagSectionTitle icon={Clock} title={['lahore', 'karachi', 'multan', 'peshawar'].includes(citySlug) ? `namaz timings ${citySlug}` : 'Prayer Times Today'} color={colorAt(1)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-4">
                   {generatePrayerTableParagraph(city.name, times)}
                 </p>
@@ -522,50 +523,24 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
               </FlagCard>
 
               {/* ── final30 prayer cluster: AEO answers (keyword cities only) ──
-                  Lahore (PR1): H2 + five keyword H3s + two problem H3s
-                  (the problem H3s are NOT keyword targets). Karachi (PR2):
-                  H2 + four keyword H3s. Islamabad (PR2): generic H2 + ONLY
-                  the Fajr flank H3 — no reserve phrase appears in any
-                  title, H1 or H2 here. */}
-              {citySlug === 'lahore' && (
+                  Rendered from the shared builder (lib/data/prayer-faqs.ts);
+                  the server template emits the FAQPage JSON-LD from the
+                  SAME array. Lahore: H2 + five keyword H3s + two problem
+                  H3s (not keyword targets). Karachi: four keyword H3s.
+                  Multan and Peshawar (3 Nov 2026): five keyword H3s
+                  (Fajr/Sehri/Maghrib/Asr/Jummah) from their OWN times.
+                  Islamabad: generic H2 + ONLY the Fajr flank H3, no
+                  reserve phrase in any title, H1 or H2 (flank-only is a
+                  recorded research decision). */}
+              {aeoEntries.length > 0 && (
                 <FlagCard color={colorAt(0)}>
-                  <FlagSectionTitle icon={Clock} title="prayer times in lahore today" color={colorAt(0)} />
-                  <h3 className={aeoH3}>fajr time in lahore today</h3>
-                  <p className={aeoP}>{aeoFajr('Lahore')}</p>
-                  <h3 className={aeoH3}>sehri time in lahore today</h3>
-                  <p className={aeoP}>{aeoSehri('Lahore')}</p>
-                  <h3 className={aeoH3}>maghrib time in lahore today</h3>
-                  <p className={aeoP}>{aeoMaghrib('Lahore')}</p>
-                  <h3 className={aeoH3}>what time is asr prayer in lahore today</h3>
-                  <p className={aeoP}>{aeoAsrLahore}</p>
-                  <h3 className={aeoH3}>jummah prayer time in lahore</h3>
-                  <p className={aeoP}>{aeoJummah('Lahore')}</p>
-                  <h3 className={aeoH3}>Why is Hanafi Asr later than Shafi&apos;i Asr?</h3>
-                  <p className={aeoP}>{aeoHanafiVsShafii}</p>
-                  <h3 className={aeoH3}>Why do prayer time apps show different times?</h3>
-                  <p className={aeoP}>{aeoAppsDiffer}</p>
-                  <p className="text-white/40 text-xs mt-4">Times: live Aladhan timetable above, Karachi method, Hanafi default. Source: api.aladhan.com.</p>
-                </FlagCard>
-              )}
-              {citySlug === 'karachi' && (
-                <FlagCard color={colorAt(0)}>
-                  <FlagSectionTitle icon={Clock} title="prayer times in karachi today" color={colorAt(0)} />
-                  <h3 className={aeoH3}>fajr time in karachi today</h3>
-                  <p className={aeoP}>{aeoFajr('Karachi')}</p>
-                  <h3 className={aeoH3}>sehri time in karachi today</h3>
-                  <p className={aeoP}>{aeoSehri('Karachi')}</p>
-                  <h3 className={aeoH3}>maghrib time in karachi today</h3>
-                  <p className={aeoP}>{aeoMaghrib('Karachi')}</p>
-                  <h3 className={aeoH3}>jummah prayer time in karachi</h3>
-                  <p className={aeoP}>{aeoJummah('Karachi')}</p>
-                  <p className="text-white/40 text-xs mt-4">Times: live Aladhan timetable above, Karachi method, Hanafi default. Source: api.aladhan.com.</p>
-                </FlagCard>
-              )}
-              {citySlug === 'islamabad' && (
-                <FlagCard color={colorAt(0)}>
-                  <FlagSectionTitle icon={Clock} title="Today in Islamabad" color={colorAt(0)} />
-                  <h3 className={aeoH3}>fajr time in islamabad today</h3>
-                  <p className={aeoP}>{aeoFajr('Islamabad')}</p>
+                  <FlagSectionTitle icon={Clock} title={citySlug === 'islamabad' ? 'Today in Islamabad' : `prayer times in ${city.name.toLowerCase()} today`} color={colorAt(0)} />
+                  {aeoEntries.map((entry) => (
+                    <div key={entry.q}>
+                      <h3 className={aeoH3}>{entry.q}</h3>
+                      <p className={aeoP}>{entry.a}</p>
+                    </div>
+                  ))}
                   <p className="text-white/40 text-xs mt-4">Times: live Aladhan timetable above, Karachi method, Hanafi default. Source: api.aladhan.com.</p>
                 </FlagCard>
               )}
@@ -573,7 +548,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
 
               {/* Qibla & Azan */}
               <FlagCard color={colorAt(0)}>
-                <FlagSectionTitle icon={MapPin} title={citySlug === 'lahore' ? 'qibla direction from lahore' : 'Qibla Direction'} color={colorAt(0)} />
+                <FlagSectionTitle icon={MapPin} title={['lahore', 'multan', 'peshawar'].includes(citySlug) ? `qibla direction from ${citySlug}` : 'Qibla Direction'} color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-4">
                   {generateQiblaParagraph(city.name, qiblaDirection)}
                 </p>
@@ -717,7 +692,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                     style={{ backgroundColor: 'rgba(251,191,36,0.12)', borderColor: 'rgba(251,191,36,0.35)' }}>
                     <div className="text-xs font-semibold text-amber-300 mb-1">Next Ramadan</div>
                     {(() => {
-                      // P13(c): roll-forward list (faith-profiles.ts) — the
+                      // P13(c): roll-forward list (faith-profiles.ts), the
                       // displayed date is always a FUTURE Ramadan, so the
                       // countdown can never go negative.
                       const ramadan = nextRamadan();
@@ -734,14 +709,14 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                   <p className="text-white/60 text-xs font-semibold mb-2">6 FASTS OF SHAWWAL</p>
                   <p className="text-white/70 text-sm">
                     The Prophet ﷺ said: "Whoever fasts Ramadan then follows it with six days of Shawwal,
-                    it will be as if he fasted for a lifetime." — Sahih Muslim
+                    it will be as if he fasted for a lifetime.", Sahih Muslim
                   </p>
                 </div>
               </FlagCard>
 
               {/* ── Moon Sighting ── */}
               <FlagCard color={colorAt(0)}>
-                <FlagSectionTitle icon={Calendar} title={`Moon Sighting — ${city.name}`} color={colorAt(0)} />
+                <FlagSectionTitle icon={Calendar} title={`Moon Sighting: ${city.name}`} color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
                   Moon sighting holds profound significance in Islamic practice, determining the start
                   and end of each Islamic month including the holy month of Ramadan and the celebration
@@ -751,7 +726,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                 {(() => {
                   // P13(d): phase + next new moon are COMPUTED from the
                   // verified 9 Nov 2026 anchor (faith-profiles.ts) and
-                  // always roll forward — no hard-coded 2025 date, and no
+                  // always roll forward, no hard-coded 2025 date, and no
                   // hard-coded phase/illumination that goes stale.
                   const moon = moonPhaseInfo();
                   const nextMoonLabel = moon.nextNewMoon.toLocaleDateString('en-US', {
@@ -789,7 +764,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
                   Zakat is the obligatory annual charity representing 2.5% of qualifying wealth held
                   for one lunar year. The Nisab threshold is calculated from the value of either 85g
-                  of gold or 595g of silver — whichever benefits the poor more. Based on today's
+                  of gold or 595g of silver, whichever benefits the poor more. Based on today's
                   rates in {city.country}, the current Nisab values are shown below.
                 </p>
                 {goldPerGram && silverPerGram ? (
@@ -809,11 +784,11 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                   </div>
                 ) : (
                   // P13(b): if a live source fails, show NO figure rather
-                  // than a stale one — the old card showed a fixed
+                  // than a stale one, the old card showed a fixed
                   // PKR 21,500/gram rate under a "today's rates" claim.
                   <div className="rounded-xl p-5 border mb-4"
                     style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
-                    <p className="text-white/60 text-sm">Live gold and silver rates are loading or temporarily unavailable, so Nisab figures are hidden until a live rate responds — no estimated rate is shown.</p>
+                    <p className="text-white/60 text-sm">Live gold and silver rates are loading or temporarily unavailable, so Nisab figures are hidden until a live rate responds, no estimated rate is shown.</p>
                   </div>
                 )}
                 <div className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
@@ -827,7 +802,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
 
               {/* ── Nearby Cities Prayer Times ── */}
               <FlagCard color={colorAt(0)}>
-                <FlagSectionTitle icon={MapPin} title="Prayer Times — Nearby Cities" color={colorAt(0)} />
+                <FlagSectionTitle icon={MapPin} title="Prayer Times · Nearby Cities" color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
                   Prayer times vary across Pakistan's cities by several minutes depending on longitude
                   and latitude. Cities east of {city.name} observe Fajr slightly earlier while cities
@@ -850,7 +825,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                         // others use the live per-city fetch. The old
                         // hard-coded rows (stale summer values) are gone,
                         // including for Rawalpindi, Multan and Islamabad.
-                        { city: city.name, fajr: times ? formatTime(times.Fajr) : '—', dhuhr: times ? formatTime(times.Dhuhr) : '—', asr: times ? formatTime(times.Asr) : '—', mgh: times ? formatTime(times.Maghrib) : '—', isha: times ? formatTime(times.Isha) : '—', current: true },
+                        { city: city.name, fajr: times ? formatTime(times.Fajr) : '-', dhuhr: times ? formatTime(times.Dhuhr) : '-', asr: times ? formatTime(times.Asr) : '-', mgh: times ? formatTime(times.Maghrib) : '-', isha: times ? formatTime(times.Isha) : '-', current: true },
                         { city: 'Gujranwala', fajr: liveTime('gujranwala', 'Fajr'), dhuhr: liveTime('gujranwala', 'Dhuhr'), asr: liveTime('gujranwala', 'Asr'), mgh: liveTime('gujranwala', 'Maghrib'), isha: liveTime('gujranwala', 'Isha'), current: false },
                         { city: 'Faisalabad', fajr: liveTime('faisalabad', 'Fajr'), dhuhr: liveTime('faisalabad', 'Dhuhr'), asr: liveTime('faisalabad', 'Asr'), mgh: liveTime('faisalabad', 'Maghrib'), isha: liveTime('faisalabad', 'Isha'), current: false },
                         { city: 'Rawalpindi', fajr: liveTime('rawalpindi', 'Fajr'), dhuhr: liveTime('rawalpindi', 'Dhuhr'), asr: liveTime('rawalpindi', 'Asr'), mgh: liveTime('rawalpindi', 'Maghrib'), isha: liveTime('rawalpindi', 'Isha'), current: false },
@@ -886,7 +861,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    // PR3 (B7): live values only — the old hard-coded
+                    // PR3 (B7): live values only, the old hard-coded
                     // summer grid is gone.
                     { city: 'Mecca', flag: '🇸🇦', slug: 'mecca' },
                     { city: 'Medina', flag: '🇸🇦', slug: 'medina' },
@@ -944,11 +919,11 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                     <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-3">Madhab (Asr Time)</p>
                     <div className="space-y-2">
                       {[
-                        // P13(a): Hanafi is the DEFAULT — its card shows
+                        // P13(a): Hanafi is the DEFAULT, its card shows
                         // the live timetable Asr (Hanafi fetch). Shafi'i
                         // shows its own live fetch, never a hard-coded
                         // time from another date.
-                        { name: 'Hanafi (shadow = 2× object) — default on this page', active: true, time: times ? formatTime(times.Asr) : null },
+                        { name: 'Hanafi (shadow = 2× object), default on this page', active: true, time: times ? formatTime(times.Asr) : null },
                         { name: "Shafi'i / Maliki / Hanbali (shadow = 1×)", active: false, time: shafiiAsr ? formatTime(shafiiAsr) : null },
                       ].map((m) => (
                         <div key={m.name}
@@ -972,7 +947,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
                   {mosqueFacts
                     ? mosqueFacts.intro
-                    : `${city.name}'s mosques range from large congregational Jamia mosques to neighbourhood mosques in every district — use the finder below to locate the nearest one.`}
+                    : `${city.name}'s mosques range from large congregational Jamia mosques to neighbourhood mosques in every district, use the finder below to locate the nearest one.`}
                 </p>
                 {mosqueFacts && mosqueFacts.mosques.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
@@ -1007,7 +982,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                   <p className="text-white/80 text-lg italic mb-3">
                     "Indeed, with hardship comes ease."
                   </p>
-                  <p className="text-sm font-semibold" style={{ color: colorAt(0) }}>— Quran 94:5-6</p>
+                  <p className="text-sm font-semibold" style={{ color: colorAt(0) }}>Quran 94:5-6</p>
                   <div className="mt-4 text-2xl text-right font-arabic text-white/70" dir="rtl">
                     فَإِنَّ مَعَ الْعُسْرِ يُسْرًا
                   </div>
@@ -1042,12 +1017,12 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
 
               {/* ── Prayer Statistics ── */}
               <FlagCard color={colorAt(0)}>
-                <FlagSectionTitle title={`Prayer in ${city.name} — By the Numbers`} color={colorAt(0)} />
+                <FlagSectionTitle title={`Prayer in ${city.name} · By the Numbers`} color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-4">
                   {mosqueFacts ? `${mosqueFacts.statsLead} ` : ''}
                   Prayer time in {city.name} today spans from Fajr at{' '}
                   {times ? formatTime(times.Fajr) : '5:01 AM'} to Isha at{' '}
-                  {times ? formatTime(times.Isha) : '9:02 PM'} — a window covering all five
+                  {times ? formatTime(times.Isha) : '9:02 PM'}, a window covering all five
                   obligatory daily prayers.
                 </p>
                 {mosqueFacts && (
@@ -1067,7 +1042,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
               {/* ── Jumua (Friday) Special ── */}
               {new Date().getDay() === 5 && (
                 <FlagCard color={colorAt(1)}>
-                  <FlagSectionTitle icon={Calendar} title={`Jumu'ah Mubarak — ${city.name}`} subtitle="Friday congregational prayer" color={colorAt(1)} />
+                  <FlagSectionTitle icon={Calendar} title={`Jumu'ah Mubarak · ${city.name}`} subtitle="Friday congregational prayer" color={colorAt(1)} />
                   <p className="text-white/70 leading-relaxed text-sm mb-5">
                     Friday is the most blessed day of the week in Islam, and Jumu&apos;ah (the Friday congregational
                     prayer) replaces the Dhuhr prayer for Muslim men attending the mosque. In {city.name}, mosques
@@ -1094,13 +1069,13 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
 
               {/* ── Full Month Timetable + PDF Downloads ── */}
               <FlagCard color={colorAt(0)}>
-                <FlagSectionTitle icon={Calendar} title={citySlug === 'lahore' ? 'lahore prayer timings calendar' : `Full Month Prayer Timetable — ${city.name}`} subtitle="Complete monthly schedule, downloadable" color={colorAt(0)} />
+                <FlagSectionTitle icon={Calendar} title={citySlug === 'lahore' ? 'lahore prayer timings calendar' : `Full Month Prayer Timetable · ${city.name}`} subtitle="Complete monthly schedule, downloadable" color={colorAt(0)} />
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
                   Planning ahead for work, travel, or fasting means knowing prayer times beyond just today.
                   The complete {currentMonthName} timetable for {city.name} below lists Fajr through Isha for every
                   day of the month, calculated using the {city.name === 'Lahore' || true ? 'University of Islamic Sciences, Karachi' : 'standard'}{' '}
                   method. Download the printable monthly or full annual PDF to keep on hand without needing
-                  an internet connection — ideal for mosques, offices, and households.
+                  an internet connection, ideal for mosques, offices, and households.
                 </p>
                 <div className="overflow-x-auto mb-5">
                   <table className="w-full text-sm text-left">
@@ -1176,7 +1151,7 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                 <p className="text-white/70 leading-relaxed text-sm mb-5">
                   Prayer times shift gradually as you move east or west, since they follow the sun&apos;s position
                   rather than the clock. Compare today&apos;s Fajr and Maghrib times in {city.name} against other
-                  major cities to see how daylight hours differ across regions — useful for travellers, remote
+                  major cities to see how daylight hours differ across regions, useful for travellers, remote
                   teams, and families spread across different countries.
                 </p>
                 <div className="overflow-x-auto">
@@ -1192,9 +1167,9 @@ export default function PrayerTimesPage({ initialTimes, initialZakat, initialSha
                     <tbody>
                       <tr className="border-b font-semibold" style={{ borderColor: `${colorAt(0)}30` }}>
                         <td className="py-2 pr-4" style={{ color: colorAt(0) }}>{city.name} (here)</td>
-                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Fajr) : '—'}</td>
-                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Maghrib) : '—'}</td>
-                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Isha) : '—'}</td>
+                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Fajr) : '-'}</td>
+                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Maghrib) : '-'}</td>
+                        <td className="py-2 pr-4 text-white">{times ? formatTime(times.Isha) : '-'}</td>
                       </tr>
                       {comparisonCities.map((c) => (
                         <tr key={c.name} className="border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>

@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { WEATHER_TODAY_H1, weatherTodayFaqs } from '@/lib/data/weather-faqs';
 import type { WeatherData, HourlyItem, DailyItem, HistoricalData, ClimateData, AQIData, SunMoonData, WeatherAlert, NearbyCityWeather } from '@/types/city';
 import { fetchWeatherData, fetchHistoricalData, getClimateData, fetchAQIData, fetchSunMoonData, fetchWeatherAlerts, fetchNearbyWeather } from '@/lib/apis/weather';
 import { Wind, Droplets, Eye, Gauge, Thermometer, Sun, Cloud, CloudRain, ChevronLeft, ChevronRight, Shirt, Coffee, Moon, CloudSnow, Activity, BarChart2, Heart, ShieldAlert, AlertTriangle, Leaf, Factory, Car, Tractor, CloudFog, Clock, ShoppingBag, Sunrise, Sunset, ArrowUp, ArrowDown, ThermometerSun, CloudDrizzle, MapPin } from 'lucide-react';
@@ -372,7 +374,7 @@ function WeatherNarrative({ data, cityName, country, timezone }: { data: Weather
   const rainChance = daily[0]?.pop ?? 0;
   const hour = new Date(current.dt * 1000).toLocaleString('en-US', { hour: 'numeric', hour12: true, timeZone: timezone });
 
-  const story = `${cityName} greets you with ${current.condition} at ${hour}, ${current.temp}°C. As the sun moves toward ${landmark}, temperatures will ease to ${eveningTemp}°C by evening. ${rainChance > 50 ? `There's a ${rainChance}% chance of rain today — keep an umbrella handy. ` : rainChance > 20 ? `A slight ${rainChance}% chance of showers. ` : 'Skies remain mostly dry. '}Humidity at ${current.humidity}% with winds from ${windDirection(current.wind_deg)} at ${current.wind_speed} km/h. Tomorrow looks ${tomorrowHigh > current.temp ? 'warmer' : 'cooler'} with a high of ${tomorrowHigh}°C.`;
+  const story = `${cityName} greets you with ${current.condition} at ${hour}, ${current.temp}°C. As the sun moves toward ${landmark}, temperatures will ease to ${eveningTemp}°C by evening. ${rainChance > 50 ? `There's a ${rainChance}% chance of rain today, keep an umbrella handy. ` : rainChance > 20 ? `A slight ${rainChance}% chance of showers. ` : 'Skies remain mostly dry. '}Humidity at ${current.humidity}% with winds from ${windDirection(current.wind_deg)} at ${current.wind_speed} km/h. Tomorrow looks ${tomorrowHigh > current.temp ? 'warmer' : 'cooler'} with a high of ${tomorrowHigh}°C.`;
 
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
@@ -927,8 +929,8 @@ function AQIHealthAdviceCard({ aqi }: { aqi: AQIData }) {
   const advice = aqi.aqi <= 50
     ? { title: 'Good day for outdoor activities', text: 'Air quality is satisfactory. Enjoy outdoor activities!', tips: ['Great for walking, jogging, cycling', 'Open windows for fresh air', 'Ideal for all age groups'] }
     : aqi.aqi <= 100
-    ? { title: 'Moderate — sensitive groups take care', text: 'Acceptable air quality. Sensitive individuals should limit prolonged outdoor exertion.', tips: ['Reduce prolonged outdoor exercise', 'Consider wearing a mask if sensitive', 'Check air quality before outdoor plans'] }
-    : { title: 'Unhealthy — limit outdoor activities', text: 'Everyone may experience health effects. Limit time outdoors.', tips: ['Stay indoors when possible', 'Use air purifier', 'Keep windows closed'] };
+    ? { title: 'Moderate: sensitive groups take care', text: 'Acceptable air quality. Sensitive individuals should limit prolonged outdoor exertion.', tips: ['Reduce prolonged outdoor exercise', 'Consider wearing a mask if sensitive', 'Check air quality before outdoor plans'] }
+    : { title: 'Unhealthy: limit outdoor activities', text: 'Everyone may experience health effects. Limit time outdoors.', tips: ['Stay indoors when possible', 'Use air purifier', 'Keep windows closed'] };
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-4">
       <div className={`rounded-2xl border p-5 ${aqi.aqi <= 50 ? 'bg-emerald-50 border-emerald-200' : aqi.aqi <= 100 ? 'bg-amber-500/10 border-amber-500/30' : 'bg-rose-500/10 border-rose-200'}`}>
@@ -1044,36 +1046,20 @@ function AQIAffiliateCard() {
 }
 
 // ─── A3 (final30): keyword H1 + AEO FAQ ────────────────────────────────
-// Only the three in-scope slugs get the "... Weather Today" H1 and the
-// FAQ below; every other city keeps the generic "{City} Weather" H1 and
-// no FAQ. Reserve cities are never named here. FAQ answers are 50–70
-// words each, describe only what this page itself shows, and name the
-// live sources (OpenWeatherMap / Open-Meteo) — no invented figures.
-
-const WEATHER_TODAY_H1: Record<string, string> = {
-  lahore: 'Lahore Weather Today',
-  multan: 'Multan Weather Today',
-  islamabad: 'Islamabad Weather Today',
-}
+// Only the in-scope slugs get the "... Weather Today" H1 and the FAQ
+// below; every other city keeps the generic "{City} Weather" H1 and
+// no FAQ. Reserve cities are never named here. The H1 map and the FAQ
+// array live in lib/data/weather-faqs.ts, shared with the server
+// template, which emits the FAQPage JSON-LD from the SAME array.
+// FAQ answers are 50–70 words each, describe only what this page
+// itself shows, and name the live sources (OpenWeatherMap /
+// Open-Meteo); no invented figures.
 
 function WeatherTodayFaq({ cityName }: { cityName: string }) {
-  const faqs: Array<{ q: string; a: string }> = [
-    {
-      q: `What is the weather in ${cityName} today?`,
-      a: `The live conditions card at the top of this page shows ${cityName}’s current temperature and condition, plus feels-like temperature, humidity, wind, pressure, visibility and UV index, sourced from OpenWeatherMap and Open-Meteo data. Check the hourly forecast below it for the next hours, and the 10-day forecast for the week ahead. If the live feed is briefly unavailable, the page says so instead of showing an estimate.`,
-    },
-    {
-      q: `Will it rain in ${cityName} today?`,
-      a: `Check the hourly forecast on this page: each hour shows a rain probability, and the 10-day forecast shows the same chance for each day ahead. A high percentage means rain is likely at that hour, so carry an umbrella and allow extra travel time. A low percentage means mostly dry conditions, but a brief shower can still occur, so recheck the hourly forecast before heading out.`,
-    },
-    {
-      q: `What should I wear in ${cityName} today?`,
-      a: `Use the What to Wear section on this page, which suggests clothing for morning, afternoon, evening and night based on the live temperature at each time of day. Light layers suit warm afternoons, while a jacket helps on cooler mornings and evenings. If rain is forecast, add a waterproof layer or umbrella. Always recheck the live temperature before leaving, since conditions can change during the day.`,
-    },
-  ]
+  const faqs = weatherTodayFaqs(cityName)
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mb-6">
-      <h2 className="text-lg font-bold text-white mb-4 px-1">{cityName} Weather Today — Questions Answered</h2>
+      <h2 className="text-lg font-bold text-white mb-4 px-1">{cityName} Weather Today · Questions Answered</h2>
       <div className="space-y-4">
         {faqs.map((f) => (
           <div key={f.q} className="rounded-xl border border-white/8 p-4">
@@ -1136,12 +1122,14 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
       {/* Header */}
       <header className="bg-[#01411C]">
         <div className="max-w-4xl mx-auto px-4 py-8 sm:py-10">
-          <nav className="text-white/60 text-sm mb-3 flex items-center gap-2">
-            <span className="capitalize">{country.replace(/-/g, ' ')}</span>
+          <nav className="text-white/60 text-sm mb-3 flex items-center gap-2" aria-label="Breadcrumb">
+            <Link href={`/${country}`} className="capitalize hover:text-white transition-colors">{country.replace(/-/g, ' ')}</Link>
             <ChevronRight size={14} />
-            <span className="capitalize">{province.replace(/-/g, ' ')}</span>
+            <Link href={`/${country}/${province}`} className="capitalize hover:text-white transition-colors">{province.replace(/-/g, ' ')}</Link>
             <ChevronRight size={14} />
-            <span className="text-white font-medium">{cityName}</span>
+            <Link href={`/${country}/${province}/${citySlug ?? cityName.toLowerCase().replace(/\s+/g, '-')}`} className="text-white font-medium hover:underline">{cityName}</Link>
+            <ChevronRight size={14} />
+            <span className="text-white/80">Weather</span>
           </nav>
           <h1 className="text-white text-3xl sm:text-4xl font-bold">{WEATHER_TODAY_H1[citySlug ?? ''] ?? `${cityName} Weather`}</h1>
           <p className="text-white/70 text-base mt-2">Live conditions & detailed forecast</p>
@@ -1315,7 +1303,7 @@ export default function WeatherPageClient({ cityName, country, province, lat, ln
           </motion.div>
         )}
 
-        {/* A3 FAQ: only on the three keyword-targeted city pages. */}
+        {/* A3 FAQ: only on the keyword-targeted city pages. */}
         {WEATHER_TODAY_H1[citySlug ?? ''] && <WeatherTodayFaq cityName={cityName} />}
       </div>
 

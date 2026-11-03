@@ -1,10 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// A11 — Lahore minority-faith keyword sections (final30).
+// A11, Lahore minority-faith keyword sections (final30).
 //
 // ONE PAGE, THREE KEYWORDS: the Lahore prayer-times page is the single
 // target page for 'churches in lahore' (880, Low), 'gurdwara in lahore'
 // (1K, Low) and 'hindu temple in lahore' (480, Low). Each keyword gets
-// exactly one H2 section on that page — no separate pages are created,
+// exactly one H2 section on that page, no separate pages are created,
 // and no other city's page is touched (the renderer gates on
 // city_slug === 'lahore').
 //
@@ -12,7 +12,7 @@
 // carried by lib/data/faith-profiles.ts (PR #100): Christianity first
 // (602,431 in Lahore District, the largest Christian count of any Punjab
 // district), then Hinduism (2,487 in the city table), then Sikhism (715).
-// The majority faith (Islam) is NOT repeated here — it is covered in
+// The majority faith (Islam) is NOT repeated here, it is covered in
 // full across the page already, per the PR #100 population rule; these
 // three sections are the lighter minority-faith coverage (places,
 // timings, major festivals).
@@ -23,7 +23,7 @@
 // GURPURABS names, HINDU_FESTIVALS names). Festival DATES are
 // deliberately NOT carried over: the repo's GURPURABS / HINDU_FESTIVALS
 // dates are from 2025 and are stale, and no Lahore-specific festival
-// dates appear in the sourced data — so festivals are named only, with
+// dates appear in the sourced data, so festivals are named only, with
 // no dates. Likewise, no service times are given for the gurdwara or the
 // temples, because none appear in the sourced data; the sections say so
 // instead of inventing times. The generic DENOMINATIONS mass times in
@@ -42,18 +42,18 @@ export interface LahoreFaithPlace {
 export interface LahoreFaithQuestion {
   /** H3 text. */
   question: string;
-  /** Direct answer — always 50–70 words. */
+  /** Direct answer, always 50–70 words. */
   answer: string;
 }
 
 export interface LahoreFaithSection {
-  /** H2 text — exactly the target keyword. */
+  /** H2 text, exactly the target keyword. */
   h2: string;
   intro: string;
   places: LahoreFaithPlace[];
   /** Timings line: sourced times where they exist, an explicit gap note otherwise. */
   timings: string;
-  /** Major festivals, named only — never dated (see header note). */
+  /** Major festivals, named only, never dated (see header note). */
   festivals: string;
   questions: LahoreFaithQuestion[];
   source: string;
@@ -63,7 +63,7 @@ export const LAHORE_FAITH_SECTIONS: LahoreFaithSection[] = [
   {
     h2: 'churches in lahore',
     intro:
-      'Lahore District is home to 602,431 Christians (2023 Census) — the largest Christian community of any district in Punjab — so churches in Lahore are covered here in medium depth, after the majority faith. The two cathedrals below are the city’s principal churches.',
+      'Lahore District is home to 602,431 Christians (2023 Census), the largest Christian community of any district in Punjab, so churches in Lahore are covered here in medium depth, after the majority faith. The two cathedrals below are the city’s principal churches.',
     places: [
       {
         name: 'Sacred Heart Cathedral, Lawrence Road',

@@ -78,11 +78,9 @@ const LIVE_OCEANS = [
 // verified live before listing (200 + real content + self-canonical).
 // The /personalities index IS now listed (staticPages below): the B1
 // hub replaced the old "Check back soon" [country]-fallback shell with
-// a real server-rendered index of every profile here. Still NOT
-// listed: the /places index page (still a fallback shell) and the 4
-// unpublished place slugs (Shalimar Gardens, Data Darbar, Walled City,
-// Lahore Museum — all 404 live); sibling item D18 carries those entries
-// when it builds the pages.
+// a real server-rendered index of every profile here. The /places index
+// was a fallback shell at that time; the hubs family fix (3 Nov 2026)
+// built its real hub too, and it IS now listed in staticPages above.
 // Duplicate-person consolidation (owner decision, 28 Oct 2026, final):
 // `abdus-salam` and `muhammad-ali-jinnah` are NOT listed — they 301 to
 // `dr-abdus-salam` and `quaid-e-azam-jinnah` (see src/proxy.ts), which
@@ -115,6 +113,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/news`, changeFrequency: 'hourly', priority: 0.6 },
     { url: `${baseUrl}/horoscope`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/personalities`, changeFrequency: 'weekly', priority: 0.7 },
+    // Hubs family fix (3 Nov 2026): the /places and /events indexes are
+    // now real server-rendered hubs (static segments that beat the
+    // [country] fallback), so both enter the sitemap.
+    { url: `${baseUrl}/places`, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${baseUrl}/events`, changeFrequency: 'daily', priority: 0.6 },
     { url: `${baseUrl}/compare`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/improve`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/about`, changeFrequency: 'monthly', priority: 0.4 },

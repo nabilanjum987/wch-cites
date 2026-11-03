@@ -156,7 +156,7 @@ export async function fetchCityNews(city: string, country: string) {
 export async function fetchSports(countryCode: string) {
   try {
     const res = await fetch(
-      `https://www.thesportsdb.com/api/v1/json/3/search_all_leagues.php?c=${countryCode}&s=Cricket`,
+      `https://www.thesportsdb.com/api/v1/json/123/search_all_leagues.php?c=${countryCode}&s=Cricket`,
       { next: { revalidate: 86400 } }
     );
     if (!res.ok) return null;

@@ -7,7 +7,7 @@ import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '
 
 // Server wrapper: the interactive sports page lives in SportsClient.tsx
 // (a client component). Metadata must be exported from a server
-// component, so it lives here — every city gets its own unique title,
+// component, so it lives here, every city gets its own unique title,
 // description and self-referencing canonical.
 
 interface PageProps {
@@ -23,15 +23,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const province = titleCase(p.province);
   const country = titleCase(p.country);
   // A6 (final30): the primary sports keyword "cricket live score today"
-  // targets exactly ONE page — Lahore sports (one keyword → one page).
+  // targets exactly ONE page, Lahore sports (one keyword → one page).
   // Karachi and every other city keep the generic sports title.
   const isLahore = p.city === 'lahore';
   const title = isLahore
-    ? `Cricket Live Score Today — Lahore Sports | WorldCityHub`
-    : `${city} Sports — Fixtures & Results | WorldCityHub`;
+    ? `Cricket Live Score Today: Lahore Sports | WorldCityHub`
+    : `${city} Sports: Fixtures & Results | WorldCityHub`;
   const description = isLahore
-    ? `Cricket live score today in Lahore: live scores, fixtures and results, plus Gaddafi Stadium Lahore, home of Lahore Qalandars.`
-    : `${city} sports: teams, fixtures, results, stadiums and athletes from ${city}, ${province}, ${country} — updated daily.`;
+    ? `Cricket live score today in Lahore: today's fixtures and scores from TheSportsDB, plus Gaddafi Stadium Lahore, home of Lahore Qalandars.`
+    : `${city} sports: teams, today's fixtures and scores from TheSportsDB, stadiums and athletes from ${city}, ${province}, ${country}, updated daily.`;
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/sports`;
   return {
     title,
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function Page({ params }: PageProps) {
   const p = await params;
   const initialCity = await getCityData(p.country, p.province, p.city);
-  // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+  // P6: subpages had no JSON-LD, BreadcrumbList + City (name/URL only).
   const cityName = initialCity?.name ?? titleCaseSlug(p.city);
   const provinceName = initialCity?.province ?? titleCaseSlug(p.province);
   const countryName = initialCity?.country ?? titleCaseSlug(p.country);

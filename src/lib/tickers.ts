@@ -250,14 +250,14 @@ export async function getWebsiteTickerItems(): Promise<SiteItem[]> {
   // via Open-Meteo Marine at the sea's representative point 16°N 64°E),
   // otherwise the plain published-page item, like the compares below.
   // No other wonder/ocean items exist until their pages publish (L3).
-  const tajPlain = { text: 'Wonder · Taj Mahal — the full page is live', href: '/wonders/taj-mahal' };
+  const tajPlain = { text: 'Wonder · Taj Mahal · the full page is live', href: '/wonders/taj-mahal' };
   // `taj` and `sea` arrive from the parallel batch at the top (jget
   // fails soft to null, which selects the plain item, as before).
   const tt = taj?.current?.temperature_2m;
   items.push(typeof tt === 'number'
     ? { text: `Taj Mahal right now · ${Math.round(tt)}°C in Agra`, href: '/wonders/taj-mahal' }
     : tajPlain);
-  const seaPlain = { text: 'Ocean · Arabian Sea — the full page is live', href: '/oceans/arabian-sea' };
+  const seaPlain = { text: 'Ocean · Arabian Sea · the full page is live', href: '/oceans/arabian-sea' };
   const wh = sea?.current?.wave_height;
   items.push(typeof wh === 'number'
     ? { text: `Arabian Sea today · waves ${wh.toFixed(1)} m`, href: '/oceans/arabian-sea' }

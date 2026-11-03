@@ -108,7 +108,7 @@ export async function fetchCityEvents(
 ): Promise<CityEvent[]> {
   // Truth rule: without a Ticketmaster key there is no real events feed,
   // so the page shows its honest empty state. The old code fabricated a
-  // full calendar of invented events (names, dates, venues, prices) —
+  // full calendar of invented events (names, dates, venues, prices) -
   // removed. Add NEXT_PUBLIC_TICKETMASTER_KEY in Vercel to enable this.
   if (!TICKETMASTER_KEY) {
     return [];
@@ -161,7 +161,7 @@ export async function fetchSportsEvents(countryCode: string): Promise<NationalEv
   if (!name) return [];
   try {
     const res = await fetch(
-      `https://www.thesportsdb.com/api/v1/json/3/searchevents.php?e=${encodeURIComponent(name)}`,
+      `https://www.thesportsdb.com/api/v1/json/123/searchevents.php?e=${encodeURIComponent(name)}`,
       { signal: AbortSignal.timeout(6000) }
     );
     if (!res.ok) throw new Error('SportsDB error');
@@ -172,7 +172,7 @@ export async function fetchSportsEvents(countryCode: string): Promise<NationalEv
       title: ev.strEvent ?? 'Sports Event',
       date: ev.dateEvent ?? new Date().toISOString().slice(0, 10),
       type: 'sports' as const,
-      description: `${ev.strLeague ?? ''} — ${ev.strVenue ?? ''}`,
+      description: `${ev.strLeague ?? ''}, ${ev.strVenue ?? ''}`,
       country_code: countryCode,
     }));
   } catch {
@@ -186,7 +186,7 @@ export function fetchRecurringEvents(city: string): RecurringEvent[] {
   // This used to invent a weekly calendar (run clubs, book circles, sufi
   // nights with made-up venues and times) for every city. Until recurring
   // events come from a real source (the planned Supabase table), the
-  // section stays empty — showing less beats showing fiction.
+  // section stays empty, showing less beats showing fiction.
   void city;
   return [];
 }

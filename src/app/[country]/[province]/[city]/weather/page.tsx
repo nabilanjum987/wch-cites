@@ -4,6 +4,8 @@ import CityPageImage from "@/components/city/CityPageImage"
 import { getCityData } from "@/lib/getCityData"
 import JsonLd from "@/components/seo/JsonLd"
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from "@/lib/seo/breadcrumbs"
+import { WEATHER_TODAY_H1, weatherTodayFaqs } from "@/lib/data/weather-faqs"
+import { faqPageSchema } from "@/components/aeo/AnswerLayer"
 import { fetchWeatherData, fetchSunMoonData, fetchAQIData } from "@/lib/apis/weather"
 
 interface PageProps {
@@ -12,8 +14,10 @@ interface PageProps {
 
 const titleCase = (s: string) => s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
-// A3 (final30): keyword-targeted title/meta for the three in-scope cities
-// only. Every other city keeps the generic title/meta below; no other
+// A3 (final30): keyword-targeted title/meta for the in-scope cities
+// only. Karachi and Peshawar joined the set on 3 Nov 2026 with the
+// full keyword treatment (title, H1 and AEO FAQ, via weather-faqs.ts).
+// Every other city keeps the generic title/meta below; no other
 // city's weather keyword is targeted here.
 const WEATHER_TODAY_META: Record<string, { title: string; description: string }> = {
   lahore: {
@@ -28,6 +32,14 @@ const WEATHER_TODAY_META: Record<string, { title: string; description: string }>
     title: 'Islamabad Weather Today | WorldCityHub',
     description: 'Islamabad weather today: live conditions, hourly and 10-day forecast, air quality, sunrise and sunset, and what to wear in Islamabad, Pakistan.',
   },
+  karachi: {
+    title: 'Karachi Weather Today | WorldCityHub',
+    description: 'Karachi weather today: live conditions, hourly and 10-day forecast, air quality, sunrise and sunset, and what to wear in Karachi, Sindh, Pakistan.',
+  },
+  peshawar: {
+    title: 'Peshawar Weather Today | WorldCityHub',
+    description: 'Peshawar weather today: live conditions, hourly and 10-day forecast, air quality, sunrise and sunset, and what to wear in Peshawar, Pakistan.',
+  },
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -35,7 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = titleCase(p.city), province = titleCase(p.province), country = titleCase(p.country)
   const targeted = WEATHER_TODAY_META[p.city]
   const title = targeted?.title ?? `${city} Weather & 7-Day Forecast | WorldCityHub`
-  const description = targeted?.description ?? `${city} weather today: conditions, hourly & 10-day forecast, air quality & what to wear — ${city}, ${province}, ${country}.`
+  const description = targeted?.description ?? `${city} weather today: conditions, hourly & 10-day forecast, air quality & what to wear, ${city}, ${province}, ${country}.`
   const canonical = `https://worldcityhub.vercel.app/${p.country}/${p.province}/${p.city}/weather`
   return {
     title,
@@ -58,7 +70,7 @@ export default async function WeatherPage({ params }: PageProps) {
     }
 
     // Fetch the headline data on the server so the raw HTML contains the
-    // real current weather, sun/moon and air quality — the client still
+    // real current weather, sun/moon and air quality, the client still
     // refreshes everything on mount and loads the remaining sections.
     const [initialWeather, initialSunMoon, initialAqi] = await Promise.all([
       fetchWeatherData(cityData.lat, cityData.lng),
@@ -66,7 +78,7 @@ export default async function WeatherPage({ params }: PageProps) {
       fetchAQIData(cityData.lat, cityData.lng, cityName),
     ])
 
-    // P6: subpages had no JSON-LD — BreadcrumbList + City (name/URL only).
+    // P6: subpages had no JSON-LD, BreadcrumbList + City (name/URL only).
     // Emitted only on the success path; the not-found/error fallbacks
     // below stay schema-free, as they are not the city weather page.
     const schemaCityName = cityData.name ?? titleCaseSlug(p.city)
@@ -76,6 +88,11 @@ export default async function WeatherPage({ params }: PageProps) {
       <>
         <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(schemaCountryName, p.country, schemaProvinceName, p.province, schemaCityName, p.city, 'Weather', 'weather'))} />
         <JsonLd data={cityJsonLd(schemaCityName, p.city, schemaProvinceName, p.province, schemaCountryName, p.country)} />
+        {/* S2: FAQPage from the SAME array the client renders visibly
+            (weather-faqs.ts), only on keyword-targeted city pages. */}
+        {WEATHER_TODAY_H1[p.city] && (
+          <JsonLd data={faqPageSchema(weatherTodayFaqs(schemaCityName))} />
+        )}
         <CityPageImage citySlug={p.city} variant="weather" />
         <WeatherPageClient
           cityName={cityName}

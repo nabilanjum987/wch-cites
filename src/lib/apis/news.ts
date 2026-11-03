@@ -1,24 +1,21 @@
-// ── WorldCityHub — News API ───────────────────────────────────────────────────
+// ── WorldCityHub, News API ───────────────────────────────────────────────────
 // Fetches news articles from GNews.io (free tier) with Urdu support.
 // Provider history: this module originally used NewsData.io, but the
 // project owner's key is for GNews (already set in Vercel and powering
 // the city pages' news strip via lib/apis/cityData.ts), so all news
 // fetching was consolidated onto GNews in Batch 2i (2026-10-21).
 // Truth rule: when the API key is absent or a fetch fails, these functions
-// return an EMPTY list so pages show less — they never invent headlines.
+// return an EMPTY list so pages show less, they never invent headlines.
 // (The old mock-article fallback fabricated plausible local headlines and
 // has been removed everywhere.)
 
 import type {
   NewsArticle,
-  VideoItem,
   NewsCategory,
   LocationLevel,
-  GlobalImpactObject,
-  TrendingTopic,
 } from '../../types/city';
 
-export type { NewsArticle, VideoItem, NewsCategory, LocationLevel, TrendingTopic };
+export type { NewsArticle, NewsCategory, LocationLevel };
 
 const API_KEY = process.env.NEXT_PUBLIC_GNEWS_KEY ?? '';
 const BASE    = 'https://gnews.io/api/v4';
@@ -121,7 +118,7 @@ export async function searchNews(
   return gnewsSearch(`${query} ${city}`, 'en', limit, 'all', country);
 }
 
-// World headlines for the global /news page and the homepage section —
+// World headlines for the global /news page and the homepage section -
 // real GNews top-headlines only. Quota note: the free GNews plan allows
 // ~100 requests/day, so the world set is four feeds (world, Pakistan,
 // US, UAE) cached for 3 hours (~32 requests/day), leaving room for the
@@ -131,7 +128,7 @@ export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
   if (!API_KEY) return [];
   // Feed mix chosen for what the free plan actually serves: 'world' and
   // the US/GB country editions are supported top-headlines feeds, while
-  // Pakistan is not a GNews country edition — its headlines come from
+  // Pakistan is not a GNews country edition, its headlines come from
   // the search endpoint instead (the same route the city pages' strip
   // already uses successfully). Country editions for pk/ae returned
   // nothing in production (verified 2026-10-21).
@@ -142,7 +139,7 @@ export async function fetchWorldNews(limit = 12): Promise<NewsArticle[]> {
     { query: 'q=Pakistan', countryName: 'Pakistan', endpoint: 'search' },
   ];
   // Feeds are fetched SEQUENTIALLY and SPACED ~1.1s apart: the free
-  // plan rate-limits rapid requests — parallel bursts AND back-to-back
+  // plan rate-limits rapid requests, parallel bursts AND back-to-back
   // sequential calls each yielded exactly one feed's cards in live
   // tests (2026-10-21). Spacing + the 3h cache keeps us at ~32
   // requests/day and every feed lands; the pause only costs time on a
@@ -198,73 +195,6 @@ export function regionForCountry(country: string): string {
   return REGION_BY_COUNTRY[(country || '').toLowerCase()] || 'All';
 }
 
-export async function fetchYouTubeVideos(countrySlug: string): Promise<VideoItem[]> {
-  return Array.from({ length: 6 }, (_, i) => ({
-    id:          `vid-${i}`,
-    title:       `Latest news from ${countrySlug.replace(/-/g, ' ')} #${i + 1}`,
-    thumbnail:   `https://picsum.photos/seed/${countrySlug}${i}/320/180`,
-    videoId:     'dQw4w9WgXcQ',
-    url:         `https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
-    publishedAt: new Date(Date.now() - i * 86_400_000).toISOString(),
-    channel:     'WorldCityHub News',
-    viewCount:   `${(Math.random() * 100_000).toFixed(0)}`,
-    duration:    `${Math.floor(Math.random() * 10 + 2)}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-  }));
-}
-
-export function generateGlobalImpacts(cityName: string, _countrySlug: string): GlobalImpactObject[] {
-  return [
-    {
-      impact: 'negative',
-      icon: 'DollarSign',
-      title: 'Currency Pressure',
-      description: `Global monetary tightening continues to affect ${cityName}'s import costs and consumer prices.`,
-    },
-    {
-      impact: 'positive',
-      icon: 'TrendingUp',
-      title: 'Remittance Inflow',
-      description: `Diaspora remittances to ${cityName} rose 8% this quarter, boosting household spending.`,
-    },
-    {
-      impact: 'neutral',
-      icon: 'Fuel',
-      title: 'Oil Price Watch',
-      description: `Brent crude fluctuations are being closely monitored as fuel subsidies remain under review.`,
-    },
-    {
-      impact: 'negative',
-      icon: 'Thermometer',
-      title: 'Climate Stress',
-      description: `Heatwave index for ${cityName} hit a seasonal high — agriculture and energy demand affected.`,
-    },
-    {
-      impact: 'positive',
-      icon: 'BarChart3',
-      title: 'Trade Corridor',
-      description: `Regional trade agreements are opening new export pathways benefiting ${cityName} businesses.`,
-    },
-    {
-      impact: 'neutral',
-      icon: 'Globe',
-      title: 'Geopolitical Shifts',
-      description: `Ongoing global realignments are reshaping supply chains that pass through the region.`,
-    },
-  ];
-}
-
-export function generateTrendingTopics(city: string, _articles: NewsArticle[]): TrendingTopic[] {
-  const topics = [
-    { tag: `#${city}Today`, keyword: city, emoji: '🏙️', count: 4200, articleCount: 18, trend: 'up' as const },
-    { tag: '#BreakingNews', keyword: 'breaking', emoji: '📰', count: 3800, articleCount: 24, trend: 'up' as const },
-    { tag: '#Economy', keyword: 'economy', emoji: '📊', count: 2900, articleCount: 15, trend: 'flat' as const },
-    { tag: '#Weather', keyword: 'weather', emoji: '🌤️', count: 1900, articleCount: 9, trend: 'down' as const },
-    { tag: '#Sports', keyword: 'sports', emoji: '⚽', count: 1500, articleCount: 11, trend: 'up' as const },
-    { tag: '#Culture', keyword: 'culture', emoji: '🎭', count: 900, articleCount: 6, trend: 'flat' as const },
-  ];
-  return topics;
-}
-
 export function generateWeekInReview(articles: NewsArticle[]): NewsArticle[] {
   return articles.slice(0, 7);
 }
@@ -315,7 +245,7 @@ export function normalizeUrl(raw: string): string {
 
 // The same story from GNews and RSS (or Guardian) appears ONCE: an item
 // is dropped when either its normalized headline or its normalized URL
-// has already been seen. First occurrence wins — callers order sources
+// has already been seen. First occurrence wins, callers order sources
 // by trust (RSS direct feeds first, then Guardian, then GNews).
 export function dedupeArticles(articles: NewsArticle[]): NewsArticle[] {
   const seenTitles = new Set<string>();
@@ -350,7 +280,7 @@ function rssToArticle(item: RssItem, category: WchNewsCategory): NewsArticle {
 
 // ── The Guardian (env-gated) ────────────────────────────────────────────────
 // The Guardian Open Platform needs a free API key. GUARDIAN_API_KEY is
-// NOT currently set in the environment — while it is absent this fetcher
+// NOT currently set in the environment, while it is absent this fetcher
 // is INACTIVE and returns [] (the blocker is logged in the Q13 evidence
 // pack). The moment the owner adds the key, Guardian items join the
 // merge with no code change.

@@ -1,14 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import JsonLd from '@/components/seo/JsonLd';
+import { hubBreadcrumbJsonLd, hubWebPageJsonLd } from '@/lib/seo/hub';
+import { HubQuestions, type AeoFaq } from '@/components/aeo/HubQuestions';
 
-// A5 — Cities hub (new page; no /cities route existed before).
-// Lists ONLY the cities with full, live guides — the same three the
-// homepage "Cities of the World — Live" panel links (Lahore, Karachi,
+// A5, Cities hub (new page; no /cities route existed before).
+// Lists ONLY the cities with full, live guides, the same three the
+// homepage "Cities of the World, Live" panel links (Lahore, Karachi,
 // Islamabad). No other city is linked: a city appears here only when
 // its guide renders real content. Multan and Peshawar are named as in
 // preparation, deliberately WITHOUT links, mirroring the wonders hub's
 // treatment of unpublished guides. This page is NOT added to the
-// sitemap in this PR — sitemap completion belongs to Part C.
+// sitemap in this PR, sitemap completion belongs to Part C.
 // "Largest city in the world" is NOT built here: no verified,
 // definition-consistent largest-city list exists in the repo/data
 // (the GeoNames slim file is mixed-vintage and draft-only, and
@@ -17,12 +20,33 @@ import Link from 'next/link';
 
 const BASE = 'https://worldcityhub.vercel.app';
 
+const DESCRIPTION =
+  'Cities of the world with full live guides on WorldCityHub: Lahore, Karachi and Islamabad, weather, prayer times, rates, news and more.';
+
 export const metadata: Metadata = {
   title: 'Cities of the World | WorldCityHub',
-  description:
-    'Cities of the world with full live guides on WorldCityHub: Lahore, Karachi and Islamabad — weather, prayer times, rates, news and more.',
+  description: DESCRIPTION,
   alternates: { canonical: `${BASE}/cities` },
 };
+
+// AEO questions (hubs family fix, 3 Nov 2026): composed only from this
+// page's own data, the three published cities, the seven subpages every
+// guide carries, and the in-preparation note below. The same array
+// renders visibly and emits the FAQPage schema (HubQuestions).
+const CITIES_FAQS: AeoFaq[] = [
+  {
+    q: 'Which cities have full guides on WorldCityHub?',
+    a: 'Three cities have full guides on WorldCityHub today: Lahore in Punjab, Karachi in Sindh, and Islamabad in the Capital Territory. Each guide carries live weather, prayer times, gold and currency rates, news, sports, economy and events pages. More cities are added only when their guides are complete, so every city listed here renders real content rather than a placeholder.',
+  },
+  {
+    q: 'What does each city guide include?',
+    a: 'Every published city guide carries the same seven live subpages: weather, prayer times, rates, news, sports, economy and events, updated through the day from the same live figures. The subpage links under each city card above lead to that city\u2019s own pages.',
+  },
+  {
+    q: 'Why are Multan and Peshawar named here without links?',
+    a: 'Multan and Peshawar are in preparation and will be listed here once their guides are complete. Until then they are named here only, deliberately without links, because WorldCityHub never links to an unfinished page.',
+  },
+];
 
 const CITIES = [
   {
@@ -30,21 +54,21 @@ const CITIES = [
     province: 'Punjab, Pakistan',
     href: '/pakistan/punjab/lahore',
     blurb:
-      'The cultural capital of Punjab — Badshahi Mosque, Lahore Fort, its food streets and its festivals.',
+      'The cultural capital of Punjab, Badshahi Mosque, Lahore Fort, its food streets and its festivals.',
   },
   {
     name: 'Karachi',
     province: 'Sindh, Pakistan',
     href: '/pakistan/sindh/karachi',
     blurb:
-      'Pakistan\u2019s port city on the Arabian Sea — Mazar-e-Quaid, Clifton Beach and its markets.',
+      'Pakistan\u2019s port city on the Arabian Sea, Mazar-e-Quaid, Clifton Beach and its markets.',
   },
   {
     name: 'Islamabad',
     province: 'Capital Territory, Pakistan',
     href: '/pakistan/islamabad-capital-territory/islamabad',
     blurb:
-      'The planned capital at the foot of the Margalla Hills — Faisal Mosque, Daman-e-Koh and its green sectors.',
+      'The planned capital at the foot of the Margalla Hills, Faisal Mosque, Daman-e-Koh and its green sectors.',
   },
 ] as const;
 
@@ -65,7 +89,7 @@ export default function CitiesIndex() {
   const itemListJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Cities of the World — Published guides',
+    name: 'Cities of the World: Published guides',
     numberOfItems: CITIES.length,
     itemListElement: CITIES.map((c, i) => ({
       '@type': 'ListItem',
@@ -78,6 +102,8 @@ export default function CitiesIndex() {
   return (
     <main className="min-h-screen bg-[#0a0e1a] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
+      <JsonLd data={hubWebPageJsonLd('Cities of the World', '/cities', DESCRIPTION)} />
+      <JsonLd data={hubBreadcrumbJsonLd('Cities', '/cities')} />
       <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
         <nav aria-label="Breadcrumb" className="text-sm text-gray-400">
           <Link href="/" className="hover:text-white">Home</Link>
@@ -87,7 +113,7 @@ export default function CitiesIndex() {
         <h1 className="mt-3 text-4xl font-bold sm:text-5xl">Cities of the World</h1>
         <p className="mt-3 max-w-3xl leading-relaxed text-gray-300">
           Every published city on WorldCityHub carries the same live guide: weather, prayer times, gold
-          and currency rates, local news, sports, economy and events — the same figures, updated
+          and currency rates, local news, sports, economy and events, the same figures, updated
           through the day. A city is listed here only when its guide renders real content; nothing
           here links to a placeholder.
         </p>
@@ -117,14 +143,10 @@ export default function CitiesIndex() {
           ))}
         </div>
 
-        <h3 className="mt-12 text-2xl font-bold">Which cities have full guides on WorldCityHub?</h3>
-        <p className="mt-3 max-w-3xl leading-relaxed text-gray-300">
-          Three cities have full guides on WorldCityHub today: Lahore in Punjab, Karachi in Sindh, and
-          Islamabad in the Capital Territory. Each guide carries live weather, prayer times, gold and
-          currency rates, news, sports, economy and events pages. More cities are added only when
-          their guides are complete, so every city listed here renders real content rather than a
-          placeholder.
-        </p>
+        <HubQuestions
+          faqs={CITIES_FAQS}
+          source="Answers composed from this page's own list above: the three published cities, the seven subpages every guide carries, and the in-preparation note for Multan and Peshawar."
+        />
         <p className="mt-6 max-w-3xl text-sm leading-relaxed text-gray-400">
           More Pakistani cities, including Multan and Peshawar, are in preparation and will be listed
           here once their guides are complete. Until then they are named here only, deliberately

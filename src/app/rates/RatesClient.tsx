@@ -144,8 +144,8 @@ function ZakatCalculator({ nisabValue, nisabGrams, symbol, perGram }: ZakatCalcu
       </div>
       <p className="text-sm text-gray-600 leading-relaxed mb-5 max-w-2xl">
         Zakat is charged at 2.5% on qualifying wealth held above the nisab threshold. This calculator values
-        your gold at the live price on this page and compares your total against the nisab — shown in the box
-        below — before working out what is due.
+        your gold at the live price on this page and compares your total against the nisab, shown in the box
+        below, before working out what is due.
       </p>
 
       <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 mb-5">
@@ -220,7 +220,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
 } = {}) {
   const [rates, setRates] = useState<GoldRates | null>(initialRates ?? null);
   const [silver, setSilver] = useState<SilverRates | null>(initialSilver ?? null);
-  // World Bank real data (Batch 3b) — replaces the static INTEREST_RATES /
+  // World Bank real data (Batch 3b), replaces the static INTEREST_RATES /
   // FINANCIAL_STRESS_DATA / MISERY_INDEX_DATA tables (undated snapshots
   // presented as current). Sections hide until real data arrives.
   const [wbMap, setWbMap] = useState<Record<string, WBValues> | null>(null);
@@ -313,8 +313,8 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
   // Direct-answer block + FAQ block for the rates template. Questions are
   // the mined competitor-FAQ phrasings (see evidence/batch4-item2/
   // question-bank.md). Every PKR figure is computed from THIS page's own
-  // two live inputs — the gold spot feed and the USD/PKR pair in the FX
-  // table below — never hard-coded; the answers say so, and distinguish
+  // two live inputs, the gold spot feed and the USD/PKR pair in the FX
+  // table below, never hard-coded; the answers say so, and distinguish
   // the spot-derived figure from the APSGJA Sarafa bazaar rate, exactly
   // as the mined sources do. Rendered only when both live inputs exist.
   const pkrPair = currencyPairs.find((pr) => pr.code === 'PKR') ?? null;
@@ -325,17 +325,17 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
   const ratesAeoSource = `Spot gold: this page's live feed (gold-api.com) · Conversion: this page's USD/PKR pair (ExchangeRate-API) · Live, ${todayStr} · The APSGJA Sarafa bazaar rate is announced separately and can differ`;
   const ratesDirectAnswer =
     rates && pkrPair
-      ? `The gold rate in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola for 24-karat gold — the live international spot price converted at this page's USD to PKR rate of ${fxText}. Gold is ${usdOz} per troy ounce and PKR ${pkrOf(rates.per_gram)} per gram right now. The Sarafa bazaar rate announced by the APSGJA can differ slightly, and jewellers add making charges on top.`
+      ? `The gold rate in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola for 24-karat gold, the live international spot price converted at this page's USD to PKR rate of ${fxText}. Gold is ${usdOz} per troy ounce and PKR ${pkrOf(rates.per_gram)} per gram right now. The Sarafa bazaar rate announced by the APSGJA can differ slightly, and jewellers add making charges on top.`
       : null;
   const ratesFaqs: AeoFaq[] =
     rates && pkrPair
       ? [
           {
             q: 'What is the gold rate in Pakistan today?',
-            a: `Gold in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola for 24-karat gold — the live spot price of ${usdOz} per troy ounce converted at this page's USD to PKR rate of ${fxText}, the same two live figures published in the tables below. That works out to PKR ${pkrOf(rates.per_gram)} per gram.${silver ? ` Silver is $${Math.round(silver.per_oz).toLocaleString('en-US')} per ounce.` : ''} The Sarafa bazaar rate announced by the APSGJA is set separately and can differ.`,
+            a: `Gold in Pakistan today is about PKR ${pkrOf(rates.per_tola)} per tola for 24-karat gold, the live spot price of ${usdOz} per troy ounce converted at this page's USD to PKR rate of ${fxText}, the same two live figures published in the tables below. That works out to PKR ${pkrOf(rates.per_gram)} per gram.${silver ? ` Silver is $${Math.round(silver.per_oz).toLocaleString('en-US')} per ounce.` : ''} The Sarafa bazaar rate announced by the APSGJA is set separately and can differ.`,
           },
           {
-            // Bank Q2 — the 24K per-tola phrasing mined verbatim from the
+            // Bank Q2, the 24K per-tola phrasing mined verbatim from the
             // competitor FAQ sections (see question bank); figures are
             // this page's own live values, as everywhere in this block.
             q: 'What is the 24K gold rate per tola in Pakistan today?',
@@ -343,29 +343,29 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
           },
           {
             q: 'What is the 22K gold price per tola in Pakistan?',
-            a: `The 22-karat gold rate in Pakistan today is about PKR ${pkrOf(rates.by_karat.k22 * TOLA_GRAMS)} per tola, converted from the live spot price at USD to PKR ${fxText}. 22K gold is 91.7% pure — 22 parts gold in 24 — against 99.9% for 24K, which is why it costs less per tola. Jewellers favour 22K for jewellery because the alloyed metal is harder and holds stones and designs better than soft, pure gold.`,
+            a: `The 22-karat gold rate in Pakistan today is about PKR ${pkrOf(rates.by_karat.k22 * TOLA_GRAMS)} per tola, converted from the live spot price at USD to PKR ${fxText}. 22K gold is 91.7% pure, 22 parts gold in 24, against 99.9% for 24K, which is why it costs less per tola. Jewellers favour 22K for jewellery because the alloyed metal is harder and holds stones and designs better than soft, pure gold.`,
           },
           {
             q: 'How many grams are in 1 tola of gold?',
-            a: `One tola equals 11.664 grams — the traditional South Asian unit in which gold is weighed and priced across Pakistan's Sarafa bazaars. A troy ounce, the international unit, is 31.1035 grams, so one tola is 0.375 troy ounces. This page prices gold per gram, per 10 grams and per tola side by side, and the converters on it switch between the units at the live rate.`,
+            a: `One tola equals 11.664 grams, the traditional South Asian unit in which gold is weighed and priced across Pakistan's Sarafa bazaars. A troy ounce, the international unit, is 31.1035 grams, so one tola is 0.375 troy ounces. This page prices gold per gram, per 10 grams and per tola side by side, and the converters on it switch between the units at the live rate.`,
           },
           {
             q: 'What is the difference between 24K and 22K gold?',
-            a: `24-karat gold is 99.9% pure gold; 22-karat is 91.7% pure, with the remaining share made of alloy metals such as copper or silver. That is why 24K costs more per gram — today about PKR ${pkrOf(rates.by_karat.k24)} against PKR ${pkrOf(rates.by_karat.k22)} — and why jewellers prefer 22K for jewellery: the alloy makes it harder and more durable, while 24K is the standard for investment bars and coins.`,
+            a: `24-karat gold is 99.9% pure gold; 22-karat is 91.7% pure, with the remaining share made of alloy metals such as copper or silver. That is why 24K costs more per gram, today about PKR ${pkrOf(rates.by_karat.k24)} against PKR ${pkrOf(rates.by_karat.k22)}, and why jewellers prefer 22K for jewellery: the alloy makes it harder and more durable, while 24K is the standard for investment bars and coins.`,
           },
           {
             q: 'How is the Pakistani gold rate calculated?',
-            a: `Pakistan's gold rate follows the international market: the spot price in US dollars per troy ounce is converted into rupees at the USD to PKR exchange rate, then into grams and tolas — 31.1035 grams to the ounce, 11.664 grams to the tola. On this page that works out to about PKR ${pkrOf(rates.per_tola)} per tola today. Local premiums and jewellers' making charges are added on top of the bullion rate.`,
+            a: `Pakistan's gold rate follows the international market: the spot price in US dollars per troy ounce is converted into rupees at the USD to PKR exchange rate, then into grams and tolas, 31.1035 grams to the ounce, 11.664 grams to the tola. On this page that works out to about PKR ${pkrOf(rates.per_tola)} per tola today. Local premiums and jewellers' making charges are added on top of the bullion rate.`,
           },
           {
             q: 'How much is 1 gram of gold in Pakistan?',
-            a: `One gram of 24-karat gold in Pakistan costs about PKR ${pkrOf(rates.per_gram)} right now — the live spot price converted at USD to PKR ${fxText}. Ten grams cost about PKR ${pkrOf(rates.per_10g)}, and one tola (11.664 grams) about PKR ${pkrOf(rates.per_tola)}. These are bullion rates before jewellers' making charges; the tables on this page also price the same gold in dollars and other currencies.`,
+            a: `One gram of 24-karat gold in Pakistan costs about PKR ${pkrOf(rates.per_gram)} right now, the live spot price converted at USD to PKR ${fxText}. Ten grams cost about PKR ${pkrOf(rates.per_10g)}, and one tola (11.664 grams) about PKR ${pkrOf(rates.per_tola)}. These are bullion rates before jewellers' making charges; the tables on this page also price the same gold in dollars and other currencies.`,
           },
           {
-            // Bank Q8 — why prices move; built from the same two live
+            // Bank Q8, why prices move; built from the same two live
             // inputs (spot + FX) the whole page is priced from.
             q: 'Why do gold prices change in Pakistan?',
-            a: `Gold prices in Pakistan change because the local rate is built from two moving parts: the international spot price in US dollars — ${usdOz} per troy ounce right now, ${rates.change_percent >= 0 ? '+' : ''}${rates.change_percent}% on the day — and the USD to PKR exchange rate, ${fxText} on this page. When either part moves, the rupee price per tola moves with it, before local premiums and jewellers' making charges are added.`,
+            a: `Gold prices in Pakistan change because the local rate is built from two moving parts: the international spot price in US dollars, ${usdOz} per troy ounce right now, ${rates.change_percent >= 0 ? '+' : ''}${rates.change_percent}% on the day, and the USD to PKR exchange rate, ${fxText} on this page. When either part moves, the rupee price per tola moves with it, before local premiums and jewellers' making charges are added.`,
           },
         ]
       : [];
@@ -395,8 +395,8 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
                 One page for the numbers people check every day: the live gold price in every karat, oil and
                 the wider commodity board, the top cryptocurrencies, exchange rates for the currencies
                 Pakistan trades and remits in, world stock indices and the World Bank&apos;s country
-                indicators. Every figure is fetched from a named public source —{' '}
-                <a href="/sources" className="text-amber-300 underline">the full list is published here</a> — and when a
+                indicators. Every figure is fetched from a named public source -{' '}
+                <a href="/sources" className="text-amber-300 underline">the full list is published here</a>, and when a
                 feed is down, its section is left out or reports itself unavailable instead of showing
                 yesterday&apos;s number as today&apos;s.
               </p>
@@ -480,7 +480,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             <div className="lg:col-span-2 space-y-8">
               <p className="text-sm leading-relaxed text-gray-600 max-w-3xl">
                 Pure gold is 24 karat. Every lower karat is an alloy, and its price is the same live spot
-                price scaled by its purity — 22K is 22/24 pure, 21K is 21/24 and 18K is 18/24. The table
+                price scaled by its purity, 22K is 22/24 pure, 21K is 21/24 and 18K is 18/24. The table
                 below converts the spot price into per-ounce, per-gram and per-tola figures (one tola =
                 11.664 grams), so the number matches the unit your jeweller or bullion dealer quotes. Retail
                 jewellery prices will differ: making charges are added on top, as the notes beside the table
@@ -627,7 +627,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
               <div className="card p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-5">Today's Market Summary</h2>
                 <p className="text-sm text-gray-500 leading-relaxed -mt-3 mb-5 max-w-2xl">
-                  The day&apos;s trading range for 24K gold at a glance — open, current, high and low. A
+                  The day&apos;s trading range for 24K gold at a glance, open, current, high and low. A
                   narrow range means a quiet market; a wide one means the price moved hard during the day.
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -728,18 +728,18 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             </div>
           </div>
 
-          {/* SECTION 1B — SILVER (anchor target of Ticker 1's silver item) */}
+          {/* SECTION 1B, SILVER (anchor target of Ticker 1's silver item) */}
           {silver && (
             <div id="silver" className="mt-10 scroll-mt-28">
               <div className="section-title">
                 <div className="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center">
                   <Coins className="w-5 h-5 text-slate-600" />
                 </div>
-                Silver Rates — Live Spot (XAG)
+                Silver Rates: Live Spot (XAG)
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
                 <div className="card card-hover p-5">
-                  <p className="text-sm font-semibold text-gray-700 mb-3">Spot — per Troy Oz</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-3">Spot: per Troy Oz</p>
                   <p className="text-2xl font-bold text-gray-900 tabular-nums">{fmt(silver.per_oz, silver.currency_symbol)}</p>
                   <p className="text-xs text-gray-500 mt-1">Fine silver (.999), live spot</p>
                 </div>
@@ -761,25 +761,25 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="card p-5">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">Sterling Silver (.925) — per Gram</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-2">Sterling Silver (.925): per Gram</p>
                   <p className="text-xl font-bold text-gray-900 tabular-nums">{fmt(silver.sterling_per_gram, silver.currency_symbol)}</p>
-                  <p className="text-xs text-gray-500 mt-1">Derived from the live spot price at .925 fineness — the melt value of sterling jewellery and tableware before any making charges.</p>
+                  <p className="text-xs text-gray-500 mt-1">Derived from the live spot price at .925 fineness, the melt value of sterling jewellery and tableware before any making charges.</p>
                 </div>
                 {rates && (
                   <div className="card p-5">
                     <p className="text-sm font-semibold text-gray-700 mb-2">Gold : Silver Ratio</p>
                     <p className="text-xl font-bold text-gray-900 tabular-nums">{(rates.per_oz / silver.per_oz).toFixed(1)} : 1</p>
-                    <p className="text-xs text-gray-500 mt-1">Computed from the two live spot prices on this page — how many ounces of silver one ounce of gold buys right now.</p>
+                    <p className="text-xs text-gray-500 mt-1">Computed from the two live spot prices on this page, how many ounces of silver one ounce of gold buys right now.</p>
                   </div>
                 )}
               </div>
               <p className="text-xs text-gray-500 mt-4">
-                Spot silver (XAG) via gold-api.com — the same source as the homepage ticker — updated {new Date(silver.last_updated).toLocaleTimeString()} UTC. The source publishes spot only, so no daily-change figure is shown rather than an invented one.
+                Spot silver (XAG) via gold-api.com, the same source as the homepage ticker, updated {new Date(silver.last_updated).toLocaleTimeString()} UTC. The source publishes spot only, so no daily-change figure is shown rather than an invented one.
               </p>
             </div>
           )}
 
-          {/* SECTION 2 — OIL & ENERGY */}
+          {/* SECTION 2, OIL & ENERGY */}
           <div className="mt-10">
             <div className="section-title">
               <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
@@ -788,7 +788,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
               Oil & Energy Prices
             </div>
             <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mt-4">
-              These are the benchmark prices the world&apos;s fuel costs are built on — when crude moves,
+              These are the benchmark prices the world&apos;s fuel costs are built on, when crude moves,
               petrol, transport and eventually food prices follow. Each card shows its unit (a barrel for
               crude oils) with the day&apos;s change beside the price.
             </p>
@@ -811,7 +811,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             </div>
           </div>
 
-          {/* SECTION 3 — CRYPTOCURRENCY */}
+          {/* SECTION 3, CRYPTOCURRENCY */}
           {cryptoData && (
             <div id="crypto" className="mt-10 scroll-mt-28">
               <div className="flex items-center justify-between mb-5">
@@ -878,7 +878,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
               <p className="text-sm text-gray-600 leading-relaxed mt-4 max-w-3xl">
                 The ten largest cryptocurrencies by market capitalisation, priced live from CoinGecko, with
                 the total size of the crypto market and Bitcoin&apos;s share of it shown above the table. The
-                Fear &amp; Greed badge summarises market sentiment — useful context for the mood of the
+                Fear &amp; Greed badge summarises market sentiment, useful context for the mood of the
                 market, never a signal to buy or sell.
               </p>
               <p className="text-xs text-gray-400 mt-2 text-right">
@@ -887,7 +887,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             </div>
           )}
 
-          {/* SECTION 4 — CURRENCY EXCHANGE */}
+          {/* SECTION 4, CURRENCY EXCHANGE */}
           {currencyPairs.length > 0 && (
             <div id="forex" className="mt-10 scroll-mt-28">
               <div className="section-title">
@@ -900,7 +900,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
                 Two rates are shown side by side because they answer two different questions. The interbank
                 rate is what banks trade at between themselves; the open-market rate, set by money changers,
                 is the one that decides what a remittance actually arrives as. A dash in the 24h column means
-                no reliable change figure was published — not that the rate stood still.
+                no reliable change figure was published, not that the rate stood still.
               </p>
               <div className="card overflow-hidden mt-5">
                 <div className="overflow-x-auto">
@@ -936,7 +936,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
                                   {isUp ? '+' : ''}{pair.change_24h}%
                                 </span>
                               ) : (
-                                <span className="text-gray-400">—</span>
+                                <span className="text-gray-400">-</span>
                               )}
                             </td>
                           </tr>
@@ -949,7 +949,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             </div>
           )}
 
-          {/* SECTION 5 — STOCK MARKET */}
+          {/* SECTION 5, STOCK MARKET */}
           {stockIndices.length > 0 && (
             <div id="indices" className="mt-10 scroll-mt-28">
               <div className="section-title">
@@ -996,16 +996,16 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             </div>
           )}
 
-          {/* SECTION 6 — INTEREST RATES */}
+          {/* SECTION 6, INTEREST RATES */}
           <div className="mt-8">
             <div className="flex items-center gap-2 mb-4">
               <Percent className="w-5 h-5 text-gray-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Interest Rates — World Bank Real Rates</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Interest Rates: World Bank Real Rates</h2>
             </div>
             <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
               Central-bank policy rates are not published as a free, machine-readable feed, so this section
               shows the closest honest equivalent: the World Bank&apos;s real interest rate for each country
-              — the lending rate adjusted for inflation, with its data year on every card.
+             , the lending rate adjusted for inflation, with its data year on every card.
             </p>
             {wbRates.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1019,7 +1019,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
                     <span className="text-3xl font-bold text-gray-900">{ir.rate}%</span>
                     <span className="text-xs text-gray-500">Real interest rate</span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-2">Lending rate adjusted for inflation — World Bank {ir.year}. Policy rates are not published as a free data feed, so this comparable real rate is shown instead.</p>
+                  <p className="text-xs text-gray-400 mt-2">Lending rate adjusted for inflation, World Bank {ir.year}. Policy rates are not published as a free data feed, so this comparable real rate is shown instead.</p>
                 </div>
               ))}
             </div>
@@ -1028,7 +1028,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             )}
           </div>
 
-          {/* SECTION 7 — COMMODITIES TABLE */}
+          {/* SECTION 7, COMMODITIES TABLE */}
           {commodities.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-4">
@@ -1036,7 +1036,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
                 <h2 className="text-xl font-semibold text-gray-900">Global Commodity Prices</h2>
               </div>
               <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
-                Metals, energy and agricultural staples at their latest published prices — the raw-material
+                Metals, energy and agricultural staples at their latest published prices, the raw-material
                 costs behind everything from flour to fuel. Each card names its unit, and prices are the spot
                 price or the latest exchange close the feed publishes.
               </p>
@@ -1120,15 +1120,15 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             </div>
           )}
 
-          {/* SECTION 8 — FINANCIAL STRESS METER */}
+          {/* SECTION 8, FINANCIAL STRESS METER */}
           <div className="mt-8">
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">Financial Stress Comparison</h2>
             </div>
             <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
-              A simple comparative score, computed by WorldCityHub from two World Bank series — inflation and
-              unemployment — using the formula noted under the chart. It is a comparison aid, not an official
+              A simple comparative score, computed by WorldCityHub from two World Bank series, inflation and
+              unemployment, using the formula noted under the chart. It is a comparison aid, not an official
               statistic: the same two inputs, weighted the same way, for every country.
             </p>
             {wbStress.length > 0 ? (
@@ -1160,14 +1160,14 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
             )}
           </div>
 
-          {/* SECTION 9 — MISERY INDEX */}
+          {/* SECTION 9, MISERY INDEX */}
           <div className="mt-8">
             <div className="flex items-center gap-2 mb-4">
               <TrendingDown className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">Misery Index by Country</h2>
             </div>
             <p className="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
-              The classic Misery Index adds a country&apos;s inflation rate to its unemployment rate — the
+              The classic Misery Index adds a country&apos;s inflation rate to its unemployment rate, the
               two figures households feel most directly. Both inputs are the World Bank&apos;s latest
               published values for each country, as the note under the table states.
             </p>
@@ -1205,7 +1205,7 @@ export default function WorldRatesPage({ initialRates, initialSilver, initialCry
                 </table>
               </div>
             </div>
-            <p className="text-xs text-gray-400 mt-2">Misery Index = Inflation Rate + Unemployment Rate — latest World Bank values for each country.</p>
+            <p className="text-xs text-gray-400 mt-2">Misery Index = Inflation Rate + Unemployment Rate, latest World Bank values for each country.</p>
           </div>
           {/* Batch 4 Item 2: FAQ block + FAQPage schema (this template had none before) */}
           {ratesFaqs.length > 0 && (

@@ -2,10 +2,38 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { CAPITALS } from '@/lib/capitals-table';
 import CapitalsTable, { type CapitalRowWithTemp } from '@/components/countries/CapitalsTable';
+import JsonLd from '@/components/seo/JsonLd';
+import { hubBreadcrumbJsonLd, hubWebPageJsonLd } from '@/lib/seo/hub';
+import { HubQuestions, type AeoFaq } from '@/components/aeo/HubQuestions';
+
+const BASE = 'https://worldcityhub.vercel.app';
+const HUB_DESCRIPTION =
+  'Countries of the world, every capital with live time and temperature, and full country guides as they go live on WorldCityHub.';
+
+// AEO questions (hubs family fix, 3 Nov 2026): composed only from facts
+// already stated on this page (the guide template described in the
+// page's own "How a guide is built" section, the live-guide status
+// stated in the capitals intro, and the table's named sources). The
+// same array renders visibly and emits the FAQPage schema
+// (HubQuestions).
+const COUNTRIES_FAQS: AeoFaq[] = [
+  {
+    q: 'What does a full WorldCityHub country guide cover?',
+    a: 'Every full guide follows the same template, proven first on Pakistan: an overview of the country, its provinces and its cities, and for each city the same family of pages covering weather, prayer times, rates, news, economy, sports and events, plus sections on the city\u2019s notable personalities and famous places. The figures come from the public sources named on each page.',
+  },
+  {
+    q: 'Which country guides are live on WorldCityHub?',
+    a: 'A full country guide is live for Pakistan today, with full city guides for Lahore, Karachi and Islamabad. Every other country appears in the capitals table on this page with its live local time and temperature while its full guide is being completed to the same standard.',
+  },
+  {
+    q: 'Where do the capital times and temperatures on this page come from?',
+    a: 'The capital data comes from GeoNames. The local time in each capital is calculated from its IANA time zone, and every temperature is read in a single Open-Meteo request covering all capitals at once, refreshed every 30 minutes. When a temperature cannot be read, the table shows a hyphen rather than a guess.',
+  },
+];
 
 // Current temperature for every capital in ONE Open-Meteo
 // multi-location request (free, keyless), cached 30 minutes. A failed
-// request yields nulls — the table then shows a dash, never a guess.
+// request yields nulls, the table then shows a dash, never a guess.
 async function fetchCapitalTemps(): Promise<(number | null)[]> {
   try {
     const lats = CAPITALS.map((c) => c.lat).join(',');
@@ -82,7 +110,7 @@ export async function generateMetadata({
     return {
       title: 'Countries of the World | WorldCityHub',
       description:
-        'Countries of the world — every capital with live time and temperature, and full country guides as they go live on WorldCityHub.',
+        'Countries of the world, every capital with live time and temperature, and full country guides as they go live on WorldCityHub.',
       alternates: { canonical: 'https://worldcityhub.vercel.app/countries' },
     };
   }
@@ -105,8 +133,24 @@ export default async function CountriesPage({
 
   // ── Overview mode: no continent selected, show all 7 ──────────────────────
   if (!activeContinent) {
+    // ItemList built from the SAME CAPITALS rows the table below renders.
+    const capitalsItemList = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'World Capitals',
+      numberOfItems: CAPITALS.length,
+      itemListElement: CAPITALS.map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${c.capital}, ${c.country}`,
+        url: `${BASE}/${c.countrySlug}`,
+      })),
+    };
     return (
       <main className="min-h-screen bg-[#0a0e1a] text-white px-6 py-16">
+        <JsonLd data={hubWebPageJsonLd('Countries of the World', '/countries', HUB_DESCRIPTION)} />
+        <JsonLd data={hubBreadcrumbJsonLd('Countries', '/countries')} />
+        <JsonLd data={capitalsItemList} />
         <div className="max-w-5xl mx-auto">
           <p className="text-cyan-400 text-sm font-semibold uppercase tracking-wide mb-3">
             Explore the World
@@ -116,14 +160,14 @@ export default async function CountriesPage({
             Pick a continent to see which countries and cities are live on WorldCityHub right now.
           </p>
           <p className="text-white/60 leading-relaxed max-w-2xl mb-6">
-            WorldCityHub is building a living guide to every country on earth — its capital and cities, its
-            weather and prayer times, its money, its headlines and its notable people — one country at a
+            WorldCityHub is building a living guide to every country on earth, its capital and cities, its
+            weather and prayer times, its money, its headlines and its notable people, one country at a
             time, and only ever with real data. A country marked &ldquo;Full guide live&rdquo; below has a
             complete country page behind it; the rest are being built to the same standard before they open.
           </p>
           <p className="text-white/60 leading-relaxed max-w-2xl mb-10">
             That standard is the point of this site. A page is published only when it renders completely from
-            live sources — no placeholder text dressed up as information, and no estimated figure presented
+            live sources, no placeholder text dressed up as information, and no estimated figure presented
             as a measurement. Where a value cannot be verified, the page shows less rather than inventing
             more. The <Link href="/sources" className="text-cyan-300 underline">data sources</Link> page names
             where every figure comes from, and the <Link href="/improve" className="text-cyan-300 underline">improvement form</Link> reaches
@@ -151,19 +195,19 @@ export default async function CountriesPage({
             ))}
           </div>
 
-          {/* ── WORLD CAPITALS TABLE (link map §9A — the full table lives
+          {/* ── WORLD CAPITALS TABLE (link map §9A, the full table lives
               here in the /countries hub, not on a separate page) ── */}
           <section className="mt-16">
             <h2 className="text-3xl font-bold mb-3">World Capitals</h2>
             <p className="text-white/60 max-w-2xl mb-6">
-              Every sovereign state&apos;s capital — its local time right now and its current
+              Every sovereign state&apos;s capital, its local time right now and its current
               temperature, updated live. Full country guides are live for Pakistan today;
               the remaining country pages are being completed one by one, and each row
               links to that country&apos;s page.
             </p>
             <p className="text-white/60 max-w-2xl mb-6 leading-relaxed">
               The local time in each capital is calculated from its IANA time zone, and every temperature is
-              read in a single Open-Meteo request covering all capitals at once — the same Open-Meteo service
+              read in a single Open-Meteo request covering all capitals at once, the same Open-Meteo service
               behind the live panels on this site&apos;s homepage. When a temperature cannot be read, the table shows a
               dash rather than a guess. Start with the guide that is complete today:{' '}
               <Link href="/pakistan" className="text-cyan-300 underline">Pakistan</Link>, with full city guides
@@ -177,7 +221,7 @@ export default async function CountriesPage({
             </p>
           </section>
           {/* A5: secondary hub keywords. The "most beautiful" answer
-              deliberately names NO ranking — there is no official one,
+              deliberately names NO ranking, there is no official one,
               and inventing a top list would be fabrication. The
               population answer states only the UN-based fact, with no
               population figure attached. */}
@@ -202,8 +246,8 @@ export default async function CountriesPage({
             </p>
             <h3 className="text-2xl font-bold mt-8 mb-3">How many countries are there in the world?</h3>
             <p className="text-white/60 max-w-2xl leading-relaxed">
-              The United Nations has 193 member states, and two observer states — the Holy See and
-              Palestine — which is why 195 is the figure quoted for the number of countries in the
+              The United Nations has 193 member states, and two observer states, the Holy See and
+              Palestine, which is why 195 is the figure quoted for the number of countries in the
               world. Counts differ because some places are recognised by some states and not others.
               The capitals table on this page lists 198 entries, including Vatican City, Kosovo and
               Taiwan, which appear in the source data as entries.
@@ -213,11 +257,11 @@ export default async function CountriesPage({
             <h2 className="text-3xl font-bold mb-3">How a WorldCityHub country guide is built</h2>
             <p className="text-white/60 max-w-2xl mb-6 leading-relaxed">
               Every full guide follows the same template, proven first on Pakistan: an overview of the
-              country, its provinces and its cities — and for each city the same family of pages covering
+              country, its provinces and its cities, and for each city the same family of pages covering
               weather, prayer times, rates, news, economy, sports and events, plus sections on the
-              city&apos;s notable personalities and famous places. The figures come from the public sources named on each page — the World Bank
+              city&apos;s notable personalities and famous places. The figures come from the public sources named on each page, the World Bank
               for economy indicators, Open-Meteo and OpenWeatherMap for weather, Aladhan for prayer times,
-              gold-api for gold and silver spot (CoinGecko PAX Gold as fallback) and CoinGecko for crypto — never from a writer&apos;s imagination.
+              gold-api for gold and silver spot (CoinGecko PAX Gold as fallback) and CoinGecko for crypto, never from a writer&apos;s imagination.
             </p>
             <p className="text-white/60 max-w-2xl leading-relaxed">
               Coverage grows in verified batches rather than by flooding the index with thin pages, so a
@@ -226,6 +270,10 @@ export default async function CountriesPage({
               <Link href="/improve" className="text-cyan-300 underline">tell us what to build first</Link>.
             </p>
           </section>
+          <HubQuestions
+            faqs={COUNTRIES_FAQS}
+            source="Answers composed from this page's own sections above: the country count, the live-guide status and the capitals table sources (GeoNames and Open-Meteo)."
+          />
         </div>
       </main>
     );
@@ -269,8 +317,8 @@ export default async function CountriesPage({
         <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-6">
           <p className="text-white/70">
             {countries.length > 0
-              ? `More ${activeContinent.name} countries are being added regularly as we build out full city and country profiles. Every live guide follows the same verified template — real data only, with its sources named on the page.`
-              : `No ${activeContinent.name} countries are live yet — we're adding countries and capitals one at a time. Check back soon.`}
+              ? `More ${activeContinent.name} countries are being added regularly as we build out full city and country profiles. Every live guide follows the same verified template, real data only, with its sources named on the page.`
+              : `No ${activeContinent.name} countries are live yet, we're adding countries and capitals one at a time. Check back soon.`}
           </p>
         </div>
       </div>

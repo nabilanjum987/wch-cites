@@ -7,10 +7,12 @@ import { getGoldPkr, getUsdPkrRate, TROY_OZ_GRAMS } from '@/lib/gold';
 import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, cityJsonLd, citySubpageCrumbs, titleCaseSlug } from '@/lib/seo/breadcrumbs';
 import { getPrayerSeo, CITY_COORDS } from '@/lib/data/prayer-keywords';
+import { buildPrayerAeo } from '@/lib/data/prayer-faqs';
+import { faqPageSchema } from '@/components/aeo/AnswerLayer';
 
 // Server wrapper: the interactive Spiritual & Wellness Hub lives in
 // PrayerTimesClient.tsx (a client component). Metadata must be exported
-// from a server component, so it lives here — every city gets its own
+// from a server component, so it lives here, every city gets its own
 // unique title, description and self-referencing canonical.
 
 interface PageProps {
@@ -39,9 +41,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 // P13(f): server-rendered initial timetable (Aladhan, Karachi method,
-// Hanafi — the same source and method the client fetches). This fills
+// Hanafi, the same source and method the client fetches). This fills
 // the page's own row in the "Compare Prayer Times" table in RAW HTML:
-// the client-only fetch left it blank ("—") for crawlers and before
+// the client-only fetch left it blank ("-") for crawlers and before
 // hydration. Any failure returns null and the client fetch takes over;
 // nothing is fabricated.
 async function fetchInitialTimes(lat: number, lng: number, tz: string): Promise<InitialPrayerTimes | null> {
@@ -83,7 +85,7 @@ async function fetchInitialShafiiAsr(lat: number, lng: number, tz: string): Prom
 }
 
 // P13(b): server-rendered live bullion per gram, from the F4 canonical
-// gold helper — gold-api XAU spot via getGoldPkr() (PAXG fallback
+// gold helper, gold-api XAU spot via getGoldPkr() (PAXG fallback
 // inside); silver is the gold-api XAG spot converted at the open
 // USD→PKR rate. Any failure returns null and the Zakat card hides its
 // figures; the stale hard-coded rate is gone for good.
@@ -128,10 +130,17 @@ export default async function Page({ params }: PageProps) {
     fetchInitialZakat(),
     fetchInitialShafiiAsr(lat, lng, tz),
   ]);
+  // S2: FAQPage from the SAME array the client renders visibly
+  // (prayer-faqs.ts), composed from this page's own server-fetched
+  // Aladhan times for THIS city. Emitted only when real times were
+  // fetched, so the schema never carries the client's loading
+  // placeholder; cities with no AEO layer get no FAQPage.
+  const prayerFaqs = initialTimes ? buildPrayerAeo(p.city, cityName, initialTimes) : [];
   return (
     <>
       <JsonLd data={breadcrumbJsonLd(citySubpageCrumbs(countryName, p.country, provinceName, p.province, cityName, p.city, 'Prayer Times', 'prayer-times'))} />
       <JsonLd data={cityJsonLd(cityName, p.city, provinceName, p.province, countryName, p.country)} />
+      {prayerFaqs.length > 0 && <JsonLd data={faqPageSchema(prayerFaqs)} />}
       <CityPageImage citySlug={p.city} variant="prayer" />
       <PrayerTimesPage initialTimes={initialTimes} initialZakat={initialZakat} initialShafiiAsr={initialShafiiAsr} />
     </>

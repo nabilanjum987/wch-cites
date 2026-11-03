@@ -212,20 +212,18 @@ function EventCard({ event, primaryColor }: { event: CityEvent; primaryColor: st
             <Calendar size={40} style={{ color: primaryColor }} className="opacity-40" />
           </div>
         )}
-        <div className="absolute top-3 left-3">
-          <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-lg backdrop-blur-sm ${catStyle}`}>
-            {catObj?.icon}
-            {catObj?.label}
-          </span>
-        </div>
-        {event.is_free && (
-          <div className="absolute top-3 right-3">
-            <span className="text-xs bg-green-500/100 text-white font-bold px-2 py-1 rounded-lg">FREE</span>
-          </div>
-        )}
       </div>
 
       <div className="p-4 flex flex-col flex-1">
+        {/* G3 (subpages fix B): category and FREE labels sit below the
+            photo as text, never overlaid on the event image. */}
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-lg ${catStyle}`}>
+            {catObj?.icon}
+            {catObj?.label}
+          </span>
+          {event.is_free && <span className="text-xs bg-green-500/100 text-white font-bold px-2 py-1 rounded-lg">FREE</span>}
+        </div>
         <h3 className="font-semibold text-white text-sm leading-snug mb-2 line-clamp-2">{event.title}</h3>
         {event.description && (
           <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2">{event.description}</p>
@@ -346,7 +344,7 @@ export default function EventsPage({ city }: Props) {
                 Events in {city.name}
               </h1>
               <p className="text-white/70 text-sm mt-1.5">
-                Discover what's happening — sports, music, culture & more
+                Discover what's happening: sports, music, culture & more
               </p>
             </div>
             {liveEvents.length > 0 && (

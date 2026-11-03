@@ -5,8 +5,8 @@ import { useState } from 'react';
 // SEE IT LIVE map block (golden template).
 // If NEXT_PUBLIC_GOOGLE_MAPS_KEY exists → Google Maps Embed API tabs
 // (Map / Satellite / Street View). If it does not → the OpenStreetMap
-// embed fallback (no key needed) + an honest note that satellite and
-// Street View arrive with the Google key. Either way there is always a
+// embed fallback (no key needed), labelled simply "Map: OpenStreetMap"
+// for visitors. Either way there is always a
 // "View in Google Earth" link at the exact coordinates — Google offers
 // no Earth embed, so a link is the honest route.
 export default function MapEmbed({
@@ -60,12 +60,7 @@ export default function MapEmbed({
           allowFullScreen
         />
       </div>
-      {!googleKey && (
-        <p className="mt-2 text-sm text-gray-400">
-          Map shown via OpenStreetMap. Satellite and Street View tabs switch on automatically when the site&apos;s
-          Google Maps key is added — no page change needed.
-        </p>
-      )}
+      {!googleKey && <p className="mt-2 text-sm text-gray-400">Map: OpenStreetMap</p>}
       <a
         href={earthUrl}
         target="_blank"

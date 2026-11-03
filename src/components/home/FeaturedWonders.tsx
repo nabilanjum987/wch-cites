@@ -19,8 +19,11 @@ const WONDERS = [
   { name: 'Petra',                  country: 'Jordan', emoji: '🏛️', color: '#C4A265', desc: 'Rose-red city in rock',
     // Card photo (2026-11-03): the Monastery (Ad Deir), Petra's great
     // rock-cut facade shown whole (Commons: "Al Deir Petra.JPG",
-    // Azurfrog, CC BY-SA 3.0).
-    img: '/images/home/petra.webp', imgAlt: 'The Monastery (Ad Deir) at Petra, its whole rock-cut facade carved into rose-red sandstone', credit: 'Photo: Azurfrog · CC BY-SA 3.0' },
+    // Azurfrog, CC BY-SA 3.0). imgPos (D7, wonders-family fix): the
+    // card's 208x112 centre crop cut the facade's pediment apexes, so
+    // this card alone anchors the crop to the top of the frame, where
+    // the pediment sits; the other cards' subjects are whole centred.
+    img: '/images/home/petra.webp', imgAlt: 'The Monastery (Ad Deir) at Petra, its whole rock-cut facade carved into rose-red sandstone', credit: 'Photo: Azurfrog · CC BY-SA 3.0', imgPos: 'object-top' },
   { name: 'Christ the Redeemer',    country: 'Brazil', emoji: '✝️', color: '#009C3B', desc: '38 m statue above Rio',
     // Card photo (2026-11-03): the full statue on its pedestal above
     // Rio (Commons: "1 cristor redentor 2014.jpg", Chensiyuan,
@@ -33,7 +36,9 @@ const WONDERS = [
   { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Mayan pyramid city',
     // Card photo (2026-11-03): El Castillo pyramid seen whole
     // (Commons: "Chichen Itza 3.jpg", Daniel Schwen, CC BY-SA 4.0).
-    img: '/images/home/chichen-itza.webp', imgAlt: 'El Castillo, the step pyramid of Chichen Itza, seen whole under a blue sky', credit: 'Photo: Daniel Schwen · CC BY-SA 4.0' },
+    // imgW/imgH (D9, wonders-family fix): this file's real dimensions
+    // are 640x340, not the 640x421 the other card photos share.
+    img: '/images/home/chichen-itza.webp', imgAlt: 'El Castillo, the step pyramid of Chichen Itza, seen whole under a blue sky', credit: 'Photo: Daniel Schwen · CC BY-SA 4.0', imgW: 640, imgH: 340 },
   { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Amphitheatre from 80 AD',
     // Card photo (2026-11-03): the full oval amphitheatre from the
     // plaza (Commons: "Colosseo 2020.jpg", FeaturedPics, CC BY-SA 4.0).
@@ -98,7 +103,7 @@ export default function FeaturedWonders() {
                 {'img' in w && w.img ? (
                   <div className="relative h-28 overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={w.img} alt={w.imgAlt} width={640} height={421} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+                    <img src={w.img} alt={w.imgAlt} width={'imgW' in w && w.imgW ? w.imgW : 640} height={'imgH' in w && w.imgH ? w.imgH : 421} loading="lazy" decoding="async" className={`absolute inset-0 h-full w-full object-cover ${'imgPos' in w && w.imgPos ? w.imgPos : ''}`} />
                   </div>
                 ) : (
                   <div className="h-28 flex items-center justify-center text-6xl opacity-25 select-none" aria-hidden="true">{w.emoji}</div>

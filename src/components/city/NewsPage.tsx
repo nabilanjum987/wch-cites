@@ -6,19 +6,16 @@ import {
   Globe, MapPin, Landmark, Banknote, Trophy, Drama,
   Sparkles, Heart, GraduationCap, Leaf, Car, Film,
   ChevronRight, AlertTriangle, Clock, ExternalLink,
-  Newspaper, ArrowLeft, Radio, Fuel, DollarSign,
-  Thermometer, TrendingUp, TrendingDown, Minus,
-  BarChart3, Zap, RefreshCw, Calendar, ChevronLeft,
-  Languages, Search, X, Play
+  Newspaper, ArrowLeft, Radio,
+  RefreshCw, Calendar, ChevronLeft,
+  Languages, Search, X
 } from 'lucide-react';
 import { getSupabase } from '../../lib/supabase';
-import { fetchNews, fetchUrduNews, fetchNewsByDate, timeAgo, generateGlobalImpacts, generateTrendingTopics, generateWeekInReview } from '../../lib/apis/news';
-import type { City, NewsArticle, NewsCategory, LocationLevel, GlobalImpactObject, LanguageTab, LocationLevelObject, SourceSet } from '../../types/city';
+import { fetchNews, fetchUrduNews, fetchNewsByDate, timeAgo, generateWeekInReview } from '../../lib/apis/news';
+import type { City, NewsArticle, NewsCategory, LocationLevel, LanguageTab, LocationLevelObject, SourceSet } from '../../types/city';
 import { NEWS_CATEGORIES, CATEGORY_COLORS, COUNTRY_SOURCES, DEFAULT_SOURCES, getSourceName } from '../../types/city';
 import { NewsCardSkeleton, BreakingBarSkeleton, TabSkeleton } from '../shared/LoadingSkeleton';
 import NewsSearch from './NewsSearch';
-import VideoNews from './VideoNews';
-import SocialPulse from './SocialPulse';
 import WeekInReview from './WeekInReview';
 import {
   generateSearchParagraph, generateSearchAfter,
@@ -26,11 +23,8 @@ import {
   generateMoreStoriesParagraph, generateMoreStoriesAfter,
   generateLiveFeedParagraph, generateLiveFeedAfter,
   generateArchiveParagraph, generateArchiveAfter,
-  generateVideoParagraph, generateVideoAfter,
-  generateSocialParagraph, generateSocialAfter,
-  generateWeekParagraph, generateWeekAfter,
-  generateImpactParagraph, generateImpactAfter,
-  generateSourcesParagraph, generateSourcesAfter,
+      generateWeekParagraph, generateWeekAfter,
+    generateSourcesParagraph, generateSourcesAfter,
 } from '../../lib/paragraphs/news';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
@@ -47,15 +41,7 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   world: Globe,
 };
 
-const IMPACT_ICONS: Record<string, React.ElementType> = {
-  Fuel, DollarSign, Thermometer, Globe, TrendingUp, TrendingDown, Minus, BarChart3, Zap,
-};
 
-const IMPACT_COLORS: Record<GlobalImpactObject['impact'], { bg: string; text: string; border: string; icon: React.ElementType }> = {
-  positive: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30', icon: TrendingUp },
-  negative: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/30', icon: TrendingDown },
-  neutral: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30', icon: Minus },
-};
 
 function getCategoryDotColor(category: string, isBreaking: boolean): string {
   if (isBreaking) return (CATEGORY_COLORS as Record<string, string>).breaking ?? '#ef4444';
@@ -182,7 +168,6 @@ export default function NewsPage({ country, province, city, cityData: initialCit
     }
   }, [selectedDate, loadArchivedNews]);
 
-  const globalImpacts = cityData ? generateGlobalImpacts(cityData.name, cityData.country_slug) : [];
   const sources = (country && COUNTRY_SOURCES[country]) || DEFAULT_SOURCES;
 
   const locationLevels: LocationLevelObject[] = [
@@ -281,7 +266,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
 
           <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
             <Newspaper className="w-7 h-7 inline-block mr-2 -mt-1" />
-            {cityData?.name || 'City'} News
+            {cityData?.name || 'City'} News Today
           </h1>
           <p className="text-white/70 text-sm mt-1">
             Latest stories from {cityData?.name}, {cityData?.province}, {cityData?.country}
@@ -537,9 +522,7 @@ export default function NewsPage({ country, province, city, cityData: initialCit
               <div className="lg:col-span-2 space-y-4">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-                  {/* A12 (final30): Lahore only targets "lahore news today" as
-                      this H2; every other city keeps "Top Stories". */}
-                  {city === 'lahore' ? 'Lahore News Today' : 'Top Stories'}
+                  Top Stories
                 </h2>
                 <p className="text-gray-300 leading-relaxed text-sm">
                   {generateTopStoriesParagraph(cityData?.name || city)}
@@ -571,14 +554,6 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                                   <Newspaper className="w-12 h-12 text-emerald-300" />
                                 </div>
                               )}
-                              {topStories[0].isBreaking && (
-                                <span className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
-                                  <AlertTriangle className="w-3 h-3" /> Breaking
-                                </span>
-                              )}
-                              <span className="absolute top-3 right-3 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-full capitalize">
-                                {topStories[0].category}
-                              </span>
                             </div>
                             <div className="sm:w-1/2 p-6 flex flex-col justify-center">
                               <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
@@ -586,6 +561,14 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                                 <span>&#183;</span>
                                 <Clock className="w-3 h-3" />
                                 <span>{timeAgo(topStories[0].publishedAt)}</span>
+                                <span>&#183;</span>
+                                <span className="capitalize">{topStories[0].category}</span>
+                                {topStories[0].isBreaking && (
+                                  <>
+                                    <span>&#183;</span>
+                                    <span className="text-red-400 font-bold uppercase tracking-wider">Breaking</span>
+                                  </>
+                                )}
                               </div>
                               <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 leading-snug group-hover:text-emerald-400 transition-colors">
                                 {topStories[0].title}
@@ -618,15 +601,14 @@ export default function NewsPage({ country, province, city, cityData: initialCit
                                   <Newspaper className="w-8 h-8 text-emerald-300" />
                                 </div>
                               )}
-                              <span className="absolute top-2.5 right-2.5 bg-black/60 text-white text-[10px] font-medium px-2 py-0.5 rounded-full capitalize">
-                                {article.category}
-                              </span>
                             </div>
                             <div className="p-4">
                               <div className="flex items-center gap-2 text-[11px] text-gray-500 mb-1.5">
                                 <span className="font-medium text-emerald-400">{getSourceName(article.source)}</span>
                                 <span>&#183;</span>
                                 <span>{timeAgo(article.publishedAt)}</span>
+                                <span>&#183;</span>
+                                <span className="capitalize">{article.category}</span>
                               </div>
                               <h4 className="text-sm font-bold text-white leading-snug group-hover:text-emerald-400 transition-colors line-clamp-3">
                                 {article.title}
@@ -977,46 +959,6 @@ export default function NewsPage({ country, province, city, cityData: initialCit
           </p>
         </motion.section>
 
-        {/* Video News */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-        >
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-            <Play className="w-5 h-5 text-red-400" />
-            Video News
-          </h2>
-          <p className="text-gray-300 leading-relaxed text-sm mb-4">
-            {generateVideoParagraph(cityData?.country || country)}
-          </p>
-          <VideoNews countrySlug={country || ''} />
-          <p className="text-gray-400 leading-relaxed text-sm mt-4">
-            {generateVideoAfter(cityData?.country || country)}
-          </p>
-        </motion.section>
-
-        {/* Social Pulse */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.35 }}
-        >
-          <h2 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-            <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-            <TrendingUp className="w-5 h-5 text-emerald-400" />
-            Social Pulse
-          </h2>
-          <p className="text-gray-300 leading-relaxed text-sm mb-4">
-            {generateSocialParagraph(cityData?.name || city)}
-          </p>
-          <SocialPulse cityName={cityData?.name || ''} topics={generateTrendingTopics(cityData?.name || '', articles)} />
-          <p className="text-gray-400 leading-relaxed text-sm mt-4">
-            {generateSocialAfter(cityData?.name || city)}
-          </p>
-        </motion.section>
-
         {/* Week in Review */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -1036,55 +978,6 @@ export default function NewsPage({ country, province, city, cityData: initialCit
             {generateWeekAfter(cityData?.name || city)}
           </p>
         </motion.section>
-
-        {/* Global Impact on City */}
-        {globalImpacts.length > 0 && !loading && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-          >
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-emerald-600 rounded-full" />
-              How World News Affects {cityData?.name || 'Your City'} Today
-            </h2>
-            <p className="text-gray-300 leading-relaxed text-sm mb-4">
-              {generateImpactParagraph(cityData?.name || city)}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {globalImpacts.map((impact, idx) => {
-                const style = IMPACT_COLORS[impact.impact];
-                const ImpactIcon = IMPACT_ICONS[impact.icon] || Globe;
-                const TrendIcon = style.icon;
-                return (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: idx * 0.08 }}
-                    className={`rounded-xl border p-4 ${style.bg} ${style.border}`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${style.bg} border ${style.border}`}>
-                        <ImpactIcon className={`w-4 h-4 ${style.text}`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className={`text-sm font-bold ${style.text}`}>{impact.title}</h3>
-                          <TrendIcon className={`w-4 h-4 flex-shrink-0 ${style.text}`} />
-                        </div>
-                        <p className="text-xs text-gray-400 leading-relaxed">{impact.description}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-            <p className="text-gray-400 leading-relaxed text-sm mt-4">
-              {generateImpactAfter(cityData?.name || city)}
-            </p>
-          </motion.section>
-        )}
 
         {/* Sources Section */}
         <motion.section

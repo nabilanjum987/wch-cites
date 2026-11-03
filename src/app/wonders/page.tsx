@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { UPCOMING_WONDERS, getPublishedWonders, getWonderLive, heroMedia, weatherLabel } from '@/lib/wonders';
+import { getInPreparationWonders, getPublishedWonders, getWonderLive, heroMedia, weatherLabel } from '@/lib/wonders';
 
-// Wonders hub (WP4 / marathon Q9) — server-rendered. Only PUBLISHED
-// wonders are linked; the rest of the New7Wonders appear as content
-// (name + place, no link) until their own golden build passes QA.
+// Wonders hub (WP4 / marathon Q9), server-rendered. Only PUBLISHED
+// wonders are linked; every other wonder (built or not yet built)
+// appears in the in-preparation list as content only (name + place,
+// no link) until the owner publishes its guide.
 export const revalidate = 1800;
 
 const BASE = 'https://worldcityhub.vercel.app';
@@ -13,7 +14,7 @@ const BASE = 'https://worldcityhub.vercel.app';
 export const metadata: Metadata = {
   title: 'Wonders of the World: Live Guides, Weather & Facts',
   description:
-    'Wonder guides with facts verified against Wikidata & UNESCO, licensed credited photos, and a live layer — weather, sunrise and golden hour.',
+    'Wonder guides with facts verified against Wikidata & UNESCO, licensed credited photos, and a live layer, weather, sunrise and golden hour.',
   alternates: { canonical: `${BASE}/wonders` },
 };
 
@@ -24,15 +25,15 @@ export default async function WondersIndex() {
   );
 
   // P11 (final28): ItemList JSON-LD for the hub, built from the SAME
-  // `wonders` array the "Published guides" cards render — so the schema
+  // `wonders` array the "Published guides" cards render, so the schema
   // can never drift from the hub's real linked entries. The "in
-  // preparation" names (UPCOMING_WONDERS) are deliberately NOT listed:
-  // they have no guide URL, and the hub never links to an unfinished
+  // preparation" names are deliberately NOT listed:
+  // they have no published guide URL, and the hub never links to an unfinished
   // page. No visible content changes; this is the page's only JSON-LD.
   const itemListJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Wonders of the World — Published guides',
+    name: 'Wonders of the World, Published guides',
     numberOfItems: wonders.length,
     itemListElement: wonders.map((w, i) => ({
       '@type': 'ListItem',
@@ -53,8 +54,8 @@ export default async function WondersIndex() {
         </nav>
         <h1 className="mt-3 text-4xl font-bold sm:text-5xl">Wonders of the World</h1>
         <p className="mt-3 max-w-3xl leading-relaxed text-gray-300">
-          A wonder guide the way it should be in 2026: the same verified facts an encyclopedia gives you — checked
-          against Wikidata, UNESCO and official sources — plus the layer a static page can never have: the weather at
+          A wonder guide the way it should be in 2026: the same verified facts an encyclopedia gives you, checked
+          against Wikidata, UNESCO and official sources, plus the layer a static page can never have: the weather at
           the site right now, today&apos;s sunrise and golden hour, what to wear, and whether the gates are open.
           Every photograph is openly licensed and credited. Guides are published one at a time, only when every fact
           on the page can be traced to its source.
@@ -93,14 +94,15 @@ export default async function WondersIndex() {
           })}
         </div>
 
-        <h2 className="mt-12 text-2xl font-bold">The New7Wonders — in preparation</h2>
+        <h2 className="mt-12 text-2xl font-bold">In preparation</h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-400">
-          Each of these gets the same golden treatment — sourced facts, licensed photography, verified visitor
-          information and a live layer — before its guide opens. Until then they are listed here as content only,
+          Every wonder guide not yet published is named here: the built guides still in review and the ones not yet
+          built. Each gets the same golden treatment, sourced facts, licensed photography, verified visitor
+          information and a live layer, before its guide opens. Until then they are listed here as content only,
           deliberately without links: WorldCityHub never links to an unfinished page.
         </p>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {UPCOMING_WONDERS.map((u) => (
+          {getInPreparationWonders().map((u) => (
             <li key={u.name} className="rounded-xl border border-white/10 bg-white/5 p-4">
               <p className="font-semibold text-gray-100">{u.name}</p>
               <p className="mt-0.5 text-sm text-gray-400">{u.place}</p>
@@ -114,7 +116,7 @@ export default async function WondersIndex() {
           {[
             {
               t: 'Facts with receipts',
-              d: 'Identity and dimensions from Wikidata, heritage status from UNESCO, visitor prices and hours from the official site — each claim stored with its source and the date it was checked.',
+              d: 'Identity and dimensions from Wikidata, heritage status from UNESCO, visitor prices and hours from the official site, each claim stored with its source and the date it was checked.',
             },
             {
               t: 'Photos with licences',
@@ -122,7 +124,7 @@ export default async function WondersIndex() {
             },
             {
               t: 'A live layer',
-              d: 'Weather, sunrise, sunset, golden hour and a what-to-wear verdict from Open-Meteo at the wonder\u2019s exact coordinates — refreshed through the day, and honestly absent when the feed is down.',
+              d: 'Weather, sunrise, sunset, golden hour and a what-to-wear verdict from Open-Meteo at the wonder\u2019s exact coordinates, refreshed through the day, and honestly absent when the feed is down.',
             },
           ].map((c) => (
             <div key={c.t} className="rounded-xl border border-white/10 bg-white/5 p-5">

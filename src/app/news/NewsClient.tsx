@@ -40,16 +40,16 @@ export default function NewsClient({ items }: { items: WorldNewsItem[] }) {
         <p className="text-white/60 text-lg leading-relaxed mb-10 max-w-3xl">
           Stay on top of what is happening across the world right now. WorldCityHub aggregates
           headlines from trusted publishers across Asia, the Middle East, Europe, the Americas,
-          Africa, and Oceania — refreshed every 15 minutes.
+          Africa, and Oceania, refreshed every 15 minutes.
         </p>
         <p className="text-white/60 leading-relaxed max-w-3xl mb-10">
           WorldCityHub writes no news of its own. Every headline here is aggregated from established
-          publishers and links straight to the original story at its source — you get the headline, the
+          publishers and links straight to the original story at its source, you get the headline, the
           publisher and the time, nothing rewritten and nothing invented. When the feed is unavailable,
           this page says so plainly instead of filling the space with placeholder stories. Follow one
-          stream through the categories above — <Link href="/news?category=finance" className="text-indigo-300 underline">finance</Link>,{' '}
+          stream through the categories above, <Link href="/news?category=finance" className="text-indigo-300 underline">finance</Link>,{' '}
           <Link href="/news?category=crypto" className="text-indigo-300 underline">crypto</Link>,{' '}
-          <Link href="/news?category=sports" className="text-indigo-300 underline">sports</Link> and more —
+          <Link href="/news?category=sports" className="text-indigo-300 underline">sports</Link> and more,
           or go local with the latest coverage from{' '}
           <Link href="/pakistan/punjab/lahore/news" className="text-indigo-300 underline">Lahore</Link> and{' '}
           <Link href="/pakistan/sindh/karachi/news" className="text-indigo-300 underline">Karachi</Link>.
@@ -86,7 +86,7 @@ export default function NewsClient({ items }: { items: WorldNewsItem[] }) {
               ))}
             </div>
 
-            {/* News grid — every card links to the original publisher */}
+            {/* News grid, every card links to the original publisher */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {filtered.map((item, i) => (
                 <a

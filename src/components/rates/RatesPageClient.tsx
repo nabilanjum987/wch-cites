@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import {
   AreaChart,
   Area,
@@ -203,7 +204,7 @@ function ZakatCalculator({ nisabValue, nisabGrams, currency, perGram }: ZakatCal
               </p>
             </>
           ) : (
-            <p className="font-medium">Zakat not yet due — wealth is below nisab threshold.</p>
+            <p className="font-medium">Zakat not yet due: wealth is below nisab threshold.</p>
           )}
         </div>
       )}
@@ -426,6 +427,13 @@ function RemittanceCalculator({ currency, currencyPairs }: RemittanceCalculatorP
 
 interface CountryRatesPageProps {
   countrySlug?: string;
+  // City rates pages only (3 Nov 2026): when cityName is set, the H1
+  // is the city's gold keyword and the breadcrumb carries real links
+  // to the country, province and city pages. Country rates routes
+  // leave these unset and keep their existing headings/breadcrumb.
+  cityName?: string;
+  provinceSlug?: string;
+  citySlug?: string;
   // A4: 'country' only for the /[country]/rates route. The Pakistan
   // country page carries the petrol head keyword (its H1 + hero
   // answer); city rates pages keep their existing headings, and the
@@ -440,7 +448,7 @@ interface CountryRatesPageProps {
   initialCrypto?: { cryptos: CryptoData[]; market: CryptoMarket } | null;
 }
 
-export default function CountryRatesPage({ countrySlug = 'pakistan', initialRates, initialCrypto, pageKind = 'city' }: CountryRatesPageProps) {
+export default function CountryRatesPage({ countrySlug = 'pakistan', initialRates, initialCrypto, pageKind = 'city', cityName, provinceSlug, citySlug }: CountryRatesPageProps) {
   const [rates, setRates] = useState<GoldRates | null>(initialRates ?? null);
   const [oilPrices, setOilPrices] = useState<OilPrice[]>([]);
   const [fuelPrices, setFuelPrices] = useState<FuelPrice[]>([]);
@@ -471,7 +479,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
   const headerColor = FLAG_COLORS[countrySlug] ?? '#1e3a5f';
   const countryName = toTitleCase(countrySlug);
 
-  // World Bank real data (Batch 3b) — stress / misery / real interest
+  // World Bank real data (Batch 3b), stress / misery / real interest
   // rate for this country. The static INTEREST_RATES / FINANCIAL_STRESS /
   // MISERY tables were undated snapshots presented as current (e.g. an
   // "SBP Policy Rate 22%, next meeting Jul 2024" card); sections now hide
@@ -580,15 +588,36 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
       {/* Hero Header */}
       <div style={{ background: `linear-gradient(135deg, ${headerColor}cc 0%, #0a0f1e 100%)`, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-3 mb-8">
-            <button className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors bg-transparent/10 px-4 py-2 rounded-full border border-white/10 hover:border-white/20">
-              <ArrowLeft className="w-4 h-4" />
-              World Rates
-            </button>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-300 text-sm font-medium">{countryName}</span>
-          </div>
+          {/* Breadcrumb. City rates pages (S3): real links to the
+              country, province and city pages, matching the places
+              template. Country rates routes keep the World Rates
+              button breadcrumb exactly as before. */}
+          {cityName && citySlug ? (
+            <nav aria-label="Breadcrumb" className="flex items-center gap-3 mb-8 flex-wrap text-sm">
+              <Link href="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
+              <span className="text-gray-400">/</span>
+              <Link href={`/${countrySlug}`} className="text-gray-400 hover:text-white transition-colors">{countryName}</Link>
+              {provinceSlug && (
+                <>
+                  <span className="text-gray-400">/</span>
+                  <Link href={`/${countrySlug}/${provinceSlug}`} className="text-gray-400 hover:text-white transition-colors">{toTitleCase(provinceSlug)}</Link>
+                </>
+              )}
+              <span className="text-gray-400">/</span>
+              <Link href={`/${countrySlug}/${provinceSlug}/${citySlug}`} className="text-gray-300 font-medium hover:text-white transition-colors">{cityName}</Link>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-300 font-medium">Rates</span>
+            </nav>
+          ) : (
+            <div className="flex items-center gap-3 mb-8">
+              <button className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors bg-transparent/10 px-4 py-2 rounded-full border border-white/10 hover:border-white/20">
+                <ArrowLeft className="w-4 h-4" />
+                World Rates
+              </button>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-300 text-sm font-medium">{countryName}</span>
+            </div>
+          )}
 
           <div className="flex items-start justify-between flex-wrap gap-6">
             <div>
@@ -598,12 +627,16 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
                   <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
                     {pageKind === 'country' && countrySlug === 'pakistan'
                       ? 'Petrol Price in Pakistan Today'
-                      : `${countryName} Gold Rates`}
+                      : cityName
+                        ? `Gold Price in ${cityName} Today`
+                        : `${countryName} Gold Rates`}
                   </h1>
                   <p className="text-gray-400 text-base mt-2">
                     {pageKind === 'country' && countrySlug === 'pakistan'
                       ? 'Live dollar, silver and gold rates in Pakistan, plus diesel and official fuel-price guidance.'
-                      : `Prices in ${currency.name} (${currency.code}) · Updated every 5 min`}
+                      : cityName
+                        ? `Live gold rates for ${cityName} in ${currency.name} (${currency.code}) · Updated every 5 min`
+                        : `Prices in ${currency.name} (${currency.code}) · Updated every 5 min`}
                   </p>
                 </div>
               </div>
@@ -1017,7 +1050,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
                 </div>
               </div>
 
-          {/* SECTION 2 — OIL & ENERGY */}
+          {/* SECTION 2, OIL & ENERGY */}
           <div className="mt-8">
             <div className="flex items-center gap-2 mb-4">
               <Droplet className="w-5 h-5 text-gray-400" />
@@ -1093,7 +1126,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
                 <p className="text-white/40 text-xs mt-3">Pakistan imports ~80% of oil needs · Annual oil import bill: $15 Billion</p>
               </div>
 
-          {/* SECTION 3 — CRYPTOCURRENCY */}
+          {/* SECTION 3, CRYPTOCURRENCY */}
           {cryptoData && (
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
@@ -1185,7 +1218,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
                 <p className="text-white/50 text-xs">Primary uses: Store of value vs inflation · Remittances · Dollar hedge · Investment</p>
               </div>
 
-          {/* SECTION 4 — CURRENCY EXCHANGE with Remittance Calculator */}
+          {/* SECTION 4, CURRENCY EXCHANGE with Remittance Calculator */}
           {currencyPairs.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-4">
@@ -1269,7 +1302,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
             </div>
           )}
 
-          {/* SECTION 5 — STOCK MARKET */}
+          {/* SECTION 5, STOCK MARKET */}
           {stockIndices.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-4">
@@ -1363,7 +1396,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
             </div>
           )}
 
-          {/* SECTION 6 — INTEREST RATES with Loan Calculator */}
+          {/* SECTION 6, INTEREST RATES with Loan Calculator */}
           {interestRate && (
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-4">
@@ -1432,7 +1465,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
                 </p>
               </div>
 
-          {/* SECTION 7 — COMMODITIES (Pakistan Relevant Highlighted) */}
+          {/* SECTION 7, COMMODITIES (Pakistan Relevant Highlighted) */}
           {commodities.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-4">
@@ -1512,7 +1545,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
             </div>
           )}
 
-          {/* SECTION 8 — FINANCIAL STRESS METER */}
+          {/* SECTION 8, FINANCIAL STRESS METER */}
           <div className="mt-8">
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle className="w-5 h-5 text-gray-400" />
@@ -1526,7 +1559,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
               <div className="bg-transparent rounded-2xl  border border-white/8 p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingDown className="w-5 h-5 text-red-400" />
-                  <h3 className="text-sm font-semibold text-white">Misery Index: {miseryData?.miseryIndex ?? '—'}</h3>
+                  <h3 className="text-sm font-semibold text-white">Misery Index: {miseryData?.miseryIndex ?? '-'}</h3>
                 </div>
                 <p className="text-xs text-gray-500 mb-4">Misery Index = Inflation + Unemployment</p>
                 <div className="space-y-3">
@@ -1559,7 +1592,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
             </p>
           </div>
 
-          {/* SECTION 9 — PURCHASING POWER CALCULATOR */}
+          {/* SECTION 9, PURCHASING POWER CALCULATOR */}
           {rates && cryptoData && (
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-4">
@@ -1582,7 +1615,7 @@ export default function CountryRatesPage({ countrySlug = 'pakistan', initialRate
             </div>
           )}
 
-          {/* SECTION 10 — FINANCIAL NEWS */}
+          {/* SECTION 10, FINANCIAL NEWS */}
           {financialNews.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-4">

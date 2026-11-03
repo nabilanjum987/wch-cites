@@ -69,7 +69,7 @@ export interface CryptoMarket {
 const TROY_OZ_TO_GRAM = TROY_OZ_GRAMS;
 const GRAM_TO_TOLA = TOLA_GRAMS;
 
-// F4: the HEADLINE spot is gold-api.com XAU (see fetchGoldRates) —
+// F4: the HEADLINE spot is gold-api.com XAU (see fetchGoldRates) -
 // gold-api publishes spot only, so the 30-day/YTD chart and the 24h
 // change/high/low below keep coming from the REAL CoinGecko market
 // chart for PAX Gold (tokenized gold tracking spot), labelled as the
@@ -77,7 +77,7 @@ const GRAM_TO_TOLA = TOLA_GRAMS;
 // is a secondary display, never the headline. The previous version
 // generated a Math.random() price history, random open/high/low and a
 // random daily change, and priced everything off a hardcoded $2,320
-// fallback when its defunct metals API failed — all fabrication, removed.
+// fallback when its defunct metals API failed, all fabrication, removed.
 function calcYTD(history: { date: string; price: number }[], current: number): number {
   if (history.length === 0) return 0;
   const year = new Date().getFullYear();
@@ -130,7 +130,7 @@ function buildRates(
     currency: currencyCode,
     currency_symbol: currencySymbol,
     // The spot feed's own timestamp (gold-api `updatedAt`), NOT the
-    // render time — so /rates shows the same "as of" time as the
+    // render time, so /rates shows the same "as of" time as the
     // ticker, My City and city surfaces that read the same spot.
     last_updated: spotUpdatedAt,
     spot_source: spotSource,
@@ -145,8 +145,8 @@ export async function fetchGoldRates(
   try {
     // F4: headline spot from the shared canonical helper (gold-api XAU,
     // PAXG fallback inside). The CoinGecko calls below now supply ONLY
-    // the 24h change, 24h high/low and the 365-day series — the figures
-    // gold-api cannot publish — and the UI labels them as the PAXG
+    // the 24h change, 24h high/low and the 365-day series, the figures
+    // gold-api cannot publish, and the UI labels them as the PAXG
     // series. If the markets call fails, the whole section stays null
     // (today's behaviour); a failed chart alone just empties history.
     const [spot, marketsRes, chartRes] = await Promise.all([
@@ -200,7 +200,7 @@ export interface SilverRates {
   last_updated: string;
 }
 
-// Silver spot comes from gold-api.com (XAG) — the same keyless source
+// Silver spot comes from gold-api.com (XAG), the same keyless source
 // the homepage ticker layer uses (src/lib/tickers.ts), so /rates#silver
 // and Ticker 1's silver item can never disagree. gold-api publishes a
 // spot price and its own timestamp but NO 24h change figure, so this
@@ -239,7 +239,7 @@ export async function fetchSilverRates(
 export async function fetchOilPrices(): Promise<OilPrice[]> {
   // No free, keyless, reliable oil price feed exists. The old version
   // returned invented base prices jittered with Math.random() and
-  // presented them as live — removed. The oil section stays hidden
+  // presented them as live, removed. The oil section stays hidden
   // until a real feed is connected.
   return [];
 }
@@ -250,7 +250,7 @@ export async function fetchFuelPrices(
   countrySlug: string
 ): Promise<FuelPrice[]> {
   // The old version returned static invented per-country fuel prices
-  // stamped with today's date as if freshly updated — removed. No free
+  // stamped with today's date as if freshly updated, removed. No free
   // fuel-price API exists; the section stays hidden until a real source
   // (e.g. OGRA postings for Pakistan) is connected.
   void currencyRate; void currencyCode; void countrySlug;
@@ -288,7 +288,7 @@ export async function fetchCryptoData(
     const btcDominance = Math.round((btcCap / totalMarketCap) * 100 * 10) / 10;
     // Fear & Greed is Alternative.me's real published index. The old code
     // invented it with Math.random(), and invented an entire default
-    // price table when CoinGecko failed — both removed (failure = null,
+    // price table when CoinGecko failed, both removed (failure = null,
     // and an unavailable index renders as an empty label the UI hides).
     let fearGreed = 0;
     let fearGreedLabel = '';
@@ -339,7 +339,7 @@ export interface CurrencyPair {
   interbank_rate: number;
   open_market_rate: number;
   // Day change computed from dated snapshots of the published currency
-  // dataset; null when the previous day's snapshot is unavailable —
+  // dataset; null when the previous day's snapshot is unavailable -
   // the UI hides the change chip instead of showing a fabricated 0%.
   change_24h: number | null;
   flag: string;
@@ -369,7 +369,7 @@ const PAIR_META: Record<string, { name: string; flag: string }> = {
 };
 
 // Real exchange rates from the ExchangeRate-API open endpoint
-// (open.er-api.com — free, keyless), migrated off Frankfurter in Q8:
+// (open.er-api.com, free, keyless), migrated off Frankfurter in Q8:
 // Frankfurter's new host (frankfurter.dev) returns only ECB currencies,
 // so PKR, AED and SAR silently vanished from this table. The open
 // endpoint publishes one USD-based snapshot covering every pair here;
@@ -449,7 +449,7 @@ export async function fetchCurrencyHistory(code: string, years: number = 1): Pro
   // published currency dataset (one immutable file per day), at ~52
   // evenly spaced points across the requested range; each point is
   // that day's real published rate. A day whose file is missing is
-  // skipped — the series is never interpolated or invented.
+  // skipped, the series is never interpolated or invented.
   try {
     if (code === 'USD') return [];
     const key = code.toLowerCase();
@@ -522,13 +522,13 @@ export interface StockMover {
 
 export function fetchStockIndices(): StockIndex[] {
   // The old version returned static index values (KSE-100 etc.) jittered
-  // with Math.random() as if live — removed. No free keyless PSX/global
+  // with Math.random() as if live, removed. No free keyless PSX/global
   // index feed is connected yet, so the section stays hidden.
   return [];
 }
 
 export function fetchStockMovers(): { gainers: StockMover[]; losers: StockMover[] } {
-  // Was an invented gainers/losers table — removed (see fetchStockIndices).
+  // Was an invented gainers/losers table, removed (see fetchStockIndices).
   return { gainers: [], losers: [] };
 }
 
@@ -582,7 +582,7 @@ export function calculateSavings(principal: number, annualRate: number): Savings
 }
 
 export function generateInterestRateHistory(): { date: string; rate: number }[] {
-  // Was a synthetic monthly series generated around the static rate —
+  // Was a synthetic monthly series generated around the static rate -
   // removed. A real policy-rate history needs a real source (central
   // bank postings); until then the chart stays hidden.
   return [];
@@ -601,7 +601,7 @@ export interface Commodity {
 
 export function fetchCommodities(): Commodity[] {
   // Was a fully static invented price table (gold $2,320, Brent $82.30,
-  // wheat, cocoa...) with jitter — removed. Gold on this page is real
+  // wheat, cocoa...) with jitter, removed. Gold on this page is real
   // (gold-api XAU spot; CoinGecko PAXG for history/change only) and
   // crypto is real (CoinGecko); the broader commodities board stays
   // hidden until a real feed is connected.
@@ -706,7 +706,7 @@ export interface NewsArticle {
 // This replaces getDefaultFinancialNews, which returned five INVENTED
 // headlines attributed to real outlets (Dawn, The News, Business
 // Recorder, Express Tribune, Geo News) with '#' links and rolling fake
-// timestamps — including a stale "SBP maintains policy rate at 22%"
+// timestamps, including a stale "SBP maintains policy rate at 22%"
 // claim. Fabrication removed; on any failure the section simply hides.
 export async function fetchFinancialNews(countrySlug: string): Promise<NewsArticle[]> {
   const key = process.env.NEXT_PUBLIC_GNEWS_KEY ?? '';
