@@ -5118,17 +5118,33 @@ async function getWonderFromDb(slug: string): Promise<Wonder | null> {
  * baked 8). Only non-empty DB media/sources are preserved, the two
  * things the DB can legitimately freshen.
  */
+// DB-preserved media credits and source labels predate the 3 Nov 2026
+// rulebook and carry em-dash separators ("Author — CC BY-SA 4.0").
+// Sanitise at this choke point so rendered credits follow G1 whichever
+// side supplies them.
+const dashFix = (s: string): string => s.replace(/ — /g, ' · ');
+
 export function overlayBakedWonder(
   fromDb: Wonder | null,
   baked: Wonder | null | undefined,
 ): Wonder | null {
   if (!fromDb) return baked ?? null;
   if (!baked) return fromDb;
+  const media = fromDb.media && fromDb.media.length > 0 ? fromDb.media : baked.media;
+  const sources =
+    fromDb.sources && fromDb.sources.length > 0 ? fromDb.sources : baked.sources;
   return {
     ...baked,
-    media: fromDb.media && fromDb.media.length > 0 ? fromDb.media : baked.media,
-    sources:
-      fromDb.sources && fromDb.sources.length > 0 ? fromDb.sources : baked.sources,
+    media: media.map((m) => ({
+      ...m,
+      attribution: dashFix(m.attribution),
+      author: dashFix(m.author),
+    })),
+    sources: sources.map((s) => ({
+      ...s,
+      sourceName: dashFix(s.sourceName),
+      claim: dashFix(s.claim),
+    })),
   };
 }
 
