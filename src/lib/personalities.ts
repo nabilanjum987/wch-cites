@@ -47,7 +47,7 @@ export const PERSONALITY_IMAGE_OVERRIDES: Record<string, PersonalityImageOverrid
   // B6: replaces the hotlinked upload.wikimedia.org portrait. File:
   // extended-canvas portrait (head y 12–77%, x 6–91% of frame).
   'allama-iqbal': {
-    imageUrl: '/images/home28/pers-iqbal-wide.webp',
+    imageUrl: '/images/home28/pers-iqbal-hero.webp',
     imageCredit: 'Iqbal Academy Pakistan',
     imageLicence: 'public domain',
   },
@@ -116,7 +116,7 @@ export const PERSONALITY_IMAGE_OVERRIDES: Record<string, PersonalityImageOverrid
 // (owner's complete-head rule: hair to chin inside the 4/5 frame).
 // Unlisted photographed profiles default to 'object-top'.
 export const PERSONALITY_HERO_POSITIONS: Record<string, string> = {
-  'allama-iqbal': 'object-top', // wide canvas: head y 12–77%
+  'allama-iqbal': 'object-[center_40%]', // hero canvas (gradient backdrop extension): head y 17–79%, x 12–89%
   'faiz-ahmed-faiz': 'object-right', // 800×664, head x 39.5–96%
   'imran-khan': 'object-top', // head y 0.5–78.9%
   'wasim-akram': 'object-top', // head y 1.5–79.7%
