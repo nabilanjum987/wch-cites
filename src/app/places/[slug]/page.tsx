@@ -33,6 +33,12 @@ interface Place {
   // Only set alongside a local /images/places/*.webp file whose licence
   // is recorded in docs/media-registry/subjects/places-b8-2026-10-28.json.
   imageCredit?: string;
+  // Places family fix (3 Nov 2026): descriptive hero alt, per-record hero
+  // framing (object-position class) and the record's named sources,
+  // rendered as a compact Sources list at the foot of the page.
+  imageAlt?: string;
+  imagePosition?: string;
+  sources?: string[];
   gallery?: string[];
   primaryColor: string;
   category: string;
@@ -61,7 +67,7 @@ const PLACES: Record<string, Place> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    tagline: 'The Emperor\'s Mosque — one of the largest in the world',
+    tagline: 'The Emperor\'s Mosque, one of the largest in the world',
     description: 'Built by Mughal Emperor Aurangzeb in 1673, Badshahi Mosque is one of the largest mosques in the world. Its magnificent red sandstone structure with white marble domes has been an iconic symbol of Lahore for over 350 years.',
     primaryColor: '#8B1A1A',
     category: 'Mosque / Heritage',
@@ -70,19 +76,19 @@ const PLACES: Record<string, Place> = {
     // A10 (final30): the pre-existing 7 AM–10 PM window was unsourced and
     // conflicts with other published windows (8 AM–9 PM directory listing;
     // 5 AM–8 PM in a 2026 guide), so the record now states no clock window
-    // — the timings answer below says daily + prayer pauses only.
+    // and the timings answer below says daily + prayer pauses only.
     openHours: 'Open daily; visitor access pauses during prayer times',
-    entryFee: 'Free for Muslims. PKR 100 for non-Muslim visitors.',
+    entryFee: 'Free entry for all visitors; a small tip to the shoe-keeping attendants is customary',
     address: 'Walled City, Lahore, Punjab, Pakistan',
     lat: 31.5882, lng: 74.3101,
     bestTimeToVisit: 'October to March (cool season). Avoid peak prayer times.',
     averageVisit: '1–2 hours',
     tips: [
       'Visit early morning for the best light for photography',
-      'Dress modestly — headscarves available at entrance for women',
+      'Dress modestly: headscarves available at entrance for women',
       'Climb the minarets for panoramic views of the Walled City',
       'The mosque is most beautiful illuminated at night',
-      'Allama Iqbal\'s tomb is at the entrance — visit both together',
+      'Allama Iqbal\'s tomb is at the entrance. Visit both together',
     ],
     nearbyPlaces: [
       { name: 'Lahore Fort', slug: 'lahore-fort', distance: '0.3 km' },
@@ -97,23 +103,30 @@ const PLACES: Record<string, Place> = {
     // both fields below (significance + thingsToKnow previously disagreed:
     // 100,000 vs 95,000). Verified 2026-10-23: UNESCO's Tentative List
     // entry (Ref. 1277) states no capacity; Wikidata Q330872 records
-    // capacity (P1083) = 100,000, and Wikipedia's Courtyard section —
-    // citing Asian Historical Architecture — states the courtyard "can
+    // capacity (P1083) = 100,000, and Wikipedia's Courtyard section,
+    // citing Asian Historical Architecture, states the courtyard "can
     // accommodate 100,000 worshipers when functioning as an Idgah"
     // (https://en.wikipedia.org/wiki/Badshahi_Mosque#Courtyard). The
     // 95,000 figure traces to an older hall/courtyard split that no
     // current strong source reproduces for the courtyard itself.
-    significance: 'Badshahi Mosque is the defining symbol of Lahore and one of the finest examples of Mughal architecture in the world. Its grand prayer hall can accommodate 55,000 worshippers. The courtyard alone holds 100,000 people — making it one of the largest open-air prayer spaces on earth.',
+    significance: 'Badshahi Mosque is the defining symbol of Lahore and one of the finest examples of Mughal architecture in the world. Its grand prayer hall can accommodate 55,000 worshippers. The courtyard alone holds 100,000 people, making it one of the largest open-air prayer spaces on earth.',
     thingsToKnow: [
       'Capacity: 55,000 inside, 100,000 in the courtyard',
       'Built with red Lahori brick and white marble',
       'Four minarets, each 53m tall',
       'Relics of the Prophet Muhammad ﷺ are preserved in the mosque',
-      'Named after the Mughal Emperor — "Badshah" means "King" in Urdu',
+      'Named after the Mughal Emperor: "Badshah" means "King" in Urdu',
     ],
     bookingUrl: 'https://www.viator.com/Lahore/d24054-ttd',
     wikiUrl: 'https://en.wikipedia.org/wiki/Badshahi_Mosque',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Badshahi_Mosque_July_1_2005_pic32_by_Ali_Imran.jpg/1280px-Badshahi_Mosque_July_1_2005_pic32_by_Ali_Imran.jpg',
+    imageUrl: '/images/places/cards/badshahi-mosque.webp',
+    imageCredit: 'Zapata1000 · CC BY-SA 4.0, via Wikimedia Commons',
+    imageAlt: 'Badshahi Mosque courtyard in Lahore, looking across the stone courtyard to the red sandstone entrance gate and a minaret',
+    imagePosition: 'object-center',
+    sources: [
+      'UNESCO Tentative List entry for Badshahi Mosque (Ref. 1277)',
+      'Wikidata record for Badshahi Mosque (Q330872), for the courtyard capacity figure',
+    ],
   },
   'lahore-fort': {
     slug: 'lahore-fort',
@@ -121,58 +134,64 @@ const PLACES: Record<string, Place> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    tagline: 'UNESCO World Heritage — 1000 years of Mughal history',
+    tagline: 'UNESCO World Heritage, 1000 years of Mughal history',
     description: 'Lahore Fort, also known as Shahi Qila (Royal Fort), is a UNESCO World Heritage Site. Built over centuries from 1566 by the Mughal Emperors, it contains 21 notable monuments representing various eras of Mughal grandeur, including the Sheesh Mahal (Palace of Mirrors).',
     primaryColor: '#8B6914',
     category: 'Fort / UNESCO Heritage',
     builtYear: 'Current structure from 1566 AD (Akbar)',
     unescoStatus: '✅ UNESCO World Heritage Site (1981)',
-    openHours: '8:30 AM – 5:30 PM (Tue–Sun). Closed Monday.',
+    openHours: '9:00 AM – 5:00 PM daily (open seven days a week)',
     // A10 (final30): the pre-existing PKR 500/1,000 figure was unsourced and
     // conflicts with recent published local rates (Rs 30–500 across 2026
     // guides; one Oct-2026 read of WCLA's site says Rs 100/30/1,000). No
     // single figure is verifiable from a primary source, so the record now
-    // states no figure — the ticket answer below says counter-only.
-    entryFee: 'Ticketed at the Alamgiri Gate counter; local and foreign rates differ — confirm the current rate at the counter',
+    // states no figure, the ticket answer below says counter-only.
+    entryFee: 'Ticketed at the Alamgiri Gate counter; local and foreign rates differ; confirm the current rate at the counter',
     address: 'Lahore Fort Road, Walled City, Lahore',
     lat: 31.5881, lng: 74.3150,
     bestTimeToVisit: 'November to February. Morning visits avoid crowds.',
     averageVisit: '2–3 hours',
     tips: [
-      'Hire a local guide — the history is rich and complex',
+      'Hire a local guide: the history is rich and complex',
       'The Sheesh Mahal (Mirror Palace) is the must-see highlight',
-      'Combine with Badshahi Mosque — they face each other across Hazuri Bagh',
-      'Bring water — it\'s a large complex with a lot of walking',
+      'Combine with Badshahi Mosque: they face each other across Hazuri Bagh',
+      'Bring water: it\'s a large complex with a lot of walking',
       'Photography is free in most areas',
-      'Dress modestly and wear comfortable walking shoes — the visit covers a large complex with a lot of walking',
+      'Dress modestly and wear comfortable walking shoes: the visit covers a large complex with a lot of walking',
     ],
     nearbyPlaces: [
       { name: 'Badshahi Mosque', slug: 'badshahi-mosque', distance: '0.3 km' },
       { name: 'Hazuri Bagh', slug: 'hazuri-bagh', distance: '0.1 km' },
     ],
-    history: 'The origins of Lahore Fort trace back to antiquity, though the current structure was largely built during the Mughal era. Emperor Akbar rebuilt it in burnt brick in 1566. Subsequent emperors — Jahangir, Shah Jahan and Aurangzeb — each added magnificent new sections. The Sikh Empire under Ranjit Singh and later the British colonial administration also left their marks. Today 21 monuments within the fort span different eras.',
+    history: 'The origins of Lahore Fort trace back to antiquity, though the current structure was largely built during the Mughal era. Emperor Akbar rebuilt it in burnt brick in 1566. Subsequent emperors, Jahangir, Shah Jahan and Aurangzeb, each added magnificent new sections. The Sikh Empire under Ranjit Singh and later the British colonial administration also left their marks. Today 21 monuments within the fort span different eras.',
     significance: 'As a UNESCO World Heritage Site since 1981, Lahore Fort is Pakistan\'s most important historical monument. It represents the full arc of Mughal civilization at its peak, from military fortification to intimate royal quarters and the world-famous Sheesh Mahal. Unlike the mosque across Hazuri Bagh, Lahore Fort has no single published visitor capacity: a UNESCO/ICOMOS mission notes that different monuments within the fort have different carrying capacities, so visitors explore it as a walking route across more than 20 hectares and 21 monuments rather than as a single hall.',
     thingsToKnow: [
       // B3 (final30): was "45 acres" (= 18.2 ha), contradicting the
       // significance text on this same page ("more than 20 hectares").
       // The sourced figure is "greater than 20 hectares (49 acres)"
-      // (Wikipedia, citing the UNESCO nomination) — so this page now
+      // (Wikipedia, citing the UNESCO nomination), so this page now
       // uses ONE value, "more than 20 hectares", everywhere. The acres
       // figure is dropped rather than converted, per the one-value rule.
       'Area: more than 20 hectares, containing 21 historic monuments',
       'Sheesh Mahal decorated with thousands of glass mirror pieces',
       'Alamgiri Gate (1674) is the main entrance, facing Badshahi Mosque',
       'Naulakha Pavilion inlaid with semi-precious stones',
-      'Featured on Pakistan\'s 1,000 rupee note',
     ],
     bookingUrl: 'https://www.viator.com/tours/Lahore/Lahore-Fort',
     wikiUrl: 'https://en.wikipedia.org/wiki/Lahore_Fort',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Lahore_Fort_-_from_outside.jpg/1280px-Lahore_Fort_-_from_outside.jpg',
+    imageUrl: '/images/places/cards/lahore-fort.webp',
+    imageCredit: 'Rohaan Bhatti · CC BY-SA 3.0, via Wikimedia Commons',
+    imageAlt: 'Alamgiri Gate of Lahore Fort in Lahore, its white twin-towered gateway seen through a scalloped arch',
+    imagePosition: 'object-center',
+    sources: [
+      'Walled City of Lahore Authority (WCLA) official listing, for opening hours',
+      'UNESCO World Heritage listing: Fort and Shalamar Gardens in Lahore, inscribed 1981',
+    ],
   },
   // ── D18 (28 Oct final sitting): four previously unpublished Lahore
   // places. Every fact below was verified against a real source (see
   // PR body source list); hours/fees appear ONLY where a source
-  // supports them — Shalimar's day fee is deliberately NOT a number,
+  // supports them, Shalimar's day fee is deliberately NOT a number,
   // because published day-fee figures conflict. No imageUrl: per the
   // PR #87 media rule, photos must be local licensed/open files with
   // registry records, never hotlinks, so these pages use the
@@ -188,13 +207,13 @@ const PLACES: Record<string, Place> = {
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
     tagline: 'A Mughal paradise garden of terraces, marble pavilions and 410 fountains',
-    description: 'Shah Jahan built Shalimar Gardens in 1641–42: three terraces, marble pavilions and 410 fountains — a UNESCO World Heritage Site since 1981.',
+    description: 'Shah Jahan built Shalimar Gardens in 1641–42: three terraces, marble pavilions and 410 fountains, a UNESCO World Heritage Site since 1981.',
     primaryColor: '#2E7D32',
     category: 'Garden / UNESCO Heritage',
     builtYear: '1641–1642 AD',
     unescoStatus: '✅ UNESCO World Heritage Site (1981)',
     openHours: '8:00 AM – 6:00 PM daily',
-    entryFee: 'Ticketed; fees differ for local and foreign visitors — check at the entrance',
+    entryFee: 'Ticketed; fees differ for local and foreign visitors; check at the entrance',
     address: 'Grand Trunk Road, Baghbanpura, Lahore, Punjab, Pakistan',
     lat: 31.58583, lng: 74.38194,
     bestTimeToVisit: 'October to March. Early morning or late afternoon for the best light.',
@@ -202,7 +221,7 @@ const PLACES: Record<string, Place> = {
     tips: [
       'Walk the terraces from top to bottom to follow the water downhill',
       'Come early for the softest light on the marble pavilions',
-      'Combine with Lahore Fort — the two share one UNESCO listing',
+      'Combine with Lahore Fort: the two share one UNESCO listing',
       'Wear comfortable shoes; the garden is 658 metres long',
       'Mornings are quietest; evenings are popular with local families',
     ],
@@ -212,7 +231,7 @@ const PLACES: Record<string, Place> = {
       { name: 'Badshahi Mosque', slug: 'badshahi-mosque', distance: '6.8 km' },
     ],
     history: 'Construction of Shalimar Gardens began in 1641 under Mughal Emperor Shah Jahan and was completed in 1642. The gardens were laid out as a Persian paradise garden in the charbagh (four-part) style, under the superintendence of the court noble Khalilullah Khan, with Ali Mardan Khan. The site at Baghbanpura had been given by the Mian family, who then held custodianship of the gardens for over 350 years. Water reached the fountains through the Shah Nahar canal, brought from over 161 kilometres away. In 1981 the gardens were inscribed as a UNESCO World Heritage Site together with Lahore Fort, and in 2012 they were removed from the World Heritage in Danger list after conservation progress.',
-    significance: 'Shalimar Gardens is Mughal garden design at its apogee — the reason UNESCO inscribed it, with Lahore Fort, in 1981. Its three descending terraces each carry a name: Farah Baksh (Bestower of Pleasure) at the top, Faiz Baksh (Bestower of Goodness) in the middle, and Hayat Baksh (Bestower of Life) at the bottom. The 410 fountains, fed by a gravity hydraulic system, cooled the air and made the garden a working piece of paradise-garden symbolism, not just decoration.',
+    significance: 'Shalimar Gardens is Mughal garden design at its apogee, the reason UNESCO inscribed it, with Lahore Fort, in 1981. Its three descending terraces each carry a name: Farah Baksh (Bestower of Pleasure) at the top, Faiz Baksh (Bestower of Goodness) in the middle, and Hayat Baksh (Bestower of Life) at the bottom. The 410 fountains, fed by a gravity hydraulic system, cooled the air and made the garden a working piece of paradise-garden symbolism, not just decoration.',
     thingsToKnow: [
       '410 fountains in total: 105 on the upper terrace, 152 on the middle, 153 on the lower',
       'The garden measures 658 metres north to south and 258 metres east to west',
@@ -222,9 +241,14 @@ const PLACES: Record<string, Place> = {
       'In October 2026 the Walled City of Lahore Authority opened the gardens for night visits, 7:00–11:00 PM',
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Shalimar_Gardens,_Lahore',
-    // B8 (final30): local licensed photo — see the media-registry record.
+    // B8 (final30): local licensed photo, see the media-registry record.
     imageUrl: '/images/places/shalimar-gardens.webp',
     imageCredit: 'M Umair Astro · CC BY-SA 4.0, via Wikimedia Commons',
+    imageAlt: 'Shalimar Gardens in Lahore, a red sandstone pavilion beside a fountain pool with garden beds in front',
+    imagePosition: 'object-[center_30%]',
+    sources: [
+      'UNESCO World Heritage listing: Fort and Shalamar Gardens in Lahore, reference 171-002',
+    ],
   },
   'data-darbar': {
     slug: 'data-darbar',
@@ -232,8 +256,8 @@ const PLACES: Record<string, Place> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    tagline: 'South Asia\'s largest Sufi shrine — the heart of Lahore\'s spiritual life',
-    description: 'Data Darbar, beside Bhati Gate, is South Asia\'s largest Sufi shrine — resting place of the 11th-century saint Ali al-Hujwiri, Data Ganj Bakhsh.',
+    tagline: 'South Asia\'s largest Sufi shrine, the heart of Lahore\'s spiritual life',
+    description: 'Data Darbar, beside Bhati Gate, is South Asia\'s largest Sufi shrine, resting place of the 11th-century saint Ali al-Hujwiri, Data Ganj Bakhsh.',
     primaryColor: '#1B5E20',
     category: 'Sufi Shrine / Heritage',
     builtYear: 'Shrine from the Mughal period; rebuilt and greatly expanded in the 1980s',
@@ -245,7 +269,7 @@ const PLACES: Record<string, Place> = {
     averageVisit: '1–2 hours',
     tips: [
       'Dress modestly and be ready to remove your shoes',
-      'Thursday evenings are the traditional night for shrine visits — expect crowds',
+      'Thursday evenings are the traditional night for shrine visits: expect crowds',
       'Try the free langar meal, served to all visitors',
       'Expect security checks at the entrances',
       'Combine with a walk through the nearby Walled City gates',
@@ -267,9 +291,15 @@ const PLACES: Record<string, Place> = {
       'The shrine\'s tomb is of carved white marble, set in a large marble courtyard',
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Data_Darbar',
-    // B8 (final30): local licensed photo — see the media-registry record.
+    // B8 (final30): local licensed photo, see the media-registry record.
     imageUrl: '/images/places/data-darbar.webp',
     imageCredit: 'Guilhem Vellut · CC BY 2.0, via Wikimedia Commons',
+    imageAlt: 'Data Darbar shrine in Lahore, visitors crossing the marble courtyard toward the green-domed tomb',
+    imagePosition: 'object-[center_35%]',
+    sources: [
+      'Wikipedia: Data Darbar, the article linked from this page',
+      'Auqaf Ordinance of 1960, under which the shrine came under government control (see History)',
+    ],
   },
   'walled-city': {
     slug: 'walled-city',
@@ -277,12 +307,12 @@ const PLACES: Record<string, Place> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    tagline: 'Old Lahore — thirteen gates, a thousand lanes, and the city\'s living heart',
+    tagline: 'Old Lahore, thirteen gates, a thousand lanes, and the city\'s living heart',
     description: 'The Walled City is old Lahore: bazaars, havelis and mosques inside Akbar\'s 16th-century walls, entered through six surviving historic gates.',
     primaryColor: '#6D4C41',
     category: 'Historic District / Heritage',
     builtYear: 'Fortified in the Mughal era; Akbar\'s walls, mid-16th century',
-    openHours: '24 hours a day — it is a living neighbourhood, not a gated site',
+    openHours: '24 hours a day: it is a living neighbourhood, not a gated site',
     entryFee: 'Free to walk the old city; individual monuments may charge separately',
     address: 'Walled City (Androon Shehr), Lahore, Punjab, Pakistan',
     lat: 31.5833, lng: 74.3183,
@@ -290,7 +320,7 @@ const PLACES: Record<string, Place> = {
     averageVisit: 'Half a day on foot',
     tips: [
       'Start at Delhi Gate and follow the Shahi Guzargah (Royal Passage) toward Wazir Khan Mosque',
-      'Hire a local guide — the lanes are a maze',
+      'Hire a local guide: the lanes are a maze',
       'Wear walking shoes; streets are narrow and uneven',
       'Try the old city\'s breakfast stalls and food streets',
       'Keep valuables close in the crowded bazaars',
@@ -301,20 +331,26 @@ const PLACES: Record<string, Place> = {
       { name: 'Data Darbar', slug: 'data-darbar', distance: '1.4 km' },
       { name: 'Lahore Museum', slug: 'lahore-museum', distance: '1.9 km' },
     ],
-    history: 'The early settlements of Lahore were established between the 1st and 7th centuries, and Lahore became a proper city in 1040, fortified through the medieval era. Akbar walled the city in the mid-16th century with twelve gates and one narrow passage — thirteen openings in all — and its doors were shut every evening. After the British annexed Punjab in 1849 they demolished most of the walls and gates to weaken the old city\'s defences, replacing the walls with gardens. Six gates survive today: Bhati, Delhi, Kashmiri, Lohari, Roshnai and Shairanwala. The Walled City of Lahore Authority, with the Aga Khan Trust for Culture, has restored stretches including Delhi Gate and the Shahi Guzargah, whose first phase was completed in 2015.',
-    significance: 'The Walled City is the cultural heart of the Punjab: the historic core where Lahore\'s Mughal, Sikh and British layers sit side by side in one dense, living district. It covers about 256 hectares and is home to around 200,000 people. Its lanes hold the lavishly decorated Wazir Khan Mosque and the Shahi Hammam, and its edges hold the Badshahi Mosque and Lahore Fort — which is why a walk here, not a single monument, is the essential Lahore experience.',
+    history: 'The early settlements of Lahore were established between the 1st and 7th centuries, and Lahore became a proper city in 1040, fortified through the medieval era. Akbar walled the city in the mid-16th century with twelve gates and one narrow passage, thirteen openings in all, and its doors were shut every evening. After the British annexed Punjab in 1849 they demolished most of the walls and gates to weaken the old city\'s defences, replacing the walls with gardens. Six gates survive today: Bhati, Delhi, Kashmiri, Lohari, Roshnai and Shairanwala. The Walled City of Lahore Authority, with the Aga Khan Trust for Culture, has restored stretches including Delhi Gate and the Shahi Guzargah, whose first phase was completed in 2015.',
+    significance: 'The Walled City is the cultural heart of the Punjab: the historic core where Lahore\'s Mughal, Sikh and British layers sit side by side in one dense, living district. It covers about 256 hectares and is home to around 200,000 people. Its lanes hold the lavishly decorated Wazir Khan Mosque and the Shahi Hammam, and its edges hold the Badshahi Mosque and Lahore Fort, which is why a walk here, not a single monument, is the essential Lahore experience.',
     thingsToKnow: [
       'The thirteen original gates: Akbari, Bhati, Delhi, Kashmiri, Lohari, Masti, Mochi, Mori, Roshnai, Shahalmi, Shairanwala, Taxali and Yakki',
       'Six gates survive: Bhati, Delhi, Kashmiri, Lohari, Roshnai and Shairanwala',
       'Area about 256 hectares, population around 200,000',
       'Circular Road rings the old city, linking it to the wider city',
       'Delhi Gate and the adjacent Shahi Hammam were restored in 2015 by Aga Khan Cultural Service Pakistan',
-      'Also called the Old City, or Androon Shehr — the “Inner City”',
+      'Also called the Old City, or Androon Shehr, the “Inner City”',
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Walled_City_of_Lahore',
-    // B8 (final30): local licensed photo — see the media-registry record.
+    // B8 (final30): local licensed photo, see the media-registry record.
     imageUrl: '/images/places/walled-city.webp',
     imageCredit: 'Guilhem Vellut · CC BY 2.0, via Wikimedia Commons',
+    imageAlt: 'Elevated view over the Walled City of Lahore, a street and rooftops below a fortification tower and a blue-shuttered building',
+    imagePosition: 'object-center',
+    sources: [
+      'Wikipedia: Walled City of Lahore, the article linked from this page',
+      'Walled City of Lahore Authority and Aga Khan Trust for Culture restoration of Delhi Gate and the Shahi Guzargah, completed in 2015 (see History)',
+    ],
   },
   'lahore-museum': {
     slug: 'lahore-museum',
@@ -322,8 +358,8 @@ const PLACES: Record<string, Place> = {
     city: 'Lahore', citySlug: 'lahore',
     country: 'Pakistan', countrySlug: 'pakistan',
     province: 'Punjab', provinceSlug: 'punjab',
-    tagline: 'Pakistan\'s largest museum — 60,000 objects from Gandhara to the Pakistan Movement',
-    description: 'Founded in 1865 and on The Mall since 1894, Lahore Museum is Pakistan\'s largest museum — 60,000 objects, from Gandhara sculpture to the Fasting Buddha.',
+    tagline: 'Pakistan\'s largest museum, 60,000 objects from Gandhara to the Pakistan Movement',
+    description: 'Founded in 1865 and on The Mall since 1894, Lahore Museum is Pakistan\'s largest museum: 60,000 objects, from Gandhara sculpture to the Fasting Buddha.',
     primaryColor: '#7B1FA2',
     category: 'Museum / Heritage',
     builtYear: 'Founded 1865; present building 1894',
@@ -336,8 +372,8 @@ const PLACES: Record<string, Place> = {
     tips: [
       'Start with the Gandhara gallery and the Fasting Buddha',
       'Look up in the entrance hall for Sadequain\'s mural',
-      'Do not miss the Zamzama gun outside the front — the cannon from Kipling\'s Kim',
-      'Photography rules vary by gallery — ask staff',
+      'Do not miss the Zamzama gun outside the front: the cannon from Kipling\'s Kim',
+      'Photography rules vary by gallery: ask staff',
       'Combine with a walk past the Mall\'s other colonial-era buildings',
     ],
     nearbyPlaces: [
@@ -357,9 +393,14 @@ const PLACES: Record<string, Place> = {
       'The entrance hall ceiling features a large mural by Sadequain',
     ],
     wikiUrl: 'https://en.wikipedia.org/wiki/Lahore_Museum',
-    // B8 (final30): local licensed photo — see the media-registry record.
+    // B8 (final30): local licensed photo, see the media-registry record.
     imageUrl: '/images/places/lahore-museum.webp',
     imageCredit: 'Muhammad Ashar · CC BY-SA 3.0, via Wikimedia Commons',
+    imageAlt: 'Lahore Museum in Lahore, its red brick domed facade behind the entrance gate on The Mall',
+    imagePosition: 'object-top',
+    sources: [
+      'Lahore Museum official site (lahoremuseum.punjab.gov.pk), for entry fees and opening hours',
+    ],
   },
 };
 
@@ -367,34 +408,34 @@ async function getPlace(slug: string): Promise<Place | null> {
   return PLACES[slug] ?? null;
 }
 
-// ─── final30 A10 — Places keyword targeting ────────────────────────────────
+// ─── final30 A10, Places keyword targeting ────────────────────────────────
 // One keyword → exactly one page: each A10 term below is targeted ONLY on
 // its own place page (Badshahi history/timings, Fort history/ticket,
-// Museum ticket, Shalimar ticket). H1 stays the place name — the page's
-// primary keyword — and each A10 term becomes an H2 section heading plus
+// Museum ticket, Shalimar ticket). H1 stays the place name, the page's
+// primary keyword, and each A10 term becomes an H2 section heading plus
 // one H3 question with a 50–70 word answer. No figure appears in an A10
 // answer unless it is sourced on the page: the Museum figures come from
 // the museum's official site; the Fort, Shalimar and Badshahi clock-window
-// figures are UNVERIFIED (published sources conflict — see the answers'
+// figures are UNVERIFIED (published sources conflict, see the answers'
 // source lines), so those answers deliberately state no figure.
 // Data Darbar and Walled City are NOT A10 pages: they keep the generic
 // title/meta and the plain "History" heading.
 const A10_META: Record<string, { title: string; description: string }> = {
   'badshahi-mosque': {
     title: 'Badshahi Mosque History & Timings | WorldCityHub',
-    description: 'Badshahi Mosque history — Aurangzeb\'s 1671–73 mosque in Lahore — plus visitor timings: open daily, with access pausing during prayer times.',
+    description: 'Badshahi Mosque history, Aurangzeb\'s 1671–73 mosque in Lahore, plus visitor timings: open daily, with access pausing during prayer times.',
   },
   'lahore-fort': {
     title: 'Lahore Fort History & Ticket Price | WorldCityHub',
-    description: 'Lahore Fort history — Akbar\'s 1566 citadel, a UNESCO site since 1981 — plus ticket guidance: ticketed at the Alamgiri Gate counter, rates differ.',
+    description: 'Lahore Fort history, Akbar\'s 1566 citadel, a UNESCO site since 1981, plus ticket guidance: ticketed at the Alamgiri Gate counter, rates differ.',
   },
   'lahore-museum': {
     title: 'Lahore Museum Ticket Price | WorldCityHub',
-    description: 'Lahore Museum ticket price: PKR 50 adults, PKR 20 students and children, PKR 1,000 foreigners — official-site rates, hours and closed days.',
+    description: 'Lahore Museum ticket price: PKR 50 adults, PKR 20 students and children, PKR 1,000 foreigners, official-site rates, hours and closed days.',
   },
   'shalimar-gardens': {
     title: 'Shalimar Gardens Ticket Price | WorldCityHub',
-    description: 'Shalimar Gardens ticket price: the garden is ticketed, with different fees for local and foreign visitors — confirm the current fee at the entrance.',
+    description: 'Shalimar Gardens ticket price: the garden is ticketed, with different fees for local and foreign visitors; confirm the current fee at the entrance.',
   },
 };
 
@@ -408,28 +449,28 @@ const A10_SECTIONS: Record<string, { h2: string; q: string; a: string; source: s
     h2: 'Badshahi Mosque Timings',
     q: 'What are the timings of Badshahi Mosque?',
     a: 'Badshahi Mosque is open to visitors daily, but as a working mosque it closes to tourists during the five daily prayers, so plan around prayer times. Early morning is the quietest time, with the best light for photography, and the mosque is at its most beautiful illuminated at night. Dress modestly, and note that headscarves are available at the entrance for women.',
-    source: 'Source: visitor information on this page. Published clock windows conflict (7 AM–10 PM in the old record; 8 AM–9 PM in a directory listing), so no single opening window is stated here — confirm prayer-time closures on arrival.',
+    source: 'Source: visitor information on this page. Published clock windows conflict (7 AM–10 PM in the old record; 8 AM–9 PM in a directory listing), so no single opening window is stated here; confirm prayer-time closures on arrival.',
     icon: 'clock',
   },
   'lahore-fort': {
     h2: 'Lahore Fort Ticket Price',
     q: 'What is the ticket price of Lahore Fort?',
     a: 'Lahore Fort is ticketed, with different rates for local and foreign visitors, and tickets are sold at the Alamgiri Gate counter. Published guides disagree on the current local rate, so this page states no single figure: confirm the rate at the counter before you visit. Allow two to three hours for the fort\'s twenty-one monuments, including the Sheesh Mahal.',
-    source: 'Source: the fort is run by the Walled City of Lahore Authority; tickets are sold at the Alamgiri Gate counter. Recent published local rates conflict (Rs 30–500), so no single figure is stated here — confirm the current rate at the counter.',
+    source: 'Source: the fort is run by the Walled City of Lahore Authority; tickets are sold at the Alamgiri Gate counter. Recent published local rates conflict (Rs 30–500), so no single figure is stated here; confirm the current rate at the counter.',
     icon: 'ticket',
   },
   'lahore-museum': {
     h2: 'Lahore Museum Ticket Price',
     q: 'What is the ticket price of Lahore Museum?',
     a: 'Lahore Museum charges PKR 50 for adults, PKR 20 for students and children, and PKR 1,000 for foreign visitors, according to the museum\'s official site. The museum is open 9:00 AM to 4:00 PM in winter and 9:00 AM to 5:00 PM in summer, and is closed on Fridays and the first Monday of each month. A typical visit takes two to three hours.',
-    source: 'Source: Lahore Museum official site (lahoremuseum.punjab.gov.pk), as read in October 2026 — the same figures shown in the visitor panel on this page.',
+    source: 'Source: Lahore Museum official site (lahoremuseum.punjab.gov.pk), as read in October 2026, the same figures shown in the visitor panel on this page.',
     icon: 'ticket',
   },
   'shalimar-gardens': {
     h2: 'Shalimar Gardens Ticket Price',
     q: 'What is the ticket price of Shalimar Gardens?',
     a: 'Shalimar Gardens is ticketed, with different fees for local and foreign visitors, and tickets are sold at the entrance. Published day-fee figures conflict, so this page states no single figure: confirm the current fee at the entrance before you visit. The gardens are open 8:00 AM to 6:00 PM daily, and a typical visit takes one to two hours.',
-    source: 'Source: visitor information on this page. Published day-fee figures conflict, so no single figure is stated here — confirm the current fee at the entrance.',
+    source: 'Source: visitor information on this page. Published day-fee figures conflict, so no single figure is stated here; confirm the current fee at the entrance.',
     icon: 'ticket',
   },
 };
@@ -446,12 +487,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!place) return { title: 'Place Not Found | WorldCityHub' };
   // Defensive guard (CARD C, mirroring the CARD 0 personalities fix):
   // metadata generation must never be able to throw on a record
-  // field — a place whose description is missing degrades to
+  // field, a place whose description is missing degrades to
   // name + city, it does not fail the build.
-  const desc = (typeof place.description === 'string' ? place.description.trim() : '') || `${place.name} — ${place.city}`;
+  const desc = (typeof place.description === 'string' ? place.description.trim() : '') || `${place.name}, ${place.city}`;
   // D18: QA gate is title ≤60 chars DECODED, description ≤155. The old
   // formula (“…, Visitor Guide, History & Tips | WorldCityHub”) ran
-  // past 60 for every place, and slice(0, 160) past 155 — both fixed
+  // past 60 for every place, and slice(0, 160) past 155, both fixed
   // here. This shortens the two pre-existing place titles too; no
   // other copy changes.
   const a10 = A10_META[slug];
@@ -476,7 +517,7 @@ export async function generateStaticParams() {
 // ─── Batch 4 Item 2: AEO answer layer ─────────────────────────────────────
 // Direct-answer block + FAQ block for the places template, composed ONLY
 // from the place's own record fields above (description, history,
-// significance, hours, fee, best time, tips, nearby) — no new facts are
+// significance, hours, fee, best time, tips, nearby), no new facts are
 // introduced. Questions are the mined guide phrasings (see
 // evidence/batch4-item2/question-bank.md). Answers accumulate whole
 // record sentences until they reach the 50–70 word band. This template
@@ -559,10 +600,10 @@ function buildPlaceAeo(place: Place): { directAnswer: string; faqs: AeoFaq[] } {
     },
   ];
 
-  // Bank Q6 (capacity) — emitted only when the record's own significance
+  // Bank Q6 (capacity), emitted only when the record's own significance
   // text states a capacity, and composed from those sentences alone.
   // (thingsToKnow is deliberately NOT used: the Badshahi record's
-  // thingsToKnow capacity figure contradicts its significance text —
+  // thingsToKnow capacity figure contradicts its significance text,
   // that contradiction is the F1 card's, not this generator's.)
   const capSentences = sig.filter((s) => /worshippers|accommodate|holds|capacity/i.test(s));
   if (capSentences.length > 0) {
@@ -572,9 +613,13 @@ function buildPlaceAeo(place: Place): { directAnswer: string; faqs: AeoFaq[] } {
     });
   }
 
-  // Bank Q7 (dress code) — emitted only when the record's own tips carry
-  // one; a place whose record has no dress guidance gets no dress FAQ.
-  const dressTips = tipSentences.filter((s) => /dress|modest|scarf|wear|clothing/i.test(s));
+  // Bank Q7 (dress code): emitted only when the record's own tips carry
+  // genuine dress guidance (modest dress, a headscarf, covering up,
+  // removing shoes, a stated dress code). Footwear advice alone, such as
+  // "Wear comfortable shoes", is NOT dress guidance and must not trigger
+  // this FAQ (places family fix, 3 Nov 2026: it previously fired on
+  // Shalimar Gardens and the Walled City on footwear tips alone).
+  const dressTips = tipSentences.filter((s) => /modest|headscarf|head scarf|cover|remove (your )?shoes|dress code/i.test(s));
   if (dressTips.length > 0) {
     faqs.push({
       q: `What should visitors wear at ${place.name}?`,
@@ -600,7 +645,7 @@ export default async function FamousPlacePage({ params }: PageProps) {
   // surviving FAQPage is the one emitted from PR #85's visible answer
   // layer, so exactly one FAQPage remains after the merge.
   const placeUrl = `https://worldcityhub.vercel.app/places/${place.slug}`;
-  const descText = (typeof place.description === 'string' ? place.description.trim() : '') || `${place.name} — ${place.city}`;
+  const descText = (typeof place.description === 'string' ? place.description.trim() : '') || `${place.name}, ${place.city}`;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -637,7 +682,7 @@ export default async function FamousPlacePage({ params }: PageProps) {
 
   // Batch 4 Item 2: AEO answer layer data (from this place's own record).
   const { directAnswer: placeDirectAnswer, faqs: placeFaqs } = buildPlaceAeo(place);
-  const placeAeoSource = `Hours, fees & facts: WorldCityHub place record — the same values shown in the visitor panel on this page`;
+  const placeAeoSource = `Visitor information and facts as sourced at the foot of this page`;
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh", position: "relative" }}>
@@ -654,6 +699,8 @@ export default async function FamousPlacePage({ params }: PageProps) {
           <span>/</span>
           <Link href={`/${place.countrySlug}`} className="hover:text-gray-700">{place.country}</Link>
           <span>/</span>
+          <Link href={`/${place.countrySlug}/${place.provinceSlug}`} className="hover:text-gray-700">{place.province}</Link>
+          <span>/</span>
           <Link href={`/${place.countrySlug}/${place.provinceSlug}/${place.citySlug}`} className="hover:text-gray-700">{place.city}</Link>
           <span>/</span>
           <span className="text-gray-900 font-medium">{place.name}</span>
@@ -663,32 +710,36 @@ export default async function FamousPlacePage({ params }: PageProps) {
       {/* Hero Image */}
       <div className="relative h-72 sm:h-96 overflow-hidden">
         {place.imageUrl
-          ? <img src={place.imageUrl} alt={place.name} className="w-full h-full object-cover" />
+          ? <img src={place.imageUrl} alt={place.imageAlt ?? place.name} className={`w-full h-full object-cover ${place.imagePosition ?? 'object-center'}`} />
           : <div className="w-full h-full" style={{ background: `linear-gradient(135deg, ${place.primaryColor} 0%, ${place.primaryColor}88 100%)` }} />
         }
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <div className="max-w-5xl mx-auto">
-            <Link href={`/${place.countrySlug}/${place.provinceSlug}/${place.citySlug}`}
-              className="inline-flex items-center gap-1 text-white/70 hover:text-white text-sm mb-3 transition">
-              <ArrowLeft size={14} /> Back to {place.city}
-            </Link>
-            <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <span className="px-2.5 py-1 rounded-full text-xs font-medium text-white border border-white/40">
-                {place.category}
-              </span>
-              {place.unescoStatus && (
-                <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-400/90 text-yellow-900">
-                  🏛️ {place.unescoStatus.includes('✅') ? 'UNESCO World Heritage' : 'UNESCO Tentative'}
-                </span>
-              )}
-            </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">{place.name}</h1>
             <p className="text-white/80 text-sm flex items-center gap-1.5">
               <MapPin size={13} /> {place.city}, {place.country}
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Places family fix (3 Nov 2026): the category chip, the UNESCO
+          badge and the back link no longer sit on the photo. They render
+          below the hero as a meta row, next to the photo credit line. */}
+      <div className="max-w-5xl mx-auto px-4 pt-3 flex items-center gap-2 flex-wrap">
+        <Link href={`/${place.countrySlug}/${place.provinceSlug}/${place.citySlug}`}
+          className="inline-flex items-center gap-1 text-white/70 hover:text-white text-sm transition mr-2">
+          <ArrowLeft size={14} /> Back to {place.city}
+        </Link>
+        <span className="px-2.5 py-1 rounded-full text-xs font-medium text-white border border-white/40">
+          {place.category}
+        </span>
+        {place.unescoStatus && (
+          <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-400/90 text-yellow-900">
+            🏛️ {place.unescoStatus.includes('✅') ? 'UNESCO World Heritage' : 'UNESCO Tentative'}
+          </span>
+        )}
       </div>
 
       {/* B8 (final30): photo credit line under the hero, only on pages
@@ -728,7 +779,7 @@ export default async function FamousPlacePage({ params }: PageProps) {
                 No new facts: history answers reuse the record; fee/timing
                 answers state figures only where sourced (Museum) and say so
                 where no figure is verifiable (Fort, Shalimar, Badshahi).
-                No extra FAQPage schema — the template's single FAQPage from
+                No extra FAQPage schema, the template's single FAQPage from
                 the Batch 4 answer layer is untouched. */}
             {(() => {
               const s = A10_SECTIONS[slug];
@@ -816,7 +867,7 @@ export default async function FamousPlacePage({ params }: PageProps) {
                   {place.nearbyPlaces.map(nearby => {
                     // Link only to places that exist today (L1): a nearby
                     // name whose page is not published renders as a plain
-                    // row — name + distance, no dead link. (Link audit,
+                    // row, name + distance, no dead link. (Link audit,
                     // Batch 4 Item 1: allama-iqbal-tomb, hazuri-bagh and
                     // walled-city-lahore were linked here and 404'd.)
                     const rowInner = (
@@ -947,6 +998,21 @@ export default async function FamousPlacePage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* Places family fix (3 Nov 2026): Sources at the foot of the page,
+          small text in the existing credit-line styling. Only sources the
+          record itself relies on are named; no figure is sourced here
+          unless the record already names that source. */}
+      {place.sources && place.sources.length > 0 && (
+        <div className="max-w-5xl mx-auto px-4 pb-8">
+          <h2 className="text-sm font-semibold text-gray-300 mb-2">Sources</h2>
+          <ul className="space-y-1">
+            {place.sources.map((source, i) => (
+              <li key={i} className="text-xs text-gray-400 leading-relaxed">{source}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

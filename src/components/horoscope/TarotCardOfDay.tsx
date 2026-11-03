@@ -350,10 +350,11 @@ export default function TarotCardOfDay({ primaryColor }: Props) {
     >
       <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
         <Sparkles size={18} style={{ color: primaryColor }} />
-        <h2 className="font-semibold text-gray-900 text-sm">Tarot Card of the Day</h2>
+        <div className="font-semibold text-gray-900 text-sm">Tarot Card of the Day</div>
       </div>
 
       <div className="p-5">
+        <p className="text-xs text-gray-500 mb-4">Today's card in the daily rotation: one card per day, cycling through the full deck in a fixed order. It is a daily rotation, not a personal draw.</p>
         <div className="flex flex-col sm:flex-row gap-5">
           {/* Card Image */}
           <div className="sm:w-48 sm:h-72 w-40 h-60 mx-auto sm:mx-0 shrink-0">
