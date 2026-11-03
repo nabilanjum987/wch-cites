@@ -2,7 +2,8 @@
 // All API calls for the City Main Page (23 sections)
 // Uses ISR - called server-side at build/revalidate time
 
-import { getGoldSpot, getGoldPkr, TROY_OZ_GRAMS } from '@/lib/gold';
+import { getGoldSpot, getGoldPkr, getUsdPkrRate, TROY_OZ_GRAMS } from '@/lib/gold';
+import { fetchSilverRates, type SilverRates } from './rates';
 
 export interface CityParams {
   city: string;
@@ -95,6 +96,35 @@ export async function fetchGoldRates(currency = 'PKR') {
     source: pkr.source,
     updatedAt: pkr.updatedAt,
   };
+}
+
+// ─── 4b. GOLD 24H CHANGE + SILVER ─────────────────────────────────────────────
+// The city page's gold headline stays the canonical spot above. The 24h
+// change percent comes from the SAME CoinGecko PAX Gold market series the
+// /rates page uses for its change figure (gold-api publishes no change),
+// so the two surfaces can never disagree about the direction of the move.
+// Silver spot is gold-api XAG via the rates module's helper, converted at
+// the same keyless USD/PKR rate the gold helper itself uses.
+export async function fetchGoldChangePercent(): Promise<number | null> {
+  try {
+    const res = await fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pax-gold',
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return null;
+    const m = (await res.json())?.[0];
+    return typeof m?.price_change_percentage_24h === 'number'
+      ? m.price_change_percentage_24h
+      : null;
+  } catch { return null; }
+}
+
+export async function fetchSilverPkr(): Promise<SilverRates | null> {
+  try {
+    const rate = await getUsdPkrRate();
+    if (!rate) return null;
+    return fetchSilverRates(rate, 'PKR', 'PKR ');
+  } catch { return null; }
 }
 
 // ─── 5. CRYPTO (CoinGecko - no key) ──────────────────────────────────────────
@@ -247,6 +277,8 @@ export async function fetchAllCityData(params: CityParams) {
     sunMoon,
     prayerTimes,
     goldRates,
+    goldChange,
+    silver,
     crypto,
     news,
     sports,
@@ -262,6 +294,8 @@ export async function fetchAllCityData(params: CityParams) {
     fetchSunMoon(lat, lon),
     fetchPrayerTimes(lat, lon),
     fetchGoldRates('PKR'),
+    fetchGoldChangePercent(),
+    fetchSilverPkr(),
     fetchCrypto(),
     fetchCityNews(city, country),
     fetchSports(countryCode),
@@ -276,12 +310,21 @@ export async function fetchAllCityData(params: CityParams) {
   const getValue = (result: PromiseSettledResult<unknown>) =>
     result.status === 'fulfilled' ? result.value : null;
 
+  // Attach the 24h change to the gold object the page already reads, so
+  // the section can show today's movement next to the canonical price.
+  const goldBase = getValue(goldRates) as Record<string, unknown> | null;
+  const goldChangePct = getValue(goldChange) as number | null;
+
   return {
     weather: getValue(weather),
     hourlyForecast: getValue(hourlyForecast),
     sunMoon: getValue(sunMoon),
     prayerTimes: getValue(prayerTimes),
-    goldRates: getValue(goldRates),
+    goldRates:
+      goldBase && goldChangePct !== null
+        ? { ...goldBase, change_percent_24h: goldChangePct }
+        : goldBase,
+    silver: getValue(silver),
     crypto: getValue(crypto),
     news: getValue(news),
     sports: getValue(sports),

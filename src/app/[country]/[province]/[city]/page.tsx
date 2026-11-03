@@ -17,6 +17,9 @@ import PopulationPie from '@/components/PopulationPie';
 import { urbanRuralSlicesFor, faithSlicesForCity, isAllUrbanDistrict } from '@/lib/census2023-splits';
 import { DirectAnswer, FaqBlock } from '@/components/aeo/AnswerLayer';
 import CityPageImage from '@/components/city/CityPageImage';
+import CityPrayerTimeline from '@/components/city/CityPrayerTimeline';
+import { getMoonPhase } from '@/lib/apis/astro';
+import { getCityImage } from '@/lib/data/cityImages';
 import {
   generateCityIntro,
   generateCityIntroAfter,
@@ -172,6 +175,100 @@ const COMPARE_LINKS: Record<string, { label: string; pair: string }[]> = {
   rawalpindi: [{ label: 'Islamabad', pair: 'rawalpindi-vs-islamabad' }],
 };
 
+// ─── CITY IDENTITY BLOCKS ────────────────────────────────────────────────
+// The city template's identity block is per-city data, never shared copy:
+// each entry is built only from named, verifiable anchors of that city
+// (institutions, markets, industries), with no unsourced figures. Cities
+// without an entry render no identity section rather than another city's
+// strengths. Lahore is the template instance (owner review, 3 Nov 2026).
+const IDENTITY_BLOCKS: Record<string, { heading: string; text: string }[]> = {
+  'pakistan/punjab/lahore': [
+    {
+      heading: 'Technology',
+      text: 'Arfa Software Technology Park anchors the city\'s software industry, and the technology universities PUCIT, UET and LUMS supply the graduates its software houses hire.',
+    },
+    {
+      heading: 'Markets',
+      text: 'Shah Alam Market runs wholesale trade for the whole region, Hall Road is the city\'s electronics bazaar, Anarkali serves the old city, and Liberty Market serves Gulberg.',
+    },
+    {
+      heading: 'Industry',
+      text: 'Textiles and garments, leather goods, and food processing are the city\'s established manufacturing strengths, shipped across Pakistan and abroad.',
+    },
+    {
+      heading: 'Education',
+      text: 'Government College University (founded 1864), the University of the Punjab (1882), King Edward Medical University (1860), and Aitchison College (1886) have educated the city for well over a century.',
+    },
+  ],
+};
+
+// ─── NEWS LIST PREPARATION ───────────────────────────────────────────────
+// The city news feed regularly carries the SAME story from several
+// outlets (the owner review found a top five that was really three
+// stories) and fills a Pakistani city's list with foreign outlets.
+// Prepare the list once: drop duplicate stories by headline token
+// overlap, then put Pakistani outlets first. The reorder is stable and
+// removes nothing; dedupe keeps the first (best-placed) copy.
+type NewsArticleLike = {
+  title?: string;
+  url?: string;
+  publishedAt?: string;
+  source?: unknown;
+};
+
+const PK_NEWS_OUTLETS = [
+  'dawn', 'geo news', 'express tribune', 'the news', 'ary news',
+  'dunya news', 'samaa', 'aaj news', 'aaj english', 'business recorder',
+  'pakistan observer', 'daily times', 'the nation', 'pakistan today',
+  'the frontier post', 'jang', '92 news', 'hum news', 'bol news', 'gnn',
+  '24 news', 'public news', 'neo news', 'roze news',
+];
+
+function newsSourceName(article: NewsArticleLike): string {
+  const src = article.source as Record<string, string> | string | undefined;
+  if (src && typeof src === 'object') return (src.name ?? '').toLowerCase();
+  return typeof src === 'string' ? src.toLowerCase() : '';
+}
+
+function storyTokens(title: string): Set<string> {
+  const cleaned = title
+    .toLowerCase()
+    .replace(/\s+-\s+[^-]+$/, '')
+    .replace(/[^a-z0-9\s]/g, ' ');
+  return new Set(cleaned.split(/\s+/).filter((w) => w.length > 2));
+}
+
+function sameStory(a: Set<string>, b: Set<string>): boolean {
+  if (a.size === 0 || b.size === 0) return false;
+  let inter = 0;
+  for (const t of a) if (b.has(t)) inter += 1;
+  return inter / (a.size + b.size - inter) >= 0.55;
+}
+
+function prepareNewsList(articles: NewsArticleLike[]): NewsArticleLike[] {
+  const kept: NewsArticleLike[] = [];
+  const keptTokens: Set<string>[] = [];
+  for (const article of articles) {
+    if (!article.title) continue;
+    const tokens = storyTokens(article.title);
+    if (keptTokens.some((t) => sameStory(tokens, t))) continue;
+    kept.push(article);
+    keptTokens.push(tokens);
+  }
+  const isPk = (a: NewsArticleLike) => {
+    const name = newsSourceName(a);
+    return PK_NEWS_OUTLETS.some((o) => name.includes(o));
+  };
+  return [...kept.filter(isPk), ...kept.filter((a) => !isPk(a))];
+}
+
+/** Cut a headline at a word boundary, never mid-word. */
+function truncateHeadline(title: string, max = 110): string {
+  if (title.length <= max) return title;
+  const cut = title.lastIndexOf(' ', max);
+  return `${title.slice(0, cut > 40 ? cut : max)}…`;
+}
+
 function toTitleCase(slug: string): string {
   return slug
     .split('-')
@@ -189,8 +286,8 @@ function ComingSoonCity({ countrySlug, country, city }: { countrySlug: string; c
         </p>
         <h1 className="text-4xl md:text-5xl font-bold mb-4">{city}</h1>
         <p className="text-white/60 text-lg mb-8">
-          We&apos;re building out full city data — weather, prayer times, gold
-          rates, news and more — for {city}. Check back soon.
+          We&apos;re building out full city data, weather, prayer times, gold
+          rates, news and more, for {city}. Check back soon.
         </p>
         <Link
           href="/"
@@ -222,7 +319,7 @@ export async function generateMetadata({
   if (!cityParams) {
     const cityName = toTitleCase(city);
     return {
-      title: `${cityName} — Coming Soon | WorldCityHub`,
+      title: `${cityName} · Coming Soon | WorldCityHub`,
       description: `Detailed information for ${cityName} is coming soon to WorldCityHub.`,
       robots: { index: false, follow: true },
     };
@@ -288,7 +385,14 @@ export default async function CityPage({
     const target = CITY_DB[key];
     if (!target) return [];
     const km = haversineKm(cityParams, target);
-    return [{ name: target.city, dist: `~${Math.max(5, Math.round(km / 5) * 5)} km`, slug: key }];
+    return [{
+      name: target.city,
+      dist: `~${Math.max(5, Math.round(km / 5) * 5)} km`,
+      slug: key,
+      // Licensed hero photo for the card, where the media registry has
+      // one for that city; cities without a record render a text card.
+      image: getCityImage(key.split('/')[2], 'hero'),
+    }];
   });
 
   const data = await fetchAllCityData(cityParams);
@@ -320,12 +424,26 @@ export default async function CityPage({
 
   const goldPerGram = (gold as Record<string, number> | null)?.price_gram_24k ?? null;
   const goldPerTola = goldPerGram ? Math.round(goldPerGram * TOLA_GRAMS) : null;
+  // Today's movement: the 24h change percent rides on the gold object
+  // (see fetchAllCityData). The PKR amount per tola is derived from that
+  // same percent and today's price, never a separate invented figure.
+  const goldChangePct = (gold as Record<string, number> | null)?.change_percent_24h ?? null;
+  const goldMovePerTola =
+    goldChangePct !== null && goldPerTola
+      ? Math.round(goldPerTola - goldPerTola / (1 + goldChangePct / 100))
+      : null;
+  const silver = data.silver as { per_gram: number; per_tola: number } | null;
+
+  // Moon phase for the Sun & Moon card: the site's own astronomical
+  // helper (same computation the horoscope and Islamic surfaces use).
+  const moon = getMoonPhase();
 
   const sunrise = (sunMoon?.results as Record<string, string> | undefined)?.sunrise ?? null;
   const sunset = (sunMoon?.results as Record<string, string> | undefined)?.sunset ?? null;
 
-  const newsArticles = (news?.articles as Array<Record<string, string>> | undefined) ?? [];
-  const topHeadline = newsArticles[0]?.title ?? null;
+  const rawNewsArticles = ((news?.articles as Array<Record<string, string>> | undefined) ?? []) as unknown as NewsArticleLike[];
+  const displayArticles = prepareNewsList(rawNewsArticles);
+  const topHeadline = displayArticles[0]?.title ?? null;
 
   const aqi = ((airQuality?.list as Array<Record<string, Record<string, number>>> | undefined)?.[0]?.main?.aqi) ?? null;
   const aqiLabel = aqi === 1 ? 'Good' : aqi === 2 ? 'Fair' : aqi === 3 ? 'Moderate' : aqi === 4 ? 'Poor' : aqi === 5 ? 'Very Poor' : 'N/A';
@@ -529,27 +647,27 @@ export default async function CityPage({
           {/* ══ SECTION 3: WEATHER ════════════════════════════════════════════ */}
           <section id="weather" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              🌤 Weather in {city} Today — {currentMonth} {currentYear}
+              🌤 Weather in {city} Today: {currentMonth} {currentYear}
             </h2>
             {temp ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" aria-label={`Full weather forecast for ${city}`}>
                 <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                  <div className="text-3xl font-mono" style={{ color: '#0C7A3D' }}>{Math.round(temp)}°C</div>
-                  <div className="text-xs text-gray-500 mt-1">Temperature</div>
+                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round(temp)}°C</div>
+                  <div className="text-xs text-gray-400 mt-1">Temperature</div>
                 </div>
                 <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                  <div className="text-3xl font-mono" style={{ color: '#0C7A3D' }}>{Math.round(feelsLike ?? temp)}°C</div>
-                  <div className="text-xs text-gray-500 mt-1">Feels Like</div>
+                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round(feelsLike ?? temp)}°C</div>
+                  <div className="text-xs text-gray-400 mt-1">Feels Like</div>
                 </div>
                 <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                  <div className="text-3xl font-mono" style={{ color: '#0C7A3D' }}>{humidity}%</div>
-                  <div className="text-xs text-gray-500 mt-1">Humidity</div>
+                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{humidity}%</div>
+                  <div className="text-xs text-gray-400 mt-1">Humidity</div>
                 </div>
                 <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                  <div className="text-3xl font-mono" style={{ color: '#0C7A3D' }}>{Math.round((windSpeed ?? 0) * 3.6)}</div>
-                  <div className="text-xs text-gray-500 mt-1">Wind km/h</div>
+                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round((windSpeed ?? 0) * 3.6)}</div>
+                  <div className="text-xs text-gray-400 mt-1">Wind km/h</div>
                 </div>
-              </div>
+              </a>
             ) : (
               <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
                 Live weather is unavailable right now. The full weather page shows the latest conditions.
@@ -567,27 +685,35 @@ export default async function CityPage({
               </div>
             )}
 
-            {/* Hourly forecast */}
+            {/* Hourly forecast: the whole strip opens the weather page.
+                Icons follow the forecast's own day/night marker (sys.pod),
+                so night hours never show a sun. */}
             {hourlyList.length > 0 && (
-              <div className="overflow-x-auto">
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="block overflow-x-auto" aria-label={`Hourly forecast for ${city}: full weather page`}>
                 <div className="flex gap-3 pb-2" style={{ minWidth: 'max-content' }}>
                   {hourlyList.map((h, i) => {
                     const t = h.dt_txt as string;
                     const time = new Date(t).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' });
                     const hTemp = (h.main as Record<string, number>)?.temp;
                     const hDesc = (h.weather as Array<Record<string, string>>)?.[0]?.main;
+                    const isNight = (h.sys as Record<string, string> | undefined)?.pod === 'n';
+                    const icon =
+                      hDesc === 'Rain' || hDesc === 'Drizzle' ? '🌧'
+                      : hDesc === 'Thunderstorm' ? '⛈'
+                      : hDesc === 'Snow' ? '🌨'
+                      : hDesc === 'Clouds' ? '☁️'
+                      : hDesc === 'Clear' ? (isNight ? '🌙' : '☀️')
+                      : isNight ? '🌙' : '🌤';
                     return (
-                      <div key={i} className="bg-[#F5F3EE] rounded-xl px-4 py-3 text-center min-w-[72px]">
+                      <div key={i} className="rounded-xl px-4 py-3 text-center min-w-[72px] border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
                         <div className="text-xs text-gray-400">{time}</div>
-                        <div className="text-lg">
-                          {hDesc === 'Rain' ? '🌧' : hDesc === 'Clouds' ? '☁️' : hDesc === 'Clear' ? '☀️' : '🌤'}
-                        </div>
-                        <div className="text-sm font-mono font-medium text-[#01411C]">{Math.round(hTemp)}°</div>
+                        <div className="text-lg">{icon}</div>
+                        <div className="text-sm font-mono font-medium" style={{ color: '#34d399' }}>{Math.round(hTemp)}°</div>
                       </div>
                     );
                   })}
                 </div>
-              </div>
+              </a>
             )}
 
             <p className="mt-6 text-gray-400 leading-relaxed text-sm">
@@ -597,7 +723,7 @@ export default async function CityPage({
               </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
-              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+              className="inline-block mt-4 text-sm font-semibold px-5 py-2.5 rounded-full transition hover:opacity-90" style={{ backgroundColor: '#0C7A3D', color: '#ffffff' }}>
               View full weather forecast →
             </a>
           </section>
@@ -606,7 +732,7 @@ export default async function CityPage({
           {(sunrise || sunset) && (
             <section id="sun-moon" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
               <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-                🌅 Sun & Moon in {city} — {currentMonth} {currentYear}
+                🌅 Sun & Moon in {city}: {currentMonth} {currentYear}
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {sunrise && (
@@ -628,9 +754,9 @@ export default async function CityPage({
                   </div>
                 )}
                 <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(59,130,246,0.06)', borderColor: 'rgba(59,130,246,0.2)' }}>
-                  <div className="text-2xl">🌙</div>
-                  <div className="font-mono font-medium" style={{ color: '#34d399' }}>Tonight</div>
-                  <div className="text-xs text-gray-500 mt-1">Moon Phase</div>
+                  <div className="text-2xl">{moon.emoji}</div>
+                  <div className="font-semibold" style={{ color: '#34d399' }}>{moon.phase_name}</div>
+                  <div className="text-xs text-gray-400 mt-1">Moon Phase · {moon.illumination}% illuminated</div>
                 </div>
                 {sunrise && sunset && (
                   <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(234,179,8,0.06)', borderColor: 'rgba(234,179,8,0.2)' }}>
@@ -651,13 +777,17 @@ export default async function CityPage({
               <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generateSunMoonAfter(city)}
               </p>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
+                className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+                Full weather page: the outlook ahead →
+              </a>
             </section>
           )}
 
           {/* ══ SECTION 5: PRAYER TIMES ═══════════════════════════════════════ */}
           <section id="prayer-times" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-1">
-              🕌 Prayer Times in {city} — {currentMonth} {currentYear}
+              🕌 Prayer Times in {city}: {currentMonth} {currentYear}
             </h2>
             {hijriDate && (
               <p className="text-sm text-gray-500 mb-4">
@@ -665,22 +795,18 @@ export default async function CityPage({
               </p>
             )}
             {timings ? (
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-6">
-                {[
+              <CityPrayerTimeline
+                entries={[
                   { name: 'Fajr', time: timings.Fajr, emoji: '🌙' },
                   { name: 'Sunrise', time: timings.Sunrise, emoji: '🌅' },
                   { name: 'Dhuhr', time: timings.Dhuhr, emoji: '☀️' },
                   { name: 'Asr', time: timings.Asr, emoji: '🌤' },
                   { name: 'Maghrib', time: timings.Maghrib, emoji: '🌇' },
                   { name: 'Isha', time: timings.Isha, emoji: '🌑' },
-                ].map((p) => (
-                  <div key={p.name} className="bg-[#F5F3EE] rounded-xl p-3 text-center">
-                    <div className="text-lg">{p.emoji}</div>
-                    <div className="font-mono font-semibold text-sm" style={{ color: '#34d399' }}>{p.time}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">{p.name}</div>
-                  </div>
-                ))}
-              </div>
+                ]}
+                timezone={cityParams.timezone}
+                serverNowIso={new Date().toISOString()}
+              />
             ) : (
               <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
                 Prayer times are unavailable right now. The full timetable is on the Prayer Times page.
@@ -701,22 +827,36 @@ export default async function CityPage({
           {/* ══ SECTION 6: GOLD & METAL RATES ════════════════════════════════ */}
           <section id="gold-rates" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              🥇 Gold & Metal Rates in {city} — {currentMonth} {currentYear}
+              🥇 Gold & Metal Rates in {city}: {currentMonth} {currentYear}
             </h2>
             {goldPerGram ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                {[
-                  { label: '24 Karat / gram', value: `PKR ${Math.round(goldPerGram).toLocaleString()}` },
-                  { label: '24 Karat / tola', value: `PKR ${goldPerTola?.toLocaleString()}` },
-                  { label: '22 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.9167).toLocaleString()}` },
-                  { label: '18 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.75).toLocaleString()}` },
-                ].map((item) => (
-                  <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(251,191,36,0.08)', borderColor: 'rgba(251,191,36,0.3)' }}>
-                    <div className="text-xs text-amber-400 mb-1">{item.label}</div>
-                    <div className="font-mono font-bold text-amber-300 text-lg">{item.value}</div>
-                  </div>
-                ))}
-              </div>
+              <>
+                {goldMovePerTola !== null && goldChangePct !== null && (
+                  <p className="mb-4 text-sm font-medium" style={{ color: goldChangePct >= 0 ? '#34d399' : '#f87171' }}>
+                    {goldChangePct >= 0 ? '▲' : '▼'} Gold in the last 24 hours: {goldChangePct >= 0 ? 'up' : 'down'} PKR {Math.abs(goldMovePerTola).toLocaleString()} per tola ({goldChangePct >= 0 ? '+' : ''}{goldChangePct.toFixed(2)}%)
+                  </p>
+                )}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                  {[
+                    { label: '24 Karat / gram', value: `PKR ${Math.round(goldPerGram).toLocaleString()}` },
+                    { label: '24 Karat / tola', value: `PKR ${goldPerTola?.toLocaleString()}` },
+                    { label: '22 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.9167).toLocaleString()}` },
+                    { label: '18 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.75).toLocaleString()}` },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(251,191,36,0.08)', borderColor: 'rgba(251,191,36,0.3)' }}>
+                      <div className="text-xs text-amber-400 mb-1">{item.label}</div>
+                      <div className="font-mono font-bold text-amber-300 text-lg">{item.value}</div>
+                    </div>
+                  ))}
+                  {silver && (
+                    <div className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(148,163,184,0.08)', borderColor: 'rgba(148,163,184,0.35)' }}>
+                      <div className="text-xs text-slate-300 mb-1">Silver / tola</div>
+                      <div className="font-mono font-bold text-slate-200 text-lg">PKR {Math.round(silver.per_tola).toLocaleString()}</div>
+                      <div className="text-[11px] text-slate-400 mt-1">PKR {Math.round(silver.per_gram).toLocaleString()} per gram</div>
+                    </div>
+                  )}
+                </div>
+              </>
             ) : (
               <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
                 Gold rates are unavailable right now. The full rates page shows the latest prices.
@@ -726,7 +866,7 @@ export default async function CityPage({
             {/* Crypto */}
             {btcUsd && (
               <div className="border-t pt-4 mt-4">
-                <h3 className="text-sm font-semibold text-gray-600 mb-3">Cryptocurrency Today</h3>
+                <h3 className="text-sm font-semibold text-gray-300 mb-3">Cryptocurrency Today</h3>
                 <div className="flex gap-4 flex-wrap">
                   <div className="rounded-lg px-4 py-2 border" style={{ backgroundColor: 'rgba(249,115,22,0.08)', borderColor: 'rgba(249,115,22,0.3)' }}>
                     <span className="text-xs text-gray-500">Bitcoin (BTC)</span>
@@ -744,19 +884,19 @@ export default async function CityPage({
               </p>
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`}
-              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Full rates page — oil, silver, crypto, currency, stocks →
+              className="inline-block mt-4 text-sm font-semibold px-5 py-2.5 rounded-full transition hover:opacity-90" style={{ backgroundColor: '#0C7A3D', color: '#ffffff' }}>
+              Full rates page: oil, silver, crypto, currency, stocks →
             </a>
           </section>
 
           {/* ══ SECTION 7: TODAY'S NEWS ═══════════════════════════════════════ */}
           <section id="news" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              📰 {city} News Today — {currentMonth} {currentYear}
+              📰 {city} News Today: {currentMonth} {currentYear}
             </h2>
-            {newsArticles.length > 0 ? (
+            {displayArticles.length > 0 ? (
               <div className="space-y-4 mb-6">
-                {newsArticles.slice(0, 5).map((article, i) => (
+                {displayArticles.slice(0, 5).map((article, i) => (
                   <article key={i} className="flex gap-4 items-start border-b pb-4 last:border-0">
                     <span className="text-gray-300 font-mono text-lg mt-0.5 min-w-[24px]">
                       {String(i + 1).padStart(2, '0')}
@@ -766,12 +906,13 @@ export default async function CityPage({
                         href={article.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium text-gray-800 hover:text-[#01411C] leading-snug"
+                        title={article.title}
+                        className="font-medium text-gray-100 hover:text-emerald-300 leading-snug"
                       >
-                        {article.title}
+                        {article.title ? truncateHeadline(article.title) : ''}
                       </a>
                       <p className="text-xs text-gray-400 mt-1">
-                        {typeof article.source === 'object' ? (article.source as Record<string, string>)?.name : article.source} · {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : ''}
+                        {newsSourceName(article)} · {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : ''}
                       </p>
                     </div>
                   </article>
@@ -790,21 +931,22 @@ export default async function CityPage({
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`}
               className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Full news page — 12 categories, archive, Urdu feed →
+              Full news page: 12 categories, archive, Urdu feed →
             </a>
           </section>
 
           {/* ══ SECTION 8: EVENTS ═════════════════════════════════════════════ */}
           <section id="events" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              🎉 Events in {city} — {currentMonth} {currentYear}
+              🎉 Events in {city}: {currentMonth} {currentYear}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {['Sports', 'Culture', 'Music', 'Food', 'Religion', 'Business', 'Art', 'Family'].map((cat) => (
                 <a
                   key={cat}
                   href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events?category=${cat.toLowerCase()}`}
-                  className="bg-[#F5F3EE] hover:bg-green-50 rounded-xl p-3 text-center text-sm text-gray-700 hover:text-[#01411C] transition"
+                  className="rounded-xl p-3 text-center text-sm text-gray-200 border transition hover:border-emerald-400/60"
+                  style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(12,122,61,0.3)' }}
                 >
                   {cat}
                 </a>
@@ -818,15 +960,18 @@ export default async function CityPage({
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/events`}
               className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Full events calendar — map view, 16 categories, submit event →
+              Full events calendar: map view, 16 categories, submit event →
             </a>
           </section>
 
           {/* ══ SECTION 9: ECONOMY ════════════════════════════════════════════ */}
           <section id="economy" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              📊 Economy of {city} — {currentMonth} {currentYear}
+              📊 Economy of {city}: {currentMonth} {currentYear}
             </h2>
+            <p className="text-xs text-gray-400 mb-4">
+              Headline indicators: national figures for {country} (World Bank). City-level GDP and inflation series are not published for {city}, so the national numbers are shown and labelled as national.
+            </p>
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
                 <div className="text-xs text-gray-500 mb-1">GDP per Capita</div>
@@ -855,14 +1000,14 @@ export default async function CityPage({
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`}
               className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Full economy page — GDP charts, misery index, jobs →
+              Full economy page: GDP charts, misery index, jobs →
             </a>
           </section>
 
           {/* ══ SECTION 10: SPORTS ════════════════════════════════════════════ */}
           <section id="sports" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              🏏 Sports in {city} — {currentMonth} {currentYear}
+              🏏 Sports in {city}: {currentMonth} {currentYear}
             </h2>
             <div className="flex gap-3 flex-wrap mb-6">
               {['Cricket', 'PSL', 'Hockey', 'Football', 'Squash', 'Kabaddi'].map((sport) => (
@@ -879,7 +1024,7 @@ export default async function CityPage({
             </p>
             <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/sports`}
               className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Full sports page — live scores, PSL standings, schedules →
+              Full sports page: live scores, PSL standings, schedules →
             </a>
           </section>
 
@@ -893,27 +1038,35 @@ export default async function CityPage({
               </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {(citySlug === 'lahore' ? [
-                { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal' },
-                { name: 'Faiz Ahmed Faiz', role: 'Poet', slug: 'faiz-ahmed-faiz' },
-                { name: 'Nusrat Fateh Ali Khan', role: 'Qawwali Singer', slug: 'nusrat-fateh-ali-khan' },
-                { name: 'Wasim Akram', role: 'Cricketer', slug: 'wasim-akram' },
+                { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal', img: '/images/home28/pers-iqbal.webp', credit: 'Iqbal Academy Pakistan · public domain', pos: 'object-[center_3%]' },
+                { name: 'Faiz Ahmed Faiz', role: 'Poet', slug: 'faiz-ahmed-faiz', img: '/images/personalities/faiz-ahmed-faiz.webp', credit: 'Amarjit Chandan · CC BY-SA 4.0', pos: 'object-top' },
+                { name: 'Nusrat Fateh Ali Khan', role: 'Qawwali Singer', slug: 'nusrat-fateh-ali-khan', img: '/images/personalities/nusrat-fateh-ali-khan.webp', credit: 'Thomas Rome · CC BY 2.0', pos: 'object-top' },
+                { name: 'Wasim Akram', role: 'Cricketer', slug: 'wasim-akram', img: '/images/personalities/wasim-akram.webp', credit: 'Arijit Basak · CC BY 2.0', pos: 'object-top' },
               ] : []).map((p) => (
                 <a
                   key={p.slug}
                   href={`/personalities/${p.slug}`}
-                  className="rounded-xl p-4 border border-white/10 hover:border-green-500/40 transition" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+                  className="rounded-xl overflow-hidden border border-white/10 hover:border-green-500/40 transition block" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                 >
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2" style={{ backgroundColor: 'rgba(12,122,61,0.4)', border: '2px solid rgba(12,122,61,0.6)', color: '#34d399' }}>
-                    {p.name[0]}
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.img} alt={`Portrait of ${p.name}`} loading="lazy" decoding="async" className={`absolute inset-0 h-full w-full object-cover ${p.pos}`} />
                   </div>
-                  <div className="font-medium text-sm text-white">{p.name}</div>
-                  <div className="text-xs text-gray-500">{p.role}</div>
+                  <div className="p-3">
+                    <div className="font-medium text-sm text-white">{p.name}</div>
+                    <div className="text-xs text-gray-400">{p.role}</div>
+                    <div className="text-[10px] text-gray-500 mt-1.5">Photo: {p.credit}</div>
+                  </div>
                 </a>
               ))}
             </div>
             <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generatePersonalitiesAfter(city)}
               </p>
+            <a href="/personalities"
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+              All personalities →
+            </a>
           </section>
 
           {/* ══ SECTION 12: FAMOUS PLACES ════════════════════════════════════ */}
@@ -940,14 +1093,18 @@ export default async function CityPage({
                   className="rounded-xl p-4 border border-white/10 hover:border-green-500/40 transition" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                 >
                   <div className="font-medium text-sm text-white">{place.name}</div>
-                  <div className="text-xs text-gray-500 mt-0.5">{place.type}</div>
-                  <div className="text-xs text-[#01411C] mt-2 font-medium">Open today? →</div>
+                  <div className="text-xs text-gray-400 mt-0.5">{place.type}</div>
+                  <div className="text-xs mt-2 font-medium" style={{ color: '#34d399' }}>Open today? →</div>
                 </a>
               ))}
             </div>
             <p className="mt-4 text-gray-500 leading-relaxed text-sm">
                 {generatePlacesAfter(city)}
               </p>
+            <a href="/places"
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+              All places worth knowing →
+            </a>
           </section>
 
           {/* ══ SECTION 13: HERITAGE PRODUCTS ════════════════════════════════ */}
@@ -1005,7 +1162,7 @@ export default async function CityPage({
           {/* ══ SECTION 15: EMERGENCY CONTACTS ═══════════════════════════════ */}
           <section id="emergency" className="rounded-2xl p-6 border-l-4 border-red-500" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-red-400 mb-4">
-              🚨 Emergency Contacts — {city}
+              🚨 Emergency Contacts: {city}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               {[
@@ -1013,15 +1170,20 @@ export default async function CityPage({
                 { label: 'Rescue / Ambulance', number: ambulanceNum ?? '1122', emoji: '🚑' },
                 { label: 'Fire Brigade', number: fireNum ?? '16', emoji: '🚒' },
                 { label: 'Women Helpline', number: '1043', emoji: '👩' },
+                { label: 'Child Protection', number: '1121', emoji: '🛡' },
+                { label: 'Edhi Foundation', number: '115', emoji: '🏥' },
+                { label: 'PDMA Disaster Line', number: '1129', emoji: '🌧' },
               ].map((contact) => (
                 <a
                   key={contact.label}
                   href={`tel:${contact.number}`}
-                  className="rounded-xl p-4 text-center border hover:border-red-400/60 transition" style={{ backgroundColor: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.3)' }}
+                  className="rounded-xl p-5 text-center border hover:border-red-400/60 transition block" style={{ backgroundColor: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.3)' }}
+                  aria-label={`Call ${contact.label} on ${contact.number}`}
                 >
-                  <div className="text-2xl mb-1">{contact.emoji}</div>
-                  <div className="font-mono font-bold text-red-400 text-xl">{contact.number}</div>
-                  <div className="text-xs text-gray-500 mt-1">{contact.label}</div>
+                  <div className="text-3xl mb-1">{contact.emoji}</div>
+                  <div className="font-mono font-bold text-red-400 text-2xl">{contact.number}</div>
+                  <div className="text-xs text-gray-300 mt-1">{contact.label}</div>
+                  <div className="text-[10px] text-gray-500 mt-1 uppercase tracking-wide">Tap to call</div>
                 </a>
               ))}
             </div>
@@ -1033,22 +1195,31 @@ export default async function CityPage({
             </p>
           </section>
 
-          {/* ══ SECTION 16: NATURAL RESOURCES ════════════════════════════════ */}
-          <section id="resources" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              ⛏ Natural Resources of {country}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {['Salt (Khewra Mines)', 'Coal (Balochistan)', 'Natural Gas', 'Limestone', 'Marble', 'Gypsum', 'Silica Sand', 'Iron Ore'].map((r) => (
-                <div key={r} className="rounded-xl p-3 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: '#d1d5db' }}>{r}</div>
-              ))}
-            </div>
-          </section>
+          {/* ══ SECTION 16: CITY IDENTITY ════════════════════════════════════
+              The city's own identity, from its named anchors only. This
+              replaces the old country-scope "Natural Resources" section:
+              country content belongs to the country page, never a city
+              page. Cities without an identity entry render no section. */}
+          {IDENTITY_BLOCKS[cityKey] && (
+            <section id="identity" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
+                🏙 What {city} Is Known For
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {IDENTITY_BLOCKS[cityKey].map((item) => (
+                  <div key={item.heading} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                    <div className="font-semibold text-sm mb-1" style={{ color: '#34d399' }}>{item.heading}</div>
+                    <p className="text-sm text-gray-300 leading-relaxed">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* ══ SECTION 17: CITY AT A GLANCE ═════════════════════════════════ */}
           <section id="glance" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              📋 {city} at a Glance — {currentYear}
+              📋 {city} at a Glance: {currentYear}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {[
@@ -1062,8 +1233,8 @@ export default async function CityPage({
                 ...(glance ? [{ label: 'Languages', value: glance.languages }] : []),
               ].map((item) => (
                 <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                  <div className="text-xs text-gray-500">{item.label}</div>
-                  <div className="font-semibold text-[#01411C] mt-1">{item.value}</div>
+                  <div className="text-xs text-gray-400">{item.label}</div>
+                  <div className="font-semibold mt-1" style={{ color: '#34d399' }}>{item.value}</div>
                 </div>
               ))}
             </div>
@@ -1098,7 +1269,7 @@ export default async function CityPage({
                       <div className="text-white font-semibold text-sm">Urban vs rural population</div>
                       <div className="text-gray-500 text-xs mt-0.5">Lahore District · Total {glance?.population}</div>
                       <p className="mt-4 text-sm text-gray-300">100% urban (district)</p>
-                      <p className="mt-4 text-xs text-gray-500">Source: PBS Census-2023 — the entire Lahore District population lives in urban areas.</p>
+                      <p className="mt-4 text-xs text-gray-500">Source: PBS Census-2023. The entire Lahore District population lives in urban areas.</p>
                     </div>
                   ) : null}
                   {faith ? (
@@ -1113,7 +1284,7 @@ export default async function CityPage({
                 </div>
               );
             })()}
-            <p className="text-gray-400 leading-relaxed text-sm">
+            <p className="mt-6 text-gray-400 leading-relaxed text-sm">
               {glance ? generateCityGlanceParagraph(city, country, province, glance.area, glance.elevation, glance.founded) : generateCityGlanceAfter(city, country)}
             </p>
             <p className="mt-4 text-gray-500 leading-relaxed text-sm">
@@ -1131,10 +1302,29 @@ export default async function CityPage({
                 <a
                   key={c.name}
                   href={`/${c.slug}`}
-                  className="rounded-xl p-4 border border-white/10 hover:border-green-500/40 flex justify-between items-center transition" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+                  className="rounded-xl overflow-hidden border border-white/10 hover:border-green-500/40 block transition" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                 >
-                  <div className="font-medium text-white">{c.name}</div>
-                  <div className="text-xs text-gray-500">{c.dist}</div>
+                  {c.image && (
+                    <figure>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={c.image.src}
+                        alt={c.image.alt}
+                        width={c.image.width}
+                        height={c.image.height}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-28 object-cover"
+                      />
+                      <figcaption className="px-3 py-1 text-[10px] text-gray-500">
+                        {c.image.alt}: {c.image.credit}, via Wikimedia Commons
+                      </figcaption>
+                    </figure>
+                  )}
+                  <div className="p-4 flex justify-between items-center">
+                    <div className="font-medium text-white">{c.name}</div>
+                    <div className="text-xs text-gray-400">{c.dist}</div>
+                  </div>
                 </a>
               ))}
             </div>
@@ -1186,29 +1376,35 @@ export default async function CityPage({
           {/* ══ SECTION 21: JOBS IN CITY ══════════════════════════════════════ */}
           <section id="jobs" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              💼 Jobs in {city} — {currentMonth} {currentYear}
+              💼 Jobs in {city}: {currentMonth} {currentYear}
             </h2>
+            {/* Sector cards carry NO growth labels: the old "Fast growing /
+                Stable" tags had no published source, so they were removed
+                rather than presented as data (owner review, 3 Nov 2026). */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
               {[
-                { sector: 'IT & Software', growth: '↑ Fast growing' },
-                { sector: 'Textiles & Garments', growth: '→ Stable' },
-                { sector: 'Banking & Finance', growth: '↑ Growing' },
-                { sector: 'Education', growth: '→ Stable' },
-                { sector: 'Healthcare', growth: '↑ Growing' },
-                { sector: 'E-commerce', growth: '↑ Fast growing' },
-              ].map((job) => (
-                <div key={job.sector} className="bg-[#F5F3EE] rounded-xl p-3">
-                  <div className="font-medium text-sm text-white">{job.sector}</div>
-                  <div className={`text-xs mt-1 ${job.growth.includes('Fast') ? 'text-green-600' : 'text-gray-500'}`}>
-                    {job.growth}
-                  </div>
+                'IT & Software',
+                'Textiles & Garments',
+                'Banking & Finance',
+                'Education',
+                'Healthcare',
+                'E-commerce',
+              ].map((sector) => (
+                <div key={sector} className="rounded-xl p-3 border" style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="font-medium text-sm text-white">{sector}</div>
                 </div>
               ))}
             </div>
-            <a href="https://www.rozee.pk" target="_blank" rel="noopener noreferrer"
-              className="inline-block text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Browse jobs in {city} on Rozee.pk →
-            </a>
+            <div className="flex gap-5 flex-wrap">
+              <a href="https://www.rozee.pk" target="_blank" rel="noopener noreferrer"
+                className="inline-block text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+                Browse jobs in {city} on Rozee.pk →
+              </a>
+              <a href="https://njp.gov.pk" target="_blank" rel="noopener noreferrer"
+                className="inline-block text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+                Government vacancies on the National Job Portal →
+              </a>
+            </div>
           </section>
 
           {/* ══ SECTION 22: CHATBOT CTA ═══════════════════════════════════════ */}
@@ -1217,7 +1413,7 @@ export default async function CityPage({
               💬 Ask Anything About {city}
             </h2>
             <p className="text-gray-400 text-sm mb-4">
-              Weather, prayer times, gold rates, events — ask the {city} City Assistant
+              Weather, prayer times, gold rates, events: ask the {city} City Assistant
             </p>
             <OpenAssistantButton />
           </section>

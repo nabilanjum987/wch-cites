@@ -8,13 +8,25 @@
 // page (slugs from src/lib/oceans.ts). Areas are the oceans' real
 // published surface areas (the Arabian Sea's 3,862,000 km² is its
 // golden page's Wikidata/Wikipedia figure).
+// Ocean card photos (2026-11-03): each card now carries a real photo
+// in the Stage 3 card standard (photo zone on top, all data below,
+// nothing overlaid on the photo). Pacific, Atlantic, Southern and
+// Arctic reuse the media registry's licence-verified Commons records
+// (downloaded files SHA1-matched to docs/media-registry/subjects/);
+// the Indian Ocean photo is "Marine Drive Waves" (monsoon surf over
+// the Mumbai sea wall), licence verified on its Commons file page.
 
 const OCEANS = [
-  { name: 'Pacific Ocean',  slug: 'pacific-ocean',  emoji: '🌊', area: '165.25M km²', color: '#0369a1', note: 'Bigger than all land' },
-  { name: 'Atlantic Ocean', slug: 'atlantic-ocean', emoji: '🌊', area: '106.46M km²', color: '#1d4ed8', note: 'Gulf Stream crossing' },
-  { name: 'Indian Ocean',   slug: 'indian-ocean',   emoji: '🌊', area: '70.56M km²',  color: '#0891b2', note: 'Monsoon-fed ocean' },
-  { name: 'Southern Ocean', slug: 'southern-ocean', emoji: '🌊', area: '21.96M km²',  color: '#065f46', note: 'Circles Antarctica' },
-  { name: 'Arctic Ocean',   slug: 'arctic-ocean',   emoji: '🧊', area: '14.06M km²',  color: '#7c3aed', note: 'Smallest, mostly ice' },
+  { name: 'Pacific Ocean',  slug: 'pacific-ocean',  emoji: '🌊', area: '165.25M km²', color: '#0369a1', note: 'Bigger than all land',
+    img: '/images/home/pacific-ocean.webp', imgAlt: 'Lines of Pacific surf rolling toward the shore off Vancouver Island', credit: 'Photo: Paul Harrison · CC BY-SA 4.0' },
+  { name: 'Atlantic Ocean', slug: 'atlantic-ocean', emoji: '🌊', area: '106.46M km²', color: '#1d4ed8', note: 'Gulf Stream crossing',
+    img: '/images/home/atlantic-ocean.webp', imgAlt: 'An Atlantic wave breaking with wind-blown spray', credit: 'Photo: FrankBanalis · CC BY 4.0' },
+  { name: 'Indian Ocean',   slug: 'indian-ocean',   emoji: '🌊', area: '70.56M km²',  color: '#0891b2', note: 'Monsoon-fed ocean',
+    img: '/images/home/indian-ocean.webp', imgAlt: 'Monsoon waves splashing over the sea wall at Marine Drive in Mumbai', credit: 'Photo: AroundTheGlobe · CC BY-SA 3.0' },
+  { name: 'Southern Ocean', slug: 'southern-ocean', emoji: '🌊', area: '21.96M km²',  color: '#065f46', note: 'Circles Antarctica',
+    img: '/images/home/southern-ocean.webp', imgAlt: 'A tabular iceberg floating in the Southern Ocean off Elephant Island', credit: 'Photo: Godot13 · CC BY-SA 4.0' },
+  { name: 'Arctic Ocean',   slug: 'arctic-ocean',   emoji: '🧊', area: '14.06M km²',  color: '#7c3aed', note: 'Smallest, mostly ice',
+    img: '/images/home/arctic-ocean.webp', imgAlt: 'An Arctic iceberg in calm water, its turquoise underside glowing below the surface', credit: 'Photo: AWeith · CC BY-SA 4.0' },
 ];
 
 import Link from 'next/link';
@@ -25,14 +37,17 @@ export default function OceansToday() {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {OCEANS.map((o) => (
           <Link key={o.name} href={`/oceans/${o.slug}`} className="block no-underline group">
-            <div className="relative rounded-2xl border p-4 h-36 flex flex-col justify-between overflow-hidden transition-transform group-hover:scale-[1.02]"
-              style={{ background: `linear-gradient(160deg, ${o.color}40, var(--bg))`, borderColor: `${o.color}40` }}>
-              <div className="absolute inset-0 flex items-center justify-center text-8xl opacity-10 select-none pointer-events-none">{o.emoji}</div>
-              <span className="text-2xl z-10">{o.emoji}</span>
-              <div className="z-10">
-                <div className="t-text font-semibold text-xs leading-tight">{o.name}</div>
+            <div className="rounded-2xl overflow-hidden border h-full transition-transform group-hover:scale-[1.02]"
+              style={{ background: `linear-gradient(160deg, ${o.color}26, var(--bg))`, borderColor: `${o.color}40` }}>
+              <div className="relative h-24 sm:h-28 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={o.img} alt={o.imgAlt} width={720} height={360} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+              </div>
+              <div className="p-3">
+                <div className="t-text font-semibold text-xs leading-tight">{o.emoji} {o.name}</div>
                 <div className="t-text-40 text-xs mt-0.5">{o.area}</div>
                 <div className="sub-desc mt-1">{o.note}</div>
+                <div className="text-[10px] t-text-40 mt-1.5">{o.credit}</div>
               </div>
             </div>
           </Link>

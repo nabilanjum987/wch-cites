@@ -20,7 +20,12 @@ const INDICATORS = {
 };
 
 async function fetchIndicator(countryCode: string, indicatorCode: string): Promise<GrowthDataPoint[]> {
-  const url = `https://api.worldbank.org/v2/country/${countryCode}/indicator/${indicatorCode}?format=json&per_page=15&date=2014:2024`;
+  // Rolling 10-year window ending at the current year, so the charts
+  // always reach the latest year the World Bank has published instead of
+  // freezing at a hard-coded end year (the old 2014:2024 window, combined
+  // with null filtering, left the country-page charts ending at 2022).
+  const endYear = new Date().getFullYear();
+  const url = `https://api.worldbank.org/v2/country/${countryCode}/indicator/${indicatorCode}?format=json&per_page=20&date=${endYear - 10}:${endYear}`;
   try {
     const res = await fetch(url);
     if (!res.ok) {

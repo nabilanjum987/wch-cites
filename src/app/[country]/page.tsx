@@ -4,7 +4,8 @@ import CountryInventory from '@/components/shared/CountryInventory';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbJsonLd, countryCrumbs, countryJsonLd, titleCaseSlug } from '@/lib/seo/breadcrumbs';
-import { fetchWorldBankLatest, countrySlugToIso2 } from '@/lib/apis/worldbank';
+import { fetchWorldBankLatest, countrySlugToIso2, type WBValues } from '@/lib/apis/worldbank';
+import { gnewsSearch, type NewsArticle } from '@/lib/apis/news';
 
 // Server wrapper: the interactive country page lives in CountryClient.tsx.
 // Metadata must be exported from a server component, so it lives here —
@@ -40,13 +41,31 @@ export default async function Page({ params }: PageProps) {
   const iso2 = countrySlugToIso2(p.country);
   const wb = await fetchWorldBankLatest([iso2]);
   const wbPopulation = wb[iso2]?.population ?? null;
-  // P6: country pages had no JSON-LD at all — BreadcrumbList + Country.
+  // Economy figures come from the SAME World Bank result (one consistent
+  // source for the whole page): the client renders these with their data
+  // years and hides any figure the Bank did not return, instead of the
+  // old undated static table (Pakistan inflation 28.2%, a 2023 figure
+  // that read as current).
+  const wbAll = wb[iso2] ?? {};
+  const wbEconomy: WBValues = {};
+  for (const key of ['gdpUsd', 'gdpGrowth', 'inflation', 'unemployment'] as const) {
+    if (wbAll[key]) wbEconomy[key] = wbAll[key];
+  }
+  // News: the same GNews plumbing that powers the homepage and city
+  // pages (gnewsSearch). Only the three template countries fetch, to
+  // stay inside the free plan's daily quota; an empty result renders an
+  // honest empty state in the client, never sample headlines.
   const countryName = titleCaseSlug(p.country);
+  let news: NewsArticle[] = [];
+  if (['pakistan', 'india', 'united-states'].includes(p.country)) {
+    news = await gnewsSearch(countryName, 'en', 6, 'all', countryName, 3600);
+  }
+  // P6: country pages had no JSON-LD at all — BreadcrumbList + Country.
   return (
     <>
       <JsonLd data={breadcrumbJsonLd(countryCrumbs(countryName, p.country))} />
       <JsonLd data={countryJsonLd(countryName, p.country)} />
-      <CountryPage wbPopulation={wbPopulation} />
+      <CountryPage wbPopulation={wbPopulation} wbEconomy={wbEconomy} news={news} />
       <CountryInventory countrySlug={p.country} />
       <ImproveCTA country={p.country} label={titleCase(p.country)} />
     </>

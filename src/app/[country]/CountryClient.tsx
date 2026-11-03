@@ -11,6 +11,8 @@ import PopulationPie from '@/components/PopulationPie';
 import CityAssistant from '@/components/shared/CityAssistant';
 import { PAKISTAN_PROVINCE_POPULATION, PAKISTAN_PROVINCE_TOTAL, NATIONAL_FAITH_SLICES } from '@/lib/census2023-splits';
 import { censusPopulationOr } from '@/lib/census2023';
+import type { WBValues } from '@/lib/apis/worldbank';
+import type { NewsArticle } from '@/lib/apis/news';
 import {
   ChevronRight, TrendingUp, TrendingDown, ArrowRight,
   Globe, Users, Coins, Calendar, ShieldAlert, Utensils,
@@ -376,6 +378,88 @@ const EMERGENCY: Record<string, EmergencyItem[]> = {
   ],
 };
 
+// ─── Card photos (owner review 3 Nov 2026: photo block on top, data below) ──
+// CREDITS — every photo below is either already licensed in this repo or a
+// single open-licence Wikimedia Commons file, licence verified on its file
+// page before download and converted to WebP at card size:
+//   cities/multan-hero.webp — Shah Rukn-e-Alam Shrine, Multan: Tahsin Shah,
+//     CC BY-SA 4.0 (media registry verified)
+//   cities/peshawar-hero.webp — Islamia College, Peshawar: Saadkhan12345,
+//     CC0 (media registry verified)
+//   cities/faisalabad-hero.webp — Ghanta Ghar, Faisalabad: Bijay Chaurasia,
+//     CC BY-SA 4.0 (media registry verified)
+//   cities/rawalpindi-hero.webp — Saddar, Rawalpindi: Idontknow1213,
+//     CC BY-SA 4.0 (media registry verified)
+//   cities/{lahore,karachi,islamabad}-hero.webp — repo images from earlier
+//     verified batches (see media registry)
+//   personalities/muhammad-ali-jinnah.webp — File:Muhammad Ali Jinnah.jpg,
+//     Ministry of Information & Broadcasting, Government of Pakistan,
+//     public domain
+//   home28/pers-iqbal.webp — Iqbal Academy Pakistan, public domain
+//   personalities/imran-khan.webp — World Economic Forum, CC BY-SA 2.0
+//   personalities/wasim-akram.webp — Arijit Basak via Flickr, CC BY 2.0
+//   personalities/nusrat-fateh-ali-khan.webp — Thomas Rome via Flickr,
+//     CC BY 2.0
+//   personalities/abdus-salam.webp — File:Abdus Salam 1987.jpg,
+//     Bart Molendijk / Anefo, CC BY-SA 3.0 nl
+//   personalities/malala-yousafzai.webp —
+//     File:Malala Yousafzai 2023 portrait 2x3.jpg, flowcomm, CC BY 2.0
+//   personalities/abdul-sattar-edhi.webp — File:Abdul Sattar Edhi.jpg,
+//     Hussain, CC BY-SA 3.0
+//   country-pakistan/food-biryani.webp — File:Chicken Hyderabadi Biryani.JPG,
+//     Dheerajk88, CC BY-SA 4.0
+//   country-pakistan/food-chapli-kebab.webp — File:Chapli Kebab.jpg,
+//     Murcotipton, CC BY-SA 3.0
+//   country-pakistan/food-lassi.webp — File:Lassi 1.jpg,
+//     Gaurav Dhwaj Khadka, CC BY-SA 4.0
+//   country-pakistan/resource-khewra-salt.webp —
+//     File:Khewra Salt Mines 03.jpg, Shahzaib Damn Cruze, CC BY-SA 4.0
+//   home28/ctry-india.webp (neighbour card) — Red Fort: Syed Sajidul Islam,
+//     CC BY-SA 4.0
+//   flags/{af,ir}.png — national flags, public domain (vendored from
+//     Wikimedia Commons); flags/{in,cn,pk,ca}.png already vendored in repo.
+// Subjects with no verifiable open-licence photo keep the text card and
+// are reported, never filled with a wrong-subject image.
+const CITY_CARD_IMAGES: Record<string, string> = {
+  karachi: '/images/cities/karachi-hero.webp',
+  lahore: '/images/cities/lahore-hero.webp',
+  islamabad: '/images/cities/islamabad-hero.webp',
+  multan: '/images/cities/multan-hero.webp',
+  peshawar: '/images/cities/peshawar-hero.webp',
+  faisalabad: '/images/cities/faisalabad-hero.webp',
+  rawalpindi: '/images/cities/rawalpindi-hero.webp',
+};
+
+const PERSONALITY_PHOTOS: Record<string, string> = {
+  'Quaid-e-Azam Jinnah': '/images/personalities/muhammad-ali-jinnah.webp',
+  'Allama Iqbal': '/images/home28/pers-iqbal.webp',
+  'Imran Khan': '/images/personalities/imran-khan.webp',
+  'Wasim Akram': '/images/personalities/wasim-akram.webp',
+  'Nusrat Fateh Ali Khan': '/images/personalities/nusrat-fateh-ali-khan.webp',
+  'Dr Abdus Salam': '/images/personalities/abdus-salam.webp',
+  'Malala Yousafzai': '/images/personalities/malala-yousafzai.webp',
+  'Abdul Sattar Edhi': '/images/personalities/abdul-sattar-edhi.webp',
+};
+
+const FOOD_PHOTOS: Record<string, string> = {
+  Biryani: '/images/country-pakistan/food-biryani.webp',
+  'Chapli Kebab': '/images/country-pakistan/food-chapli-kebab.webp',
+  Lassi: '/images/country-pakistan/food-lassi.webp',
+};
+
+const RESOURCE_PHOTOS: Record<string, string> = {
+  Salt: '/images/country-pakistan/resource-khewra-salt.webp',
+};
+
+const NEIGHBOUR_FLAG_FILES: Record<string, string> = {
+  india: 'in', afghanistan: 'af', iran: 'ir', china: 'cn',
+  pakistan: 'pk', canada: 'ca',
+};
+
+const NEIGHBOUR_PHOTOS: Record<string, string> = {
+  india: '/images/home28/ctry-india.webp',
+};
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatNumber(n: number): string {
@@ -401,7 +485,11 @@ function SectionHeader({ icon: Icon, title, accent }: { icon: any; title: string
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: number; year: number } | null } = {}) {
+export default function CountryPage({ wbPopulation, wbEconomy, news }: {
+  wbPopulation?: { value: number; year: number } | null;
+  wbEconomy?: WBValues | null;
+  news?: NewsArticle[];
+} = {}) {
   const params = useParams<{ country: string }>();
   // Template data below is local and synchronous — initialize state from
   // it so the server render contains the full page (real content for
@@ -503,6 +591,35 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
     return () => { cancelled = true; };
   }, [params]);
 
+  // Live multi-faith calendar dates (owner review 3 Nov 2026). The old
+  // cards hard-coded "24 Dhul Hijjah 1446" and "23 June 2026", which went
+  // stale. Dates are now computed on the visitor's device with the same
+  // Intl calendar support the rest of the site uses for the Hijri date
+  // (HoroscopeSection uses Intl.DateTimeFormat with the islamic
+  // calendar). A card renders ONLY when the runtime resolves the real
+  // calendar requested — where a calendar is unavailable (for example
+  // the Hindu lunisolar calendar, which Intl does not implement) the
+  // card is omitted instead of showing a fixed or wrong date, and the
+  // hard-coded festival/event claims that went with the old cards are
+  // gone. Nothing here is a stored date.
+  const [faithDates, setFaithDates] = useState<{ faith: string; icon: string; date: string }[]>([]);
+  useEffect(() => {
+    const now = new Date();
+    const out: { faith: string; icon: string; date: string }[] = [];
+    const add = (faith: string, icon: string, locale: string, calendar: string) => {
+      try {
+        const fmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+        if (fmt.resolvedOptions().calendar !== calendar) return;
+        out.push({ faith, icon, date: fmt.format(now) });
+      } catch { /* calendar unsupported in this runtime */ }
+    };
+    add('Islamic (Hijri)', '☪️', 'en-u-ca-islamic', 'islamic');
+    add('Christian (Gregorian)', '✝️', 'en-GB', 'gregory');
+    add('Hindu (Panchang)', '🕉️', 'en-u-ca-hindu', 'hindu');
+    add('Jewish (Hebrew)', '✡️', 'en-u-ca-hebrew', 'hebrew');
+    setFaithDates(out);
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0f1e' }}>
@@ -516,6 +633,29 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
   // same worldbank.ts path as the economy data. Pakistan's dated fallback
   // (255,219,554 — WB 2025) applies only when the live value is absent.
   const popFigure = wbPopulation ?? (country?.slug === 'pakistan' ? { value: 255219554, year: 2025 } : null);
+
+  // Economy display figures: World Bank latest values passed from the
+  // server (same fetch as the population above), each carrying its data
+  // year. A figure the Bank did not return is hidden, never replaced by
+  // the old undated static table (which showed Pakistan inflation at
+  // 28.2%, the 2023 annual figure, as if current).
+  const fmtWbUsd = (v: number): string =>
+    v >= 1e12 ? `$${(v / 1e12).toFixed(2)}T` : v >= 1e9 ? `$${(v / 1e9).toFixed(1).replace(/\.0$/, '')}B` : `$${formatNumber(v)}`;
+  const fmtWbPct = (v: number): string => `${Number(v.toFixed(2))}%`;
+  const wbStats = wbEconomy ? {
+    gdp: wbEconomy.gdpUsd ? { value: fmtWbUsd(wbEconomy.gdpUsd.value), year: wbEconomy.gdpUsd.year } : null,
+    growth: wbEconomy.gdpGrowth ? { value: fmtWbPct(wbEconomy.gdpGrowth.value), year: wbEconomy.gdpGrowth.year } : null,
+    inflation: wbEconomy.inflation ? { value: fmtWbPct(wbEconomy.inflation.value), year: wbEconomy.inflation.year } : null,
+    unemployment: wbEconomy.unemployment ? { value: fmtWbPct(wbEconomy.unemployment.value), year: wbEconomy.unemployment.year } : null,
+  } : null;
+  const wbStatList = wbStats
+    ? [
+        wbStats.gdp && { key: 'gdp', label: 'GDP', ...wbStats.gdp },
+        wbStats.growth && { key: 'growth', label: 'Growth Rate', ...wbStats.growth },
+        wbStats.inflation && { key: 'inflation', label: 'Inflation', ...wbStats.inflation },
+        wbStats.unemployment && { key: 'unemployment', label: 'Unemployment', ...wbStats.unemployment },
+      ].filter((s): s is { key: string; label: string; value: string; year: number } => Boolean(s))
+    : [];
 
   if (!country) {
     const slug = (params.country as string) || '';
@@ -702,19 +842,30 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
             </div>
           ) : majorCities.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-              {majorCities.map(city => (
-                <Link key={city.city_slug}
-                  href={`/${country.slug}/${city.province_slug}/${city.city_slug}`}
-                  className="group rounded-2xl p-4 border text-center hover:border-opacity-60 transition-all"
-                  style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
-                  <div className="text-2xl mb-2">🏙️</div>
-                  <div className="text-white font-semibold text-sm">{city.name}</div>
-                  <div className="font-bold text-sm mt-1" style={{ color: city.primary_color || accent }}>
-                    {formatNumber(city.population)}
-                  </div>
-                  <div className="text-gray-500 text-xs mt-1 line-clamp-1">{city.famous_for || 'Explore city'}</div>
-                </Link>
-              ))}
+              {majorCities.map(city => {
+                const photo = CITY_CARD_IMAGES[city.city_slug];
+                return (
+                  <Link key={city.city_slug}
+                    href={`/${country.slug}/${city.province_slug}/${city.city_slug}`}
+                    className="group rounded-2xl border overflow-hidden text-center hover:border-opacity-60 transition-all"
+                    style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                    {photo ? (
+                      <div className="h-24 overflow-hidden">
+                        <img loading="lazy" decoding="async" src={photo} alt={city.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </div>
+                    ) : (
+                      <div className="text-2xl pt-4 mb-1">🏙️</div>
+                    )}
+                    <div className="p-3">
+                      <div className="text-white font-semibold text-sm">{city.name}</div>
+                      <div className="font-bold text-sm mt-1" style={{ color: city.primary_color || accent }}>
+                        {formatNumber(city.population)}
+                      </div>
+                      <div className="text-gray-500 text-xs mt-1 line-clamp-1">{city.famous_for || 'Explore city'}</div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <p className="text-gray-500 text-sm">
@@ -729,23 +880,26 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
             <p className="text-gray-400 text-sm leading-relaxed mb-4">
               {generateLiveDataParagraph(country.name)}
             </p>
-            <div className="rounded-2xl p-5 border flex flex-wrap items-center justify-between gap-6"
+            <div className="rounded-2xl p-5 border"
               style={{ backgroundColor: 'rgba(0,0,0,0.4)', borderColor: `${accent}30` }}>
-              {[
-                { label: 'Currency', value: economy.currencyRate },
-                { label: 'GDP', value: economy.gdp },
-                { label: 'Inflation', value: economy.inflation },
-                { label: 'Growth Rate', value: economy.growth },
-              ].map(item => (
-                <div key={item.label} className="text-center">
-                  <div className="text-gray-500 text-xs mb-1">{item.label}</div>
-                  <div className="text-white font-bold text-sm">{item.value}</div>
+              <div className="flex flex-wrap items-center justify-between gap-6">
+                <div className="text-center">
+                  <div className="text-gray-500 text-xs mb-1">Currency</div>
+                  <div className="text-white font-bold text-sm">{economy.currencyRate}</div>
                 </div>
-              ))}
-              <div className="text-center">
-                <div className="text-gray-500 text-xs mb-1">Next Prayer (Capital)</div>
-                <div className="font-bold text-sm" style={{ color: accent }}>Maghrib 6:45 PM</div>
+                {/* World Bank figures only — the old strip also carried a
+                    hard-coded "Next Prayer (Capital): Maghrib 6:45 PM",
+                    a fixed time presented as live; removed. */}
+                {wbStatList.filter(s => s.key !== 'unemployment').map(item => (
+                  <div key={item.key} className="text-center">
+                    <div className="text-gray-500 text-xs mb-1">{item.label}</div>
+                    <div className="text-white font-bold text-sm">{item.value}</div>
+                  </div>
+                ))}
               </div>
+              {wbStatList.length > 0 && (
+                <div className="text-gray-600 text-[11px] mt-4">Economy figures: World Bank, latest available year for each figure (years labelled in the Economy section below).</div>
+              )}
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mt-4">
               {generateLiveDataAfter(country.name)}
@@ -783,8 +937,8 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
             {country.majorFaith} is the dominant faith in {country.name} at {country.majorFaithPct}% of the population,
             but the country is home to communities from multiple faith traditions, each observing their own calendar,
-            prayer times, and sacred sites. The section below shows today's multi-faith calendar dates
-            and the next prayer time for the most widely observed faith in {country.name}.
+            prayer times, and sacred sites. The cards below show today's date in each faith calendar,
+            computed live on your device for the day you visit.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="rounded-2xl p-5 border" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
@@ -806,21 +960,20 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
               ))}
             </div>
             <div className="md:col-span-2 grid grid-cols-2 gap-3">
-              {[
-                { faith: 'Islamic (Hijri)', date: '24 Dhul Hijjah 1446', event: 'Days of Tashreeq', icon: '☪️' },
-                { faith: 'Christian', date: '23 June 2026', event: 'Ordinary Time', icon: '✝️' },
-                { faith: 'Hindu (Panchang)', date: 'Ashadha Shukla Pratipada', event: 'Ashadhi Ekadashi approaching', icon: '🕉️' },
-                { faith: 'Jewish (Hebrew)', date: '17 Tammuz 5786', event: 'Fast of 17th Tammuz', icon: '✡️' },
-              ].map(f => (
+              {faithDates.length > 0 ? faithDates.map(f => (
                 <div key={f.faith} className="rounded-xl p-4 border" style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xl">{f.icon}</span>
                     <span className="text-gray-400 text-xs">{f.faith}</span>
                   </div>
                   <div className="text-white text-sm font-medium">{f.date}</div>
-                  <div className="text-gray-500 text-xs mt-1">{f.event}</div>
+                  <div className="text-gray-500 text-xs mt-1">Today, computed live</div>
                 </div>
-              ))}
+              )) : (
+                <div className="rounded-xl p-4 border col-span-2" style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                  <div className="text-gray-400 text-sm">Today's calendar dates are computed live in your browser.</div>
+                </div>
+              )}
             </div>
           </div>
           {/* National faith pie (Pakistan only) — exact PBS Table 9
@@ -871,39 +1024,43 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} id="news">
           <SectionHeader icon={Newspaper} title={`${country.name} Today`} accent={accent} />
           <p className="text-gray-400 text-sm leading-relaxed mb-5">
-            A snapshot of today's most important headlines from {country.name} and global coverage
-            about the country. The national section covers politics, economy, sports, and culture
-            happening inside {country.name} right now. The global section shows what international
-            media is reporting about {country.name} today.
+            The latest headlines about {country.name}, pulled from the same live news feed
+            that powers the homepage and the city pages, refreshed through the day. If the
+            feed is unavailable, this section says so instead of showing old headlines.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="rounded-2xl p-5 border" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
-              <div className="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: accent }}>🌍 Global news about {country.name}</div>
+          {/* Live feed (GNews via the server wrapper). The previous version
+              of this section rendered hard-coded sample headlines ("PSL
+              2025 playoffs", "International economic outlook for Pakistan
+              2025") that read as current news; they are removed. */}
+          {news && news.length > 0 ? (
+            <div className="rounded-2xl p-5 border mb-4" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+              <div className="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: accent }}>Latest headlines · Live feed</div>
               <div className="space-y-3">
-                {['IMF programme review — decision expected this month',
-                  `${country.name} diplomatic developments in the region`,
-                  `International economic outlook for ${country.name} 2025`].map((h, i) => (
-                  <div key={i} className="flex gap-3 pb-3 border-b border-white/5 last:border-0 last:pb-0">
+                {news.slice(0, 6).map((a, i) => (
+                  <a key={a.id || i} href={a.url} target="_blank" rel="noopener noreferrer"
+                    className="group flex gap-3 pb-3 border-b border-white/5 last:border-0 last:pb-0">
                     <span className="text-gray-600 text-xs mt-0.5 w-3">{i + 1}</span>
-                    <p className="text-gray-300 text-sm leading-snug">{h}</p>
-                  </div>
+                    <span>
+                      <span className="block text-gray-200 text-sm leading-snug group-hover:underline">{a.title}</span>
+                      <span className="block text-gray-500 text-xs mt-1">
+                        {(typeof a.source === 'string' ? a.source : a.source?.name) || 'News source'} · {new Date(a.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </span>
+                    </span>
+                  </a>
                 ))}
               </div>
             </div>
-            <div className="rounded-2xl p-5 border" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
-              <div className="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: accent }}>🏳️ National news</div>
-              <div className="space-y-3">
-                {['PM chairs economic committee meeting',
-                  country.code === 'PK' ? 'PSL 2025 playoffs schedule announced' : 'National sports league latest',
-                  'New infrastructure projects approved across major cities'].map((h, i) => (
-                  <div key={i} className="flex gap-3 pb-3 border-b border-white/5 last:border-0 last:pb-0">
-                    <span className="text-gray-600 text-xs mt-0.5 w-3">{i + 1}</span>
-                    <p className="text-gray-300 text-sm leading-snug">{h}</p>
-                  </div>
-                ))}
-              </div>
+          ) : (
+            <div className="rounded-2xl p-5 border mb-4" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+              <p className="text-gray-400 text-sm leading-relaxed mb-3">
+                Live headlines are unavailable at the moment. The dedicated news page carries
+                the latest coverage for {country.name}.
+              </p>
+              <Link href={`/${country.slug}/news`} className="inline-flex items-center gap-2 text-sm font-medium" style={{ color: accent }}>
+                Go to the {country.name} news page <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
-          </div>
+          )}
         </motion.section>
 
         {/* ── 7. PROVINCES ── */}
@@ -947,6 +1104,29 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
                 />
               </div>
             )}
+            {/* Province population bars — the same PBS Census-2023 Table 1
+                figures as the pie above, drawn as bars so the ranking and
+                scale read at a glance. No new data is introduced. */}
+            {country.code === 'PK' && (
+              <div className="mt-4 rounded-2xl border p-5" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                <div className="text-white font-semibold text-sm mb-1">Province populations at a glance</div>
+                <div className="text-gray-500 text-xs mb-4">PBS Census-2023, Table 1 · Total {PAKISTAN_PROVINCE_TOTAL.toLocaleString('en-US')}</div>
+                {PAKISTAN_PROVINCE_POPULATION.map(s => {
+                  const pct = (s.value / PAKISTAN_PROVINCE_TOTAL) * 100;
+                  return (
+                    <div key={s.label} className="mb-3 last:mb-0">
+                      <div className="flex justify-between gap-3 text-xs mb-1">
+                        <span className="text-gray-300">{s.label}</span>
+                        <span className="text-gray-400">{s.value.toLocaleString('en-US')} · {pct.toFixed(1)}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-white/10">
+                        <div className="h-2 rounded-full" style={{ width: `${pct}%`, backgroundColor: accent }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
             <p className="text-gray-500 text-sm leading-relaxed mt-5">
               {generateProvincesAfter(country.name)}
             </p>
@@ -960,20 +1140,26 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               {generateEconomyDashboardParagraph(country.name)}
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-              {[
-                { label: 'GDP', value: economy.gdp, color: '#34d399' },
-                { label: 'Growth Rate', value: economy.growth, color: '#60a5fa' },
-                { label: 'Inflation', value: economy.inflation, color: '#f87171' },
-                { label: 'Unemployment', value: economy.unemployment, color: '#fb923c' },
-              ].map(stat => (
-                <div key={stat.label} className="rounded-2xl p-5 border text-center"
-                  style={{ backgroundColor: cardBg, borderColor: `${stat.color}30` }}>
-                  <div className="text-2xl font-bold mb-1" style={{ color: stat.color }}>{stat.value}</div>
-                  <div className="text-gray-500 text-xs">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+            {wbStatList.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+                {wbStatList.map(stat => {
+                  const STAT_COLORS: Record<string, string> = { gdp: '#34d399', growth: '#60a5fa', inflation: '#f87171', unemployment: '#fb923c' };
+                  const color = STAT_COLORS[stat.key] || accent;
+                  return (
+                    <div key={stat.key} className="rounded-2xl p-5 border text-center"
+                      style={{ backgroundColor: cardBg, borderColor: `${color}30` }}>
+                      <div className="text-2xl font-bold mb-1" style={{ color }}>{stat.value}</div>
+                      <div className="text-gray-500 text-xs">{stat.label}</div>
+                      <div className="text-gray-600 text-[11px] mt-1">World Bank {stat.year}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm leading-relaxed mb-5">
+                The latest World Bank economy figures are temporarily unavailable.
+              </p>
+            )}
             {economy.exports && (
               <div className="rounded-2xl p-5 border mb-4" style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
                 <div className="text-white font-semibold text-sm mb-3">What {country.name} sells to the world</div>
@@ -1024,16 +1210,28 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
               ))}
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {filteredPersonalities.map(p => (
-                <div key={p.id} className="rounded-2xl p-5 border text-center"
-                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
-                  <div className="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center text-2xl"
-                    style={{ backgroundColor: `${accent}20`, border: `2px solid ${accent}40` }}>👤</div>
-                  <div className="text-white font-semibold text-sm leading-tight">{p.name}</div>
-                  <div className="text-xs mt-1" style={{ color: accent }}>{p.profession}</div>
-                  <div className="text-gray-500 text-xs mt-2 leading-snug">{p.achievements}</div>
-                </div>
-              ))}
+              {filteredPersonalities.map(p => {
+                const photo = PERSONALITY_PHOTOS[p.name];
+                return (
+                  <div key={p.id} className="rounded-2xl border overflow-hidden text-center"
+                    style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                    {photo ? (
+                      <div className="h-52 overflow-hidden">
+                        <img loading="lazy" decoding="async" src={photo} alt={p.name}
+                          className="w-full h-full object-cover" style={{ objectPosition: 'center 20%' }} />
+                      </div>
+                    ) : (
+                      <div className="w-14 h-14 rounded-full mx-auto mt-5 mb-1 flex items-center justify-center text-2xl"
+                        style={{ backgroundColor: `${accent}20`, border: `2px solid ${accent}40` }}>👤</div>
+                    )}
+                    <div className="p-4">
+                      <div className="text-white font-semibold text-sm leading-tight">{p.name}</div>
+                      <div className="text-xs mt-1" style={{ color: accent }}>{p.profession}</div>
+                      <div className="text-gray-500 text-xs mt-2 leading-snug">{p.achievements}</div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mt-5">
               {generatePersonalitiesAfter(country.name)}
@@ -1051,15 +1249,18 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {landmarks.map(lm => (
                 <div key={lm.id} className="group rounded-2xl overflow-hidden border hover:border-opacity-60 transition-all"
-                  style={{ borderColor: cardBorder }}>
-                  <div className="relative h-40 overflow-hidden">
+                  style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
+                  {/* Photo carries no overlays (G3): the UNESCO chip and the
+                      name sit below the photo, not on it. */}
+                  <div className="h-40 overflow-hidden">
                     <img loading="lazy" decoding="async" src={lm.image} alt={lm.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,15,30,0.85), transparent)' }} />
-                    {lm.unesco && <div className="absolute top-3 left-3 bg-amber-500/90 text-black text-xs font-bold px-2 py-0.5 rounded-full">UNESCO</div>}
-                    <div className="absolute bottom-3 left-3">
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <div className="text-white font-bold text-sm">{lm.name}</div>
-                      <div className="text-gray-300 text-xs">{lm.city} · {lm.era}</div>
+                      {lm.unesco && <span className="bg-amber-500/90 text-black text-[10px] font-bold px-2 py-0.5 rounded-full">UNESCO World Heritage</span>}
                     </div>
+                    <div className="text-gray-400 text-xs mt-1">{lm.city} · {lm.era} · {lm.type}</div>
                   </div>
                 </div>
               ))}
@@ -1123,15 +1324,25 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
               current economy and the basis for long-term development.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {resources.map(res => (
-                <div key={res.name} className="rounded-2xl p-5 border"
-                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
-                  <div className="text-3xl mb-3">{res.icon}</div>
-                  <div className="text-white font-semibold text-sm mb-1">{res.name}</div>
-                  <div className="text-xs mb-2 font-medium" style={{ color: accent }}>{res.rank}</div>
-                  <div className="text-gray-400 text-xs leading-relaxed">{res.description}</div>
-                </div>
-              ))}
+              {resources.map(res => {
+                const photo = RESOURCE_PHOTOS[res.name];
+                return (
+                  <div key={res.name} className="rounded-2xl border overflow-hidden"
+                    style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                    {photo && (
+                      <div className="h-36 overflow-hidden">
+                        <img loading="lazy" decoding="async" src={photo} alt={res.name} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      {!photo && <div className="text-3xl mb-3">{res.icon}</div>}
+                      <div className="text-white font-semibold text-sm mb-1">{res.name}</div>
+                      <div className="text-xs mb-2 font-medium" style={{ color: accent }}>{res.rank}</div>
+                      <div className="text-gray-400 text-xs leading-relaxed">{res.description}</div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </motion.section>
         )}
@@ -1179,15 +1390,25 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
               These are the dishes {country.name} is known for across the world.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {foods.map(food => (
-                <div key={food.name} className="rounded-2xl p-5 border"
-                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
-                  <div className="text-4xl mb-3">{food.emoji}</div>
-                  <div className="text-white font-semibold mb-1">{food.name}</div>
-                  <div className="text-gray-500 text-xs mb-2">{food.origin}</div>
-                  <div className="text-gray-400 text-xs leading-relaxed">{food.description}</div>
-                </div>
-              ))}
+              {foods.map(food => {
+                const photo = FOOD_PHOTOS[food.name];
+                return (
+                  <div key={food.name} className="rounded-2xl border overflow-hidden"
+                    style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                    {photo && (
+                      <div className="h-40 overflow-hidden">
+                        <img loading="lazy" decoding="async" src={photo} alt={food.name} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      {!photo && <div className="text-4xl mb-3">{food.emoji}</div>}
+                      <div className="text-white font-semibold mb-1">{food.name}</div>
+                      <div className="text-gray-500 text-xs mb-2">{food.origin}</div>
+                      <div className="text-gray-400 text-xs leading-relaxed">{food.description}</div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </motion.section>
         )}
@@ -1251,15 +1472,31 @@ export default function CountryPage({ wbPopulation }: { wbPopulation?: { value: 
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <SectionHeader icon={Globe} title={`${country.name} Neighbouring Countries`} accent={accent} />
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
-              {neighbors.map(n => (
-                <Link key={n.slug} href={`/${n.slug}`}
-                  className="group rounded-2xl p-5 border text-center hover:border-opacity-60 transition-all"
-                  style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
-                  <div className="text-4xl mb-2">{n.flag}</div>
-                  <div className="text-white font-semibold text-sm group-hover:underline">{n.name}</div>
-                  <div className="text-gray-500 text-xs mt-1">Border: {n.border}</div>
-                </Link>
-              ))}
+              {neighbors.map(n => {
+                const flagFile = NEIGHBOUR_FLAG_FILES[n.slug];
+                const photo = NEIGHBOUR_PHOTOS[n.slug];
+                return (
+                  <Link key={n.slug} href={`/${n.slug}`}
+                    className="group rounded-2xl border overflow-hidden text-center hover:border-opacity-60 transition-all"
+                    style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
+                    {photo && (
+                      <div className="h-28 overflow-hidden">
+                        <img loading="lazy" decoding="async" src={photo} alt={n.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      {flagFile ? (
+                        <img loading="lazy" decoding="async" src={`/images/flags/${flagFile}.png`} alt={`Flag of ${n.name}`}
+                          className="h-9 w-auto mx-auto mb-3 rounded-[3px] border border-white/15" />
+                      ) : (
+                        <div className="text-4xl mb-2">{n.flag}</div>
+                      )}
+                      <div className="text-white font-semibold text-sm group-hover:underline">{n.name}</div>
+                      <div className="text-gray-500 text-xs mt-1">Border: {n.border}</div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
             <p className="text-gray-500 text-sm leading-relaxed">
               {generateEmergencyAfter(country.name)}

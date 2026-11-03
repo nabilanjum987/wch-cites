@@ -11,12 +11,33 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 const WONDERS = [
-  { name: 'Great Wall of China',    country: 'China',  emoji: '🏯', color: '#CC0000', desc: '21,196 km of ancient wall' },
-  { name: 'Petra',                  country: 'Jordan', emoji: '🏛️', color: '#C4A265', desc: 'Rose-red city in rock' },
-  { name: 'Christ the Redeemer',    country: 'Brazil', emoji: '✝️', color: '#009C3B', desc: '38 m statue above Rio' },
-  { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', color: '#D9A028', desc: 'Inca citadel in the Andes' },
-  { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Mayan pyramid city' },
-  { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Amphitheatre from 80 AD' },
+  { name: 'Great Wall of China',    country: 'China',  emoji: '🏯', color: '#CC0000', desc: '21,196 km of ancient wall',
+    // Card photo (2026-11-03): the wall sweeping over the ridges at
+    // Jinshanling (Commons: "The Great Wall of China at
+    // Jinshanling-edit.jpg", Severin.stalder, CC BY-SA 3.0).
+    img: '/images/home/great-wall.webp', imgAlt: 'The Great Wall of China winding over green mountain ridges at Jinshanling', credit: 'Photo: Severin.stalder · CC BY-SA 3.0' },
+  { name: 'Petra',                  country: 'Jordan', emoji: '🏛️', color: '#C4A265', desc: 'Rose-red city in rock',
+    // Card photo (2026-11-03): the Monastery (Ad Deir), Petra's great
+    // rock-cut facade shown whole (Commons: "Al Deir Petra.JPG",
+    // Azurfrog, CC BY-SA 3.0).
+    img: '/images/home/petra.webp', imgAlt: 'The Monastery (Ad Deir) at Petra, its whole rock-cut facade carved into rose-red sandstone', credit: 'Photo: Azurfrog · CC BY-SA 3.0' },
+  { name: 'Christ the Redeemer',    country: 'Brazil', emoji: '✝️', color: '#009C3B', desc: '38 m statue above Rio',
+    // Card photo (2026-11-03): the full statue on its pedestal above
+    // Rio (Commons: "1 cristor redentor 2014.jpg", Chensiyuan,
+    // CC BY-SA 4.0).
+    img: '/images/home/christ-redeemer.webp', imgAlt: 'Christ the Redeemer, the full statue with outstretched arms on Corcovado above Rio de Janeiro', credit: 'Photo: Chensiyuan · CC BY-SA 4.0' },
+  { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', color: '#D9A028', desc: 'Inca citadel in the Andes',
+    // Card photo (2026-11-03): the whole citadel below Huayna Picchu
+    // (Commons: "Machu Picchu, 2023 (012).jpg", Draceane, CC BY-SA 4.0).
+    img: '/images/home/machu-picchu.webp', imgAlt: 'Machu Picchu, the Inca citadel in full below the peak of Huayna Picchu in the Andes', credit: 'Photo: Draceane · CC BY-SA 4.0' },
+  { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Mayan pyramid city',
+    // Card photo (2026-11-03): El Castillo pyramid seen whole
+    // (Commons: "Chichen Itza 3.jpg", Daniel Schwen, CC BY-SA 4.0).
+    img: '/images/home/chichen-itza.webp', imgAlt: 'El Castillo, the step pyramid of Chichen Itza, seen whole under a blue sky', credit: 'Photo: Daniel Schwen · CC BY-SA 4.0' },
+  { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Amphitheatre from 80 AD',
+    // Card photo (2026-11-03): the full oval amphitheatre from the
+    // plaza (Commons: "Colosseo 2020.jpg", FeaturedPics, CC BY-SA 4.0).
+    img: '/images/home/colosseum.webp', imgAlt: 'The Colosseum in Rome, the full oval amphitheatre seen from the plaza', credit: 'Photo: FeaturedPics · CC BY-SA 4.0' },
   { name: 'Taj Mahal',              country: 'India',  emoji: '🕌', color: '#FF9933', desc: 'Marble tomb in Agra', href: '/wonders/taj-mahal',
     // Polish Card 4: the published wonder's card carries its real photo
     // (image bank: "Taj Mahal (Edited).jpeg", Yann Forget, CC BY-SA 4.0).
@@ -66,10 +87,11 @@ export default function FeaturedWonders() {
         <div ref={trackRef} className="flex gap-4" style={{ width: 'max-content' }}>
           {doubled.map((w, i) => {
             // Stage 3 card standard (2026-11-03): a visual zone on
-            // top (the Taj Mahal's real photo, or a plain emoji glyph
-            // on the card tint for wonders with no photo yet) and ALL
-            // data below it. Nothing sits on the photo: the mosque
-            // emoji that used to overlay the Taj Mahal photo is gone.
+            // top (each wonder's real photo; the emoji glyph remains
+            // only as a fallback for a future wonder added without
+            // one) and ALL data below it. Nothing sits on the photo:
+            // the mosque emoji that used to overlay the Taj Mahal
+            // photo is gone.
             const card = (
               <div className="rounded-2xl overflow-hidden border h-full"
                 style={{ borderColor: `${w.color}40`, background: `linear-gradient(135deg, ${w.color}20, var(--bg))` }}>

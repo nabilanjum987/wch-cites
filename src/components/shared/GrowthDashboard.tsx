@@ -32,7 +32,7 @@ function GrowthChart({
     return (
       <div className="rounded-2xl border border-white/8 p-5">
         <h3 className="font-bold text-white mb-3">{title}</h3>
-        <p className="text-sm text-gray-500">10-year trend data is temporarily unavailable.</p>
+        <p className="text-sm text-gray-500">Trend data is temporarily unavailable.</p>
       </div>
     );
   }
@@ -49,7 +49,12 @@ function GrowthChart({
   return (
     <div className="rounded-2xl border border-white/8 p-5">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-bold text-white">{title}</h3>
+        <div>
+          <h3 className="font-bold text-white">{title}</h3>
+          {/* Honest range label: first to last year actually returned by
+              the World Bank for this series. */}
+          <div className="text-gray-500 text-xs mt-0.5">{earliest.year} to {latest.year} · World Bank</div>
+        </div>
         {pctChange !== null && (
           <span
             className="text-xs font-semibold px-2 py-1 rounded-full"

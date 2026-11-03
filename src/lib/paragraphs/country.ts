@@ -43,7 +43,7 @@ export function generateFactsAfter(country: string): string {
 
 export function generateLiveDataParagraph(country: string): string {
   const { month, year } = now();
-  return `The live data strip above pulls together ${country}'s currency exchange rate, GDP, and inflation figures into a single condensed view, giving the fastest possible read on current economic conditions without navigating to the dedicated Rates or Economy pages elsewhere on this site. These three figures are deliberately chosen because they shift at different speeds — currency rates can move daily, while GDP and inflation reflect slower, more structural trends — together giving a layered view of ${country}'s economy at this moment in ${month} ${year}. The prayer time shown alongside reflects the current schedule in ${country}'s capital specifically.`;
+  return `The live data strip above pulls together ${country}'s currency exchange rate, GDP, and inflation figures into a single condensed view, giving the fastest possible read on current economic conditions without navigating to the dedicated Rates or Economy pages elsewhere on this site. These three figures are deliberately chosen because they shift at different speeds: currency rates can move daily, while GDP and inflation reflect slower, more structural trends, together giving a layered view of ${country}'s economy at this moment in ${month} ${year}. The economy figures are the World Bank's latest published values, each labelled with its data year in the Economy section below.`;
 }
 
 export function generateLiveDataAfter(country: string): string {
