@@ -7,17 +7,17 @@ import type { ZodiacSignData } from '@/types/horoscope';
  * above Affiliates. One H2 per page plus two H3 AEO questions, each answered
  * directly underneath in 50–70 words. Copy uses only the sign's own dates,
  * element and ruling planet (from src/types/horoscope.ts) plus what the
- * page's own Daily / Weekly tabs actually show, no invented figures, no
+ * page's own Daily / Weekly tabs actually show — no invented figures, no
  * dated forecast claims, and readings are framed as entertainment throughout.
  *
- * Targeting (owner's locked keyword model, 3 Nov 2026): every sign's
- * title and H1 are "<Sign> Horoscope Today". The blocks below carry the
- * flank terms as H2 sections only: easy signs repeat the head as an H2
- * Q&A block, and the other signs carry their flank (Tomorrow / Weekly /
- * Love) as the H2. Tomorrow flanks are answered honestly: the page has
- * no separate dated tomorrow forecast, so the answer points at the
- * Weekly Forecast tab (which covers the week ahead) and the Daily tab's
- * refresh the next morning.
+ * Targeting split (dispatch):
+ * - Easy signs (Low head terms): H2 = "<Sign> Horoscope Today".
+ * - Hard signs: the FULL flank phrase ONLY as the H2 below (e.g.
+ *   "Gemini Horoscope Tomorrow") — never in the title, description or H1,
+ *   and the flank itself never as H1 or title. Tomorrow flanks are answered
+ *   honestly: the page has no separate dated tomorrow forecast, so the
+ *   answer points at the Weekly Forecast tab (which covers the week ahead)
+ *   and the Daily tab's refresh the next morning.
  */
 
 type Faq = { q: string; a: string };
@@ -83,7 +83,7 @@ function piscesLoveBlock(m: ZodiacSignData): SeoBlock {
       },
       {
         q: `Who is ${m.name} most compatible with today?`,
-        a: `Today's Compatibility card on the Daily tab names ${m.name}'s best match and its challenging sign for today, both derived from today's computed readings. The Compatibility Finder tool on this page also compares ${m.name} with any sign you choose, with strengths and challenges for the pair. Treat the result as entertainment, since real compatibility depends on far more than sun signs alone.`,
+        a: `Today's Compatibility card on the Daily tab names ${m.name}'s best match and its challenging sign for today, both derived from today's computed readings. The Find Your Compatibility tool further down the page also compares ${m.name} with any sign you choose, with strengths and challenges for the pair. Treat the result as entertainment, since real compatibility depends on far more than sun signs alone.`,
       },
     ],
   };

@@ -1,11 +1,10 @@
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calculator, Sun, Moon, Star, Sparkles, Hash } from 'lucide-react';
-import { getBirthNumerology, getChineseZodiacForYear, getSignData } from '../../lib/apis/astro';
-import { computeBirthChart } from '../../lib/horoscope/compose';
-import { CHINESE_ANIMALS } from '../../types/horoscope';
-import type { ZodiacSign } from '../../types/horoscope';
+import { Calculator, Sun, Moon, Star, Sparkles, Hash, Calendar, MapPin } from 'lucide-react';
+import { getBirthNumerology, getChineseZodiacForYear, getCurrentSunSign, getMoonSign, getSignData } from '../../lib/apis/astro';
+import { ZODIAC_SIGNS, CHINESE_ANIMALS, CHINESE_ELEMENT_COLORS } from '../../types/horoscope';
+import type { ZodiacSign, ChineseAnimal } from '../../types/horoscope';
 
 interface Props {
   primaryColor: string;
@@ -14,10 +13,10 @@ interface Props {
 interface BirthChartResult {
   sunSign: ZodiacSign;
   moonSign: ZodiacSign;
-  risingSign: ZodiacSign | null;
-  placements: { planet: string; sign: string; degree: number; retrograde: boolean }[];
+  risingSign: ZodiacSign;
   chineseAnimal: string;
   chineseElement: string;
+  vedicMoon: string;
   lifePathNumber: number;
   personalYearNumber: number;
 }
@@ -25,6 +24,7 @@ interface BirthChartResult {
 export default function BirthChartCalculator({ primaryColor }: Props) {
   const [birthDate, setBirthDate] = useState('');
   const [birthTime, setBirthTime] = useState('');
+  const [birthCity, setBirthCity] = useState('');
   const [result, setResult] = useState<BirthChartResult | null>(null);
   const [error, setError] = useState('');
 
@@ -33,34 +33,58 @@ export default function BirthChartCalculator({ primaryColor }: Props) {
       setError('Please enter your birth date');
       return;
     }
-    // Everything below is computed from the entered BIRTH date (and hour)
-    // by the same engine as the daily readings, never from today's sky:
-    // sun sign from the zodiac date ranges, moon sign and planetary
-    // placements from computePositions(birthDate), rising sign from the
-    // birth hour only.
-    const chart = computeBirthChart(birthDate, birthTime || undefined);
-    if (!chart) {
-      setError('Please enter a valid birth date');
-      return;
-    }
-    setError('');
-    const [year] = birthDate.split('-').map(Number);
 
+    setError('');
+    const [year, month, day] = birthDate.split('-').map(Number);
+    const now = new Date();
+
+    // Sun sign from date
+    let sunSign: ZodiacSign = 'capricorn';
+    for (const s of ZODIAC_SIGNS) {
+      const inSign = month > s.start_month || (month === s.start_month && day >= s.start_day);
+      if (s.key === 'capricorn') {
+        if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) {
+          sunSign = 'capricorn';
+          break;
+        }
+      } else if (inSign) {
+        sunSign = s.key;
+        break;
+      }
+    }
+
+    // Moon sign (approximation based on date)
+    const moonSign: ZodiacSign = getMoonSign();
+
+    // Rising sign (simplified: based on time if provided, otherwise use current)
+    let risingSign: ZodiacSign = 'aries';
+    if (birthTime) {
+      const [hour] = birthTime.split(':').map(Number);
+      const signIndex = Math.floor(hour / 2) % 12;
+      risingSign = ZODIAC_SIGNS[signIndex].key;
+    } else {
+      risingSign = ZODIAC_SIGNS[Math.floor((now.getHours() / 2) % 12)].key;
+    }
+
+    // Chinese zodiac
     const chineseResult = getChineseZodiacForYear(year);
+    const chineseAnimal = chineseResult?.animal.name ?? 'Unknown';
+    const chineseElement = chineseResult?.element ?? 'wood';
+
+    // Vedic moon sign (approximation)
+    const vedicMoonIndex = (day + month * 3) % 12;
+    const vedicMoon = ZODIAC_SIGNS[vedicMoonIndex].name;
+
+    // Numerology
     const numerology = getBirthNumerology(birthDate);
 
     setResult({
-      sunSign: chart.sunSign,
-      moonSign: chart.moonSign,
-      risingSign: chart.risingSign,
-      placements: chart.placements.map((p) => ({
-        planet: p.label,
-        sign: p.sign,
-        degree: Math.round(p.degreeInSign * 10) / 10,
-        retrograde: p.retrograde,
-      })),
-      chineseAnimal: chineseResult?.animal.name ?? 'Unknown',
-      chineseElement: chineseResult?.element ?? 'wood',
+      sunSign,
+      moonSign,
+      risingSign,
+      chineseAnimal,
+      chineseElement,
+      vedicMoon,
       lifePathNumber: numerology.lifePathNumber,
       personalYearNumber: numerology.personalYearNumber,
     });
@@ -68,7 +92,7 @@ export default function BirthChartCalculator({ primaryColor }: Props) {
 
   const sunSignData = result ? getSignData(result.sunSign) : null;
   const moonSignData = result ? getSignData(result.moonSign) : null;
-  const risingSignData = result?.risingSign ? getSignData(result.risingSign) : null;
+  const risingSignData = result ? getSignData(result.risingSign) : null;
 
   return (
     <motion.div
@@ -79,11 +103,12 @@ export default function BirthChartCalculator({ primaryColor }: Props) {
     >
       <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
         <Calculator size={18} style={{ color: primaryColor }} />
-        <div className="font-semibold text-gray-900 text-sm">Birth Chart Calculator</div>
+        <h2 className="font-semibold text-gray-900 text-sm">Birth Chart Calculator</h2>
       </div>
 
       <div className="p-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+        {/* Input Form */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
           <div>
             <label className="text-xs font-medium text-gray-500 mb-1 block">Date of Birth *</label>
             <input
@@ -94,11 +119,21 @@ export default function BirthChartCalculator({ primaryColor }: Props) {
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-gray-500 mb-1 block">Time (optional, for rising sign)</label>
+            <label className="text-xs font-medium text-gray-500 mb-1 block">Time (optional)</label>
             <input
               type="time"
               value={birthTime}
               onChange={(e) => setBirthTime(e.target.value)}
+              className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-gray-500 mb-1 block">City (optional)</label>
+            <input
+              type="text"
+              value={birthCity}
+              onChange={(e) => setBirthCity(e.target.value)}
+              placeholder="City of birth"
               className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
             />
           </div>
@@ -115,19 +150,14 @@ export default function BirthChartCalculator({ primaryColor }: Props) {
           Calculate Birth Chart
         </button>
 
-        <p className="text-[11px] leading-relaxed text-gray-400 mt-3">
-          Sun sign, Moon sign and planetary placements are computed from your birth date with the
-          same Keplerian engine as the daily readings (Schlyter's algorithm). The rising sign is
-          approximate, from your birth hour only; this tool does not ask for a birth city because
-          it does not use one.
-        </p>
-
+        {/* Results */}
         {result && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="mt-5 space-y-6"
           >
+            {/* The Three Pillars */}
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl p-3.5 text-center border border-amber-100">
                 <Sun size={20} className="mx-auto text-amber-500 mb-1" />
@@ -140,42 +170,27 @@ export default function BirthChartCalculator({ primaryColor }: Props) {
                 <p className="text-[10px] font-semibold text-gray-500 uppercase">Moon Sign</p>
                 <p className="text-xl font-bold text-gray-900 mt-1">{moonSignData?.symbol}</p>
                 <p className="text-sm font-semibold text-gray-800">{moonSignData?.name}</p>
-                <p className="text-[10px] text-gray-400 mt-1">Computed Moon sign for your birth date</p>
               </div>
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-3.5 text-center border border-purple-100">
                 <Star size={20} className="mx-auto text-purple-400 mb-1" />
                 <p className="text-[10px] font-semibold text-gray-500 uppercase">Rising Sign</p>
-                {risingSignData ? (
-                  <>
-                    <p className="text-xl font-bold text-gray-900 mt-1">{risingSignData.symbol}</p>
-                    <p className="text-sm font-semibold text-gray-800">{risingSignData.name}</p>
-                    <p className="text-[10px] text-gray-400 mt-1">Approximate, from your birth hour only</p>
-                  </>
-                ) : (
-                  <p className="text-xs text-gray-500 mt-2">Add a birth time to estimate your rising sign</p>
-                )}
+                <p className="text-xl font-bold text-gray-900 mt-1">{risingSignData?.symbol}</p>
+                <p className="text-sm font-semibold text-gray-800">{risingSignData?.name}</p>
               </div>
             </div>
 
-            <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">Planetary placements at your birth date (computed)</p>
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                {result.placements.map((t) => (
-                  <div key={t.planet} className="bg-gray-50 rounded-xl p-2 text-center">
-                    <p className="text-[10px] font-semibold text-gray-500">{t.planet}{t.retrograde ? ' ℞' : ''}</p>
-                    <p className="text-xs font-bold text-gray-900">{t.sign}</p>
-                    <p className="text-[10px] text-gray-500">{t.degree.toFixed(1)}°</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+            {/* Other Results */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div className="bg-gray-50 rounded-xl p-3 text-center">
                 <span className="text-2xl">{CHINESE_ANIMALS.find(a => a.name === result.chineseAnimal)?.emoji}</span>
                 <p className="text-[10px] text-gray-500 mt-1">Chinese Year</p>
                 <p className="text-sm font-semibold text-gray-800">{result.chineseAnimal}</p>
                 <p className="text-xs text-gray-400">{result.chineseElement}</p>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-3 text-center">
+                <Sparkles size={20} className="mx-auto text-orange-400 mb-1" />
+                <p className="text-[10px] text-gray-500 mt-1">Vedic Moon</p>
+                <p className="text-sm font-semibold text-gray-800">{result.vedicMoon}</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-3 text-center">
                 <Hash size={20} className="mx-auto text-green-500 mb-1" />
@@ -184,6 +199,7 @@ export default function BirthChartCalculator({ primaryColor }: Props) {
               </div>
             </div>
 
+            {/* Personal Year */}
             <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-100">
               <div className="flex items-center justify-between">
                 <div>

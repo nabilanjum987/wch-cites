@@ -2800,15 +2800,30 @@ async function getOceanFromDb(slug: string): Promise<Ocean | null> {
 }
 
 export async function getOcean(slug: string): Promise<Ocean | null> {
-  const fromDb = await getOceanFromDb(slug);
-  if (fromDb) return fromDb;
-  // Baked fallback: published first, then the BUILT (not switched-on)
+  // Baked record: published first, then the BUILT (not switched-on)
   // batch-1 oceans, pages render for QA; the hub never lists them.
-  return (
+  const baked =
     PUBLISHED_OCEANS.find((o) => o.slug === slug) ??
     BUILT_OCEANS.find((o) => o.slug === slug) ??
-    null
-  );
+    null;
+  const fromDb = await getOceanFromDb(slug);
+  const resolved = fromDb ?? baked;
+  if (!resolved) return null;
+  // DB-twin fix (3 Nov 2026): the oceans table has no sampling-point
+  // columns, so a DB-served record never carries sampleLat/sampleLng.
+  // In production the polar pages therefore sampled their ice-covered
+  // representative points and rendered "Feed unavailable", while the
+  // baked path sampled the nearest open water. Overlay the baked
+  // record's sampling point whenever the resolved record lacks one,
+  // so the Arctic and Southern pages sample open water regardless of
+  // source; the page labels the offset point wherever figures appear.
+  if (resolved.sampleLat === undefined || resolved.sampleLng === undefined) {
+    if (baked && baked.sampleLat !== undefined && baked.sampleLng !== undefined) {
+      resolved.sampleLat = resolved.sampleLat ?? baked.sampleLat;
+      resolved.sampleLng = resolved.sampleLng ?? baked.sampleLng;
+    }
+  }
+  return resolved;
 }
 
 export async function getPublishedOceans(): Promise<Ocean[]> {

@@ -74,7 +74,7 @@ export default function CompatibilityFinder({ primaryColor }: Props) {
     >
       <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
         <Users size={18} style={{ color: primaryColor }} />
-        <div className="font-semibold text-gray-900 text-sm">Compatibility Finder</div>
+        <h2 className="font-semibold text-gray-900 text-sm">Compatibility Finder</h2>
       </div>
 
       <div className="p-5">

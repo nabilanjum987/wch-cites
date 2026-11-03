@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Computed transits (Round 2, R8), REAL planetary positions, no randomness.
+// Computed transits (Round 2, R8) — REAL planetary positions, no randomness.
 //
 // Method: the standard low-precision geocentric ecliptic longitudes of Paul
 // Schlyter's "How to compute planetary positions" (the widely used amateur/
@@ -12,7 +12,7 @@
 //      perturbation terms (Sun's anomaly Ms, Moon's anomaly Mm, mean
 //      elongation D, argument of latitude F).
 // Accuracy is arcminute-class for the Sun and inner planets and within a
-// few tenths of a degree worst-case for the Moon and outers, far inside
+// few tenths of a degree worst-case for the Moon and outers — far inside
 // the 30° sign buckets and the 6–8° aspect orbs used below. Positions are
 // LABELLED computed everywhere they are shown; this is astronomy in
 // service of an entertainment feature, and the page says so.
@@ -143,14 +143,14 @@ function moonLongitude(d: number): number {
   let lon = rev(deg(Math.atan2(yh, xh)));
   // Principal perturbation terms (Schlyter): Ms, Mm, D, F in degrees.
   // D (mean elongation) and F (argument of latitude) are DERIVED from the
-  // same elements used above, Lm (Moon mean longitude) = N + w + M and
-  // Ls (Sun mean longitude) = Ms + w_sun, so the perturbation phases are
+  // same elements used above — Lm (Moon mean longitude) = N + w + M and
+  // Ls (Sun mean longitude) = Ms + w_sun — so the perturbation phases are
   // consistent with the geometric position by construction. (Schlyter's
   // tabulated D/F constants belong to a different epoch convention than
   // his element set; mixing the two produced degree-scale phase errors in
   // validation. The derived form was validated against the independent
-  // synodic phase calculation in src/lib/apis/astro.ts, elongations agree
-  // to under a degree at equal instants, and against the 2027-08-02 solar
+  // synodic phase calculation in src/lib/apis/astro.ts — elongations agree
+  // to under a degree at equal instants — and against the 2027-08-02 solar
   // eclipse and the 2000-01-06 new moon.)
   const Ms = rev(356.047 + 0.9856002585 * d);
   const Mm = rev(el.M);
@@ -191,7 +191,7 @@ function longitudeOf(planet: PlanetKey, d: number, sunLon: number): number {
   const earthLon = rev(sunLon + 180);
   // Earth's heliocentric distance ≈ 1 AU (Schlyter uses the Sun's r; the
   // longitude-only computation below uses unit Earth vector, standard for
-  // sign-level work, the resulting longitude error stays well under the
+  // sign-level work — the resulting longitude error stays well under the
   // aspect orb for all planets except Venus/Mercury at extremes, and the
   // full r-weighted form is used here to keep even those tight.)
   const sunE = eccentricAnomaly(rev(356.047 + 0.9856002585 * d), 0.016709 - 1.151e-9 * d);
@@ -309,7 +309,7 @@ export interface DerivedDaily {
 const clamp15 = (v: number) => Math.max(1, Math.min(5, Math.round(v)));
 
 /**
- * The derivation, every field a documented function of the computed
+ * The derivation — every field a documented function of the computed
  * positions (see the R8 evidence pack for the plain-language version):
  * - meters: 3 + 0.9·(harmonious strength) − 0.9·(tense strength) over the
  *   aspects touching the domain's planets, strength = 1 − orb/maxOrb.

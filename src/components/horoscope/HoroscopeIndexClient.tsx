@@ -11,7 +11,6 @@ import ChineseZodiacSection from './ChineseZodiacSection';
 import LifePathNumerology from './LifePathNumerology';
 import Affiliates from './Affiliates';
 import type { ZodiacSign } from '@/types/horoscope';
-import { HUB_FAQS, HOROSCOPE_METHOD_NOTE } from '@/lib/horoscope/hub-faqs';
 
 const ZODIAC_SIGNS = [
   { slug: 'aries',       symbol: '♈', name: 'Aries',       dates: 'Mar 21 – Apr 19', element: 'Fire',  color: '#FF4B4B' },
@@ -87,7 +86,6 @@ export default function HoroscopeIndexClient() {
             <h2 className="text-xl font-bold text-white">Sky Right Now</h2>
           </div>
           <SkyRightNowWrapper primaryColor="#7c3aed" />
-          <p className="text-xs text-gray-500 leading-relaxed mt-3">{HOROSCOPE_METHOD_NOTE}</p>
         </section>
 
         {/* Moon Calendar */}
@@ -138,7 +136,7 @@ export default function HoroscopeIndexClient() {
           />
         </section>
 
-        {/* A1: hub AEO section, H2 + H3 questions, each answered directly
+        {/* A1: hub AEO section — H2 + H3 questions, each answered directly
             underneath in 50–70 words. No new design language: reuses the
             section heading / body styles already used on this page. */}
         <section>
@@ -147,14 +145,19 @@ export default function HoroscopeIndexClient() {
             <h2 className="text-xl font-bold text-white">Horoscope Today: Questions Answered</h2>
           </div>
           <div className="space-y-6">
-            {HUB_FAQS.map((f) => (
-              <div key={f.q}>
-                <h3 className="text-base font-semibold text-white mb-2">{f.q}</h3>
-                <p className="text-gray-300 leading-relaxed text-sm">{f.a}</p>
-              </div>
-            ))}
+            <div>
+              <h3 className="text-base font-semibold text-white mb-2">What is today&apos;s horoscope?</h3>
+              <p className="text-gray-300 leading-relaxed text-sm">Today&apos;s horoscope is a daily astrological reading for each of the twelve zodiac signs, covering love, career, finance, health and spirituality. On this page, choose your sign to open its daily reading, with star ratings, lucky number and colour, and compatibility for today. Readings are generated from computed planetary positions and are for entertainment only, not professional advice.</p>
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-white mb-2">How do I find my sign&apos;s horoscope today?</h3>
+              <p className="text-gray-300 leading-relaxed text-sm">Find your birth date range in the Choose Your Sign grid, then open that sign&apos;s page for its daily reading, weekly forecast and monthly outlook. The Daily tab shows today&apos;s star ratings, lucky elements and compatibility, while the Weekly tab covers the week ahead. If you are on a date boundary, check both neighbouring signs, since sign dates follow the traditional zodiac calendar.</p>
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-white mb-2">Are horoscope readings accurate?</h3>
+              <p className="text-gray-300 leading-relaxed text-sm">Horoscope readings are entertainment, not measured predictions: they translate traditional astrological associations and today&apos;s computed planetary positions into guidance for the day. Treat strong or weak ratings as prompts for reflection, not as facts about what will happen. For decisions about health, money or relationships, rely on qualified professional advice rather than any horoscope page.</p>
+            </div>
           </div>
-          <p className="text-xs text-gray-500 leading-relaxed mt-4">{HOROSCOPE_METHOD_NOTE}</p>
         </section>
 
         <Affiliates primaryColor="#7c3aed" />

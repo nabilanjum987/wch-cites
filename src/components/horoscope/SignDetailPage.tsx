@@ -6,18 +6,18 @@ import {
   Hash, Palette, Smile, Users, Sun, Moon, DollarSign,
   Compass, Clock, Calendar, Globe, User, CheckCircle, XCircle
 } from 'lucide-react';
-import type { ZodiacSign, DailyReading, WeeklyForecast, MonthlyForecast } from '../../types/horoscope';
+import type { ZodiacSign, DailyReading, WeeklyForecast, MonthlyForecast, SignsCompatibility } from '../../types/horoscope';
 import { ZODIAC_SIGNS, ELEMENT_COLORS, ELEMENT_BG, ELEMENT_TEXT, FAMOUS_PEOPLE } from '../../types/horoscope';
-import { fetchDailyReading, fetchWeeklyForecast, fetchMonthlyForecast, getSignData } from '../../lib/apis/astro';
-import Link from 'next/link';
+import { fetchDailyReading, fetchWeeklyForecast, fetchMonthlyForecast, fetchSignsCompatibility, getSignData } from '../../lib/apis/astro';
 
 interface Props {
   sign: ZodiacSign;
   onBack: () => void;
   primaryColor: string;
-  // H1 override: sign pages pass "<Sign> Horoscope Today" for every sign
-  // (owner's locked keyword model, 3 Nov 2026). Default preserves the
-  // legacy HoroscopePage.tsx usage.
+  // A1: H1 override. Easy signs pass "<Sign> Horoscope Today" (their Low head
+  // term); hard signs pass nothing, so the H1 stays the bare sign name and
+  // the head term is never targeted in an H1. Default preserves the legacy
+  // HoroscopePage.tsx usage.
   heading?: string;
 }
 
@@ -41,6 +41,7 @@ const METRIC_CONFIG = [
 
 export default function SignDetailPage({ sign, onBack, primaryColor, heading }: Props) {
   const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
+  const [compatSign, setCompatSign] = useState<ZodiacSign | null>(null);
 
   const signData = useMemo(() => getSignData(sign), [sign]);
   const reading: DailyReading = useMemo(() => fetchDailyReading(sign), [sign]);
@@ -55,6 +56,12 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
   const currentIndex = allSigns.findIndex(s => s.key === sign);
   const prevSign = allSigns[(currentIndex - 1 + 12) % 12];
   const nextSign = allSigns[(currentIndex + 1) % 12];
+
+  const [sign1Select, setSign1Select] = useState<ZodiacSign>(sign);
+  const [sign2Select, setSign2Select] = useState<ZodiacSign>(compatSignData?.key ?? 'taurus');
+  const compatibilityResult: SignsCompatibility | null = useMemo(() => {
+    return fetchSignsCompatibility(sign1Select, sign2Select);
+  }, [sign1Select, sign2Select]);
 
   return (
     <div style={{ backgroundColor: "#0a0f1e", minHeight: "100vh" }} className="font-[Inter,sans-serif]">
@@ -191,7 +198,7 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
                     <h2 className="font-bold text-gray-900 text-sm">Today's Computed Transits</h2>
                   </div>
                   <p className="text-xs text-gray-500 mb-4">
-                    Real planetary positions for today (12:00 UTC), computed, not generated text. Your lucky
+                    Real planetary positions for today (12:00 UTC), computed — not generated text. Your lucky
                     number, colour, time, direction and the meters above are derived from these longitudes and
                     their aspects by the fixed rules noted below.
                   </p>
@@ -302,6 +309,86 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
           )}
         </AnimatePresence>
 
+        {/* Find Your Match */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Heart size={18} style={{ color: primaryColor }} />
+            <h2 className="font-bold text-gray-900 text-sm">Find Your Compatibility</h2>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div className="flex-1">
+              <label className="text-xs font-medium text-gray-500 mb-1 block">First Sign</label>
+              <select
+                value={sign1Select}
+                onChange={(e) => setSign1Select(e.target.value as ZodiacSign)}
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm"
+              >
+                {ZODIAC_SIGNS.map((s) => (
+                  <option key={s.key} value={s.key}>{s.symbol} {s.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="text-xs font-medium text-gray-500 mb-1 block">Second Sign</label>
+              <select
+                value={sign2Select}
+                onChange={(e) => setSign2Select(e.target.value as ZodiacSign)}
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm"
+              >
+                {ZODIAC_SIGNS.map((s) => (
+                  <option key={s.key} value={s.key}>{s.symbol} {s.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          {compatibilityResult && (
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  {ZODIAC_SIGNS.find(s => s.key === compatibilityResult.sign1)?.symbol}
+                  <span className="font-semibold text-gray-800">
+                    {ZODIAC_SIGNS.find(s => s.key === compatibilityResult.sign1)?.name}
+                  </span>
+                  <span className="text-gray-400">+</span>
+                  {ZODIAC_SIGNS.find(s => s.key === compatibilityResult.sign2)?.symbol}
+                  <span className="font-semibold text-gray-800">
+                    {ZODIAC_SIGNS.find(s => s.key === compatibilityResult.sign2)?.name}
+                  </span>
+                </div>
+                <div
+                  className="text-xl font-bold"
+                  style={{ color: compatibilityResult.percentage >= 70 ? '#22C55E' : compatibilityResult.percentage >= 50 ? '#EAB308' : '#EF4444' }}
+                >
+                  {compatibilityResult.percentage}%
+                </div>
+              </div>
+              <p className="text-xs text-gray-600 mb-3">{compatibilityResult.description}</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase mb-1">Strengths</p>
+                  <ul className="space-y-1">
+                    {compatibilityResult.strengths.map((s, i) => (
+                      <li key={i} className="text-xs text-gray-700 flex items-center gap-1">
+                        <CheckCircle size={10} className="text-green-500" /> {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase mb-1">Challenges</p>
+                  <ul className="space-y-1">
+                    {compatibilityResult.challenges.map((c, i) => (
+                      <li key={i} className="text-xs text-gray-700 flex items-center gap-1">
+                        <XCircle size={10} className="text-amber-500" /> {c}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Sign Profile */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5">
           <div className="flex items-center gap-2 mb-4">
@@ -333,14 +420,14 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
 
         {/* Navigate Signs */}
         <div className="grid grid-cols-2 gap-3">
-          <Link href={`/horoscope/${prevSign.key}`} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-left hover:shadow-md transition-shadow group block">
+          <button onClick={() => {/* Navigate to prevSign */}} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-left hover:shadow-md transition-shadow group">
             <p className="text-xs text-gray-400 mb-1">Previous</p>
             <p className="font-bold text-gray-900 text-sm flex items-center gap-2">{prevSign.symbol} {prevSign.name}</p>
-          </Link>
-          <Link href={`/horoscope/${nextSign.key}`} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-left hover:shadow-md transition-shadow group block">
+          </button>
+          <button onClick={() => {/* Navigate to nextSign */}} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-left hover:shadow-md transition-shadow group">
             <p className="text-xs text-gray-400 mb-1">Next</p>
             <p className="font-bold text-gray-900 text-sm flex items-center gap-2">{nextSign.symbol} {nextSign.name}</p>
-          </Link>
+          </button>
         </div>
       </div>
     </div>

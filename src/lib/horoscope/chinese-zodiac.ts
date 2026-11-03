@@ -1,4 +1,4 @@
-// Chinese zodiac, dated lunar-year ranges, NOT a flat January–December mapping.
+// Chinese zodiac — dated lunar-year ranges, NOT a flat January–December mapping.
 //
 // A Chinese year starts on Chinese New Year (late January / mid-February on the
 // Gregorian calendar) and ends the day before the next Chinese New Year, so a
@@ -13,7 +13,7 @@
 //
 // Traits are the traditional associations already used elsewhere in this
 // codebase (src/types/horoscope.ts CHINESE_ANIMALS), labelled "traditionally
-// associated with" in the UI, not predictions.
+// associated with" in the UI — not predictions.
 
 export interface ChineseYearRange {
   animal: string;
@@ -75,7 +75,7 @@ function isValidIsoDate(value: string): boolean {
 /**
  * Look up the Chinese zodiac animal for a Gregorian birth date (YYYY-MM-DD)
  * using the dated lunar-year ranges above. Returns null for an invalid date
- * or a date outside the covered ranges, never a guessed boundary.
+ * or a date outside the covered ranges — never a guessed boundary.
  */
 export function getChineseZodiacForDate(isoDate: string): ChineseYearRange | null {
   if (!isValidIsoDate(isoDate)) return null;

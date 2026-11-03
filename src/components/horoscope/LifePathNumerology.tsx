@@ -16,14 +16,14 @@ export default function LifePathNumerology() {
         <p className="text-sm text-gray-700 leading-relaxed mb-4">
           <strong>Method (stated, standard reduction):</strong> add every digit of the full birth
           date (month + day + year). If the total is a single digit, that is the life-path number.
-          Otherwise add its digits again and keep reducing, except that the master numbers 11, 22
+          Otherwise add its digits again and keep reducing — except that the master numbers 11, 22
           and 33 are not reduced further. The calculator below shows every step, so the arithmetic
           can be checked by hand.
         </p>
 
         <div className="bg-gray-50 rounded-xl p-4 mb-5">
           <label htmlFor="lifepath-birth-date" className="block text-sm font-semibold text-gray-900 mb-2">
-            Find your life-path number, enter a birth date
+            Find your life-path number — enter a birth date
           </label>
           <input
             id="lifepath-birth-date"
@@ -36,7 +36,7 @@ export default function LifePathNumerology() {
             <div className="mt-3">
               <p className="text-sm text-gray-800 leading-relaxed">
                 <strong>Life-path number: {result.number}</strong>
-                {result.isMaster ? ' (master number, not reduced further)' : ''}, {meaning.title}.
+                {result.isMaster ? ' (master number — not reduced further)' : ''} — {meaning.title}.
               </p>
               <p className="text-sm text-gray-700 leading-relaxed mt-1">
                 Working: {result.steps}
@@ -56,8 +56,8 @@ export default function LifePathNumerology() {
           <strong>Worked examples (hand-verified):</strong>
         </p>
         <ul className="text-sm text-gray-700 leading-relaxed list-disc pl-5 mb-5 space-y-1">
-          <li>15 Jul 1990 → 0+7+1+5+1+9+9+0 = 32 → 3+2 = 5, life path 5 (Freedom).</li>
-          <li>2 Jan 1990 → 0+1+0+2+1+9+9+0 = 22, master number 22, not reduced to 4.</li>
+          <li>15 Jul 1990 → 0+7+1+5+1+9+9+0 = 32 → 3+2 = 5 — life path 5 (Freedom).</li>
+          <li>2 Jan 1990 → 0+1+0+2+1+9+9+0 = 22 — master number 22, not reduced to 4.</li>
         </ul>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -71,7 +71,7 @@ export default function LifePathNumerology() {
         </div>
 
         <p className="text-xs text-gray-500 leading-relaxed mt-4">
-          Traditional associations only, the number is a computation from a date, not a prediction
+          Traditional associations only — the number is a computation from a date, not a prediction
           about a person. Meanings 1–9 follow the traditional keywords already used on this site;
           11, 22 and 33 are the standard traditional master-number readings.
         </p>

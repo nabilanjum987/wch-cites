@@ -1,10 +1,10 @@
-// Life-path numerology, a stated, standard reduction method, computed
+// Life-path numerology — a stated, standard reduction method, computed
 // honestly from the date the visitor enters. Nothing here is a prediction:
 // numbers are labelled with their traditional associations only.
 //
 // METHOD (Pythagorean life path, as commonly stated): add every digit of the
 // full birth date (month + day + year). If the total is a single digit, that
-// is the life path. Otherwise add its digits again, and keep reducing,
+// is the life path. Otherwise add its digits again, and keep reducing —
 // EXCEPT that the master numbers 11, 22 and 33 are not reduced further.
 // That master-number exception is part of the stated method, not an
 // after-the-fact adjustment: e.g. a digit total of 22 stays 22.

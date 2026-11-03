@@ -17,7 +17,7 @@ export function getTarotCardByIndex(index: number): TarotCard {
 
 export function getShareText(card: TarotCard): string {
   if (card.arcana === 'major') {
-    return `Today's tarot card is ${card.name}, ${card.keywords.join(', ')} `;
+    return `Today's tarot card is ${card.name} — ${card.keywords.join(', ')} `;
   }
   const suit = card.suit;
   const emoji = suit === 'wands' ? '\uD83D\uDD2B' : suit === 'cups' ? '\uD83C\uDF76' : suit === 'swords' ? '\uD83D\uDDE1' : '\uD83D\uDCB0';
