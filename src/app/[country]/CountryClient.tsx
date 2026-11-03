@@ -190,7 +190,7 @@ const LANDMARKS: Record<string, Landmark[]> = {
   PK: [
     { id: '1', name: 'Badshahi Mosque', type: 'Religious', city: 'Lahore', image: 'https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Mughal 1673' },
     { id: '2', name: 'Mohenjo-daro', type: 'Archaeological', city: 'Sindh', image: 'https://images.pexels.com/photos/2846217/pexels-photo-2846217.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: '3000 BCE' },
-    { id: '3', name: 'K2', type: 'Mountain', city: 'Gilgit-Baltistan', image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Natural Wonder' },
+    { id: '3', name: 'K2', type: 'Mountain', city: 'Gilgit-Baltistan', image: '', unesco: false, era: 'Natural Wonder' },
     { id: '4', name: 'Shalimar Gardens', type: 'Gardens', city: 'Lahore', image: 'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1641' },
     { id: '5', name: 'Lahore Fort', type: 'Fort', city: 'Lahore', image: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1566' },
     { id: '6', name: 'Faisal Mosque', type: 'Religious', city: 'Islamabad', image: 'https://images.pexels.com/photos/208371/pexels-photo-208371.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Modern 1986' },
@@ -414,6 +414,20 @@ const EMERGENCY: Record<string, EmergencyItem[]> = {
 //     Gaurav Dhwaj Khadka, CC BY-SA 4.0
 //   country-pakistan/resource-khewra-salt.webp —
 //     File:Khewra Salt Mines 03.jpg, Shahzaib Damn Cruze, CC BY-SA 4.0
+//   country-pakistan/heritage-badshahi-mosque.webp —
+//     File:Badshahi mosque of Lahore, Pakistan.jpg, Zapata1000,
+//     CC BY-SA 4.0 (media registry verified)
+//   country-pakistan/heritage-mohenjo-daro.webp —
+//     File:Mohenjo-daro.jpg, Saqib Qayyum, CC BY-SA 3.0
+//   country-pakistan/heritage-shalimar-gardens.webp —
+//     File:Shalimar Gardens, Lahore.jpg, M Umair Astro, CC BY-SA 4.0
+//     (media registry verified)
+//   country-pakistan/heritage-lahore-fort.webp —
+//     File:Lahore Fort view from Baradari.jpg, Rohaan Bhatti,
+//     CC BY-SA 3.0 (Commons API extmetadata verified)
+//   country-pakistan/heritage-faisal-mosque.webp —
+//     File:Faisal Mosque in Islamabad.jpg, Guilhem Vellut, CC BY 2.0
+//     (media registry verified)
 //   home28/ctry-india.webp (neighbour card) — Red Fort: Syed Sajidul Islam,
 //     CC BY-SA 4.0
 //   flags/{af,ir}.png — national flags, public domain (vendored from
@@ -441,6 +455,21 @@ const PERSONALITY_PHOTOS: Record<string, string> = {
   'Abdul Sattar Edhi': '/images/personalities/abdul-sattar-edhi.webp',
 };
 
+// Object positions measured per portrait (3 Nov 2026) so the complete
+// head — hair to chin — stays inside the 4/5 frame: Iqbal's head spans
+// y 0–83% of his portrait, Wasim's y 2–80%, Imran's y 1–79%, Nusrat's
+// head sits right-of-centre in a square photo (x 19–94%).
+const PERSONALITY_POS: Record<string, string> = {
+  'Quaid-e-Azam Jinnah': '50% 0%',
+  'Allama Iqbal': '50% 0%',
+  'Imran Khan': '50% 0%',
+  'Wasim Akram': '50% 0%',
+  'Nusrat Fateh Ali Khan': '80% 50%',
+  'Dr Abdus Salam': '50% 50%',
+  'Malala Yousafzai': '50% 20%',
+  'Abdul Sattar Edhi': '50% 0%',
+};
+
 const FOOD_PHOTOS: Record<string, string> = {
   Biryani: '/images/country-pakistan/food-biryani.webp',
   'Chapli Kebab': '/images/country-pakistan/food-chapli-kebab.webp',
@@ -449,6 +478,22 @@ const FOOD_PHOTOS: Record<string, string> = {
 
 const RESOURCE_PHOTOS: Record<string, string> = {
   Salt: '/images/country-pakistan/resource-khewra-salt.webp',
+};
+
+const HERITAGE_PHOTOS: Record<string, string> = {
+  'Badshahi Mosque': '/images/country-pakistan/heritage-badshahi-mosque.webp',
+  'Mohenjo-daro': '/images/country-pakistan/heritage-mohenjo-daro.webp',
+  'Shalimar Gardens': '/images/country-pakistan/heritage-shalimar-gardens.webp',
+  'Lahore Fort': '/images/country-pakistan/heritage-lahore-fort.webp',
+  'Faisal Mosque': '/images/country-pakistan/heritage-faisal-mosque.webp',
+};
+
+const HERITAGE_PHOTO_CREDITS: Record<string, string> = {
+  'Badshahi Mosque': 'Zapata1000 · CC BY-SA 4.0, via Wikimedia Commons',
+  'Mohenjo-daro': 'Saqib Qayyum · CC BY-SA 3.0, via Wikimedia Commons',
+  'Shalimar Gardens': 'M Umair Astro · CC BY-SA 4.0, via Wikimedia Commons',
+  'Lahore Fort': 'Rohaan Bhatti · CC BY-SA 3.0, via Wikimedia Commons',
+  'Faisal Mosque': 'Guilhem Vellut · CC BY 2.0, via Wikimedia Commons',
 };
 
 const NEIGHBOUR_FLAG_FILES: Record<string, string> = {
@@ -1216,9 +1261,9 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
                   <div key={p.id} className="rounded-2xl border overflow-hidden text-center"
                     style={{ backgroundColor: cardBg, borderColor: `${accent}25` }}>
                     {photo ? (
-                      <div className="h-52 overflow-hidden">
+                      <div className="aspect-[4/5] overflow-hidden">
                         <img loading="lazy" decoding="async" src={photo} alt={p.name}
-                          className="w-full h-full object-cover" style={{ objectPosition: 'center 20%' }} />
+                          className="w-full h-full object-cover" style={{ objectPosition: PERSONALITY_POS[p.name] ?? '50% 0%' }} />
                       </div>
                     ) : (
                       <div className="w-14 h-14 rounded-full mx-auto mt-5 mb-1 flex items-center justify-center text-2xl"
@@ -1247,14 +1292,24 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
               {generatePlacesParagraph(country.name)}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {landmarks.map(lm => (
+              {landmarks.map(lm => {
+                const heritagePhoto = country.code === 'PK' ? HERITAGE_PHOTOS[lm.name] : undefined;
+                const imageSrc = heritagePhoto ?? lm.image;
+                return (
                 <div key={lm.id} className="group rounded-2xl overflow-hidden border hover:border-opacity-60 transition-all"
                   style={{ backgroundColor: cardBg, borderColor: cardBorder }}>
                   {/* Photo carries no overlays (G3): the UNESCO chip and the
                       name sit below the photo, not on it. */}
-                  <div className="h-40 overflow-hidden">
-                    <img loading="lazy" decoding="async" src={lm.image} alt={lm.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
+                  {imageSrc && (
+                    <div className="h-40 overflow-hidden">
+                      <img loading="lazy" decoding="async" src={imageSrc} alt={lm.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                  )}
+                  {heritagePhoto && (
+                    <div className="px-4 pt-2 text-[10px] text-gray-500">
+                      Photo: {HERITAGE_PHOTO_CREDITS[lm.name]}
+                    </div>
+                  )}
                   <div className="p-4">
                     <div className="flex items-center gap-2 flex-wrap">
                       <div className="text-white font-bold text-sm">{lm.name}</div>
@@ -1263,7 +1318,8 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
                     <div className="text-gray-400 text-xs mt-1">{lm.city} · {lm.era} · {lm.type}</div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mt-5">
               {generatePlacesAfter(country.name)}

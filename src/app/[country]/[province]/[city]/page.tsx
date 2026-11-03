@@ -717,13 +717,18 @@ export default async function CityPage({
                 <div className="flex gap-3 pb-2" style={{ minWidth: 'max-content' }}>
                   {hourlyList.map((h, i) => {
                     const t = h.dt_txt as string;
-                    const time = new Date(t).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' });
                     const hTemp = (h.main as Record<string, number>)?.temp;
                     const hDesc = (h.weather as Array<Record<string, string>>)?.[0]?.main;
                     // Entry instant: the forecast's Unix dt (UTC) is
                     // unambiguous; dt_txt is UTC text, parsed as UTC
                     // in the fallback (never as local time).
                     const entryMs = typeof h.dt === 'number' ? h.dt * 1000 : new Date(t.replace(' ', 'T') + 'Z').getTime();
+                    // The label is the CITY's local time for that instant.
+                    // (Owner catch, 3 Nov 2026: without the timezone this
+                    // rendered UTC wall-clock labels on the server, so the
+                    // 08:00 city entry wore a "03:00 AM" label and its sun
+                    // icon looked like a night bug.)
+                    const time = new Date(entryMs).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone });
                     const isNight = isNightAt(entryMs, (h.sys as Record<string, string> | undefined)?.pod);
                     const icon =
                       hDesc === 'Rain' || hDesc === 'Drizzle' ? '🌧'
@@ -1066,9 +1071,9 @@ export default async function CityPage({
               </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               {(citySlug === 'lahore' ? [
-                { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal', img: '/images/home28/pers-iqbal.webp', credit: 'Iqbal Academy Pakistan · public domain', pos: 'object-[center_3%]' },
-                { name: 'Faiz Ahmed Faiz', role: 'Poet', slug: 'faiz-ahmed-faiz', img: '/images/personalities/faiz-ahmed-faiz.webp', credit: 'Amarjit Chandan · CC BY-SA 4.0', pos: 'object-top' },
-                { name: 'Nusrat Fateh Ali Khan', role: 'Qawwali Singer', slug: 'nusrat-fateh-ali-khan', img: '/images/personalities/nusrat-fateh-ali-khan.webp', credit: 'Thomas Rome · CC BY 2.0', pos: 'object-top' },
+                { name: 'Allama Iqbal', role: 'Poet-Philosopher', slug: 'allama-iqbal', img: '/images/home28/pers-iqbal.webp', credit: 'Iqbal Academy Pakistan · public domain', pos: 'object-top' },
+                { name: 'Faiz Ahmed Faiz', role: 'Poet', slug: 'faiz-ahmed-faiz', img: '/images/personalities/faiz-ahmed-faiz.webp', credit: 'Amarjit Chandan · CC BY-SA 4.0', pos: 'object-right' },
+                { name: 'Nusrat Fateh Ali Khan', role: 'Qawwali Singer', slug: 'nusrat-fateh-ali-khan', img: '/images/personalities/nusrat-fateh-ali-khan.webp', credit: 'Thomas Rome · CC BY 2.0', pos: 'object-[80%_center]' },
                 { name: 'Wasim Akram', role: 'Cricketer', slug: 'wasim-akram', img: '/images/personalities/wasim-akram.webp', credit: 'Arijit Basak · CC BY 2.0', pos: 'object-top' },
               ] : []).map((p) => (
                 <a
@@ -1076,7 +1081,7 @@ export default async function CityPage({
                   href={`/personalities/${p.slug}`}
                   className="rounded-xl overflow-hidden border border-white/10 hover:border-green-500/40 transition block" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[4/5] overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={p.img} alt={`Portrait of ${p.name}`} loading="lazy" decoding="async" className={`absolute inset-0 h-full w-full object-cover ${p.pos}`} />
                   </div>
