@@ -29,10 +29,9 @@ const SIGN_COLORS: Record<string, string> = {
 
 const VALID_SIGNS = ZODIAC_SIGNS.map(s => s.key);
 
-// A1: easy signs (Low head terms) get "<Sign> Horoscope Today" as the page H1;
-// hard signs keep the bare sign name as H1 so their head term is never
-// targeted in an H1 (their flank lives only in SignSeoSection's H2/H3s).
-const EASY_SIGNS = new Set(['aries', 'taurus', 'cancer', 'leo', 'scorpio', 'capricorn']);
+// Targeting (owner's locked keyword model, 3 Nov 2026): ALL 12 signs get
+// "<Sign> Horoscope Today" as the page H1; the flank terms stay as H2
+// sections inside SignSeoSection.
 
 export default function HoroscopeSignPage() {
   const router = useRouter();
@@ -67,7 +66,7 @@ export default function HoroscopeSignPage() {
           sign={sign}
           onBack={() => router.push('/horoscope')}
           primaryColor={primaryColor}
-          heading={EASY_SIGNS.has(sign) ? `${signMeta.name} Horoscope Today` : undefined}
+          heading={`${signMeta.name} Horoscope Today`}
         />
         <p className="text-gray-400 leading-relaxed text-sm mt-4">
           {generateSignOverviewAfter(signMeta.name, signMeta.element)}

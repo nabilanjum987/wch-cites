@@ -77,7 +77,7 @@ export interface DailyReading {
   compatibility: ZodiacSign;
   challenging: ZodiacSign;
   /** Computed transit table (Round 2, R8): real planetary positions from
-   *  src/lib/transits.ts — present on readings produced by the engine. */
+   *  src/lib/transits.ts, present on readings produced by the engine. */
   transits?: { planet: string; sign: string; degree: number; retrograde: boolean }[];
   transit_aspects?: string[];
   transit_method?: string;
@@ -117,7 +117,7 @@ export const ZODIAC_SIGNS: ZodiacSignData[] = [
   { key: 'leo',         name: 'Leo',         symbol: '\u264C', dates: 'Jul 23 – Aug 22',  element: 'fire',  ruling_planet: 'Sun',     start_month: 7,  start_day: 23, end_month: 8,  end_day: 22 },
   { key: 'virgo',       name: 'Virgo',       symbol: '\u264D', dates: 'Aug 23 – Sep 22',  element: 'earth', ruling_planet: 'Mercury', start_month: 8,  start_day: 23, end_month: 9,  end_day: 22 },
   { key: 'libra',       name: 'Libra',       symbol: '\u264E', dates: 'Sep 23 – Oct 22',  element: 'air',   ruling_planet: 'Venus',   start_month: 9,  start_day: 23, end_month: 10, end_day: 22 },
-  { key: 'scorpio',     name: 'Scorpio',     symbol: '\u264F', dates: 'Oct 23 – Nov 21',  element: 'water', ruling_planet: 'Pluto',   start_month: 10, start_day: 23, end_month: 11, end_day: 21 },
+  { key: 'scorpio',     name: 'Scorpio',     symbol: '\u264F', dates: 'Oct 23 – Nov 21',  element: 'water', ruling_planet: 'Mars (traditional)',   start_month: 10, start_day: 23, end_month: 11, end_day: 21 },
   { key: 'sagittarius', name: 'Sagittarius', symbol: '\u2650', dates: 'Nov 22 – Dec 21',  element: 'fire',  ruling_planet: 'Jupiter', start_month: 11, start_day: 22, end_month: 12, end_day: 21 },
   { key: 'capricorn',   name: 'Capricorn',   symbol: '\u2651', dates: 'Dec 22 – Jan 19',  element: 'earth', ruling_planet: 'Saturn',  start_month: 12, start_day: 22, end_month: 1,  end_day: 19 },
   { key: 'aquarius',    name: 'Aquarius',    symbol: '\u2652', dates: 'Jan 20 – Feb 18',  element: 'air',   ruling_planet: 'Uranus',  start_month: 1,  start_day: 20, end_month: 2,  end_day: 18 },
@@ -145,12 +145,12 @@ export const FAMOUS_PEOPLE: Record<ZodiacSign, string[]> = {
   gemini:      ['Marilyn Monroe', 'Kanye West', 'Angelina Jolie', 'Prince'],
   cancer:      ['Tom Cruise', 'Princess Diana', 'Nelson Mandela', 'Elon Musk'],
   leo:         ['Barack Obama', 'Jennifer Lopez', 'Madonna', 'Usain Bolt'],
-  virgo:       ['Beyonce', 'Michael Jackson', 'Mother Teresa', 'Keanu Reeves'],
+  virgo:       ['Beyoncé', 'Michael Jackson', 'Mother Teresa', 'Keanu Reeves'],
   libra:       ['Will Smith', 'Mahatma Gandhi', 'Kim Kardashian', 'John Lennon'],
   scorpio:     ['Bill Gates', 'Marie Curie', 'Leonardo DiCaprio', 'Katy Perry'],
   sagittarius: ['Taylor Swift', 'Winston Churchill', 'Brad Pitt', 'Mark Twain'],
   capricorn:   ['Michelle Obama', 'Isaac Newton', 'Martin Luther King Jr.', 'Kate Middleton'],
-  aquarius:    ['Oprah Winfrey', 'Abraham Lincoln', 'The Weeknd', 'Ed Sheran'],
+  aquarius:    ['Oprah Winfrey', 'Abraham Lincoln', 'The Weeknd', 'Ed Sheeran'],
   pisces:      ['Albert Einstein', 'Rihanna', 'Steve Jobs', 'George Washington'],
 };
 

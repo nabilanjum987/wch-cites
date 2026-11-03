@@ -53,7 +53,7 @@ export default function MoonCalendar({ primaryColor }: Props) {
       <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Moon size={18} style={{ color: primaryColor }} />
-          <h2 className="font-semibold text-gray-900 text-sm">Moon Calendar</h2>
+          <div className="font-semibold text-gray-900 text-sm">Moon Calendar</div>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={prevMonth} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">

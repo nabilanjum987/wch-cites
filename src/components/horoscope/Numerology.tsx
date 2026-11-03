@@ -31,7 +31,7 @@ export default function Numerology({ primaryColor }: Props) {
     >
       <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
         <Hash size={18} style={{ color: primaryColor }} />
-        <h2 className="font-semibold text-gray-900 text-sm">Numerology</h2>
+        <div className="font-semibold text-gray-900 text-sm">Numerology</div>
         <span className="text-xs text-gray-400 ml-auto">{data.date}</span>
       </div>
 
@@ -45,7 +45,7 @@ export default function Numerology({ primaryColor }: Props) {
           </div>
           <div>
             <p className="text-xs text-gray-500 uppercase tracking-wider">Universal Day Number</p>
-            <h3 className="text-2xl font-bold text-gray-900 mt-0.5">{data.meaning}</h3>
+            <div className="text-2xl font-bold text-gray-900 mt-0.5">{data.meaning}</div>
           </div>
         </div>
 

@@ -4,7 +4,8 @@ import type {
   ChineseAnimalData, ChineseZodiacResult, VedicPanchangData, MoonPhaseDay
 } from '../../types/horoscope';
 import { ZODIAC_SIGNS, CHINESE_ANIMALS, CHINESE_ELEMENT_COLORS } from '../../types/horoscope';
-import { deriveDaily, SIGN_RULERS } from '../transits';
+import { deriveDaily, SIGN_RULERS, computePositions } from '../transits';
+import { composeDailyNarrative, computeWeekly, computeMonthly, moonPhaseForDate, sunSignForDate } from '../horoscope/compose';
 
 // ─── moon phase calculation (astronomical approximation) ─────────────────────
 
@@ -46,12 +47,13 @@ export function getMoonCalendar(month?: number, year?: number): MoonPhaseDay[] {
 
   const calendar: MoonPhaseDay[] = [];
   for (let d = 1; d <= daysInMonth; d++) {
-    const date = new Date(y, m, d);
-    const phaseData = getMoonPhaseForDate(date);
+    // Engine-computed phase (Schlyter longitudes, noon UTC), the same
+    // function the hub Sky Right Now panel uses, so both always agree.
+    const phaseData = moonPhaseForDate(new Date(Date.UTC(y, m, d, 12)));
     calendar.push({
-      date,
-      phase: phaseData.phase,
-      phaseName: phaseData.phase_name,
+      date: new Date(y, m, d),
+      phase: phaseData.fraction,
+      phaseName: phaseData.name,
       emoji: phaseData.emoji,
     });
   }
@@ -62,41 +64,17 @@ export function getMoonCalendar(month?: number, year?: number): MoonPhaseDay[] {
 
 export function getCurrentSunSign(): { sign: ZodiacSign; transitionDate: string } {
   const now = new Date();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-
-  let currentSign: ZodiacSign = 'capricorn';
-  let transitionDate = '';
-
-  for (const s of ZODIAC_SIGNS) {
-    const startsAfter = month > s.start_month || (month === s.start_month && day >= s.start_day);
-    if (s.key === 'capricorn') {
-      const inCapricorn = (month === 12 && day >= 22) || (month === 1 && day <= 19);
-      if (inCapricorn) {
-        currentSign = 'capricorn';
-        const aquarius = ZODIAC_SIGNS.find(z => z.key === 'aquarius')!;
-        transitionDate = `${aquarius.start_month}/${aquarius.start_day}`;
-      }
-    } else if (startsAfter) {
-      currentSign = s.key;
-      const idx = ZODIAC_SIGNS.indexOf(s);
-      const next = ZODIAC_SIGNS[(idx + 1) % 12];
-      transitionDate = `${next.start_month}/${next.start_day}`;
-    }
-  }
-
-  return { sign: currentSign, transitionDate };
+  const currentSign = sunSignForDate(now.getMonth() + 1, now.getDate());
+  const idx = ZODIAC_SIGNS.findIndex(z => z.key === currentSign);
+  const next = ZODIAC_SIGNS[(idx + 1) % 12];
+  return { sign: currentSign, transitionDate: `${next.start_month}/${next.start_day}` };
 }
 
 // ─── moon zodiac sign (simplified approximation) ─────────────────────────────
 
-export function getMoonSign(): ZodiacSign {
-  const now = new Date();
-  const epoch = new Date('2024-01-01T00:00:00Z');
-  const daysSince = (now.getTime() - epoch.getTime()) / 86400000;
-  const signIndex = Math.floor((daysSince / 2.5) % 12);
-  const signs: ZodiacSign[] = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
-  return signs[signIndex];
+export function getMoonSign(date: Date = new Date()): ZodiacSign {
+  const moon = computePositions(date).find(p => p.planet === 'moon')!;
+  return moon.signKey as ZodiacSign;
 }
 
 // ─── visible constellation tonight ───────────────────────────────────────────
@@ -159,15 +137,34 @@ export function getUpcomingSkyEvents(): SkyEventData[] {
 // ─── fetch sky right now ─────────────────────────────────────────────────────
 
 export function fetchSkyRightNow(): SkyRightNowData {
-  const moonPhase = getMoonPhaseForDate(new Date());
-  const { sign: sunSign, transitionDate } = getCurrentSunSign();
-  const moonSign = getMoonSign();
+  // Sun and Moon signs come from the same computed engine (Schlyter
+  // Keplerian positions, noon UTC) as the sign pages' transit tables, so
+  // the hub and the sign pages always agree on the same day. The Moon
+  // phase label comes from the computed Sun-Moon elongation via the same
+  // function the Moon calendar uses.
+  const positions = computePositions(new Date());
+  const sun = positions.find(p => p.planet === 'sun')!;
+  const moon = positions.find(p => p.planet === 'moon')!;
+  const moonPhase = moonPhaseForDate(new Date());
+  const sunSign = sun.signKey as ZodiacSign;
+  const moonSign = moon.signKey as ZodiacSign;
+
+  // Next Sun sign change, found by scanning the engine forward.
+  let transitionDate = '';
+  for (let i = 1; i <= 40; i++) {
+    const d = new Date(Date.now() + i * 86400000);
+    const s2 = computePositions(d).find(p => p.planet === 'sun')!;
+    if (s2.signKey !== sunSign) {
+      transitionDate = `${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
+      break;
+    }
+  }
 
   return {
     moon: {
-      phase: moonPhase.phase,
+      phase: moonPhase.fraction,
       illumination: moonPhase.illumination,
-      phase_name: moonPhase.phase_name,
+      phase_name: moonPhase.name,
       moon_sign: moonSign,
       emoji: moonPhase.emoji,
     },
@@ -181,11 +178,16 @@ export function fetchSkyRightNow(): SkyRightNowData {
 // ─── chinese zodiac ──────────────────────────────────────────────────────────
 
 export function getChineseZodiacForYear(birthYear: number): ChineseZodiacResult | null {
-  const animal = CHINESE_ANIMALS.find(a => a.years.includes(birthYear));
+  // The 12 animals repeat in a fixed cycle anchored on 4 CE (a Rat year);
+  // the element follows the 10-year stem cycle, two years per element.
+  // Computed from the birth year itself, so any year resolves and no
+  // single year's forecast text is reused for other years.
+  const animalIndex = (((birthYear - 4) % 12) + 12) % 12;
+  const animal = CHINESE_ANIMALS[animalIndex];
   if (!animal) return null;
 
   const elements: ChineseElement[] = ['wood', 'fire', 'earth', 'metal', 'water'];
-  const elementIndex = Math.floor((birthYear - 4) % 10 / 2);
+  const elementIndex = Math.floor(((((birthYear - 4) % 10) + 10) % 10) / 2);
   const element = elements[elementIndex] ?? 'wood';
 
   const elementEmojis: Record<ChineseElement, string> = {
@@ -205,7 +207,7 @@ export function getChineseZodiacForYear(birthYear: number): ChineseZodiacResult 
     element,
     elementEmoji: elementEmojis[element],
     birthYear,
-    forecast2025: `${animal.forecast_2025} ${elementForecast[element]}`,
+    forecast2025: `${animal.name} is traditionally associated with: ${animal.traits.toLowerCase()}. ${elementForecast[element]}`,
   };
 }
 
@@ -266,84 +268,17 @@ const GEMSTONES: Record<ZodiacSign, string> = {
 
 const DIRECTIONS = ['North', 'Northeast', 'East', 'Southeast', 'South', 'Southwest', 'West', 'Northwest'];
 
-const NARRATIVES: Record<ZodiacSign, string[]> = {
-  aries: [
-    "The cosmos ignites your pioneering spirit today, Aries. Mars fuels your courage, making this an ideal time to initiate projects you've been contemplating. Your natural leadership abilities shine, drawing others to your vision. However, remember that even warriors need rest—pacing yourself ensures you'll have energy for the battles that truly matter. A surprise encounter midday could shift your perspective entirely.",
-    "Today's celestial configuration creates a powerful trine to your sign, energizing your communication sector. Words flow easily, making this perfect for important conversations or presentations. The morning hours favor bold moves, while afternoon brings reflective clarity. Someone from your past may resurface with unexpected news.",
-    "You're operating at peak capacity today, Aries. Your decisiveness cuts through confusion like a blade. Trust your gut instincts—they're aligned with cosmic wisdom right now. Financial matters look promising, especially around mid-afternoon. Channel any restlessness into physical activity rather than impulsive spending.",
-  ],
-  taurus: [
-    "Venus graces your sector of values today, Taurus, bringing harmony to both material and spiritual pursuits. Your famous patience proves its worth as a situation unfolds exactly as you'd hoped it would. The afternoon brings a chance for meaningful connection—whether romance or deep friendship. Your practical wisdom solves a problem that's been puzzling others.",
-    "Stability meets opportunity today. The ground beneath you feels solid, yet doors are opening you hadn't noticed before. Your appreciation for quality helps youspot a genuine investment or relationship opportunity. Evening hours favor luxury and self-care—you've earned it. Family matters bring unexpected joy.",
-    "Your ruling planet Venus forms a supportive aspect that enhances both creativity and romance. Artistic Taureans find their muse cooperative today; those in relationships discover new depths of intimacy. Practical matters also flourish—your methodical approach to a complex project yields breakthrough results. Listen to advice from an elder.",
-  ],
-  gemini: [
-    "Mercury's dance through your sign amplifies your natural curiosity and wit, Gemini. Information flows your way effortlessly, and your ability to connect disparate insights could lead to a breakthrough understanding. Social interactions sparkle with your usual charm, but a deeper conversation reveals something unexpected about a friend or colleague.",
-    "Your twin nature serves you exceptionally well today—you can toggle between detailed analysis and big-picture thinking with remarkable ease. Morning favors communication projects, while afternoon welcomes creative exploration. A sibling or neighbor brings important news. Travel, even local, opens surprising doors.",
-    "The cosmic messenger aligns in your favor, Gemini, making today flow differently—words carry more weight, connections happen more easily. Your adaptability is your superpower now, allowing you to navigate a shifting situation with grace while others struggle. An old idea resurfaces, but now you have the context to understand its true value.",
-  ],
-  cancer: [
-    "The Moon's nurturing energy wraps around you protectively today, Cancer. Your famous intuition is especially sharp, helping you sense the emotional undercurrents in any room. A family matter that's been weighing on you begins to resolve itself. Evening brings a nostalgic moment that proves unexpectedly healing.",
-    "Home is your sanctuary and your strength today. Your ability to create comfort and safety for others opens a door you didn't expect. Financial matters favor patience—a long-term approach yields better results than quick fixes. Your nurturing nature attracts someone who needs exactly your kind of care.",
-    "Emotional depth serves you well today, Cancer. What others dismiss as sentimentality, you recognize as wisdom. Your dreams tonight may carry messages about an ongoing situation. The afternoon brings a chance to deepen a bond with someone you've kept at arm's length. Your home could benefit from a small change that makes a big difference.",
-  ],
-  leo: [
-    "The Sun's golden spotlight finds you naturally today, Leo—no effort required. Your radiance attracts admiration and opportunity in equal measure. Creative projects that have been simmering are ready to show the world. Your generousspirit helps someone who will remember this kindness. Romance glows in the evening hours.",
-    "Your natural charisma reaches peak form today. Leadership opportunities present themselves—some obvious, others disguised as challenges. Trust your dramatic instincts; they know when to take center stage and when to let others shine. A child or young person teaches you something profound. Financial matters look favorable.",
-    "Royalty is earned, not inherited, and today you earn yours, Leo. Your ability to uplift others while pursuing your own goals creates a virtuous cycle. The afternoon brings recognition for past efforts. Love affairs take on a storybook quality—not superficial fantasy, but genuine romance with depth.",
-  ],
-  virgo: [
-    "Mercury sharpens your analytical powers to laser precision today, Virgo. Problems that have resisted solution suddenly reveal their missing pieces. Your attention to detail, far from being nitpicking, saves someone from a costly mistake. Health matters focus on small improvements that compound significantly over time.",
-    "Your dedication to improvement shines today, Virgo—both self-improvement and helping others refine their approach. A work project benefits immensely from your methodical review. Your critical eye, often misunderstood, is recognized today for the gift it truly is. Evening hours favor peaceful domestic rituals.",
-    "Service without sacrifice: that's today's theme for you, Virgo. You can give generously while still maintaining your boundaries. A health routine you've been considering shows promise—research supports your instincts. Your practical wisdom helps a friend sort through excessive options to find what truly fits.",
-  ],
-  libra: [
-    "Venus enhances your natural harmony-seeking today, Libra, making you the peacemaker others turn to in conflicts. Your diplomatic skills prevent a misunderstandings that could have lasting consequences. Aesthetic matters bring joy—whether art, fashion, or beautifying your space. Romance flourishes under today's softer aspects.",
-    "Balance isn't passive, Libra—today it requires active adjustment. You'll know exactly when to speak up and when to hold back, when to push and when to yield. A partnership that's been unbalanced begins to even out. Financial harmony could come through compromise that actually benefits everyone.",
-    "Your gift for seeing all sides reaches new depths today, Libra. While others polarize, you synthesize—and that synthesis is valuable beyond measure. A legal or contractual matter moves toward resolution. Your social circle brings a delightful surprise. Evening favorselegant entertainment or refined romance.",
-  ],
-  scorpio: [
-    "Pluto's transformative power courses through your day, Scorpio. What others fear, you embrace: necessary endings and powerful beginnings. A situation that seemed stuck suddenly shifts. Your penetrating insight sees through pretenses to the truth underneath. This knowledge, used wisely, becomes power.",
-    "The day demands depth that only you can provide, Scorpio. Superficial interactions drain you; meaningful exchanges energize. Someone finally tells you the truth about a matter you've been sensing—and it confirms your instincts. Evening favors privacy and intimate conversation over public appearances.",
-    "Your intensity is an asset today, Scorpio, not something to moderate. Research, investigation, detection—all Scorpio skills that the cosmos activates now. A financial matter involving shared resources shows a path forward. Your ability to keep secrets makes someone trust you with precious information.",
-  ],
-  sagittarius: [
-    "Jupiter expands your horizons today, Sagittarius—in more ways than one. Physical travel could take you somewhere significant; mental journeys prove equally rewarding. Your optimism, far from being blind, is rooted in genuine possibility. Teaching and learning experiences bring mutual rewards. Truth reveals itself.",
-    "Adventure doesn't require leaving home today, Sagittarius—you can find it in ideas, conversations, or even restructuring your daily routine. A philosophical discussion changes your perspective on something you thought you knew. International connections spark joy. Your sense of humor disarms tension effectively.",
-    "Your arrow flies true today, Sagittarius, hitting targets you've been aiming at for some time. The freedom you've been seeking appears, but it may not look like what you expected. A mentor or mentorship opportunity emerges naturally. Evening hours favor big plans and grand visions—share them with kindred spirits.",
-  ],
-  capricorn: [
-    "Saturn rewards your discipline today, Capricorn—results you've been working toward start materializing. Your reputation for reliability brings a serious opportunity your way. Authority figures take notice of your quiet competence. Career matters favor the strategic, long-game approach you excel at.",
-    "Ambition meets opportunity today, Capricorn. Your careful planning pays off, but unexpectedly—results exceed projections. A mentor from your past influences your present thinking. Material matters solidify: property, investments, legacy considerations. Your respect for tradition opens a door to genuine innovation.",
-    "The mountain doesn't look as steep today, Capricorn—you can see the route more clearly. Your pragmatic approach to a sentimental situation helps everyone involved. Family responsibilities and career ambitions find a workable balance. Someone finally acknowledges how much you contribute.",
-  ],
-  aquarius: [
-    "Uranus electrifies your day with unexpected but welcome developments, Aquarius. What you thought was a detour turns out to be a shortcut through new territory. Community and friendship networks activate in your favor—people you've helped before are ready to help you now. Innovation distinguishes your approach from everyone else's.",
-    "Your uniqueness is your strength today, Aquarius—and others finally see it clearly. A group or community project benefits from your vision. Technology or scientific matters hold special promise. An unusual approach to an ordinary problem yields extraordinary results. Romance favors the unconventional.",
-    "The future arrives early today, Aquarius—you feel ahead of the curve in every meaningful way. Your humanitarian instincts guide you to exactly where you're needed without sacrificing your own needs. A social innovation you've proposed gains traction. Independence and connection find surprising synthesis.",
-  ],
-  pisces: [
-    "Neptune opens doors between worlds today, Pisces, and you slip through them with natural grace. Your dreams contain useful information—write them down before they fade. Creative inspiration flows as easily as breathing. Your compassion heals someone who desperately needs it, though you may not know it until later.",
-    "Intuition over intellect today, Pisces—your usual strength reversed. What can't be known logically can be sensed accurately. Water-related matters hold significance. Your ability to dissolve boundaries helps someone stuck in rigid thinking. Artistic pursuits bring both joy and potentially recognition.",
-    "The ocean of the unconscious rises close to the surface today, Pisces, making everything more fluid and meaningful. A creative project that's been eluding you finally takes shape. Your sensitivity to atmosphere helps you avoid a difficult situation. Evening hours favor music, meditation, and mystical exploration.",
-  ],
-};
 
-function seededRandom(seed: number): number {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
-export function fetchDailyReading(sign: ZodiacSign): DailyReading {
-  // Round 2, R8: the daily reading is DERIVED from computed planetary
-  // positions (src/lib/transits.ts) — the previous Math.sin seeded
-  // pseudo-random generator is gone. Every number below is a documented
-  // function of today's real longitudes and aspects; the derivation is
-  // written out in transits.ts and summarised on the sign page itself.
-  const derived = deriveDaily(sign);
-  const narratives = NARRATIVES[sign];
-  const narrative = narratives[derived.narrativeIndex % narratives.length];
-  const byPlanet = new Map(derived.positions.map((p) => [p.planet, p]));
+export function fetchDailyReading(sign: ZodiacSign, date: Date = new Date()): DailyReading {
+  // The daily reading is DERIVED from computed planetary positions
+  // (src/lib/transits.ts). The narrative is COMPOSED from the day's computed
+  // transits by src/lib/horoscope/compose.ts (aspect sentences keyed to the
+  // aspects actually present, the Moon's computed sign and phase, and the
+  // sign ruler's aspects), so the text differs because the sky differs.
+  // There is no static narrative pool and no seeded randomness anywhere in
+  // the daily, weekly or monthly readings.
+  const derived = deriveDaily(sign, date);
+  const narrative = composeDailyNarrative(sign, date);
   const label = (k: string) => derived.positions.find((p) => p.planet === k)?.label ?? k;
   const rulerAspects = derived.aspects
     .filter((a) => a.a === SIGN_RULERS[sign] || a.b === SIGN_RULERS[sign])
@@ -380,97 +315,38 @@ export function fetchDailyReading(sign: ZodiacSign): DailyReading {
 
 // ─── weekly forecast ─────────────────────────────────────────────────────────
 
-export function fetchWeeklyForecast(sign: ZodiacSign): WeeklyForecast {
-  const now = new Date();
-  const dayOfWeek = now.getDay();
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-
-  const signIndex = ZODIAC_SIGNS.findIndex(s => s.key === sign);
-  const weekSeed = now.getFullYear() * 100 + now.getMonth() + signIndex;
-  const r = (offset: number) => seededRandom(weekSeed + offset);
-
-  const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  const bestDays = dayNames.filter((_, i) => r(i + 10) > 0.6).slice(0, 2);
-  const challengingDays = dayNames.filter((_, i) => r(i + 20) < 0.3 && !bestDays.includes(dayNames[i])).slice(0, 1);
-
-  const overall = Math.max(1, Math.min(5, Math.round(r(5) * 4 + 1)));
-
-  const SUMMARIES: Record<ZodiacSign, string> = {
-    aries: 'This week favors bold initiation mid-week, with Tuesday and Wednesday being your power days. Take action before overthinking.',
-    taurus: 'Financial matters come into focus. Patience early in the week yields results by weekend. Avoid impulsive purchases Wednesday.',
-    gemini: 'Communication flows brilliantly. Important conversations succeed, especially Thursday. Social connections bring opportunities.',
-    cancer: 'Family and home matters take precedence. Nurture loved ones and yourself. Weekend brings emotional clarity and bonding.',
-    leo: 'Creative energy peaks this week. Share your ideas boldly. Recognition comes from unexpected quarters on Friday.',
-    virgo: 'Details matter more than usual. Your analytical approach saves the day mid-week. Health improvements show results.',
-    libra: 'Relationships flourish under this week\'s aspects. Harmony comes through compromise that is actually wise strategy.',
-    scorpio: 'Transformation continues. Let go of what no longer serves you. Thursday reveals something previously hidden.',
-    sagittarius: 'Adventure calls, even locally. New perspectives refresh your thinking. Learning something new opens doors.',
-    capricorn: 'Career advancement is favored. Your disciplined approach impresses decision-makers. Friday brings good news.',
-    aquarius: 'Innovation distinguishes you. Community ventures thrive. An unusual collaboration proves surprisingly effective.',
-    pisces: 'Intuition guides you correctly all week. Creative projects flow. Spiritual practices deepen your clarity.',
-  };
-
+export function fetchWeeklyForecast(sign: ZodiacSign, refDate: Date = new Date()): WeeklyForecast {
+  // Aggregated from the daily engine per the monthly framework method:
+  // deriveDaily runs for each of the week's seven days, best and
+  // challenging days are ranked from those computed daily meters and the
+  // aspects to the sign's ruler. No seeded randomness.
+  const w = computeWeekly(sign, refDate);
+  const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
   return {
-    week_start: monday.toLocaleDateString([], { month: 'short', day: 'numeric' }),
-    week_end: sunday.toLocaleDateString([], { month: 'short', day: 'numeric' }),
-    overall,
-    summary: SUMMARIES[sign],
-    best_days: bestDays.length > 0 ? bestDays : ['Wednesday', 'Friday'],
-    challenging_days: challengingDays.length > 0 ? challengingDays : [],
+    week_start: fmt(w.weekStart),
+    week_end: fmt(w.weekEnd),
+    overall: w.overall,
+    summary: w.summary,
+    best_days: w.bestDays,
+    challenging_days: w.challengingDays,
   };
 }
 
 // ─── monthly forecast ─────────────────────────────────────────────────────────
 
-export function fetchMonthlyForecast(sign: ZodiacSign): MonthlyForecast {
-  const now = new Date();
-  const month = now.getMonth();
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const signIndex = ZODIAC_SIGNS.findIndex(s => s.key === sign);
-  const monthSeed = now.getFullYear() * 100 + month + signIndex * 7;
-  const r = (offset: number) => seededRandom(monthSeed + offset);
-
-  const overall = Math.max(1, Math.min(5, Math.round(r(1) * 4 + 1)));
-
-  const HIGHLIGHTS: Record<number, string[]> = {
-    0: ['5th', '12th', '20th', '28th'],
-    1: ['3rd', '14th', '19th', '25th'],
-    2: ['7th', '15th', '21st', '29th'],
-    3: ['4th', '11th', '18th', '26th'],
-    4: ['2nd', '13th', '22nd', '27th'],
-    5: ['6th', '16th', '23rd', '30th'],
-    6: ['1st', '12th', '17th', '24th'],
-    7: ['5th', '14th', '20th', '29th'],
-    8: ['3rd', '11th', '19th', '27th'],
-    9: ['7th', '15th', '22nd', '28th'],
-    10: ['4th', '12th', '18th', '25th'],
-    11: ['2nd', '13th', '21st', '26th'],
-  };
-
-  const MONTH_SUMMARIES: Record<ZodiacSign, string> = {
-    aries: 'This month fuels your pioneering spirit. New projects, especially those involving leadership or physical activity, thrive. The second week is most powerful for initiating.',
-    taurus: 'Material matters come into focus. Financial decisions made carefully at month\'s start. A relationship deepens mid-month. Home improvements bring lasting satisfaction.',
-    gemini: 'Communication dominates this month\'s themes. Important documents, negotiations, or learning ventures succeed. Social connections open unexpected doors.',
-    cancer: 'Emotional foundations strengthen. Family bonds grow through acts of care. A nostalgic moment leads to healing. Financial matters favor traditional approaches.',
-    leo: 'Creativity and romance color this month beautifully. Express yourself boldly. Recognition comes, perhaps from an unexpected quarter. Children or creative projects bring joy.',
-    virgo: 'Details are your domain, and this month rewards your careful attention. Health matters improve with consistency. Work projects gain momentum toward month\'s end.',
-    libra: 'Partnerships are the focus now, both personal and professional. Harmony comes not from avoiding conflict but through gracefully navigating it. Artistic projects flourish.',
-    scorpio: 'Transformation continues its work, sometimes visible, often subtle. Research and investigation reveal valuable truths. Financial matters involving others yield results.',
-    sagittarius: 'Expansion is the month\'s theme—mentally, physically, or spiritually. Travel, even short-distance, refreshes perspective. Teaching or learning proves rewarding.',
-    capricorn: 'Career matters climb steadily. Authority figures respond to your competence. A long-term investment matures. Structure what you\'ve built for lasting impact.',
-    aquarius: 'Innovation leads to breakthrough this month. Community connections prove valuable. An unconventional approach solves what standard methods could not.',
-    pisces: 'Intuition proves remarkably accurate this month. Creative work or spiritual practice deepens. Dreams offer guidance; compassionate acts ripple outward.',
-  };
-
+export function fetchMonthlyForecast(sign: ZodiacSign, refDate: Date = new Date()): MonthlyForecast {
+  // Aggregated from the daily engine per content-bank/horoscope/
+  // monthly-framework.md: the summary is composed from the month's real
+  // computed ingresses, Moon phase dates and strongest days for the sign,
+  // and the overall meter is the mean of the daily meters. No seeded
+  // randomness and no fixed highlight-date table.
+  const m = computeMonthly(sign, refDate);
   return {
-    month: month + 1,
-    month_name: monthNames[month],
-    overall,
-    summary: MONTH_SUMMARIES[sign],
-    highlight_dates: HIGHLIGHTS[month] ?? ['10th', '20th'],
+    month: m.month,
+    month_name: m.monthName,
+    overall: m.overall,
+    summary: m.summary,
+    highlight_dates: m.highlightDates,
   };
 }
 
@@ -493,15 +369,15 @@ const COMPATIBILITY_MATRIX: Record<string, Record<string, number>> = {
 
 const COMPATIBILITY_DESCRIPTIONS: Record<string, string> = {
   fire_fire: 'Two fire signs create passionate energy. Excitement and spontaneity abound, but both mustlearn patience.',
-  fire_earth: 'Fire ignites earth\'s practicality. Together you build lasting structures—but respect each other\'s pace.',
+  fire_earth: 'Fire ignites earth\'s practicality. Together you build lasting structures, but respect each other\'s pace.',
   fire_air: 'Fire and air fuel each other magnificently. Ideas become action; action inspires ideas.',
-  fire_water: 'Fire meets water—steam or warmth depends on approach. Deep emotional lessons await.',
+  fire_water: 'Fire meets water, steam or warmth depends on approach. Deep emotional lessons await.',
   earth_earth: 'Two earth signs build solid foundations. Security and sensuality flourish. Add occasional flexibility.',
   earth_air: 'Earth grounds air\'s ideas; air lifts earth\'s practicality. Balance logic with material results.',
   earth_water: 'Earth and water grow beautiful gardens together. Emotional security meets practical support.',
-  air_air: 'Two air signs create intellectual fireworks. Communication flows endlessly—remember to feel too.',
-  air_water: 'Air and water navigate the depths. Emotional understanding meets mental clarity—embrace both.',
-  water_water: 'Two water signs create deep emotional seas. Intuitive understanding is profound—avoid drowning.',
+  air_air: 'Two air signs create intellectual fireworks. Communication flows endlessly, remember to feel too.',
+  air_water: 'Air and water navigate the depths. Emotional understanding meets mental clarity, embrace both.',
+  water_water: 'Two water signs create deep emotional seas. Intuitive understanding is profound, avoid drowning.',
 };
 
 export function fetchSignsCompatibility(sign1: ZodiacSign, sign2: ZodiacSign): SignsCompatibility {

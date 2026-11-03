@@ -80,7 +80,7 @@ export default function SkyRightNow({ data, primaryColor }: Props) {
     >
       <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
         <Eye size={18} style={{ color: primaryColor }} />
-        <h2 className="font-semibold text-gray-900 text-sm">Sky Right Now</h2>
+        <div className="font-semibold text-gray-900 text-sm">Sky Right Now</div>
       </div>
 
       <div className="p-5">
