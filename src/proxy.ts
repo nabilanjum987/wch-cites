@@ -32,6 +32,19 @@ export function proxy(req: NextRequest) {
     url.pathname = '/pakistan/islamabad-capital-territory/islamabad';
     return NextResponse.redirect(url, 301);
   }
+  // Province abbreviation alias (4 Nov 2026): 'kpk' is the universal
+  // abbreviation visitors type for Khyber Pakhtunkhwa, whose canonical
+  // slug is 'khyber-pakhtunkhwa'. Without this 301 the abbreviation
+  // lands on the honest "guide in preparation" state, a dead end for a
+  // full guide that exists. Same explicit-301 mechanism as B11 above.
+  if (
+    req.nextUrl.pathname === '/pakistan/kpk' ||
+    req.nextUrl.pathname === '/pakistan/kpk/'
+  ) {
+    const url = req.nextUrl.clone();
+    url.pathname = '/pakistan/khyber-pakhtunkhwa';
+    return NextResponse.redirect(url, 301);
+  }
   // Duplicate-person consolidation (owner decision, 28 Oct 2026, final):
   // `abdus-salam` → `dr-abdus-salam`, `muhammad-ali-jinnah` →
   // `quaid-e-azam-jinnah`. Same mechanism as the B11 alias above:

@@ -23,7 +23,7 @@ function MiniClock({ clock, size }: { clock: PinnedClock; size: number }) {
   const { str12, date } = clockParts(now, clock.tz);
   const ring = design.ring ?? clock.primary;
   return (
-    <div className="t-force-dark relative overflow-hidden rounded-2xl px-3 py-3">
+    <div className="t-force-dark relative overflow-hidden rounded-2xl bg-[#0a0f1e] px-3 py-3">
       {design.flagCode && (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
