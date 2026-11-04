@@ -2861,12 +2861,13 @@ export function getSiblingOceans(slug: string): Ocean[] {
 // the hub. This deliberately does NOT widen PUBLISHED_OCEANS, so the
 // detail pages' static params and publish semantics are untouched.
 export async function getHubOceans(): Promise<Ocean[]> {
-  const out: Ocean[] = [];
-  for (const o of [...PUBLISHED_OCEANS, ...BUILT_OCEANS]) {
-    const full = await getOcean(o.slug);
-    if (full) out.push(full);
-  }
-  return out;
+  // Parallel: the sequential version awaited getOcean() 18 times in a row,
+  // which made the hub's first byte wait on the sum of every lookup
+  // (measured 11-16s TTFB in production, 2026-11-04). Order is preserved.
+  const all = await Promise.all(
+    [...PUBLISHED_OCEANS, ...BUILT_OCEANS].map((o) => getOcean(o.slug)),
+  );
+  return all.filter((o): o is Ocean => o !== null);
 }
 
 // ── Live layer ──────────────────────────────────────────────────────────────
