@@ -421,7 +421,7 @@ const PERSONALITIES: Record<string, Personality[]> = {
     { name: 'Khan Abdul Ghaffar Khan', profession: 'Freedom Fighter', category: 'Leaders', birthCity: 'Charsadda', photo: '/images/personalities/khan-abdul-ghaffar-khan.webp', credit: 'Photo: British India · Public domain' },
     { name: 'Malala Yousafzai', profession: 'Education Activist', category: 'Leaders', birthCity: 'Swat', photo: '/images/personalities/malala-yousafzai.webp', credit: 'Photo: flowcomm · CC BY 2.0', slug: 'malala-yousafzai' },
     { name: 'Shahid Afridi', profession: 'Cricketer', category: 'Sports', birthCity: 'Khyber Agency', photo: '/images/personalities/shahid-afridi.webp', credit: 'Photo: Shehbaz Sharif · CC BY 2.0' },
-    { name: 'Ghani Khan', profession: 'Poet & Artist', category: 'Arts', birthCity: 'Charsadda', photo: '/images/personalities/ghani-khan.webp', credit: 'Photo: Ahmad Ali Khan · Public domain' },
+    { name: 'Ghani Khan', profession: 'Poet & Artist', category: 'Arts', birthCity: 'Charsadda', photo: '/images/personalities/ghani-khan-card.webp', credit: 'Photo: Ahmad Ali Khan · Public domain' },
   ],
 };
 
