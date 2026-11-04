@@ -29,7 +29,7 @@ function titleFor(name: string) {
 }
 
 function descriptionFor(name: string) {
-  return `${name} horoscope today, composed from computed planetary positions: lucky number and colour, love and career meters, weekly outlook.`;
+  return `${name} horoscope today, from computed planetary positions: lucky number and colour, love and career meters, weekly, monthly and yearly outlook.`;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

@@ -42,7 +42,7 @@ export const PLACE_SYDNEY_OPERA_HOUSE: PlaceRow = {
     },
     {
       "label": "UNESCO World Heritage Site ID",
-      "value": "166rev (raw Wikidata P757 value — revised listing identifier; numeric ID 166)",
+      "value": "166rev (raw Wikidata P757 value, revised listing identifier; numeric ID 166)",
       "source": "Wikidata P757"
     }
   ],

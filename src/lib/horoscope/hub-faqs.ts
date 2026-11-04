@@ -11,7 +11,7 @@ export const HUB_FAQS: AeoFaq[] = [
   },
   {
     q: "How do I find my sign's horoscope today?",
-    a: "Find your birth date range in the Choose Your Sign grid, then open that sign's page for its daily reading, weekly forecast and monthly outlook. The Daily tab shows today's star ratings, lucky elements and compatibility, while the Weekly tab covers the week ahead. If you are on a date boundary, check both neighbouring signs, since sign dates follow the traditional zodiac calendar.",
+    a: "Find your birth date range in the Choose Your Sign grid, then open that sign's page for its daily reading, weekly forecast, monthly outlook and yearly overview. The Daily tab shows today's star ratings, lucky elements and compatibility, while the Weekly tab covers the week ahead. If you are on a date boundary, check both neighbouring signs, since sign dates follow the traditional zodiac calendar.",
   },
   {
     q: 'Are horoscope readings accurate?',

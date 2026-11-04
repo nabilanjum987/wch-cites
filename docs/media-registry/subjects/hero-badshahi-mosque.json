@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page HERO (fix batch 4 Nov 2026, item E1: replaces the uncredited hotlinked Pexels photo 3889742)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/hero-badshahi-mosque.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/de/Badshahi_mosque_of_Lahore%2C_Pakistan.jpg",
+      "author": "Zapata1000",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Badshahi mosque of Lahore, Pakistan.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Badshahi mosque of Lahore, Pakistan.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). The Commons file title and creator were stored in the CREDITS comment in src/app/[country]/CountryClient.tsx when the photo was added on 2026-11-03; the API values match that record exactly."
+    }
+  ],
+  "notes": "Badshahi Mosque, Lahore, shown whole across the frame; the same Commons file already serves at card size on this page (heritage-badshahi-mosque.webp, credit in HERITAGE_PHOTO_CREDITS). The hero file is a 1280px-wide webp conversion of the Commons 1280px thumbnail of the 2558x1692 original. Credit renders as a caption BELOW the hero from the PK record heroCredit field in CountryClient.tsx (G3: never on the photo)."
+}

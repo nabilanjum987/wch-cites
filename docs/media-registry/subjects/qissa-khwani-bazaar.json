@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (qissa-khwani-bazaar)",
+  "records": [
+    {
+      "local_path": "/images/places/qissa-khwani-bazaar.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Qissa_Khwani_Bazaar%2C_Peshawar%2C_Pakistan_-_panoramio.jpg",
+      "author": "franek2",
+      "license": "CC BY-SA 3.0",
+      "commons_title": "File:Qissa Khwani Bazaar, Peshawar, Pakistan - panoramio.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Qissa Khwani Bazaar, Peshawar, Pakistan - panoramio.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Qissa Khwani Bazaar, Peshawar, Pakistan - panoramio.jpg."
+    }
+  ],
+  "notes": "A heritage building with bookshops in Qissa Khwani Bazaar, Peshawar (a shop sign in the photo gives the bazaar address), viewed and confirmed. Replaces the text-only card on the Khyber Pakhtunkhwa province page. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

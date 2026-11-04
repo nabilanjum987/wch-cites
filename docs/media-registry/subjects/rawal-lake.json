@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (rawal-lake)",
+  "records": [
+    {
+      "local_path": "/images/places/rawal-lake.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Rawal_Lake_in_Islamabad_2018-04-09.jpg",
+      "author": "XnShAnoo",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Rawal Lake in Islamabad 2018-04-09.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Rawal Lake in Islamabad 2018-04-09.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Rawal Lake in Islamabad 2018-04-09.jpg."
+    }
+  ],
+  "notes": "The Rawal Lake shoreline, viewed and confirmed. Replaces the text-only card on the Islamabad Capital Territory province page. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

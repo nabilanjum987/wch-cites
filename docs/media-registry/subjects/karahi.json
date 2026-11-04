@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (karahi)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/food-karahi.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Chicken_Karahi_in_Pakistan.jpg",
+      "author": "Kskhh",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Chicken Karahi in Pakistan.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Chicken Karahi in Pakistan.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Chicken Karahi in Pakistan.jpg."
+    }
+  ],
+  "notes": "Chicken karahi cooking in a wok, viewed and confirmed. Fills the Karahi card on the Pakistan page Famous Foods grid. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

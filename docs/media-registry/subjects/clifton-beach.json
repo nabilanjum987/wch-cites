@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (clifton-beach)",
+  "records": [
+    {
+      "local_path": "/images/places/clifton-beach.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Clifton_Beach%2C_Karachi_-_Pakistan.jpg",
+      "author": "Nomi887",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Clifton Beach, Karachi - Pakistan.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Clifton Beach, Karachi - Pakistan.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Clifton Beach, Karachi - Pakistan.jpg."
+    }
+  ],
+  "notes": "Clifton Beach with the Karachi seafront towers, viewed and confirmed. Replaces the text-only Karachi Clifton Beach card on the Sindh province page. A.Savin's Clifton photos were rejected: Free Art License is outside the accepted licence set. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

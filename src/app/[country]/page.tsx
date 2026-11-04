@@ -54,8 +54,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
   const country = titleCase(p.country);
-  const title = `${country} — Cities, Weather & Prayer | WorldCityHub`;
-  const description = `${country}: provinces and cities with live weather, prayer times, gold & currency rates, news, economy and culture — the ${country} guide.`;
+  const title = `${country}: Cities, Weather & Prayer | WorldCityHub`;
+  const description = `${country}: provinces and cities with live weather, prayer times, gold & currency rates, news, economy and culture: the ${country} guide.`;
   const canonical = `https://worldcityhub.vercel.app/${p.country}`;
   return {
     title,

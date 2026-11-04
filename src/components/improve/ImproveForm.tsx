@@ -60,7 +60,7 @@ export default function ImproveForm() {
     return (
       <div className="rounded-2xl border border-emerald-300/25 bg-emerald-400/[0.07] p-6 text-center">
         <p className="text-2xl">✅</p>
-        <h2 className="mt-2 text-lg font-bold text-white">Suggestion received — thank you</h2>
+        <h2 className="mt-2 text-lg font-bold text-white">Suggestion received, thank you</h2>
         <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gray-300">
           Nothing changes automatically. A human reviews every suggestion and checks it against a
           reliable source before any page is updated.
@@ -127,7 +127,7 @@ export default function ImproveForm() {
       )}
       {state === 'inactive' && (
         <p className="mt-4 rounded-xl border border-amber-300/25 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
-          Submissions are being activated right now — please try again shortly. Your suggestion was not stored yet.
+          Submissions are being activated right now, please try again shortly. Your suggestion was not stored yet.
         </p>
       )}
       <button

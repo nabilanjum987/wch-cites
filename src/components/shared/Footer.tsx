@@ -49,7 +49,7 @@ export default function Footer() {
               <span className="text-white font-bold text-xl">WorldCityHub</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Your gateway to every city on Earth. Weather, prayer times, gold rates, news, and heritage — all in one place.
+              Your gateway to every city on Earth. Weather, prayer times, gold rates, news, and heritage, all in one place.
             </p>
             <div className="flex items-center space-x-3 mt-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg">

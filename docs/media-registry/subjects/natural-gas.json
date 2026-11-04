@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (natural-gas)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/resource-natural-gas.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/b8/86_105_271_Natural_Gas_%28154107777%29.jpeg",
+      "author": "Matthew Bellemare",
+      "license": "CC BY-SA 3.0",
+      "commons_title": "File:86 105 271 Natural Gas (154107777).jpeg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:86 105 271 Natural Gas (154107777).jpeg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:86 105 271 Natural Gas (154107777).jpeg."
+    }
+  ],
+  "notes": "Generic subject photo (a row of blue natural-gas flames); no Pakistan location is claimed in the caption. No verifiable photo of the Sui gas field exists on Commons. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

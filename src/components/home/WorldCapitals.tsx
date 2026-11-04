@@ -36,7 +36,7 @@ const THUMBS: Record<string, { img: string; alt: string }> = {
   'Cairo': { img: '/images/home28/cap-cairo.webp', alt: 'The pyramids of Giza' },
 };
 
-const CREDITS = 'Landmark photos: Islamabad — Guilhem Vellut · CC BY 2.0; London — Fuzzypiggy · CC BY-SA 3.0; Paris — Benh LIEU SONG · CC BY-SA 3.0; Berlin — Norbert Nagel · CC BY-SA 3.0; Tokyo — Akonnchiroll · CC0; Washington — Martin Falbisoner · CC BY-SA 3.0; Canberra — Thennicke · CC BY-SA 4.0; Ottawa — Wladyslaw · CC BY-SA 3.0; Beijing — Pixelflake · CC BY-SA 3.0; New Delhi — Yann · CC BY-SA 3.0; Riyadh — Hamza A. Durrani · CC BY-SA 4.0; Cairo — Ricardo Liberato · CC BY-SA 2.0 (all via Wikimedia Commons).';
+const CREDITS = 'Landmark photos: Islamabad · Guilhem Vellut · CC BY 2.0; London · Fuzzypiggy · CC BY-SA 3.0; Paris · Benh LIEU SONG · CC BY-SA 3.0; Berlin · Norbert Nagel · CC BY-SA 3.0; Tokyo · Akonnchiroll · CC0; Washington · Martin Falbisoner · CC BY-SA 3.0; Canberra · Thennicke · CC BY-SA 4.0; Ottawa · Wladyslaw · CC BY-SA 3.0; Beijing · Pixelflake · CC BY-SA 3.0; New Delhi · Yann · CC BY-SA 3.0; Riyadh · Hamza A. Durrani · CC BY-SA 4.0; Cairo · Ricardo Liberato · CC BY-SA 2.0 (all via Wikimedia Commons).';
 
 export default function WorldCapitals() {
   const [now, setNow] = useState(() => new Date());

@@ -18,7 +18,7 @@ export const MARDAN: CityPackage = {
     "religion_percent": null,
     "primary_color": "#01411C",
     "secondary_color": "#FFFFFF",
-    "famous_for": "Gandhara heritage — Takht-i-Bahi monastery and the Shahbaz Garhi Ashoka edicts",
+    "famous_for": "Gandhara heritage, Takht-i-Bahi monastery and the Shahbaz Garhi Ashoka edicts",
     "famous_products": "Sugar, tobacco, marble",
     "emergency_police": "15",
     "emergency_ambulance": "1122",
@@ -50,13 +50,13 @@ export const MARDAN: CityPackage = {
     },
     {
       "label": "Known as",
-      "value": "Second city of KP — gateway to Gandhara’s Takht-i-Bahi"
+      "value": "Second city of KP, gateway to Gandhara’s Takht-i-Bahi"
     }
   ],
   "foods": [
     {
       "name": "Mardan chapli kebab",
-      "note": "The city’s kebab houses are a named stop on the Peshawar–Swat road — flat kebabs fried with tomato in the KP style."
+      "note": "The city’s kebab houses are a named stop on the Peshawar–Swat road, flat kebabs fried with tomato in the KP style."
     },
     {
       "name": "Gur (jaggery)",
@@ -78,7 +78,7 @@ export const MARDAN: CityPackage = {
     },
     {
       "name": "Shahbaz Garhi Ashoka edicts (nearby)",
-      "note": "Ashoka’s rock edicts in Kharosthi script (c. 250 BCE) — among the earliest writing in South Asia."
+      "note": "Ashoka’s rock edicts in Kharosthi script (c. 250 BCE), among the earliest writing in South Asia."
     },
     {
       "name": "Guides Memorial",
@@ -114,7 +114,7 @@ export const MARDAN: CityPackage = {
     },
     {
       "name": "Ameer Haider Khan Hoti",
-      "field": "Politician — former Chief Minister of KP (2008–2013)",
+      "field": "Politician, former Chief Minister of KP (2008–2013)",
       "note": "From Mardan’s Hoti family; the city’s most prominent modern political figure.",
       "source": "Wikipedia: Ameer Haider Khan Hoti"
     },
@@ -129,12 +129,12 @@ export const MARDAN: CityPackage = {
     {
       "group": "identity (coords, population, elevation)",
       "source": "Wikidata Q993859 + Wikipedia city article",
-      "detail": "Coordinates P625 34.1958, 72.0447; the article infobox gives 34.2012, 72.0258 (city-centre point) — variant recorded. Population 363,788 — the 2023 census Municipal Committee figure on which Wikidata P1082 and the article’s own MC/cantonment split agree (city total incl. cantonment 368,302). Elevation 311 m (Wikidata; article infobox 310 m; its geography text says 283 m — the conflict is recorded, the surveyed infobox value family is used). Cross-read 2026-10-22."
+      "detail": "Coordinates P625 34.1958, 72.0447; the article infobox gives 34.2012, 72.0258 (city-centre point), variant recorded. Population 363,788, the 2023 census Municipal Committee figure on which Wikidata P1082 and the article’s own MC/cantonment split agree (city total incl. cantonment 368,302). Elevation 311 m (Wikidata; article infobox 310 m; its geography text says 283 m, the conflict is recorded, the surveyed infobox value family is used). Cross-read 2026-10-22."
     },
     {
       "group": "emergency numbers",
       "source": "Pakistan national emergency numbers",
-      "detail": "Police 15, ambulance/rescue 1122, fire 16 — the same national set the published city pages carry."
+      "detail": "Police 15, ambulance/rescue 1122, fire 16, the same national set the published city pages carry."
     },
     {
       "group": "hospitals",
@@ -149,7 +149,7 @@ export const MARDAN: CityPackage = {
     {
       "group": "personality seeds",
       "source": "Per-seed source recorded on each seed",
-      "detail": "Seeds only — full verified profiles are the personalities pipeline’s job (R6 pattern); batch-2 seeds get their Wikidata verification in the R6B extension card."
+      "detail": "Seeds only, full verified profiles are the personalities pipeline’s job (R6 pattern); batch-2 seeds get their Wikidata verification in the R6B extension card."
     },
     {
       "group": "religion_percent",

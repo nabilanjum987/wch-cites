@@ -172,6 +172,7 @@ export interface WeeklyComputed {
   weekEnd: Date;
   overall: number;
   summary: string;
+  basis: string;
   bestDays: string[];
   challengingDays: string[];
 }
@@ -236,7 +237,11 @@ export function computeWeekly(signKey: string, refDate: Date = new Date()): Week
     `${signName}'s days are ranked by each day's computed overall meter and the aspects to ${rulerLabel}, the sign's ruler: the strongest days are ${bestDays.join(' and ')}, and the most testing is ${challengingDays[0]}. ` +
     `The week's average overall meter is ${overall} of 5, the mean of the seven daily computed meters. Readings are for entertainment only.`;
 
-  return { weekStart: monday, weekEnd: sunday.date, overall, summary, bestDays, challengingDays };
+  const basis =
+    `Basis: the daily engine run for each of the week's seven days (noon UTC, Schlyter's Keplerian method), ` +
+    `with days ranked by the computed overall meter and the aspects to ${rulerLabel}, the sign's ruler.`;
+
+  return { weekStart: monday, weekEnd: sunday.date, overall, summary, basis, bestDays, challengingDays };
 }
 
 // ─── Monthly aggregation (per content-bank/horoscope/monthly-framework.md) ─
@@ -246,6 +251,7 @@ export interface MonthlyComputed {
   monthName: string;
   overall: number;
   summary: string;
+  basis: string;
   highlightDates: string[];
 }
 
@@ -309,7 +315,237 @@ export function computeMonthly(signKey: string, refDate: Date = new Date()): Mon
   parts.push(`The new Moon falls near the ${ordinal(newMoonDay)} and the full Moon near the ${ordinal(fullMoonDay)}, from the computed Sun and Moon longitudes.`);
   parts.push(`The strongest computed days are the ${highlightDates.join(', ')}, ranked by the daily overall meter and the aspects to ${rulerLabel}; the monthly overall meter, ${overall} of 5, is the mean of the daily meters. Readings are for entertainment only.`);
 
-  return { month: month + 1, monthName: MONTH_NAMES[month], overall, summary: parts.join(' '), highlightDates };
+  const basis =
+    `Basis: the daily engine run for every day of ${MONTH_NAMES[month]} (noon UTC, Schlyter's Keplerian method), ` +
+    `with the month's sign changes and Moon phase dates read from the same computed positions.`;
+
+  return { month: month + 1, monthName: MONTH_NAMES[month], overall, summary: parts.join(' '), basis, highlightDates };
+}
+
+// ─── Yearly aggregation (framework: the daily engine across the year) ──────
+// The engine honestly supports a year layer from the same computed facts
+// the daily, weekly and monthly readings use, aggregated over all 365 or
+// 366 days: the Sun's computed season in the native sign, the year's four
+// turning points (the Sun reaching 0, 90, 180 and 270 degrees), the sign
+// ruler's sign changes, the signs of the slow planets Jupiter and Saturn,
+// the year's new and full Moons in the native sign, and the daily meters
+// averaged by month. Nothing here is a separate forecast model, and the
+// basis line printed with the reading says exactly this.
+
+export interface YearlyComputed {
+  year: number;
+  overall: number;
+  summary: string;
+  basis: string;
+  highlightDates: string[];
+  bestMonth: string;
+  quietestMonth: string;
+  seasonStart: string;
+  seasonEnd: string;
+}
+
+export function computeYearly(signKey: string, refDate: Date = new Date()): YearlyComputed {
+  const year = refDate.getUTCFullYear();
+  const signName = cap(signKey);
+  const ruler = SIGN_RULERS[signKey] ?? 'sun';
+  const fmtDay = (d: Date) => `${MONTH_NAMES[d.getUTCMonth()]} ${d.getUTCDate()}`;
+  const at = (ps: PlanetPosition[], k: PlanetKey) => ps.find((p) => p.planet === k)!;
+
+  // One pass of computed positions: 31 December of the previous year seeds
+  // the sign-change detection, then every day of the year, noon UTC.
+  interface DaySky { date: Date; positions: PlanetPosition[] }
+  const sky: DaySky[] = [];
+  for (let t = Date.UTC(year - 1, 11, 31, 12); t <= Date.UTC(year, 11, 31, 12); t += 86400000) {
+    const date = new Date(t);
+    sky.push({ date, positions: computePositions(date) });
+  }
+  const yearDays = sky.slice(1);
+  const rulerLabel = labelOf(yearDays[0].positions, ruler);
+
+  // The sign's season: the runs of days with the Sun in the native sign.
+  // One run for eleven signs; Capricorn wraps the year end and has two.
+  const seasonRuns: { start: Date; end: Date }[] = [];
+  for (const d of yearDays) {
+    if (at(d.positions, 'sun').signKey !== signKey) continue;
+    const last = seasonRuns[seasonRuns.length - 1];
+    if (last && d.date.getTime() - last.end.getTime() === 86400000) last.end = d.date;
+    else seasonRuns.push({ start: d.date, end: d.date });
+  }
+  const wrapped = seasonRuns.length > 1;
+  const seasonStart = fmtDay((wrapped ? seasonRuns[seasonRuns.length - 1] : seasonRuns[0]).start);
+  const seasonEnd = fmtDay(seasonRuns[0].end);
+
+  // The year's four turning points: the days the Sun's computed longitude
+  // crosses 0, 90, 180 and 270 degrees.
+  const QUARTERS: { lon: number; name: string }[] = [
+    { lon: 0, name: 'March equinox' },
+    { lon: 90, name: 'June solstice' },
+    { lon: 180, name: 'September equinox' },
+    { lon: 270, name: 'December solstice' },
+  ];
+  const quarters: { name: string; date: Date }[] = [];
+  for (let i = 1; i < sky.length; i++) {
+    if (sky[i].date.getUTCFullYear() !== year) continue;
+    const prevLon = at(sky[i - 1].positions, 'sun').longitude;
+    const lon = at(sky[i].positions, 'sun').longitude;
+    for (const q of QUARTERS) {
+      const crossed = prevLon <= lon
+        ? prevLon < q.lon && lon >= q.lon
+        : q.lon > prevLon || q.lon <= lon;
+      if (crossed) quarters.push({ name: q.name, date: sky[i].date });
+    }
+  }
+
+  // Sign changes during the year for any planet (second day of each pair
+  // must fall inside the year).
+  const ingressesOf = (planet: PlanetKey): { sign: string; date: Date }[] => {
+    const out: { sign: string; date: Date }[] = [];
+    for (let i = 1; i < sky.length; i++) {
+      if (sky[i].date.getUTCFullYear() !== year) continue;
+      const prevSign = at(sky[i - 1].positions, planet).sign;
+      const now = at(sky[i].positions, planet);
+      if (now.sign !== prevSign) out.push({ sign: now.sign, date: sky[i].date });
+    }
+    return out;
+  };
+  const slowLine = (planet: PlanetKey, label: string): string => {
+    const first = at(yearDays[0].positions, planet).sign;
+    const changes = ingressesOf(planet);
+    if (changes.length === 0) return `${label} stays in ${first} all year`;
+    let out = `${label} starts the year in ${first}`;
+    for (const c of changes) out += `, enters ${c.sign} on ${fmtDay(c.date)}`;
+    return out;
+  };
+
+  // New and full Moons falling in the native sign: within each run of
+  // days the Moon spends in the sign, the day whose computed Sun-Moon
+  // elongation comes closest to 0 (new) or 180 (full), kept when the
+  // closest approach is within 15 degrees, the day-level granularity the
+  // monthly reading already uses.
+  const moonRuns: { startIdx: number; endIdx: number }[] = [];
+  yearDays.forEach((d, idx) => {
+    if (at(d.positions, 'moon').signKey !== signKey) return;
+    const last = moonRuns[moonRuns.length - 1];
+    if (last && idx - last.endIdx === 1) last.endIdx = idx;
+    else moonRuns.push({ startIdx: idx, endIdx: idx });
+  });
+  const lunationDates = (target: 0 | 180): Date[] => {
+    const found: Date[] = [];
+    for (const run of moonRuns) {
+      let bestDist = Infinity;
+      let bestDate: Date | null = null;
+      for (let i = run.startIdx; i <= run.endIdx; i++) {
+        const sun = at(yearDays[i].positions, 'sun');
+        const moon = at(yearDays[i].positions, 'moon');
+        const elong = ((moon.longitude - sun.longitude) % 360 + 360) % 360;
+        const dist = target === 0 ? Math.min(elong, 360 - elong) : Math.abs(elong - 180);
+        if (dist < bestDist) { bestDist = dist; bestDate = yearDays[i].date; }
+      }
+      if (bestDate && bestDist <= 15) found.push(bestDate);
+    }
+    return found.slice(0, 2);
+  };
+  const newMoons = lunationDates(0);
+  const fullMoons = lunationDates(180);
+
+  // The year's daily meters from the same scorer the weekly and monthly
+  // readings use, averaged by month.
+  const scores: DayScore[] = [];
+  for (let t = Date.UTC(year, 0, 1, 12); ; t += 86400000) {
+    const d = new Date(t);
+    if (d.getUTCFullYear() !== year) break;
+    scores.push(rulerScore(signKey, d));
+  }
+  const monthMeans: { name: string; overall: number; score: number }[] = MONTH_NAMES.map((name, m) => {
+    const inMonth = scores.filter((s) => s.date.getUTCMonth() === m);
+    return {
+      name,
+      overall: inMonth.reduce((sum, s) => sum + s.overall, 0) / inMonth.length,
+      score: inMonth.reduce((sum, s) => sum + s.score, 0) / inMonth.length,
+    };
+  });
+  const byScore = [...monthMeans].sort((a, b) => b.score - a.score);
+  const bestMonth = byScore[0].name;
+  const quietestMonth = byScore[byScore.length - 1].name;
+  const overall = Math.max(1, Math.min(5, Math.round(scores.reduce((s, d) => s + d.overall, 0) / scores.length)));
+  const highlightDates = [...scores]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5)
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .map((d) => fmtDay(d.date));
+
+  // ── Summary, composed from the facts computed above ──
+  const parts: string[] = [];
+  parts.push(
+    `${year} for ${signName} is gathered from the same computed positions as the daily readings, run for every day of the year, so the year is read from its computed shape rather than a fixed forecast.`,
+  );
+  if (wrapped) {
+    parts.push(
+      `The Sun is in ${signName} until ${fmtDay(seasonRuns[0].end)} and again from ${fmtDay(seasonRuns[seasonRuns.length - 1].start)} to the year's end, so the sign's season closes one year and opens the next.`,
+    );
+  } else if (seasonRuns.length === 1) {
+    parts.push(`The Sun is in ${signName} from ${fmtDay(seasonRuns[0].start)} to ${fmtDay(seasonRuns[0].end)}, the sign's own season.`);
+  }
+  if (quarters.length === 4) {
+    const list = quarters.map((q) => `${fmtDay(q.date)} (the ${q.name})`).join(', ');
+    parts.push(`The year's four turning points fall near ${list}, read from the Sun's computed longitude reaching 0, 90, 180 and 270 degrees.`);
+  }
+  if (ruler === 'moon') {
+    parts.push(
+      `The Moon, ${signName}'s ruler, changes sign every two to three days and passes through ${signName} itself ${moonRuns.length} times in the year, so this sign's year is steered by the lunar cycle more than by any single angle.`,
+    );
+  } else {
+    const rulerChanges = ingressesOf(ruler);
+    const rulerStart = at(yearDays[0].positions, ruler).sign;
+    if (rulerChanges.length === 0) {
+      parts.push(
+        `${rulerLabel}, the sign's ruler, stays in ${rulerStart} all year, so the year's pattern for ${signName} comes from its ruler's aspects rather than a change of sign.`,
+      );
+    } else if (rulerChanges.length <= 4) {
+      let sentence = `${rulerLabel}, the sign's ruler, starts the year in ${rulerStart}`;
+      for (const c of rulerChanges) sentence += `, enters ${c.sign} on ${fmtDay(c.date)}`;
+      parts.push(sentence + '.');
+    } else {
+      const visited: string[] = [rulerStart];
+      for (const c of rulerChanges) if (visited[visited.length - 1] !== c.sign) visited.push(c.sign);
+      parts.push(
+        `${rulerLabel}, the sign's ruler, changes sign ${rulerChanges.length} times in the year, moving through ${visited.join(', ')}, so the year's tone shifts with it.`,
+      );
+    }
+  }
+  // The slow planets frame the year; when the sign's own ruler IS Jupiter
+  // or Saturn its movement is already told in the ruler sentence above, so
+  // only the other slow planet is named here (no duplicated sentence).
+  const slowParts: string[] = [];
+  if (ruler !== 'jupiter') slowParts.push(slowLine('jupiter', 'Jupiter'));
+  if (ruler !== 'saturn') slowParts.push(slowLine('saturn', 'Saturn'));
+  if (slowParts.length > 0) parts.push(`${slowParts.join(', and ')}.`);
+  const lunationBits: string[] = [];
+  for (const d of newMoons) lunationBits.push(`a new Moon falls in ${signName} near ${fmtDay(d)}`);
+  for (const d of fullMoons) lunationBits.push(`a full Moon falls in ${signName} near ${fmtDay(d)}`);
+  if (lunationBits.length > 0) {
+    parts.push(`${cap(lunationBits.join(' and '))}.`);
+  }
+  parts.push(
+    `By the computed daily meters, ${bestMonth} is ${signName}'s strongest month and ${quietestMonth} its quietest; the year's overall meter is ${overall} of 5, the mean of the daily meters across the year, and the strongest single days fall on ${highlightDates.join(', ')}. Readings are for entertainment only.`,
+  );
+
+  const basis =
+    `Basis: computed planetary positions for every day of ${year} (noon UTC, Schlyter's Keplerian method): ` +
+    `the Sun's season in ${signName}, the year's four turning points, ${rulerLabel}'s sign changes, ` +
+    `the signs of Jupiter and Saturn, and the year's daily meters.`;
+
+  return {
+    year,
+    overall,
+    summary: parts.join(' '),
+    basis,
+    highlightDates,
+    bestMonth,
+    quietestMonth,
+    seasonStart,
+    seasonEnd,
+  };
 }
 
 // ─── Birth date helpers ──────────────────────────────────────────────────────

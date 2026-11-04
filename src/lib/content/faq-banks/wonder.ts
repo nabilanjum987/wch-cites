@@ -25,7 +25,7 @@ export const WONDER_FAQ_BANK: FaqBank = [
     answer:
       '{name} is in {cityName}, {regionName}, {countryName}. The map block on this page shows its exact location, and the Nearby section lists the recognised sights around it with distances calculated from its coordinates.',
     slots: ['name', 'cityName', 'regionName', 'countryName'],
-    source: 'The wonder’s data row (Wikidata identity + coordinates) — the same fields the page’s fact grid prints.',
+    source: 'The wonder’s data row (Wikidata identity + coordinates), the same fields the page’s fact grid prints.',
   },
   {
     id: 'wonder-hours-fees',
@@ -33,13 +33,13 @@ export const WONDER_FAQ_BANK: FaqBank = [
     answer:
       '{hoursText} Ticket prices are reproduced from {feesSource}, the official source, and were last verified on {feesChecked}; if the official prices have not been verified, this page hides the fee table rather than guessing. Always re-check the official site before travelling.',
     slots: ['name', 'hoursText', 'feesSource', 'feesChecked'],
-    source: 'The data row’s visitor block (hoursText/fees/sourceName/lastVerified) — the template hides fees entirely when unverified.',
+    source: 'The data row’s visitor block (hoursText/fees/sourceName/lastVerified), the template hides fees entirely when unverified.',
   },
   {
     id: 'wonder-closed-days',
     question: 'When is {name} closed?',
     answer:
-      '{closedDays} The open-or-closed status shown on this page is calculated from that verified rule together with today’s sunrise and sunset at the site — it is never typed in by hand.',
+      '{closedDays} The open-or-closed status shown on this page is calculated from that verified rule together with today’s sunrise and sunset at the site, it is never typed in by hand.',
     slots: ['name', 'closedDays'],
     source: 'The data row’s visitor block (closedDays) + the golden template’s calculated open-status (blueprint rule).',
   },
@@ -49,13 +49,13 @@ export const WONDER_FAQ_BANK: FaqBank = [
     answer:
       'The live panel on this page shows the current temperature and conditions at {name} from Open-Meteo, read at the site’s exact coordinates, together with today’s sunrise, sunset and golden hours and a what-to-wear verdict derived from them. When the feed is down, the panel is absent rather than stale.',
     slots: ['name'],
-    source: 'The golden template’s live layer (Open-Meteo at the wonder’s lat/lng) — the same feed the hub card displays.',
+    source: 'The golden template’s live layer (Open-Meteo at the wonder’s lat/lng), the same feed the hub card displays.',
   },
   {
     id: 'wonder-best-light',
     question: 'When is the best light for photographs at {name}?',
     answer:
-      'The golden hours — shortly after sunrise and before sunset — are shown for today in this page’s live panel, calculated for the site itself. The photography section points to the recognised viewpoints; the exact times change daily with the sun.',
+      'The golden hours, shortly after sunrise and before sunset, are shown for today in this page’s live panel, calculated for the site itself. The photography section points to the recognised viewpoints; the exact times change daily with the sun.',
     slots: ['name'],
     source: 'The live layer’s sunrise/sunset computation (Open-Meteo) + the data row’s photo spots.',
   },
@@ -63,7 +63,7 @@ export const WONDER_FAQ_BANK: FaqBank = [
     id: 'wonder-photos-licence',
     question: 'Can I reuse the photographs on this page?',
     answer:
-      'Every photograph here comes from Wikimedia Commons under a free licence, and the author and licence are printed with each image. Reuse follows the terms of that licence — the credit line on the photo is the starting point.',
+      'Every photograph here comes from Wikimedia Commons under a free licence, and the author and licence are printed with each image. Reuse follows the terms of that licence · the credit line on the photo is the starting point.',
     slots: [],
     source: 'The template’s media rule (blueprint): no image without a free licence and a named author is used; credits travel with the image.',
   },
@@ -71,7 +71,7 @@ export const WONDER_FAQ_BANK: FaqBank = [
     id: 'wonder-myths',
     question: 'Are the popular stories about {name} true?',
     answer:
-      'Some are, some are legend. This page’s Myth vs Fact cards take the stories people repeat most and check each one against the historical sources named on the card — a claim that cannot be verified is labelled as such, never repeated as fact.',
+      'Some are, some are legend. This page’s Myth vs Fact cards take the stories people repeat most and check each one against the historical sources named on the card, a claim that cannot be verified is labelled as such, never repeated as fact.',
     slots: ['name'],
     source: 'The data row’s curated Myth vs Fact cards (curated + source-named per the blueprint; never API-guessed).',
   },
@@ -87,7 +87,7 @@ export const WONDER_FAQ_BANK: FaqBank = [
     id: 'wonder-more-guides',
     question: 'Why do some wonders not have a guide yet?',
     answer:
-      'A guide opens only when every fact on it can be traced to its source — the same standard this page meets. The Wonders hub lists the remaining wonders as content, deliberately without links, until their guides pass that check.',
+      'A guide opens only when every fact on it can be traced to its source, the same standard this page meets. The Wonders hub lists the remaining wonders as content, deliberately without links, until their guides pass that check.',
     slots: [],
     source: 'The Wonders hub’s published rule (“WorldCityHub never links to an unfinished page”) + the QA gate.',
   },

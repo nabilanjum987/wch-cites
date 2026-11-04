@@ -7,7 +7,7 @@ export const COUNTRY_BANGLADESH: CountryPackage = {
   "name": "Bangladesh",
   "iso2": "BD",
   "iso3": "BGD",
-  "isoNote": "Explicit slug→ISO map (Panama law) — never derived from the slug.",
+  "isoNote": "Explicit slug→ISO map (Panama law), never derived from the slug.",
   "capital": {
     "name": "Dhaka",
     "lat": 23.71,
@@ -28,7 +28,7 @@ export const COUNTRY_BANGLADESH: CountryPackage = {
     "indicator": "SP.POP.TOTL"
   },
   "economySnapshot": {
-    "source": "World Bank API (api.worldbank.org) — packaged snapshot pulled 2026-10-22; at activation the country page reads the SAME indicator set live via fetchWorldBankLatest(iso3) / getCountryEconomy (one-cached-dataset pattern). Missing keys = the World Bank publishes no recent value; consumers hide them.",
+    "source": "World Bank API (api.worldbank.org), packaged snapshot pulled 2026-10-22; at activation the country page reads the SAME indicator set live via fetchWorldBankLatest(iso3) / getCountryEconomy (one-cached-dataset pattern). Missing keys = the World Bank publishes no recent value; consumers hide them.",
     "indicators": {
       "gdpUsd": {
         "value": 456319229255.58,

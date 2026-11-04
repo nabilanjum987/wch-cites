@@ -12,6 +12,7 @@ import LifePathNumerology from './LifePathNumerology';
 import Affiliates from './Affiliates';
 import type { ZodiacSign } from '@/types/horoscope';
 import { HUB_FAQS, HOROSCOPE_METHOD_NOTE } from '@/lib/horoscope/hub-faqs';
+import { SIGN_ARTWORK, ZODIAC_ARTWORK_SET_CREDIT } from '@/lib/horoscope/artwork';
 
 const ZODIAC_SIGNS = [
   { slug: 'aries',       symbol: '♈', name: 'Aries',       dates: 'Mar 21 – Apr 19', element: 'Fire',  color: '#FF4B4B' },
@@ -71,13 +72,21 @@ export default function HoroscopeIndexClient() {
             {ZODIAC_SIGNS.map(sign => (
               <Link key={sign.slug} href={`/horoscope/${sign.slug}`}
                 className={`flex flex-col items-center p-3 rounded-2xl border ${ELEMENT_BG[sign.element]} hover:scale-105 transition-transform`}>
-                <span className="text-3xl mb-1.5" style={{ color: sign.color }}>{sign.symbol}</span>
-                <span className="text-xs font-bold text-gray-800">{sign.name}</span>
+                {/* The sign's own classical plate (Sidney Hall, 1825),
+                    shown as artwork; text stays below the image. */}
+                <img
+                  src={SIGN_ARTWORK[sign.slug as ZodiacSign].src}
+                  alt={SIGN_ARTWORK[sign.slug as ZodiacSign].alt}
+                  className="w-full h-24 object-cover rounded-xl mb-2"
+                  loading="lazy"
+                />
+                <span className="text-xs font-bold text-gray-800">{sign.symbol} {sign.name}</span>
                 <span className="text-[10px] text-gray-500 mt-0.5 text-center">{sign.dates}</span>
                 <span className="text-[10px] mt-1 px-1.5 py-0.5 rounded-full bg-white/60 text-gray-600">{sign.element}</span>
               </Link>
             ))}
           </div>
+          <p className="text-[11px] text-gray-500 mt-3">{ZODIAC_ARTWORK_SET_CREDIT} Each sign page credits its own plate in full.</p>
         </section>
 
         {/* Sky Right Now */}
@@ -155,6 +164,32 @@ export default function HoroscopeIndexClient() {
             ))}
           </div>
           <p className="text-xs text-gray-500 leading-relaxed mt-4">{HOROSCOPE_METHOD_NOTE}</p>
+        </section>
+
+        {/* Sources: the data sources behind the readings, named here and
+            in full on every sign page. */}
+        <section>
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles size={20} className="text-teal-300" />
+            <h2 className="text-xl font-bold text-white">Sources and Artwork</h2>
+          </div>
+          <div className="space-y-3 text-gray-300 leading-relaxed text-sm">
+            <p>
+              <span className="font-semibold text-white">Planetary positions:</span> computed on this site from
+              Keplerian orbital elements by the method of Paul Schlyter, &ldquo;How to compute planetary
+              positions&rdquo; (stargazing.net/kepler). Every reading is composed by WorldCityHub from those
+              computed positions; no horoscope text is copied from any other service.
+            </p>
+            <p>
+              <span className="font-semibold text-white">Sign framework:</span> sign dates, elements and ruling
+              planets follow the traditional Western zodiac, shown on each sign&apos;s page.
+            </p>
+            <p>
+              <span className="font-semibold text-white">Artwork:</span> the twelve sign plates are Sidney
+              Hall&apos;s, from Urania&apos;s Mirror (1825), public domain, via Wikimedia Commons. Each sign
+              page credits its own plate with a link to the Commons file.
+            </p>
+          </div>
         </section>
 
         <Affiliates primaryColor="#7c3aed" />

@@ -8,7 +8,7 @@ export const COUNTRY_EGYPT = {
   "name": "Egypt",
   "iso2": "EG",
   "iso3": "EGY",
-  "isoNote": "Explicit slug→ISO map (Panama law) — never derived from the slug.",
+  "isoNote": "Explicit slug→ISO map (Panama law), never derived from the slug.",
   "qid": "Q79",
   "capital": {
     "name": "Cairo",
@@ -30,7 +30,7 @@ export const COUNTRY_EGYPT = {
     "indicator": "SP.POP.TOTL"
   },
   "economySnapshot": {
-    "source": "World Bank API — packaged snapshot pulled 2026-10-22; same 16-indicator set as fetchWorldBankLatest (src/lib/apis/worldbank.ts); live at activation via the one-cached-dataset pattern.",
+    "source": "World Bank API, packaged snapshot pulled 2026-10-22; same 16-indicator set as fetchWorldBankLatest (src/lib/apis/worldbank.ts); live at activation via the one-cached-dataset pattern.",
     "indicators": {
       "gdpUsd": {
         "value": 365254630179.737,

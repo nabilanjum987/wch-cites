@@ -45,7 +45,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
   'allama-iqbal': {
     slug: 'allama-iqbal',
     name: 'Allama Iqbal',
-    title: 'Poet-Philosopher & Spiritual Father of Pakistan',
+    title: 'Poet of the East',
     // B6: local extended-canvas portrait (head y 12–77% of frame);
     // the previous value hotlinked upload.wikimedia.org.
     imageUrl: '/images/home28/pers-iqbal-wide.webp',
@@ -669,7 +669,7 @@ export const PERSONALITIES_SEED: Record<string, PersonalityProfile> = {
     ],
     quotes: [
       { text: 'One child, one teacher, one book, one pen can change the world.', context: 'Address to the United Nations Youth Assembly, 12 July 2013' },
-      { text: 'I raise up my voice — not so that I can shout, but so that those without a voice can be heard.', context: 'Documented statement of her campaign\'s message' },
+      { text: 'I raise up my voice, not so that I can shout, but so that those without a voice can be heard.', context: 'Documented statement of her campaign\'s message' },
     ],
     descriptionSections: [
       { title: 'The Diary of Gul Makai', content: 'Malala grew up in Mingora, the main town of the Swat Valley, where her father ran a school. When the Pakistani Taliban moved to ban girls\' education in Swat, she began writing an anonymous diary for BBC Urdu under the name Gul Makai, describing everyday life under the ban. She was 11 years old. As her identity became known she spoke publicly for girls\' schooling, and in 2011 she received Pakistan\'s National Youth Peace Prize.' },

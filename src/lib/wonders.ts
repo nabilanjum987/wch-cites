@@ -130,6 +130,7 @@ export interface Wonder {
 }
 
 const CHECKED = '2026-10-22';
+const CHECKED_2026_11 = '2026-11-04';
 
 // ── Taj Mahal, the golden instance ─────────────────────────────────────────
 // Facts: Wikidata Q9141 (pulled 2026-10-22) + UNESCO WHC 252 brief
@@ -2467,6 +2468,645 @@ const MACHU_PICCHU: Wonder = {
       "sourceName": "Open-Meteo API (forecast, at -13.163333, -72.545556)",
       "sourceUrl": "https://open-meteo.com/",
       "checkedAt": "2026-10-22"
+    }
+  ]
+};
+
+// ─── BATCH 1.5 (wonders build, 2026-11-04) ───────────────────────────────
+// Petra and Chichen Itza were the two UPCOMING_WONDERS with no record at
+// all. Written to the golden (Taj Mahal) template and depth; facts
+// verified 2026-11-04 against UNESCO (sites 326 / 483), Wikipedia,
+// Wikidata (Q5788 / Q5859), the PDTRA visitor rules and the INAH zone
+// page. Photo licences verified per-file via the Commons extmetadata
+// API on the same date (see docs/media-registry/subjects/).
+
+const PETRA: Wonder = {
+  "slug": "petra",
+  "name": "Petra",
+  "category": "New7Wonders of the World",
+  "wikidataQid": "Q5788",
+  "unescoId": 326,
+  "unescoYear": 1985,
+  "cityName": "Wadi Musa",
+  "regionName": "Ma'an Governorate",
+  "countryName": "Jordan",
+  "lat": 30.328611,
+  "lng": 35.441944,
+  "timezone": "Asia/Amman",
+  "officialUrl": "https://www.visitpetra.jo/",
+  "ticketUrl": "https://petrapass.pdtra.gov.jo/",
+  "wikiUrl": "https://en.wikipedia.org/wiki/Petra",
+  "wearTip": "The main trail runs close to 4 km of dust, gravel and worn rock each way, with almost no shade once you leave the Siq: closed walking shoes, a hat and more water than you think you need.",
+  "photoNote": "The Treasury facade takes direct sun in the mid-morning and sits in the Siq's shadow early and late; the Royal Tombs catch the warm light at the end of the day.",
+  "seoTitle": "Petra: Live Weather, Timings, Guide & Facts",
+  "seoDescription": "Petra today: live weather, opening hours, the Siq walk, UNESCO facts, credited photos and myth checks. The rose-red Nabataean city in Jordan.",
+  "intro": [
+    "Petra is the rock-cut capital the Nabataeans, an Arab people of traders, carved into the rose-red sandstone canyons of southern Jordan. Half built and half carved, the city sheltered behind the narrow gorge of the Siq and grew rich on the caravan trade in frankincense, silk and spices moving between Arabia, Egypt and Syria. Its own name was Raqmu; Petra, the Greek word for rock, is the name the world kept.",
+    "UNESCO, which inscribed Petra as World Heritage Site 326 in 1985 under criteria (i), (iii) and (iv), singles out the fusion of Hellenistic facades with Nabataean rock-cut tombs: the Khasneh (the Treasury), the Urn, Palace and Corinthian tombs of the King's Wall, and the Deir (the Monastery). Just as admired is the engineering underneath, the dams, tunnels, channels and cisterns that caught the desert's seasonal rain and let a great city flourish where almost no water falls.",
+    "Rome annexed the kingdom in AD 106, and an earthquake in 363 began the long decline; the city emptied in the early Islamic centuries and was known only to local Bedouin until the Swiss traveller Johann Ludwig Burckhardt reached it in 1812. Today the site is protected as the Petra Archaeological Park under the Petra Development and Tourism Region Authority, and the Treasury's facade is Jordan's national image."
+  ],
+  "facts": [
+    {
+      "label": "Capital of",
+      "value": "The Nabataean kingdom, by the 2nd century BC",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Al-Khazneh (the Treasury)",
+      "value": "Facade 39.1 m high, 25.3 m wide, carved in the 1st century AD",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "The Siq",
+      "value": "Entrance gorge about 1.2 km long, walls up to 80 m high",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Elevation",
+      "value": "810 m above sea level",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Peak population",
+      "value": "About 20,000 in the 1st century AD",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "UNESCO World Heritage",
+      "value": "Site 326 \u00b7 inscribed 1985 \u00b7 criteria (i), (iii), (iv)",
+      "source": "UNESCO"
+    },
+    {
+      "label": "Visitors",
+      "value": "1,135,300 in 2019",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Coordinates",
+      "value": "30.3286\u00b0 N, 35.4419\u00b0 E",
+      "source": "Wikipedia"
+    }
+  ],
+  "architecture": {
+    "paragraphs": [
+      "Everything at Petra is worked from the living rock or built against it. The Treasury at the Siq's exit, the royal facades along the King's Wall, the theatre hollowed from the hillside and the Monastery high on the Ad Deir plateau were cut downward from the cliff face, so the sculptors stood on the stone they were removing; the Hellenistic orders, tholos, pediments and columns, were carved as one piece with the facade they decorate.",
+      "The freestanding city tells the other half of the story: a colonnaded street, temples including the Qasr al-Bint, baths and houses filled the basin floor. Above and beneath everything ran the water system, a diversion dam and tunnel at the Siq's mouth, channels cut along its walls and hundreds of cisterns, the work UNESCO calls an outstanding example of water engineering, and the reason a desert metropolis could exist here at all."
+    ],
+    "geniusPoints": [
+      "Facades carved top-down from the cliff, structure and ornament in a single piece of sandstone",
+      "A hydraulic city in a desert: diversion dam, Siq channels and cisterns storing seasonal floodwater (UNESCO)",
+      "The Siq as a processional entrance, the Treasury revealed in one framed view at its exit",
+      "Hellenistic orders fused with Nabataean and Eastern motifs, the fusion UNESCO singles out"
+    ],
+    "dimensions": [
+      {
+        "label": "Treasury (Al-Khazneh) facade",
+        "value": "39.1 m high, 25.3 m wide"
+      },
+      {
+        "label": "The Monastery (Ad Deir) facade",
+        "value": "45 m wide, 42 m high, the largest facade at Petra"
+      },
+      {
+        "label": "The Siq",
+        "value": "About 1.2 km long; cliffs up to 80 m high"
+      },
+      {
+        "label": "UNESCO property",
+        "value": "26,171 hectares"
+      }
+    ],
+    "materials": [
+      "Rose-red sandstone, carved in situ",
+      "Dressed stone masonry",
+      "Plaster and stucco finishes (partly surviving)"
+    ]
+  },
+  "timeline": [
+    {
+      "year": "2nd century BC",
+      "title": "The Nabataean capital",
+      "text": "Petra, Raqmu to its own people, is the capital of the Nabataean kingdom, supplying and taxing the incense caravans of Arabia.",
+      "mediaFileTitle": "Royal Tombs in Petra 001.jpg"
+    },
+    {
+      "year": "1st century AD",
+      "title": "The Treasury is carved",
+      "text": "Al-Khazneh, most likely the tomb of King Aretas IV, is cut into the cliff at the Siq's exit as the city's population peaks at about 20,000.",
+      "mediaFileTitle": "Al-Khazneh Treasury Rock-cut Facade at Petra Jordan.jpg"
+    },
+    {
+      "year": "AD 106",
+      "title": "Rome annexes the kingdom",
+      "text": "Trajan's Rome absorbs Nabataea as the province of Arabia Petraea; the city continues to flourish and builds on."
+    },
+    {
+      "year": "AD 363",
+      "title": "Earthquake",
+      "text": "A great earthquake destroys many buildings and cripples the water management system; Petra never recovers its scale."
+    },
+    {
+      "year": "1812",
+      "title": "Burckhardt reaches Petra",
+      "text": "The Swiss traveller Johann Ludwig Burckhardt, travelling in disguise, is led into the ruins and reports them to the outside world."
+    },
+    {
+      "year": "1985",
+      "title": "UNESCO World Heritage",
+      "text": "Inscribed on the World Heritage List as site 326 under criteria (i), (iii) and (iv)."
+    },
+    {
+      "year": "2007",
+      "title": "A New7Wonder",
+      "text": "Petra is voted one of the New7Wonders of the World in the global poll."
+    }
+  ],
+  "visitor": {
+    "hoursText": "The archaeological park is open every day of the year. The Petra Development and Tourism Region Authority's visitor rules set opening at 06:00, with closing at 18:00 in summer and earlier in winter, and ticket sales end 45 minutes before closing. The official Visit Petra site publishes the current season's exact hours.",
+    "closedDays": "Open every day of the year.",
+    "fees": null,
+    "feesNote": null,
+    "gatesText": "Entry is only through the Visitor Centre in Wadi Musa, where tickets are sold. From the centre the main trail runs via Bab as-Siq and the Siq to the Treasury, about 3.2 km, and continues across the basin to the Monastery. Licensed guides are booked inside the Visitor Centre, and the Authority's rules bar unlicensed guiding and private vehicles inside the site.",
+    "lastVerified": "" + CHECKED_2026_11 + "",
+    "sourceName": "Petra Development and Tourism Region Authority, Rules for Visiting the World Heritage Site of Petra",
+    "sourceUrl": "https://petrapass.pdtra.gov.jo/"
+  },
+  "myths": [
+    {
+      "claim": "Al-Khazneh guarded a pharaoh's hidden treasure.",
+      "verdict": "PARTLY TRUE",
+      "evidence": "The name does mean 'the Treasury', and Bedouin legend told of an Egyptian pharaoh's gold hidden in the great urn on the facade, whose bullet scars are still pointed out. But the building is a royal tomb, most likely of the Nabataean king Aretas IV, and no treasure chamber has ever been found inside it.",
+      "sourceName": "Wikipedia, \"Petra\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Petra"
+    },
+    {
+      "claim": "Nobody knew Petra existed until 1812.",
+      "verdict": "FALSE",
+      "evidence": "Local Bedouin knew the ruins intimately, lived among them and guided travellers for payment long before 1812. What Burckhardt's visit changed was the outside world's knowledge: his was the first European account to reach print and identify the site.",
+      "sourceName": "Wikipedia, \"Petra\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Petra"
+    },
+    {
+      "claim": "Petra survived on a single hidden spring.",
+      "verdict": "FALSE",
+      "evidence": "The Nabataeans ran a whole hydraulic system, diversion dams, tunnels, rock-cut channels and a vast network of cisterns and reservoirs that controlled and conserved the seasonal rains. UNESCO lists that system itself as part of the site's outstanding value.",
+      "sourceName": "UNESCO World Heritage Centre, Petra (site 326)",
+      "sourceUrl": "https://whc.unesco.org/en/list/326/"
+    }
+  ],
+  "photoSpots": [
+    {
+      "name": "The Treasury from the plaza",
+      "description": "The classic first sight at the end of the Siq: the whole facade, shot by Ywpark2003, our hero view on this page.",
+      "mediaFileTitle": "Al-Khazneh Treasury Rock-cut Facade at Petra Jordan.jpg"
+    },
+    {
+      "name": "Ad Deir, the Monastery",
+      "description": "The largest facade at Petra at the top of the Ad Deir trail, photographed whole by Azurfrog.",
+      "mediaFileTitle": "Al Deir Petra.JPG"
+    },
+    {
+      "name": "The Royal Tombs",
+      "description": "The King's Wall facades above the basin, the Urn Tomb among them, photographed by Freedom's Falcon.",
+      "mediaFileTitle": "Royal Tombs in Petra 001.jpg"
+    }
+  ],
+  "faqs": [
+    {
+      "q": "What is Petra famous for?",
+      "a": "Petra is famous as the rose-red rock-cut capital of the Nabataeans: a whole city of tombs, temples and theatres carved into sandstone canyons in southern Jordan, entered through the narrow Siq gorge, with Al-Khazneh (the Treasury) as its icon. UNESCO inscribed it in 1985, and it is one of the New7Wonders of the World."
+    },
+    {
+      "q": "Who built Petra?",
+      "a": "The Nabataeans, an Arab people who grew rich on the caravan trade in frankincense, silk and spices. They made Petra (their Raqmu) their capital by the 2nd century BC, and the great facades were carved around the turn of the 1st century AD, under kings such as Aretas IV."
+    },
+    {
+      "q": "What is Al-Khazneh, the Treasury?",
+      "a": "Al-Khazneh is Petra's most famous facade, 39.1 m high and 25.3 m wide, carved into the cliff where the Siq opens. It is a royal tomb, most likely of King Aretas IV; its Arabic name, 'the Treasury', comes from the legend that a pharaoh hid his treasure in the urn at its top."
+    },
+    {
+      "q": "How do you reach the Treasury?",
+      "a": "On foot, the only way in: from the Visitor Centre in Wadi Musa the trail passes Bab as-Siq and enters the Siq, a winding gorge about 1.2 km long between cliffs up to 80 m high. The Treasury appears at the gorge's exit; the walk from the centre takes most visitors 30 to 45 minutes."
+    },
+    {
+      "q": "Is Petra a UNESCO World Heritage Site?",
+      "a": "Yes. Petra was inscribed on the World Heritage List in 1985 as site 326, under criteria (i), (iii) and (iv), for its rock-cut architecture and its Nabataean water engineering. The protected property covers 26,171 hectares."
+    }
+  ],
+  "nearby": [
+    {
+      "name": "Little Petra (Siq al-Barid)",
+      "relation": "A smaller Nabataean suburb 9 km north, part of the same World Heritage property",
+      "lat": 30.375,
+      "lng": 35.4494,
+      "url": "https://whc.unesco.org/en/list/326/",
+      "urlLabel": "UNESCO listing"
+    },
+    {
+      "name": "Wadi Rum",
+      "relation": "Jordan's other great desert World Heritage landscape, south towards Aqaba",
+      "lat": 29.575,
+      "lng": 35.42,
+      "url": "https://whc.unesco.org/en/list/1372/",
+      "urlLabel": "UNESCO listing"
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Al-Khazneh Treasury Rock-cut Facade at Petra Jordan.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Al-Khazneh_Treasury_Rock-cut_Facade_at_Petra_Jordan.jpg",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Al-Khazneh_Treasury_Rock-cut_Facade_at_Petra_Jordan.jpg",
+      "width": 2567,
+      "height": 3854,
+      "licence": "CC BY 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/4.0",
+      "author": "Ywpark2003",
+      "attribution": "\"Al-Khazneh Treasury Rock-cut Facade at Petra Jordan.jpg\" by Ywpark2003, CC BY 4.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Al-Khazneh, the Treasury at Petra, the whole carved facade rising above the plaza at the end of the Siq",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Al Deir Petra.JPG",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Al_Deir_Petra.JPG",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Al_Deir_Petra.JPG",
+      "width": 6000,
+      "height": 4000,
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "author": "Azurfrog",
+      "attribution": "\"Al Deir Petra.JPG\" by Azurfrog, CC BY-SA 3.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Ad Deir, the Monastery at Petra, the largest of the rock-cut facades, shown whole above its forecourt",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Royal Tombs in Petra 001.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Royal_Tombs_in_Petra_001.jpg",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Royal_Tombs_in_Petra_001.jpg",
+      "width": 4928,
+      "height": 3264,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Freedom's Falcon",
+      "attribution": "\"Royal Tombs in Petra 001.jpg\" by Freedom's Falcon, CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "The Royal Tombs of the King's Wall at Petra, carved facades above the city basin",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, coordinates, official site",
+      "sourceName": "Wikidata, Q5788 (Petra)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q5788",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "UNESCO status, site ID 326, inscription year 1985, criteria (i), (iii), (iv)",
+      "sourceName": "UNESCO World Heritage Centre, Petra (site 326)",
+      "sourceUrl": "https://whc.unesco.org/en/list/326/",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "History, facade dimensions, elevation, peak population, annual visitors",
+      "sourceName": "Wikipedia, \"Petra\" (cross-checked)",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Petra",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "Opening rules, ticket sales, Visitor Centre and guiding rules",
+      "sourceName": "Petra Development and Tourism Region Authority, visitor rules (official ticketing)",
+      "sourceUrl": "https://petrapass.pdtra.gov.jo/",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "All photographs: licence, author, dimensions",
+      "sourceName": "Wikimedia Commons, imageinfo records (per-file links in the credits)",
+      "sourceUrl": "https://commons.wikimedia.org/",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "Live weather and sun times at the site",
+      "sourceName": "Open-Meteo API (forecast, at 30.328611, 35.441944)",
+      "sourceUrl": "https://open-meteo.com/",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    }
+  ]
+};
+
+const CHICHEN_ITZA: Wonder = {
+  "slug": "chichen-itza",
+  "name": "Chichen Itza",
+  "category": "New7Wonders of the World",
+  "wikidataQid": "Q5859",
+  "unescoId": 483,
+  "unescoYear": 1988,
+  "cityName": "Pist\u00e9 (Tin\u00fam)",
+  "regionName": "Yucat\u00e1n",
+  "countryName": "Mexico",
+  "lat": 20.683056,
+  "lng": -88.568611,
+  "timezone": "America/Merida",
+  "officialUrl": "https://www.inah.gob.mx/zonas/146-zona-arqueologica-de-chichen-itza",
+  "ticketUrl": null,
+  "wikiUrl": "https://en.wikipedia.org/wiki/Chichen_Itza",
+  "wearTip": "There is almost no shade on the main plaza: a hat, sunscreen and water matter more here than at any other wonder on this list, and the limestone radiates the heat back by midday.",
+  "photoNote": "On the equinox afternoons the northern staircase carries the famous serpent of light and shadow; the rest of the year El Castillo reads best in the first hour, before the tour buses arrive.",
+  "seoTitle": "Chichen Itza: Live Weather, Guide & Facts",
+  "seoDescription": "Chichen Itza today: live weather at El Castillo, visiting guide, UNESCO facts, credited photos and myth checks. The great Maya-Toltec city of Yucat\u00e1n.",
+  "intro": [
+    "Chichen Itza, 'at the mouth of the well of the Itza', was the great Maya city of the northern Yucat\u00e1n lowlands, raised around the natural sinkholes, the cenotes, that are the only reliable water in a land without surface rivers. Settled by about AD 600, it grew into a regional capital that by AD 1000 controlled a territory running from central Yucat\u00e1n to both coasts.",
+    "Its two building waves read like two civilisations shaking hands. The southern quarter is Puuc Maya: the Nunnery, the Church, the round Caracol observatory. The northern group, El Castillo, the Great Ball Court, the Temple of the Warriors, fuses Maya craft with the styles of central Mexico, the Maya-Toltec blend UNESCO singles out. El Castillo, the Temple of Kukulcan, is a calendar in stone: four stairways of 91 steps plus the top platform make 365.",
+    "The city declined as a regional centre after about 1100 and stood as a pilgrimage ruin when the Spanish arrived; John Lloyd Stephens and Frederick Catherwood documented it for the modern world in 1841. Today the federal site is stewarded by INAH, Mexico's National Institute of Anthropology and History, and UNESCO inscribed it in 1988 as site 483 under criteria (i), (ii) and (iii). On the equinox afternoons its northern staircase still draws thousands for the serpent of light and shadow."
+  ],
+  "facts": [
+    {
+      "label": "Founded",
+      "value": "c. AD 750; main building AD 800\u20131100",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "El Castillo height",
+      "value": "30 m (24 m pyramid and 6 m temple); base 55.3 m square",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "The calendar count",
+      "value": "4 stairways of 91 steps + 1 platform = 365 steps",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Great Ball Court",
+      "value": "168 m \u00d7 70 m, the largest in Mesoamerica",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Name",
+      "value": "\"At the mouth of the well of the Itza\", for its cenotes",
+      "source": "UNESCO"
+    },
+    {
+      "label": "UNESCO World Heritage",
+      "value": "Site 483 \u00b7 inscribed 1988 \u00b7 criteria (i), (ii), (iii)",
+      "source": "UNESCO"
+    },
+    {
+      "label": "Visitors",
+      "value": "More than 2.6 million in 2017",
+      "source": "Wikipedia"
+    },
+    {
+      "label": "Steward",
+      "value": "Federal property, stewarded by INAH",
+      "source": "INAH / Wikipedia"
+    },
+    {
+      "label": "Coordinates",
+      "value": "20.6831\u00b0 N, 88.5686\u00b0 W",
+      "source": "Wikipedia"
+    }
+  ],
+  "architecture": {
+    "paragraphs": [
+      "El Castillo is a nine-level stepped pyramid, 55.3 m square at the base and 30 m high, a staircase on each face climbing to a small temple. Its geometry is the famous part: 91 steps per stairway, four stairways and the top platform total 365, the days of the solar year, and the nine terraces, split by the stairways into eighteen panels, are read as the 18 months of the Maya Haab calendar. On the spring and autumn equinoxes the late sun throws the northern staircase's balustrade into a chain of light triangles, read as the feathered serpent Kukulcan descending to the serpent heads at its foot.",
+      "Around it spreads the northern ceremonial core: the Great Ball Court, 168 by 70 m, its long walls carrying stone rings high above the playing alley; the Temple of the Warriors fronted by the Group of the Thousand Columns; the Tzompantli skull platform. South of the plaza the older Puuc quarter builds differently, mosaic stone facades at the Nunnery group and the round Caracol, an observatory aligned on the movements of Venus. A sacred causeway, a sacb\u00e9, runs north from the plaza to the Sacred Cenote, the well the city is named for."
+    ],
+    "geniusPoints": [
+      "A calendar built as a pyramid: 365 steps and an equinox light effect on the northern stairway",
+      "The largest ball court in Mesoamerica, its rings set 8 m up in the court's long walls",
+      "Maya and central-Mexican styles fused in a single building programme (UNESCO)",
+      "The Caracol, a round observatory tower rare in Maya architecture, aligned on Venus",
+      "A great city plumbed entirely to cenotes: no river, yet water for tens of thousands"
+    ],
+    "dimensions": [
+      {
+        "label": "El Castillo",
+        "value": "30 m high; base 55.3 m square"
+      },
+      {
+        "label": "El Castillo stairways",
+        "value": "4 \u00d7 91 steps + 1 platform = 365"
+      },
+      {
+        "label": "Great Ball Court",
+        "value": "168 m \u00d7 70 m overall"
+      },
+      {
+        "label": "Sacred Cenote",
+        "value": "About 60 m across"
+      }
+    ],
+    "materials": [
+      "Local limestone",
+      "Stone mosaic veneer (Puuc style)",
+      "Stucco and paint (traces survive)"
+    ]
+  },
+  "timeline": [
+    {
+      "year": "c. AD 750",
+      "title": "The city is founded",
+      "text": "Maya settlers build around the cenotes of the northern plain; the southern Puuc quarter, the Nunnery and the Caracol among it, rises first."
+    },
+    {
+      "year": "c. AD 900\u20131100",
+      "title": "The great northern group",
+      "text": "El Castillo, the Great Ball Court and the Temple of the Warriors are built as Chichen Itza becomes the peninsula's dominant capital.",
+      "mediaFileTitle": "Chichen Itza 3.jpg"
+    },
+    {
+      "year": "c. 1100",
+      "title": "Decline",
+      "text": "Archaeological evidence shows the city waning as a regional centre by about 1100, long before the Spanish arrival, though it remains a pilgrimage place."
+    },
+    {
+      "year": "1841",
+      "title": "Documented for the modern world",
+      "text": "John Lloyd Stephens and Frederick Catherwood publish the ruins; systematic excavation and consolidation follow, led in the 20th century by INAH."
+    },
+    {
+      "year": "1988",
+      "title": "UNESCO World Heritage",
+      "text": "Inscribed as site 483, Pre-Hispanic City of Chichen-Itza, under criteria (i), (ii) and (iii)."
+    },
+    {
+      "year": "2007",
+      "title": "A New7Wonder",
+      "text": "Chichen Itza is voted one of the New7Wonders of the World in the global poll."
+    }
+  ],
+  "visitor": {
+    "hoursText": "The zone is open to the public every day of the year on INAH's published schedule, gates opening at 8:00 and closing at 17:00. Come at opening if you can: the plaza is at its emptiest, the light on El Castillo at its best, and by late morning the heat and the tour groups arrive together.",
+    "closedDays": "Open every day of the year.",
+    "fees": null,
+    "feesNote": null,
+    "gatesText": "Entry is through the main visitor centre by the M\u00e9rida\u2013Canc\u00fan highway, 2 km from Pist\u00e9. Two charges are collected together at the gate, the federal INAH fee and the Yucat\u00e1n state tariff applied through the AAFY, and the INAH zone page publishes the current amounts. Climbing the monuments is prohibited; the Sacred Cenote is reached by the sacb\u00e9 footpath running north from the plaza.",
+    "nightText": "On scheduled evenings the zone runs Noches de Kukulc\u00e1n, a light-and-sound show at El Castillo, operated separately from the daytime visit; the official event page announces its calendar.",
+    "lastVerified": "" + CHECKED_2026_11 + "",
+    "sourceName": "INAH, Zona Arqueol\u00f3gica de Chich\u00e9n Itz\u00e1 (official zone page)",
+    "sourceUrl": "https://www.inah.gob.mx/zonas/146-zona-arqueologica-de-chichen-itza"
+  },
+  "myths": [
+    {
+      "claim": "The winners of the ball game were sacrificed.",
+      "verdict": "PARTLY TRUE",
+      "evidence": "The Great Ball Court's carved panels do show a decapitated player, so ritual killing was bound up with the game. But whether it was the winners, the losers or a chosen captive who died is genuinely unsettled among scholars; the confident version told on tours goes beyond the evidence.",
+      "sourceName": "Wikipedia, \"Chichen Itza\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Chichen_Itza"
+    },
+    {
+      "claim": "The serpent appears on El Castillo only on the equinox days.",
+      "verdict": "PARTLY TRUE",
+      "evidence": "The chain of light triangles on the northern staircase is real and peaks around the spring and autumn equinoxes, which is when the crowds come. The geometry, though, throws the stepped shadow over a run of afternoons either side of each equinox, not on a single day only.",
+      "sourceName": "INAH, Zona Arqueol\u00f3gica de Chich\u00e9n Itz\u00e1",
+      "sourceUrl": "https://www.inah.gob.mx/zonas/146-zona-arqueologica-de-chichen-itza"
+    },
+    {
+      "claim": "The Maya mysteriously vanished.",
+      "verdict": "FALSE",
+      "evidence": "The city declined and was abandoned as a capital; the Maya did not vanish. Millions of Maya people live in Yucat\u00e1n and across the Maya region today, speaking Mayan languages, and Yucatec Maya is the everyday language of the towns around the ruins.",
+      "sourceName": "Wikipedia, \"Chichen Itza\"",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Chichen_Itza"
+    }
+  ],
+  "photoSpots": [
+    {
+      "name": "El Castillo from the plaza",
+      "description": "The pyramid whole from the Great Plaza, Daniel Schwen's canonical view, our hero shot.",
+      "mediaFileTitle": "Chichen Itza 3.jpg"
+    },
+    {
+      "name": "Temple of the Warriors",
+      "description": "The Warriors temple above its colonnade, photographed by edenpictures.",
+      "mediaFileTitle": "Temple of the Warriors - Chichen Itza 2024.jpg"
+    },
+    {
+      "name": "The Great Ball Court",
+      "description": "Down the playing alley of the largest court in Mesoamerica, photographed by edenpictures.",
+      "mediaFileTitle": "Great Ball Court - Chichen Itza 2024.jpg"
+    }
+  ],
+  "faqs": [
+    {
+      "q": "What does Chichen Itza mean?",
+      "a": "Chichen Itza means 'at the mouth of the well of the Itza', from the Maya chi (mouth or edge) and ch'en (well). The wells are the cenotes, natural sinkholes that gave the city its water in a land without rivers, and the Itza were the people who ruled it."
+    },
+    {
+      "q": "What is El Castillo?",
+      "a": "El Castillo, the Castle, is the Temple of Kukulcan, the 30 m stepped pyramid at Chichen Itza's centre. It is a calendar in stone: four stairways of 91 steps plus the top platform total 365, and on the equinoxes the afternoon sun casts a serpent of light and shadow down its northern staircase."
+    },
+    {
+      "q": "What happens at Chichen Itza on the equinox?",
+      "a": "On afternoons around the spring and autumn equinoxes, the sun throws a chain of triangular shadows down the northern staircase of El Castillo, read as the feathered serpent Kukulcan descending to the carved serpent heads at the base. It is the site's biggest draw, and the effect builds over several afternoons either side of the equinox itself."
+    },
+    {
+      "q": "How old is Chichen Itza?",
+      "a": "The city was founded around AD 750 and its great monuments, El Castillo, the Great Ball Court and the Temple of the Warriors, were built between about AD 900 and 1100, when Chichen Itza was the dominant capital of the northern Maya lowlands."
+    },
+    {
+      "q": "Is Chichen Itza a UNESCO World Heritage Site?",
+      "a": "Yes. The Pre-Hispanic City of Chichen-Itza was inscribed in 1988 as site 483, under criteria (i), (ii) and (iii), as the most important surviving city of the Maya-Toltec world. The site is federal property, stewarded by INAH."
+    }
+  ],
+  "nearby": [
+    {
+      "name": "Uxmal",
+      "relation": "The other great Puuc city of Yucat\u00e1n, a fellow World Heritage Site south-west on the Puuc route",
+      "lat": 20.359444,
+      "lng": -89.771389,
+      "url": "https://whc.unesco.org/en/list/791/",
+      "urlLabel": "UNESCO listing"
+    },
+    {
+      "name": "Kabah",
+      "relation": "A Puuc site on the same route, joined to Uxmal by a sacb\u00e9 and inscribed with it",
+      "lat": 20.248056,
+      "lng": -89.647222,
+      "url": "https://whc.unesco.org/en/list/791/",
+      "urlLabel": "UNESCO listing"
+    }
+  ],
+  "media": [
+    {
+      "fileTitle": "Chichen Itza 3.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/51/Chichen_Itza_3.jpg",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
+      "width": 9771,
+      "height": 5197,
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "author": "Daniel Schwen",
+      "attribution": "\"Chichen Itza 3.jpg\" by Daniel Schwen, CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "El Castillo, the Temple of Kukulcan at Chichen Itza, the whole step pyramid above the Great Plaza",
+      "sortOrder": 1
+    },
+    {
+      "fileTitle": "Temple of the Warriors - Chichen Itza 2024.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Temple_of_the_Warriors_-_Chichen_Itza_2024.jpg",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Temple_of_the_Warriors_-_Chichen_Itza_2024.jpg",
+      "width": 4032,
+      "height": 2016,
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+      "author": "edenpictures",
+      "attribution": "\"Temple of the Warriors - Chichen Itza 2024.jpg\" by edenpictures, CC BY 2.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "The Temple of the Warriors at Chichen Itza above the columns of the Thousand Warriors group",
+      "sortOrder": 2
+    },
+    {
+      "fileTitle": "Great Ball Court - Chichen Itza 2024.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Great_Ball_Court_-_Chichen_Itza_2024.jpg",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:Great_Ball_Court_-_Chichen_Itza_2024.jpg",
+      "width": 4032,
+      "height": 2268,
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+      "author": "edenpictures",
+      "attribution": "\"Great Ball Court - Chichen Itza 2024.jpg\" by edenpictures, CC BY 2.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "The Great Ball Court at Chichen Itza, looking along the playing alley between its long walls",
+      "sortOrder": 3
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Identity, coordinates, official steward",
+      "sourceName": "Wikidata, Q5859 (Chichen Itza)",
+      "sourceUrl": "https://www.wikidata.org/wiki/Q5859",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "UNESCO status, site ID 483, inscription year 1988, criteria (i), (ii), (iii)",
+      "sourceName": "UNESCO World Heritage Centre, Pre-Hispanic City of Chichen-Itza (site 483)",
+      "sourceUrl": "https://whc.unesco.org/en/list/483/",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "History, El Castillo dimensions and step count, ball court size, annual visitors",
+      "sourceName": "Wikipedia, \"Chichen Itza\" (cross-checked)",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Chichen_Itza",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "Opening days and hours, combined federal and state charges, night show",
+      "sourceName": "INAH, Zona Arqueol\u00f3gica de Chich\u00e9n Itz\u00e1 (official zone page)",
+      "sourceUrl": "https://www.inah.gob.mx/zonas/146-zona-arqueologica-de-chichen-itza",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "All photographs: licence, author, dimensions",
+      "sourceName": "Wikimedia Commons, imageinfo records (per-file links in the credits)",
+      "sourceUrl": "https://commons.wikimedia.org/",
+      "checkedAt": "" + CHECKED_2026_11 + ""
+    },
+    {
+      "claim": "Live weather and sun times at the site",
+      "sourceName": "Open-Meteo API (forecast, at 20.683056, -88.568611)",
+      "sourceUrl": "https://open-meteo.com/",
+      "checkedAt": "" + CHECKED_2026_11 + ""
     }
   ]
 };
@@ -4924,9 +5564,11 @@ const GREAT_BARRIER_REEF: Wonder = {
   "nearby": []
 };
 
-export const BUILT_WONDERS: Wonder[] = [GREAT_WALL_OF_CHINA, EIFFEL_TOWER, PYRAMIDS_OF_GIZA, BURJ_KHALIFA, CHRIST_THE_REDEEMER, COLOSSEUM, MACHU_PICCHU, STATUE_OF_LIBERTY, ACROPOLIS_ATHENS, STONEHENGE, SYDNEY_OPERA_HOUSE, HAGIA_SOPHIA, ST_PETERS_BASILICA, SAGRADA_FAMILIA, NEUSCHWANSTEIN_CASTLE, GRAND_CANYON, GREAT_BARRIER_REEF];
+export const BUILT_WONDERS: Wonder[] = [EIFFEL_TOWER, PYRAMIDS_OF_GIZA, BURJ_KHALIFA, STATUE_OF_LIBERTY, ACROPOLIS_ATHENS, STONEHENGE, SYDNEY_OPERA_HOUSE, HAGIA_SOPHIA, ST_PETERS_BASILICA, SAGRADA_FAMILIA, NEUSCHWANSTEIN_CASTLE, GRAND_CANYON, GREAT_BARRIER_REEF];
 
-export const PUBLISHED_WONDERS: Wonder[] = [TAJ_MAHAL];
+export const PUBLISHED_WONDERS: Wonder[] = [
+  TAJ_MAHAL, GREAT_WALL_OF_CHINA, PETRA, CHRIST_THE_REDEEMER, MACHU_PICCHU, CHICHEN_ITZA, COLOSSEUM,
+];
 
 /**
  * Fix 3 (billi audit, Batch 4 Item 2 follow-up): the ticket-fee FAQ answer
@@ -5001,12 +5643,9 @@ export function getWonderFaqs(wonder: Wonder): { q: string; a: string }[] {
   });
 }
 
-// The other New7Wonders, listed on the index as content only (no links)
-// until each one's own golden build is verified and published.
-export const UPCOMING_WONDERS: { name: string; place: string }[] = [
-  { name: 'Petra', place: 'Ma\u2019an, Jordan' },
-  { name: 'Chichen Itza', place: 'Yucat\u00e1n, Mexico' },
-];
+// All seven New7Wonders are published as of the wonders build
+// (2026-11-04), so the plain-name 'in preparation' list is empty.
+export const UPCOMING_WONDERS: { name: string; place: string }[] = [];
 
 /**
  * The hub's complete "in preparation" list (D2, wonders-family fix):

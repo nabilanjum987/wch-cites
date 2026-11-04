@@ -23,8 +23,12 @@
 
 import { useEffect, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
-import { MapPin } from 'lucide-react';
+import { MapPin, X } from 'lucide-react';
 import { useVisitorCity } from './useVisitorCity';
+import PinClockMenu, { FirstPinToast } from '@/components/clocks/PinClockMenu';
+import PinnedClocksStrip from '@/components/clocks/PinnedClocksStrip';
+import { dismissHint, useHintDismissed } from '@/components/clocks/store';
+import type { PinnedClock } from '@/components/clocks/clock-data';
 
 interface ClockDef {
   name: string;
@@ -91,6 +95,28 @@ function AnalogClock({ now, tz, color, size }: { now: Date; tz: string; color: s
   );
 }
 
+// Catalogue id for a hero clock — must match clock-data.ts so a pin
+// made here, an embed of the same city and the widgets page all agree
+// on which clock it is.
+const CATALOGUE_ID: Record<string, string> = {
+  London: 'london',
+  Dubai: 'dubai',
+  Karachi: 'karachi',
+  'New York': 'new-york',
+  Tokyo: 'tokyo',
+  Sydney: 'sydney',
+};
+
+function pinnedOf(def: ClockDef): PinnedClock {
+  return {
+    id: CATALOGUE_ID[def.name] ?? def.name.toLowerCase().replace(/\s+/g, '-'),
+    name: def.name,
+    tz: def.tz,
+    code: def.code,
+    primary: def.primary,
+  };
+}
+
 function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number }) {
   const { str12, date } = parts(now, def.tz);
   const inner = (
@@ -126,16 +152,29 @@ function ClockFace({ now, def, size }: { now: Date; def: ClockDef; size: number 
       </div>
     </div>
   );
-  return def.href ? (
+  const face = def.href ? (
     <Link href={def.href} className="no-underline hover:opacity-90 transition-opacity">{inner}</Link>
   ) : (
     <div>{inner}</div>
+  );
+  // Pin / Take this clock (owner's settled shape, 3 Nov): a LABELLED
+  // button under every clock face — icon AND text, opening the pin /
+  // home-screen / embed / design menu. It sits OUTSIDE the face's link
+  // so the two never nest.
+  return (
+    <div>
+      {face}
+      <div className="mt-2 flex justify-center">
+        <PinClockMenu clock={pinnedOf(def)} compact />
+      </div>
+    </div>
   );
 }
 
 export default function HeroClocks() {
   const now = useNow();
   const { visitor, locating, unavailable, request } = useVisitorCity();
+  const hintDismissed = useHintDismissed();
 
   return (
     <div className="w-full">
@@ -151,6 +190,19 @@ export default function HeroClocks() {
               <div className="t-text font-bold text-2xl">{visitor.name}</div>
               <div className="t-text-90 font-mono text-xl">{parts(now, visitor.tz).str12}</div>
               <div className="t-text-40 text-sm">{parts(now, visitor.tz).date}</div>
+            </div>
+            {/* Your own clock carries the same Pin / Take menu: it pins
+                by timezone, so any visitor city can be kept. */}
+            <div className="mt-3">
+              <PinClockMenu
+                clock={{
+                  id: `own-${visitor.tz}`,
+                  name: visitor.name,
+                  tz: visitor.tz,
+                  code: null,
+                  primary: '#22d3ee',
+                }}
+              />
             </div>
           </>
         ) : (
@@ -178,9 +230,32 @@ export default function HeroClocks() {
           <ClockFace key={def.name} now={now} def={def} size={84} />
         ))}
       </div>
+      {/* Hint line (owner's discovery design): one line under the hero
+          clocks, dismissible, remembered on this device. */}
+      {!hintDismissed && (
+        <p className="mt-6 flex items-center justify-center gap-2 text-center text-sm t-text-80">
+          <span>
+            Like a clock? Pin it or take it with you,{' '}
+            <Link href="/clock-widgets" className="t-link font-medium">
+              free clock widgets
+            </Link>{' '}
+            for your own website, too.
+          </span>
+          <button
+            type="button"
+            onClick={dismissHint}
+            aria-label="Dismiss this hint"
+            className="shrink-0 rounded-full p-1 t-text-50 hover:bg-white/10 transition-colors"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </p>
+      )}
       <p className="sub-desc mt-6 text-center max-w-xl mx-auto">
         Six cities. Six time zones. One planet turning, and somewhere on earth it is already tomorrow.
       </p>
+      <FirstPinToast />
+      <PinnedClocksStrip variant="section" />
     </div>
   );
 }

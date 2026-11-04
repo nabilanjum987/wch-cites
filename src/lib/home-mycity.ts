@@ -199,17 +199,17 @@ export async function getMyCityData(slug: string): Promise<MyCityData> {
 const CITY_IMAGES: Record<string, { url: string; credit: string; alt: string }> = {
   lahore: {
     url: '/images/home28/mycity-lahore.webp',
-    credit: 'Badshahi Mosque, Lahore — photo by Muhammad Umair Mirza · CC BY-SA 4.0 · Wikimedia Commons',
+    credit: 'Badshahi Mosque, Lahore · photo by Muhammad Umair Mirza · CC BY-SA 4.0 · Wikimedia Commons',
     alt: 'The Badshahi Mosque in Lahore at golden hour',
   },
   karachi: {
     url: '/images/home28/mycity-karachi.webp',
-    credit: 'Mazar-e-Quaid, Karachi — photo by Anwar Ahmed · CC BY-SA 3.0 · Wikimedia Commons',
+    credit: 'Mazar-e-Quaid, Karachi · photo by Anwar Ahmed · CC BY-SA 3.0 · Wikimedia Commons',
     alt: 'The Mazar-e-Quaid mausoleum in Karachi',
   },
   islamabad: {
     url: '/images/home28/mycity-islamabad.webp',
-    credit: 'The Faisal Mosque in Islamabad — photo by Marsmux · CC BY-SA 4.0 · Wikimedia Commons',
+    credit: 'The Faisal Mosque in Islamabad · photo by Marsmux · CC BY-SA 4.0 · Wikimedia Commons',
     alt: 'The Faisal Mosque in Islamabad',
   },
 };

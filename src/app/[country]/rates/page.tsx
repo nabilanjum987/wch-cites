@@ -18,12 +18,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: 'Petrol Price in Pakistan Today | WorldCityHub',
       description:
-        'Petrol and diesel guidance, dollar rate, silver and gold prices in Pakistan today — live USD/PKR and bullion figures with sources.',
+        'Petrol and diesel guidance, dollar rate, silver and gold prices in Pakistan today, live USD/PKR and bullion figures with sources.',
       alternates: { canonical: 'https://worldcityhub.vercel.app/pakistan/rates' },
     };
   }
   return {
-    title: `${countryName} Rates — Gold, Currency & Crypto | WorldCityHub`,
+    title: `${countryName} Rates: Gold, Currency & Crypto | WorldCityHub`,
     description: `Live gold, currency, crypto, oil and fuel rates for ${countryName}. Open market vs interbank, Zakat nisab calculator, remittance tools.`,
     alternates: { canonical: `https://worldcityhub.vercel.app/${country}/rates` },
   };

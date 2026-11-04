@@ -8,7 +8,7 @@ export const COUNTRY_CANADA = {
   "name": "Canada",
   "iso2": "CA",
   "iso3": "CAN",
-  "isoNote": "Explicit slug→ISO map (Panama law) — never derived from the slug.",
+  "isoNote": "Explicit slug→ISO map (Panama law), never derived from the slug.",
   "qid": "Q16",
   "capital": {
     "name": "Ottawa",
@@ -31,7 +31,7 @@ export const COUNTRY_CANADA = {
     "indicator": "SP.POP.TOTL"
   },
   "economySnapshot": {
-    "source": "World Bank API — packaged snapshot pulled 2026-10-22; same 16-indicator set as fetchWorldBankLatest (src/lib/apis/worldbank.ts); live at activation via the one-cached-dataset pattern.",
+    "source": "World Bank API, packaged snapshot pulled 2026-10-22; same 16-indicator set as fetchWorldBankLatest (src/lib/apis/worldbank.ts); live at activation via the one-cached-dataset pattern.",
     "indicators": {
       "gdpUsd": {
         "value": 2319899772425.92,

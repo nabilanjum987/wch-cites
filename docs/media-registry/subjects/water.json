@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (water)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/resource-water.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Tarbela_Dam%2C_KPK%2C_Pakistan.jpg",
+      "author": "USAID",
+      "license": "Public domain",
+      "commons_title": "File:Tarbela Dam, KPK, Pakistan.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Tarbela Dam, KPK, Pakistan.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Tarbela Dam, KPK, Pakistan.jpg."
+    }
+  ],
+  "notes": "Tarbela Dam spillway on the Indus, viewed and confirmed. Fills the Water card on the Pakistan page Natural Resources grid. A USAID anniversary graphic with text overlays was rejected in favour of this photograph. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

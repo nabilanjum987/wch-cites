@@ -18,7 +18,7 @@ export const FAISALABAD: CityPackage = {
     "religion_percent": null,
     "primary_color": "#01411C",
     "secondary_color": "#FFFFFF",
-    "famous_for": "Textile industry — the Manchester of Pakistan; clock tower and eight bazaars",
+    "famous_for": "Textile industry, the Manchester of Pakistan; clock tower and eight bazaars",
     "famous_products": "Cotton textiles and garments, hosiery",
     "emergency_police": "15",
     "emergency_ambulance": "1122",
@@ -46,7 +46,7 @@ export const FAISALABAD: CityPackage = {
     },
     {
       "label": "Known as",
-      "value": "The Manchester of Pakistan — textile mills and the eight-bazaar clock tower plan"
+      "value": "The Manchester of Pakistan, textile mills and the eight-bazaar clock tower plan"
     }
   ],
   "foods": [
@@ -64,7 +64,7 @@ export const FAISALABAD: CityPackage = {
     },
     {
       "name": "Kulfa falooda",
-      "note": "Dense kulfa ice cream over falooda — a local sweet-shop signature."
+      "note": "Dense kulfa ice cream over falooda, a local sweet-shop signature."
     }
   ],
   "landmarks": [
@@ -125,12 +125,12 @@ export const FAISALABAD: CityPackage = {
     {
       "group": "identity (coords, population, elevation)",
       "source": "Wikidata Q173985",
-      "detail": "Coordinates P625, elevation P2044 — Wikidata, pulled live 2026-10-22. Population REPLACED (final30 B10) with PBS 7th Population & Housing Census (2023), Table 1, Faisalabad District total 9,075,819 — the 2017 Wikidata figure (3,203,846) is retired."
+      "detail": "Coordinates P625, elevation P2044, Wikidata, pulled live 2026-10-22. Population REPLACED (final30 B10) with PBS 7th Population & Housing Census (2023), Table 1, Faisalabad District total 9,075,819, the 2017 Wikidata figure (3,203,846) is retired."
     },
     {
       "group": "emergency numbers",
       "source": "Pakistan national emergency numbers",
-      "detail": "Police 15, ambulance/rescue 1122, fire 16 — the same national set the published city pages carry (src/lib/getCityData.ts)."
+      "detail": "Police 15, ambulance/rescue 1122, fire 16, the same national set the published city pages carry (src/lib/getCityData.ts)."
     },
     {
       "group": "foods, landmarks, hospitals",
@@ -140,7 +140,7 @@ export const FAISALABAD: CityPackage = {
     {
       "group": "personality seeds",
       "source": "Per-seed source recorded on each seed",
-      "detail": "Seeds only — full verified profiles are the personalities pipeline’s job (R6 pattern)."
+      "detail": "Seeds only, full verified profiles are the personalities pipeline’s job (R6 pattern)."
     },
     {
       "group": "religion_percent",

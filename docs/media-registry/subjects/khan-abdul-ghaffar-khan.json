@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (khan-abdul-ghaffar-khan)",
+  "records": [
+    {
+      "local_path": "/images/personalities/khan-abdul-ghaffar-khan.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Khan_Abdul_Ghaffar_Khan.jpg",
+      "author": "British India",
+      "license": "Public domain",
+      "commons_title": "File:Khan Abdul Ghaffar Khan.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Khan Abdul Ghaffar Khan.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Khan Abdul Ghaffar Khan.jpg."
+    }
+  ],
+  "notes": "Black-and-white portrait of Khan Abdul Ghaffar Khan, viewed and confirmed; complete head with margin on all sides. Small original (340x375), the only size Commons holds. Fills his placeholder entry on the Khyber Pakhtunkhwa province page. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

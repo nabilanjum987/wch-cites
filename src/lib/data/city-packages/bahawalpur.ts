@@ -18,7 +18,7 @@ export const BAHAWALPUR: CityPackage = {
     "religion_percent": null,
     "primary_color": "#01411C",
     "secondary_color": "#FFFFFF",
-    "famous_for": "Nawabi palaces — Noor Mahal, Darbar Mahal — the City of Palaces",
+    "famous_for": "Nawabi palaces, Noor Mahal, Darbar Mahal, the City of Palaces",
     "famous_products": "Cholistan carpets, embroidery and pottery; dates and mangoes",
     "emergency_police": "15",
     "emergency_ambulance": "1122",
@@ -50,7 +50,7 @@ export const BAHAWALPUR: CityPackage = {
     },
     {
       "label": "Known as",
-      "value": "City of Palaces — the Nawabs’ capital at the edge of Cholistan"
+      "value": "City of Palaces, the Nawabs’ capital at the edge of Cholistan"
     }
   ],
   "foods": [
@@ -74,7 +74,7 @@ export const BAHAWALPUR: CityPackage = {
   "landmarks": [
     {
       "name": "Noor Mahal",
-      "note": "The 1872 palace built for Nawab Sadiq Muhammad Khan IV — the “Palace of Light”, now a museum."
+      "note": "The 1872 palace built for Nawab Sadiq Muhammad Khan IV, the “Palace of Light”, now a museum."
     },
     {
       "name": "Darbar Mahal",
@@ -82,11 +82,11 @@ export const BAHAWALPUR: CityPackage = {
     },
     {
       "name": "Derawar Fort (nearby)",
-      "note": "The great Cholistan desert fortress, some 48 km away — nine centuries of history guarding the caravan routes."
+      "note": "The great Cholistan desert fortress, some 48 km away, nine centuries of history guarding the caravan routes."
     },
     {
       "name": "Lal Suhanra National Park (nearby)",
-      "note": "One of Pakistan’s largest national parks — desert, wetland and blackbuck — east of the city."
+      "note": "One of Pakistan’s largest national parks, desert, wetland and blackbuck, east of the city."
     },
     {
       "name": "Bahawalpur Central Library",
@@ -119,7 +119,7 @@ export const BAHAWALPUR: CityPackage = {
     {
       "name": "Nawab Sadiq Muhammad Khan IV",
       "field": "Nawab of Bahawalpur (r. 1866–1899)",
-      "note": "Builder-era Nawab — Noor Mahal was built in his reign (1872).",
+      "note": "Builder-era Nawab, Noor Mahal was built in his reign (1872).",
       "source": "Wikipedia: Sadiq Muhammad Khan IV"
     },
     {
@@ -133,12 +133,12 @@ export const BAHAWALPUR: CityPackage = {
     {
       "group": "identity (coords, population, elevation)",
       "source": "Wikidata Q318156 + Wikipedia city article",
-      "detail": "Coordinates from the article infobox (29.3956, 71.6836); Wikidata P625 longitude (71.6722) differs by ~1 km — variant recorded. Population: article census table gives the CITY at 682,116 in 2017, used here; Wikidata P1082 carries 762,111 (wider boundary) — variant recorded. Elevation 118 m (article). WARNING: Wikidata P2044 shows “461” for Bahawalpur — that is the elevation in FEET stored in a metres field; the article’s 118 m (387 ft) is used instead. City area 246 km² (article; Wikidata 237.2 km² differs slightly). Cross-read 2026-10-22."
+      "detail": "Coordinates from the article infobox (29.3956, 71.6836); Wikidata P625 longitude (71.6722) differs by ~1 km, variant recorded. Population: article census table gives the CITY at 682,116 in 2017, used here; Wikidata P1082 carries 762,111 (wider boundary), variant recorded. Elevation 118 m (article). WARNING: Wikidata P2044 shows “461” for Bahawalpur, that is the elevation in FEET stored in a metres field; the article’s 118 m (387 ft) is used instead. City area 246 km² (article; Wikidata 237.2 km² differs slightly). Cross-read 2026-10-22."
     },
     {
       "group": "emergency numbers",
       "source": "Pakistan national emergency numbers",
-      "detail": "Police 15, ambulance/rescue 1122, fire 16 — the same national set the published city pages carry."
+      "detail": "Police 15, ambulance/rescue 1122, fire 16, the same national set the published city pages carry."
     },
     {
       "group": "hospitals",
@@ -153,7 +153,7 @@ export const BAHAWALPUR: CityPackage = {
     {
       "group": "personality seeds",
       "source": "Per-seed source recorded on each seed",
-      "detail": "Seeds only — full verified profiles are the personalities pipeline’s job (R6 pattern); batch-2 seeds get their Wikidata verification in the R6B extension card."
+      "detail": "Seeds only, full verified profiles are the personalities pipeline’s job (R6 pattern); batch-2 seeds get their Wikidata verification in the R6B extension card."
     },
     {
       "group": "religion_percent",

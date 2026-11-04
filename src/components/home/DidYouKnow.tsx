@@ -4,14 +4,14 @@ import { Lightbulb, ArrowRight, Sparkles } from 'lucide-react';
 
 const dailyFacts = [
   {
-    fact: "Dubai's Gold Souk has 300+ retailers — most per square meter on earth",
+    fact: "Dubai's Gold Souk has 300+ retailers, most per square meter on earth",
     city: 'Dubai',
     country: 'United Arab Emirates',
     countryCode: 'AE',
     slug: 'dubai'
   },
   {
-    fact: "Istanbul is the only city spanning two continents — Europe and Asia",
+    fact: "Istanbul is the only city spanning two continents, Europe and Asia",
     city: 'Istanbul',
     country: 'Turkey',
     countryCode: 'TR',
@@ -25,14 +25,14 @@ const dailyFacts = [
     slug: 'lahore'
   },
   {
-    fact: "Tokyo has more Michelin stars than any other city — over 230 restaurants",
+    fact: "Tokyo has more Michelin stars than any other city, over 230 restaurants",
     city: 'Tokyo',
     country: 'Japan',
     countryCode: 'JP',
     slug: 'tokyo'
   },
   {
-    fact: "New York's Central Park is larger than Monaco — 843 acres vs 484 acres",
+    fact: "New York's Central Park is larger than Monaco, 843 acres vs 484 acres",
     city: 'New York',
     country: 'United States',
     countryCode: 'US',
@@ -46,7 +46,7 @@ const dailyFacts = [
     slug: 'mumbai'
   },
   {
-    fact: "London's Underground is the oldest metro system — opened in 1863",
+    fact: "London's Underground is the oldest metro system, opened in 1863",
     city: 'London',
     country: 'United Kingdom',
     countryCode: 'GB',

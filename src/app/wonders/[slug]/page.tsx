@@ -72,8 +72,10 @@ function Section({ title, children, id }: { title: string; children: React.React
 }
 
 // ── Final30 A8: keyword plan-visit sections ──────────────────────────────
-// Ticket-price / opening-hours intent for the seven briefed wonders, plus
-// Taj Mahal location + best-time-to-visit. Rendered ONLY for these slugs:
+// Ticket-price / opening-hours intent for the briefed wonders (the seven
+// deploy-14 slugs, plus christ-the-redeemer, machu-picchu, petra and
+// chichen-itza from the wonders build, 2026-11-04), plus Taj Mahal
+// location + best-time-to-visit. Rendered ONLY for these slugs:
 // every answer is composed from the wonder's own verified record
 // (visitor.fees rows, hoursText, closedDays, gatesText, intro, nearby),
 // 50–70 words each. Wonders whose record carries fees: null deliberately
@@ -87,6 +89,10 @@ const PLAN_VISIT_SLUGS = new Set([
   'colosseum',
   'statue-of-liberty',
   'great-wall-of-china',
+  'christ-the-redeemer',
+  'machu-picchu',
+  'petra',
+  'chichen-itza',
   'pyramids-of-giza',
   'burj-khalifa',
 ]);
@@ -106,6 +112,14 @@ const TICKET_ANSWERS: Record<string, string> = {
     "Pyramid ticket prices are not fixed on this page: the Giza Plateau opens daily and hours shift between summer and winter seasons, while inner-pyramid entry is by separate ticket with limited daily numbers. Egypt's Ministry of Tourism and Antiquities publishes the current schedule and prices, so check its site before visiting. Source: Egypt Ministry of Tourism & Antiquities, Egymonuments, verified 2026-10-22.",
   'burj-khalifa':
     "Burj Khalifa ticket prices are not fixed on this page, because the operator's prices are dynamic: sunset ('prime') hours carry different prices and sell out first. The At The Top decks open daily from morning to late evening, and entry runs through Dubai Mall's lower ground floor. Check the official ticket site for the current schedule. Source: Burj Khalifa official site / At The Top, verified 2026-10-22.",
+  'christ-the-redeemer':
+    "There is no fee for the statue itself; what you pay for is the ride up Corcovado. The Corcovado Rack Railway from Cosme Velho and the authorised Paineiras-Corcovado vans set their own tariffs, so this page prints no fixed price. Buy only from those two official operators. Source: Trem do Corcovado / Paineiras-Corcovado, via the monument record, verified 2026-10-22.",
+  'machu-picchu':
+    "Entry is by timed circuit ticket sold on the Ministry of Culture's official tuboleto.cultura.pe platform, and this page prints no fixed price: the tariff depends on the circuit and on visitor category, and the Ministry revises it. Book the exact circuit you want; in high season the popular circuits sell out weeks ahead. Source: Peru Ministry of Culture, via the monument record, verified 2026-10-22.",
+  'petra':
+    "Tickets are sold at the Visitor Centre in Wadi Musa and through the Authority's official online ticketing and the Petra Pass, at tariffs the Authority itself sets; one-day and multi-day passes are priced differently, so this page prints no fixed dinar figure. Compare a multi-day pass, or the Jordan Pass, before buying a one-day ticket. Source: PDTRA visitor rules, verified 2026-11-04.",
+  'chichen-itza':
+    "Two charges are collected together at the gate: the federal fee set by INAH and a Yucatán state tariff applied through the AAFY, and each authority revises its own amount, so no single fixed price is printed here. INAH's official zone page publishes the current combined total. Source: INAH, Zona Arqueológica de Chichén Itzá, verified 2026-11-04.",
 };
 
 const HOURS_ANSWERS: Record<string, string> = {
@@ -123,6 +137,14 @@ const HOURS_ANSWERS: Record<string, string> = {
     "The Giza Plateau opens daily in the morning and closes before sunset, with hours shifting between the summer and winter seasons. Inner-pyramid entry is by separate ticket with limited daily numbers. Egypt's Ministry of Tourism and Antiquities publishes the current schedule and prices, so check its site before visiting. Source: Egypt Ministry of Tourism & Antiquities, Egymonuments, verified 2026-10-22.",
   'burj-khalifa':
     "The At The Top observation decks open daily from the morning to late evening, and sunset ('prime') hours carry different prices and sell out first. Entry runs through Dubai Mall's lower ground floor, not the tower's own doors, with security and an exhibition corridor before the lifts. Check the official ticket site for today's schedule. Source: Burj Khalifa official site / At The Top, verified 2026-10-22.",
+  'christ-the-redeemer':
+    'The platform keeps the hours of its two official carriers rather than one monument timetable: the rack railway from Cosme Velho and the Paineiras-Corcovado vans run through the day, a representative 08:00 to 19:00. Take an early departure on a clear morning; cloud closes over the summit fast. Source: Trem do Corcovado / Paineiras-Corcovado, via the monument record, verified 2026-10-22.',
+  'machu-picchu':
+    'The citadel runs on timed entry slots, first entry early in the morning and last circuit entry in the mid-afternoon, a representative 06:00 to 17:30 frame. Your ticket names your circuit and your entry slot, so the timetable that matters is the one printed on your tuboleto booking; the first slots are the quietest. Source: Peru Ministry of Culture, via the monument record, verified 2026-10-22.',
+  'petra':
+    "The park opens at 06:00 daily; the Authority's rules close it at 18:00 in summer and earlier in winter, with ticket sales ending 45 minutes before closing, and the official Visit Petra site publishes the current season's exact hours. Enter early: the Siq is quietest before the day tours, and the Monastery round trip is long. Source: PDTRA visitor rules, verified 2026-11-04.",
+  'chichen-itza':
+    'INAH hours are 8:00 to 17:00, every day of the year. The advice that matters is about heat, not the clock: from 11:00 the plaza is fully exposed and the day-trip buses arrive together, so an 8:00 entry buys you El Castillo in relative quiet. The Noches de Kukulcán show runs on scheduled evenings as a separate event. Source: INAH zone page, verified 2026-11-04.',
 };
 
 function planVisitSections(wonder: Wonder): { h2: string; qa: { q: string; a: string }[] }[] {

@@ -42,7 +42,7 @@ export const PLACE_SHEIKH_ZAYED_GRAND_MOSQUE: PlaceRow = {
     },
     {
       "label": "UNESCO World Heritage Site ID",
-      "value": "No UNESCO site ID in the fetched Wikidata claims — inscription status to be verified at ingest (absence of a claim is not proof of non-inscription)",
+      "value": "No UNESCO site ID in the fetched Wikidata claims, inscription status to be verified at ingest (absence of a claim is not proof of non-inscription)",
       "source": "Wikidata P757"
     }
   ],

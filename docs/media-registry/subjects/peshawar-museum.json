@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (peshawar-museum)",
+  "records": [
+    {
+      "local_path": "/images/places/peshawar-museum.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Peshawar_Museum.JPG",
+      "author": "Khalid Mahmood",
+      "license": "CC BY-SA 3.0",
+      "commons_title": "File:Peshawar Museum.JPG",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Peshawar Museum.JPG on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Peshawar Museum.JPG."
+    }
+  ],
+  "notes": "The Peshawar Museum building with its own signboard, viewed and confirmed. Replaces the text-only card on the Khyber Pakhtunkhwa province page. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

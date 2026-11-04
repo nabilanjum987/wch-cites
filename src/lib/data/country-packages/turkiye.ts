@@ -7,7 +7,7 @@ export const COUNTRY_TURKIYE: CountryPackage = {
   "name": "Türkiye",
   "iso2": "TR",
   "iso3": "TUR",
-  "isoNote": "Explicit slug→ISO map (Panama law) — never derived from the slug.",
+  "isoNote": "Explicit slug→ISO map (Panama law), never derived from the slug.",
   "capital": {
     "name": "Ankara",
     "lat": 39.92,
@@ -28,7 +28,7 @@ export const COUNTRY_TURKIYE: CountryPackage = {
     "indicator": "SP.POP.TOTL"
   },
   "economySnapshot": {
-    "source": "World Bank API (api.worldbank.org) — packaged snapshot pulled 2026-10-22; at activation the country page reads the SAME indicator set live via fetchWorldBankLatest(iso3) / getCountryEconomy (one-cached-dataset pattern). Missing keys = the World Bank publishes no recent value; consumers hide them.",
+    "source": "World Bank API (api.worldbank.org), packaged snapshot pulled 2026-10-22; at activation the country page reads the SAME indicator set live via fetchWorldBankLatest(iso3) / getCountryEconomy (one-cached-dataset pattern). Missing keys = the World Bank publishes no recent value; consumers hide them.",
     "indicators": {
       "gdpUsd": {
         "value": 1597293229287,

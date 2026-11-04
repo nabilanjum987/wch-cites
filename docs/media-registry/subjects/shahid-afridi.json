@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (shahid-afridi)",
+  "records": [
+    {
+      "local_path": "/images/personalities/shahid-afridi.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Shahid_Afridi_in_2017.jpg",
+      "author": "Shehbaz Sharif",
+      "license": "CC BY 2.0",
+      "commons_title": "File:Shahid Afridi in 2017.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Shahid Afridi in 2017.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Shahid Afridi in 2017.jpg."
+    }
+  ],
+  "notes": "Head-and-shoulders portrait of Shahid Afridi, viewed and confirmed; complete head with clear margin above. Square 1102x1102; the 3/4 frame crops the sides only. Fills his placeholder entry on the Khyber Pakhtunkhwa province page. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

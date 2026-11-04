@@ -18,7 +18,7 @@ export const MULTAN: CityPackage = {
     "religion_percent": null,
     "primary_color": "#01411C",
     "secondary_color": "#FFFFFF",
-    "famous_for": "Sufi shrines, Sohan Halwa, mangoes — the City of Saints",
+    "famous_for": "Sufi shrines, Sohan Halwa, mangoes, the City of Saints",
     "famous_products": "Sohan Halwa, Multani khussa (footwear), blue pottery, mangoes",
     "emergency_police": "15",
     "emergency_ambulance": "1122",
@@ -46,13 +46,13 @@ export const MULTAN: CityPackage = {
     },
     {
       "label": "Known as",
-      "value": "City of Saints — Sufi shrines and Multani mangoes"
+      "value": "City of Saints, Sufi shrines and Multani mangoes"
     }
   ],
   "foods": [
     {
       "name": "Sohan Halwa",
-      "note": "Multan’s signature dense sweet of milk, ghee and nuts — the city’s most gifted food."
+      "note": "Multan’s signature dense sweet of milk, ghee and nuts, the city’s most gifted food."
     },
     {
       "name": "Chaunsa mangoes",
@@ -70,7 +70,7 @@ export const MULTAN: CityPackage = {
   "landmarks": [
     {
       "name": "Tomb of Shah Rukn-e-Alam",
-      "note": "The 14th-century shrine that crowns the Multan Fort mound — among the earliest Tughluq-era tombs."
+      "note": "The 14th-century shrine that crowns the Multan Fort mound, among the earliest Tughluq-era tombs."
     },
     {
       "name": "Tomb of Bahauddin Zakariya",
@@ -129,12 +129,12 @@ export const MULTAN: CityPackage = {
     {
       "group": "identity (coords, population, elevation)",
       "source": "Wikidata Q185453",
-      "detail": "Coordinates P625, elevation P2044 — Wikidata, pulled live 2026-10-22. Population REPLACED (final30 B10) with PBS 7th Population & Housing Census (2023), Table 1, Multan District total 5,362,305 — the 2017 Wikidata figure (1,871,843) is retired."
+      "detail": "Coordinates P625, elevation P2044, Wikidata, pulled live 2026-10-22. Population REPLACED (final30 B10) with PBS 7th Population & Housing Census (2023), Table 1, Multan District total 5,362,305, the 2017 Wikidata figure (1,871,843) is retired."
     },
     {
       "group": "emergency numbers",
       "source": "Pakistan national emergency numbers",
-      "detail": "Police 15, ambulance/rescue 1122, fire 16 — the same national set the published city pages carry (src/lib/getCityData.ts)."
+      "detail": "Police 15, ambulance/rescue 1122, fire 16, the same national set the published city pages carry (src/lib/getCityData.ts)."
     },
     {
       "group": "foods, landmarks, hospitals",
@@ -144,7 +144,7 @@ export const MULTAN: CityPackage = {
     {
       "group": "personality seeds",
       "source": "Per-seed source recorded on each seed",
-      "detail": "Seeds only — full verified profiles are the personalities pipeline’s job (R6 pattern)."
+      "detail": "Seeds only, full verified profiles are the personalities pipeline’s job (R6 pattern)."
     },
     {
       "group": "religion_percent",

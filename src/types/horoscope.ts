@@ -88,6 +88,8 @@ export interface WeeklyForecast {
   week_end: string;
   overall: number;
   summary: string;
+  /** One honest line stating what the reading is computed from. */
+  basis: string;
   best_days: string[];
   challenging_days: string[];
 }
@@ -97,7 +99,24 @@ export interface MonthlyForecast {
   month_name: string;
   overall: number;
   summary: string;
+  /** One honest line stating what the reading is computed from. */
+  basis: string;
   highlight_dates: string[];
+}
+
+export interface YearlyForecast {
+  year: number;
+  overall: number;
+  summary: string;
+  /** One honest line stating what the reading is computed from. */
+  basis: string;
+  highlight_dates: string[];
+  best_month: string;
+  quietest_month: string;
+  /** The sign's own season this year (start of the run that begins the
+   *  season, end of the run that closes it; Capricorn wraps the year). */
+  season_start: string;
+  season_end: string;
 }
 
 export interface SignsCompatibility {

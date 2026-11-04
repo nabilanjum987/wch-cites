@@ -49,6 +49,12 @@ export async function getApprovedEvents(opts: {
   citySlug?: string;
   includeNational?: boolean;
   limit?: number;
+  // Calendar family (4 Nov 2026): a full-year calendar needs the whole
+  // year's approved rows, including months already past, so callers may
+  // pass an explicit starts_at window. When fromIso is omitted the
+  // behaviour is exactly the original upcoming-only filter.
+  fromIso?: string;
+  toIso?: string;
 } = {}): Promise<WchEvent[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -58,10 +64,11 @@ export async function getApprovedEvents(opts: {
     select: SELECT_COLS,
     status: 'eq.approved',
     verified: 'eq.true',
-    starts_at: `gte.${new Date().toISOString()}`,
+    starts_at: `gte.${opts.fromIso ?? new Date().toISOString()}`,
     order: 'starts_at.asc',
     limit: String(limit),
   });
+  if (opts.toIso) params.append('starts_at', `lt.${opts.toIso}`);
   if (opts.citySlug) {
     params.set('or', opts.includeNational === false
       ? `(city_slug.eq.${opts.citySlug})`

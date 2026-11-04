@@ -73,9 +73,12 @@ export async function getUsdPkrRate(): Promise<number | null> {
 }
 
 export async function getGoldPkr(): Promise<GoldPkr | null> {
-  const spot = await getGoldSpot();
+  // Speed fix (4 Nov 2026): the spot and the FX rate are independent, so
+  // they are fetched concurrently instead of serially. Results are
+  // identical in every case: no spot still returns null, a missing rate
+  // still falls through to the CoinGecko PKR quote below.
+  const [spot, rate] = await Promise.all([getGoldSpot(), getUsdPkrRate()]);
   if (!spot) return null;
-  const rate = await getUsdPkrRate();
   if (rate) {
     const perOz = spot.priceUsdPerOz * rate;
     return {

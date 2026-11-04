@@ -12,7 +12,7 @@
 // ─── 1. HUMANITARIAN IMPACT ──────────────────────────────────────────────────
 
 export function generateHumanitarianParagraph(name: string): string {
-  return `The humanitarian figures above for ${name} are sourced from established international monitoring organizations, tracking the human toll of this situation in concrete, verifiable terms — displacement, casualties, and access to essential services. These figures are presented as factual data points rather than narrative, reflecting WorldCityHub's commitment to neutral, source-based reporting on conflicts and crises affecting civilian populations.`;
+  return `The humanitarian figures above for ${name} are sourced from established international monitoring organizations, tracking the human toll of this situation in concrete, verifiable terms, displacement, casualties, and access to essential services. These figures are presented as factual data points rather than narrative, reflecting WorldCityHub's commitment to neutral, source-based reporting on conflicts and crises affecting civilian populations.`;
 }
 
 export function generateHumanitarianAfter(name: string): string {
@@ -52,7 +52,7 @@ export function generateCitiesAfter(name: string): string {
 // ─── 5. HUMANITARIAN AID ORGANIZATIONS ──────────────────────────────────────
 
 export function generateAidParagraph(name: string): string {
-  return `The organizations listed above are established humanitarian groups actively working to address the impact of ${name}, included here with no affiliate relationships or financial incentive — purely as a resource for anyone wanting to support relief efforts directly. Each organization listed has a verifiable track record of humanitarian work, distinct from any political or military dimension of the underlying situation.`;
+  return `The organizations listed above are established humanitarian groups actively working to address the impact of ${name}, included here with no affiliate relationships or financial incentive, purely as a resource for anyone wanting to support relief efforts directly. Each organization listed has a verifiable track record of humanitarian work, distinct from any political or military dimension of the underlying situation.`;
 }
 
 export function generateAidAfter(name: string): string {
@@ -62,7 +62,7 @@ export function generateAidAfter(name: string): string {
 // ─── 6. LATEST NEWS ──────────────────────────────────────────────────────────
 
 export function generateNewsParagraph(name: string): string {
-  return `News coverage of ${name} above is sourced exclusively from established, internationally recognised wire services and broadcasters — Reuters, AP, BBC, and Al Jazeera — chosen specifically for their editorial standards and broad international sourcing rather than any single national or partisan perspective. This sourcing approach reflects this page's commitment to presenting information about ${name} as neutrally as possible.`;
+  return `News coverage of ${name} above is sourced exclusively from established, internationally recognised wire services and broadcasters, Reuters, AP, BBC, and Al Jazeera, chosen specifically for their editorial standards and broad international sourcing rather than any single national or partisan perspective. This sourcing approach reflects this page's commitment to presenting information about ${name} as neutrally as possible.`;
 }
 
 export function generateNewsAfter(name: string): string {

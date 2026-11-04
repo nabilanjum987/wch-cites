@@ -50,7 +50,7 @@ export const ABBOTTABAD: CityPackage = {
     },
     {
       "label": "Known as",
-      "value": "The hill city of Hazara — home of the Pakistan Military Academy"
+      "value": "The hill city of Hazara, home of the Pakistan Military Academy"
     }
   ],
   "foods": [
@@ -114,7 +114,7 @@ export const ABBOTTABAD: CityPackage = {
     },
     {
       "name": "Sardar Mehtab Ahmed Khan",
-      "field": "Politician — former Chief Minister & Governor of KP",
+      "field": "Politician, former Chief Minister & Governor of KP",
       "note": "The Sardar of Abbottabad; the district’s defining political figure of the post-1988 era.",
       "source": "Wikipedia: Sardar Mehtab Abbasi"
     },
@@ -129,12 +129,12 @@ export const ABBOTTABAD: CityPackage = {
     {
       "group": "identity (coords, population, elevation)",
       "source": "Wikidata Q170315 + Wikipedia city article",
-      "detail": "Coordinates from the article infobox (34.1558, 73.2194); Wikidata P625 (34.15, 73.2167) is rounded — noted. Population: article census table gives 207,989 in 2017 on its urban-tehsil basis, used here; Wikidata P1082 carries 148,587 (cantonment + municipal committee basis) — variant recorded. Elevation 1,256 m (both sources agree). Founded 1853. Cross-read 2026-10-22."
+      "detail": "Coordinates from the article infobox (34.1558, 73.2194); Wikidata P625 (34.15, 73.2167) is rounded, noted. Population: article census table gives 207,989 in 2017 on its urban-tehsil basis, used here; Wikidata P1082 carries 148,587 (cantonment + municipal committee basis), variant recorded. Elevation 1,256 m (both sources agree). Founded 1853. Cross-read 2026-10-22."
     },
     {
       "group": "emergency numbers",
       "source": "Pakistan national emergency numbers",
-      "detail": "Police 15, ambulance/rescue 1122, fire 16 — the same national set the published city pages carry."
+      "detail": "Police 15, ambulance/rescue 1122, fire 16, the same national set the published city pages carry."
     },
     {
       "group": "hospitals",
@@ -149,7 +149,7 @@ export const ABBOTTABAD: CityPackage = {
     {
       "group": "personality seeds",
       "source": "Per-seed source recorded on each seed",
-      "detail": "Seeds only — full verified profiles are the personalities pipeline’s job (R6 pattern); batch-2 seeds get their Wikidata verification in the R6B extension card."
+      "detail": "Seeds only, full verified profiles are the personalities pipeline’s job (R6 pattern); batch-2 seeds get their Wikidata verification in the R6B extension card."
     },
     {
       "group": "religion_percent",

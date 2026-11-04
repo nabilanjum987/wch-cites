@@ -80,11 +80,11 @@ export const CITY_DUBAI: IntlCityPackage = {
     "Dubai Statistics Center publications"
   ],
   "diaspora": {
-    "figures": "OMITTED at build time — no official nationality-breakdown table could be fetched and verified for this city during the build; do not publish diaspora percentages from secondary sources.",
+    "figures": "OMITTED at build time, no official nationality-breakdown table could be fetched and verified for this city during the build; do not publish diaspora percentages from secondary sources.",
     "note": "Expatriate-majority character is documented qualitatively in official statistics publications listed in localSources; exact shares enter only from an official census/statistics release."
   },
   "sources": [
-    "Wikidata (identity, coordinates, population, area, elevation) — entity verified by description",
+    "Wikidata (identity, coordinates, population, area, elevation), entity verified by description",
     "Wikipedia (landmark articles, existence-verified at build)",
     "Local data API map 2026-10-22 (localSources)",
     "Official emergency numbers of the country"

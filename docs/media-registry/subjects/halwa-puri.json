@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (halwa-puri)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/food-halwa-puri.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Nihari_%26_Halwa_Puri_-_Breakfast_of_every_Lahori.jpg",
+      "author": "Robin Crusoe",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Nihari & Halwa Puri - Breakfast of every Lahori.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Nihari & Halwa Puri - Breakfast of every Lahori.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Nihari & Halwa Puri - Breakfast of every Lahori.jpg."
+    }
+  ],
+  "notes": "A true halwa puri breakfast plate: puris with orange semolina halwa and chana, viewed and confirmed. Chole bhature photos were rejected as the wrong subject, and a puris-only photo with a photographer watermark was also rejected. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

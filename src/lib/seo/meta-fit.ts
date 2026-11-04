@@ -58,13 +58,13 @@ export function cleanMetaCut(text: string): string {
 }
 
 export function fitMetaTitle(name: string, title: string): string {
-  const full = `${name} — ${title}${SITE_SUFFIX}`;
+  const full = `${name}: ${title}${SITE_SUFFIX}`;
   if (full.length <= META_TITLE_MAX) return full;
   const titleBudget = META_TITLE_MAX - name.length - 3 - SITE_SUFFIX.length;
   if (titleBudget >= 1) {
     const cut = cleanMetaCut(cutAtWordBoundary(title, titleBudget));
     if (cut && cut.length >= Math.ceil(titleBudget * 0.4)) {
-      return `${name} — ${cut}${SITE_SUFFIX}`;
+      return `${name}: ${cut}${SITE_SUFFIX}`;
     }
     return `${name}${SITE_SUFFIX}`;
   }
@@ -82,7 +82,7 @@ export function fitMetaDescription(description: string, name: string, title: str
   if (cut && cut.length >= Math.ceil(META_DESC_MAX * 0.4)) return cut;
   // Fallback: a clean shorter description composed only from the
   // record's own name + title (never invented facts).
-  const composed = cleanMetaCut(cutAtWordBoundary(`${name} — ${title}`, META_DESC_MAX));
+  const composed = cleanMetaCut(cutAtWordBoundary(`${name}: ${title}`, META_DESC_MAX));
   return composed || name;
 }
 

@@ -53,7 +53,7 @@ export const CITY_KUWAIT_CITY: IntlCityPackage = {
   "foods": [
     {
       "name": "Machboos",
-      "description": "Spiced rice with chicken, lamb or fish — Kuwait's national dish."
+      "description": "Spiced rice with chicken, lamb or fish, Kuwait's national dish."
     },
     {
       "name": "Harees",
@@ -80,7 +80,7 @@ export const CITY_KUWAIT_CITY: IntlCityPackage = {
     "Kuwait open data portal (data.gov.kw)"
   ],
   "diaspora": {
-    "figures": "OMITTED at build time — no official nationality-breakdown table could be fetched and verified for this city during the build.",
+    "figures": "OMITTED at build time, no official nationality-breakdown table could be fetched and verified for this city during the build.",
     "note": "Exact diaspora shares enter only from an official census/statistics release."
   },
   "sources": [

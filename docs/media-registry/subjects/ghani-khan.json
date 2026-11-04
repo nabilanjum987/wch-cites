@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (ghani-khan)",
+  "records": [
+    {
+      "local_path": "/images/personalities/ghani-khan.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/KhanAbdul-Ghani-Khan.jpg",
+      "author": "Ahmad Ali Khan",
+      "license": "Public domain",
+      "commons_title": "File:KhanAbdul-Ghani-Khan.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:KhanAbdul-Ghani-Khan.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:KhanAbdul-Ghani-Khan.jpg."
+    }
+  ],
+  "notes": "Portrait of Ghani Khan in old age, viewed and confirmed; complete head, hair close to the top edge (about 2-4% margin) but never cut. Small original (365x441). Fills his placeholder entry on the Khyber Pakhtunkhwa province page. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

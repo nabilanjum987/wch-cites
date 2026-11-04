@@ -4,11 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Heart, Briefcase, Activity, Star, Sparkles,
   Hash, Palette, Smile, Users, Sun, Moon, DollarSign,
-  Compass, Clock, Calendar, Globe, User, CheckCircle, XCircle
+  Compass, Clock, Calendar, Globe, Telescope, User, CheckCircle, XCircle
 } from 'lucide-react';
-import type { ZodiacSign, DailyReading, WeeklyForecast, MonthlyForecast } from '../../types/horoscope';
+import type { ZodiacSign, DailyReading, WeeklyForecast, MonthlyForecast, YearlyForecast } from '../../types/horoscope';
 import { ZODIAC_SIGNS, ELEMENT_COLORS, ELEMENT_BG, ELEMENT_TEXT, FAMOUS_PEOPLE } from '../../types/horoscope';
-import { fetchDailyReading, fetchWeeklyForecast, fetchMonthlyForecast, getSignData } from '../../lib/apis/astro';
+import { fetchDailyReading, fetchWeeklyForecast, fetchMonthlyForecast, fetchYearlyForecast, getSignData } from '../../lib/apis/astro';
+import { SIGN_ARTWORK } from '../../lib/horoscope/artwork';
 import Link from 'next/link';
 
 interface Props {
@@ -40,12 +41,14 @@ const METRIC_CONFIG = [
 ];
 
 export default function SignDetailPage({ sign, onBack, primaryColor, heading }: Props) {
-  const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
+  const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('daily');
 
   const signData = useMemo(() => getSignData(sign), [sign]);
   const reading: DailyReading = useMemo(() => fetchDailyReading(sign), [sign]);
   const weekly: WeeklyForecast = useMemo(() => fetchWeeklyForecast(sign), [sign]);
   const monthly: MonthlyForecast = useMemo(() => fetchMonthlyForecast(sign), [sign]);
+  const yearly: YearlyForecast = useMemo(() => fetchYearlyForecast(sign), [sign]);
+  const artwork = SIGN_ARTWORK[sign];
   const compatSignData = ZODIAC_SIGNS.find(s => s.key === reading.compatibility);
   const challengingSignData = ZODIAC_SIGNS.find(s => s.key === reading.challenging);
   const elemColor = ELEMENT_COLORS[signData.element];
@@ -71,10 +74,13 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl"
+              className="w-20 h-20 rounded-2xl overflow-hidden shrink-0"
               style={{ backgroundColor: `${elemColor}25` }}
             >
-              {signData.symbol}
+              {/* The sign's own classical plate (Sidney Hall, Urania's
+                  Mirror, 1825), shown as artwork; credited below the
+                  header and again in Sources and Method. */}
+              <img src={artwork.src} alt={artwork.alt} className="w-full h-full object-cover" loading="lazy" />
             </motion.div>
             <div>
               <h1 className="text-2xl font-bold text-white">{heading ?? signData.name}</h1>
@@ -91,12 +97,19 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6">
-        {/* Tab Navigation */}
+        {/* Artwork credit, as a caption below the header artwork (never
+            written on the image itself). */}
+        <p className="text-[11px] text-gray-500 mb-4">
+          Artwork: &ldquo;{artwork.plate}&rdquo; by {artwork.credit}.
+        </p>
+
+        {/* Tab Navigation: the four reading periods */}
         <div className="flex gap-1 p-1 bg-white rounded-xl shadow-sm border border-gray-100 mb-5">
           {[
             { key: 'daily' as const, label: 'Daily', icon: <Sun size={14} /> },
             { key: 'weekly' as const, label: 'Weekly', icon: <Calendar size={14} /> },
             { key: 'monthly' as const, label: 'Monthly', icon: <Globe size={14} /> },
+            { key: 'yearly' as const, label: 'Yearly', icon: <Telescope size={14} /> },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -130,7 +143,10 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
                 </div>
 
                 {/* Narrative */}
-                <p className="text-gray-700 text-sm leading-relaxed mb-5">{reading.narrative}</p>
+                <p className="text-gray-700 text-sm leading-relaxed mb-2">{reading.narrative}</p>
+                <p className="text-[11px] leading-relaxed text-gray-400 mb-5">
+                  Basis: today&apos;s computed planetary positions (Schlyter&apos;s Keplerian method); the narrative and meters are composed from the aspects those positions form, as set out in the transits card below.
+                </p>
 
                 {/* All Metrics */}
                 <div className="grid grid-cols-5 gap-2">
@@ -264,7 +280,8 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
                   <span className="text-xs text-gray-500">Overall</span>
                   <StarRating rating={weekly.overall} color={primaryColor} />
                 </div>
-                <p className="text-gray-700 text-sm leading-relaxed mb-4">{weekly.summary}</p>
+                <p className="text-gray-700 text-sm leading-relaxed mb-2">{weekly.summary}</p>
+                <p className="text-[11px] leading-relaxed text-gray-400 mb-4">{weekly.basis}</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-green-50 rounded-xl p-3">
                     <p className="text-xs font-semibold text-green-700 mb-1">Best Days</p>
@@ -290,10 +307,48 @@ export default function SignDetailPage({ sign, onBack, primaryColor, heading }: 
                   </div>
                   <StarRating rating={monthly.overall} color={primaryColor} />
                 </div>
-                <p className="text-gray-700 text-sm leading-relaxed mb-4">{monthly.summary}</p>
+                <p className="text-gray-700 text-sm leading-relaxed mb-2">{monthly.summary}</p>
+                <p className="text-[11px] leading-relaxed text-gray-400 mb-4">{monthly.basis}</p>
                 <div className="flex flex-wrap gap-2">
                   <p className="text-xs text-gray-500">Key dates:</p>
                   {monthly.highlight_dates.map((d) => (
+                    <span key={d} className="text-xs bg-gray-100 px-2 py-0.5 rounded-lg font-medium">{d}</span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* YEARLY TAB */}
+          {activeTab === 'yearly' && (
+            <motion.div key="yearly" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Telescope size={18} style={{ color: primaryColor }} />
+                    <h2 className="font-bold text-gray-900 text-sm">{yearly.year} Yearly Forecast</h2>
+                  </div>
+                  <StarRating rating={yearly.overall} color={primaryColor} />
+                </div>
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div className="bg-gray-50 rounded-xl p-3 text-center">
+                    <p className="text-[10px] font-semibold text-gray-500 mb-1">Your Season</p>
+                    <p className="text-xs font-bold text-gray-900">{yearly.season_start} to {yearly.season_end}</p>
+                  </div>
+                  <div className="bg-green-50 rounded-xl p-3 text-center">
+                    <p className="text-[10px] font-semibold text-green-700 mb-1">Strongest Month</p>
+                    <p className="text-xs font-bold text-gray-900">{yearly.best_month}</p>
+                  </div>
+                  <div className="bg-red-50 rounded-xl p-3 text-center">
+                    <p className="text-[10px] font-semibold text-red-600 mb-1">Quietest Month</p>
+                    <p className="text-xs font-bold text-gray-900">{yearly.quietest_month}</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-2">{yearly.summary}</p>
+                <p className="text-[11px] leading-relaxed text-gray-400 mb-4">{yearly.basis}</p>
+                <div className="flex flex-wrap gap-2">
+                  <p className="text-xs text-gray-500">Strongest days:</p>
+                  {yearly.highlight_dates.map((d) => (
                     <span key={d} className="text-xs bg-gray-100 px-2 py-0.5 rounded-lg font-medium">{d}</span>
                   ))}
                 </div>

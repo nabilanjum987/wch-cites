@@ -21,7 +21,7 @@ export default function ImproveCTA({
         <div>
           <h2 className="text-base font-bold t-text">Know {label} better than we do?</h2>
           <p className="mt-1 max-w-xl text-sm leading-relaxed t-g400">
-            Suggest a correction or missing information. Nothing is published automatically — every
+            Suggest a correction or missing information. Nothing is published automatically, every
             suggestion is reviewed by a human and checked against a reliable source first.
           </p>
         </div>

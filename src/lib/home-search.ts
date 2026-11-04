@@ -77,7 +77,7 @@ export async function fetchPreviewFigures(e: SearchEntity): Promise<PreviewFigur
   ]);
   const temp = w?.current?.temperature_2m;
   if (typeof temp === 'number') {
-    out.weather = `${Math.round(temp)}°C · ${WMO[w.current.weather_code] ?? '—'}`;
+    out.weather = `${Math.round(temp)}°C · ${WMO[w.current.weather_code] ?? 'Unknown'}`;
   }
   const timings = p?.data?.timings;
   if (timings && e.tz) {

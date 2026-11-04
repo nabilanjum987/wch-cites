@@ -1,11 +1,11 @@
 import type {
   ZodiacSign, MoonPhaseData, SkyRightNowData, SkyEventData, DailyReading,
-  WeeklyForecast, MonthlyForecast, SignsCompatibility, ChineseAnimal, ChineseElement,
+  WeeklyForecast, MonthlyForecast, YearlyForecast, SignsCompatibility, ChineseAnimal, ChineseElement,
   ChineseAnimalData, ChineseZodiacResult, VedicPanchangData, MoonPhaseDay
 } from '../../types/horoscope';
 import { ZODIAC_SIGNS, CHINESE_ANIMALS, CHINESE_ELEMENT_COLORS } from '../../types/horoscope';
 import { deriveDaily, SIGN_RULERS, computePositions } from '../transits';
-import { composeDailyNarrative, computeWeekly, computeMonthly, moonPhaseForDate, sunSignForDate } from '../horoscope/compose';
+import { composeDailyNarrative, computeWeekly, computeMonthly, computeYearly, moonPhaseForDate, sunSignForDate } from '../horoscope/compose';
 
 // ─── moon phase calculation (astronomical approximation) ─────────────────────
 
@@ -327,6 +327,7 @@ export function fetchWeeklyForecast(sign: ZodiacSign, refDate: Date = new Date()
     week_end: fmt(w.weekEnd),
     overall: w.overall,
     summary: w.summary,
+    basis: w.basis,
     best_days: w.bestDays,
     challenging_days: w.challengingDays,
   };
@@ -346,7 +347,32 @@ export function fetchMonthlyForecast(sign: ZodiacSign, refDate: Date = new Date(
     month_name: m.monthName,
     overall: m.overall,
     summary: m.summary,
+    basis: m.basis,
     highlight_dates: m.highlightDates,
+  };
+}
+
+// ─── yearly forecast ─────────────────────────────────────────────────────────
+
+export function fetchYearlyForecast(sign: ZodiacSign, refDate: Date = new Date()): YearlyForecast {
+  // Aggregated from the same computed positions as the daily readings, run
+  // for every day of the year: the Sun's computed season in the sign, the
+  // year's four turning points, the sign ruler's sign changes, the signs
+  // of Jupiter and Saturn, the year's new and full Moons in the sign, and
+  // the daily meters averaged by month. The basis line returned with the
+  // forecast states this on the page; there is no separate forecast model
+  // and no randomness.
+  const y = computeYearly(sign, refDate);
+  return {
+    year: y.year,
+    overall: y.overall,
+    summary: y.summary,
+    basis: y.basis,
+    highlight_dates: y.highlightDates,
+    best_month: y.bestMonth,
+    quietest_month: y.quietestMonth,
+    season_start: y.seasonStart,
+    season_end: y.seasonEnd,
   };
 }
 

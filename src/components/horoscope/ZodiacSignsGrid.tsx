@@ -3,6 +3,7 @@ import { Star, Sparkles } from 'lucide-react';
 import type { ZodiacSign, DailyReading } from '../../types/horoscope';
 import { ZODIAC_SIGNS, ELEMENT_COLORS, ELEMENT_BG, ELEMENT_TEXT, FAMOUS_PEOPLE } from '../../types/horoscope';
 import { fetchDailyReading } from '../../lib/apis/astro';
+import { SIGN_ARTWORK } from '../../lib/horoscope/artwork';
 
 interface Props {
   onSignClick: (sign: ZodiacSign) => void;
@@ -47,15 +48,18 @@ export default function ZodiacSignsGrid({ onSignClick, primaryColor }: Props) {
               className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-left hover:shadow-md transition-shadow group"
             >
               <div className="flex items-start justify-between mb-3">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: `${elemColor}12` }}>
-                  {sign.symbol}
-                </div>
+                <img
+                  src={SIGN_ARTWORK[sign.key].src}
+                  alt={SIGN_ARTWORK[sign.key].alt}
+                  className="w-12 h-12 rounded-xl object-cover"
+                  loading="lazy"
+                />
                 <span className={`text-xs font-semibold px-2 py-0.5 rounded-lg ${elemBg} ${elemText}`}>
                   {sign.element}
                 </span>
               </div>
 
-              <h3 className="font-bold text-gray-900 text-sm">{sign.name}</h3>
+              <h3 className="font-bold text-gray-900 text-sm">{sign.symbol} {sign.name}</h3>
               <p className="text-xs text-gray-500 mt-0.5">{sign.dates}</p>
 
               <div className="mt-3 pt-3 border-t border-gray-50">

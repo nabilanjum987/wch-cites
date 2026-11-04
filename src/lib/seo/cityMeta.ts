@@ -84,7 +84,7 @@ export function generateCityMeta(props: CityMetaProps) {
   if (goldPerGram) segments.push(`gold PKR ${Math.round(goldPerGram).toLocaleString()}/g`);
   segments.push('local news & events');
 
-  let description = `${city} right now: ${segments.join(', ')} — ${city}, ${province}, ${country}, updated daily.`;
+  let description = `${city} right now: ${segments.join(', ')}: ${city}, ${province}, ${country}, updated daily.`;
   if (description.length > 155) {
     description = description.slice(0, 152).trimEnd() + '…';
   }
@@ -125,25 +125,25 @@ export function generateCityFaqs(props: CityMetaProps): { q: string; a: string }
     {
       q: `What are today's prayer times in ${city}?`,
       a: fajr
-        ? `Today's prayer times in ${city} start with Fajr at ${fajr}.${maghrib ? ` Maghrib, the sunset prayer, is at ${maghrib}.` : ''} All five times — Fajr, Dhuhr, Asr, Maghrib and Isha — are calculated for ${city}'s exact coordinates using the Karachi calculation method, shown live at the top of this page with a countdown to the next prayer; the full monthly timetable is on the linked Prayer Times page.`
-        : `Prayer times in ${city} are calculated daily for the city's exact coordinates using the Karachi calculation method, and the live panel at the top of this page shows all five — Fajr, Dhuhr, Asr, Maghrib and Isha — with a countdown to the next one. The linked Prayer Times page carries the full monthly timetable, the Qibla direction from ${city} and today's Hijri date.`,
+        ? `Today's prayer times in ${city} start with Fajr at ${fajr}.${maghrib ? ` Maghrib, the sunset prayer, is at ${maghrib}.` : ''} All five times, Fajr, Dhuhr, Asr, Maghrib and Isha, are calculated for ${city}'s exact coordinates using the Karachi calculation method, shown live at the top of this page with a countdown to the next prayer; the full monthly timetable is on the linked Prayer Times page.`
+        : `Prayer times in ${city} are calculated daily for the city's exact coordinates using the Karachi calculation method, and the live panel at the top of this page shows all five, Fajr, Dhuhr, Asr, Maghrib and Isha, with a countdown to the next one. The linked Prayer Times page carries the full monthly timetable, the Qibla direction from ${city} and today's Hijri date.`,
     },
     {
       q: `What is the gold rate in ${city} today?`,
       a: goldPerGram
-        ? `The gold rate in ${city} today is PKR ${Math.round(goldPerGram).toLocaleString()} per gram for 24-karat gold, which equals PKR ${Math.round(goldPerGram * TOLA_GRAMS).toLocaleString()} per tola — one tola is 11.664 grams. The rate follows the international bullion market and the rupee's exchange rate, and this page updates it daily from the same live feed. Jewellers in ${city} add making charges on top of this bullion rate.`
+        ? `The gold rate in ${city} today is PKR ${Math.round(goldPerGram).toLocaleString()} per gram for 24-karat gold, which equals PKR ${Math.round(goldPerGram * TOLA_GRAMS).toLocaleString()} per tola, one tola is 11.664 grams. The rate follows the international bullion market and the rupee's exchange rate, and this page updates it daily from the same live feed. Jewellers in ${city} add making charges on top of this bullion rate.`
         : `Gold in ${city} is priced per gram and per tola (one tola = 11.664 grams) from the international bullion market, converted into ${isPakistan ? 'Pakistani rupees' : 'the local currency'}. The Gold & Rates section of this page shows today's 24-karat rate with 22K, 21K and 18K beside it, updated daily; the full Rates page tracks the metal in other currencies too. Jewellers add making charges on top.`,
     },
     {
       q: `What is ${city} famous for?`,
       // Q11: city-neutral — an earlier version hard-coded Lahore's
       // landmarks and people into every city's schema.
-      a: `${city} is known for its historic landmarks, its food culture, and its people — poets, athletes, scholars and artists who shaped ${country}. The Famous Places and Famous People sections of this page list the highlights for ${city} itself, from its best-known monuments and neighbourhoods to its notable residents; the full guide below covers the city's economy, events, education and daily life in the same depth.`,
+      a: `${city} is known for its historic landmarks, its food culture, and its people, poets, athletes, scholars and artists who shaped ${country}. The Famous Places and Famous People sections of this page list the highlights for ${city} itself, from its best-known monuments and neighbourhoods to its notable residents; the full guide below covers the city's economy, events, education and daily life in the same depth.`,
     },
     {
       q: `What is the population of ${city} in ${year}?`,
       a: population
-        ? `${city}'s population is ${population} — the figure held in the WorldCityHub city dataset, and the same number the at-a-glance panel on this page shows. Like most large cities in the region, ${city} continues to grow through rural-to-urban migration and natural increase, and every national census has counted more residents than the one before it.`
+        ? `${city}'s population is ${population}, the figure held in the WorldCityHub city dataset, and the same number the at-a-glance panel on this page shows. Like most large cities in the region, ${city} continues to grow through rural-to-urban migration and natural increase, and every national census has counted more residents than the one before it.`
         : `${city}'s population figure is shown in the at-a-glance panel on this page, taken from the WorldCityHub city dataset. Like most large cities in the region, ${city} continues to grow through rural-to-urban migration and natural increase, and every national census has counted more residents than the one before it. Dataset figures are refreshed when new census results are published.`,
     },
   ];
@@ -157,8 +157,8 @@ export function generateCityFaqs(props: CityMetaProps): { q: string; a: string }
     faqs.push({
       q: `What language is spoken in ${city}?`,
       a: isPakistan
-        ? `The main languages spoken in ${city} are ${props.languages} — the languages listed for the city in the at-a-glance panel on this page. Urdu is Pakistan's national language, used in education, government and media. English is widely used in business, universities and government offices, and many residents are multilingual, switching between these languages and English within a single conversation; signage across ${city} commonly mixes them.`
-        : `The main languages spoken in ${city} are ${props.languages} — the languages listed for the city in the at-a-glance panel on this page. Language shapes daily life in ${city}: the culture, food and Famous People sections of this page reflect the mix, and the full city guide below covers the city's neighbourhoods, education and daily life in more depth.`,
+        ? `The main languages spoken in ${city} are ${props.languages}, the languages listed for the city in the at-a-glance panel on this page. Urdu is Pakistan's national language, used in education, government and media. English is widely used in business, universities and government offices, and many residents are multilingual, switching between these languages and English within a single conversation; signage across ${city} commonly mixes them.`
+        : `The main languages spoken in ${city} are ${props.languages}, the languages listed for the city in the at-a-glance panel on this page. Language shapes daily life in ${city}: the culture, food and Famous People sections of this page reflect the mix, and the full city guide below covers the city's neighbourhoods, education and daily life in more depth.`,
     });
   }
 
@@ -198,7 +198,7 @@ export function generateCityFaqs(props: CityMetaProps): { q: string; a: string }
   // one city's seasons as if they were every city's.
   faqs.push({
     q: `What is the best time to visit ${city}?`,
-    a: `The best time to visit ${city} is when its weather suits the trip you want — the live weather panel at the top of this page shows today's temperature, feels-like conditions and outlook for ${city}, updated hourly. The Famous Places, street food and events sections below run year-round, and each place's own page notes its best visiting conditions and opening hours.`,
+    a: `The best time to visit ${city} is when its weather suits the trip you want, the live weather panel at the top of this page shows today's temperature, feels-like conditions and outlook for ${city}, updated hourly. The Famous Places, street food and events sections below run year-round, and each place's own page notes its best visiting conditions and opening hours.`,
   });
 
   return faqs;

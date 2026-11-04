@@ -2,6 +2,9 @@
 
 // Continents panel (§7). Cards link to the countries hub filtered by
 // continent (link map §7 — READY pattern: /countries?continent={slug}).
+// Exception since 4 Nov 2026: Asia has a full continent guide at
+// /continents/asia (the golden continent template), so the Asia card
+// links there instead of the filtered countries hub.
 // The previous version showed invented "cities" counts per continent;
 // those fabricated figures are removed.
 // Homepage-imagery pass (2026-10-28): each tile now carries a real
@@ -37,14 +40,14 @@ const CONTINENTS = [
     img: '/images/home28/cont-antarctica.webp', imgAlt: 'McMurdo Station in Antarctica, seen from Observation Hill' },
 ];
 
-const CREDITS = 'Photos: Asia — Velatrix · CC0; Africa — Sergey Pesterev · CC BY-SA 4.0; Europe — Diliff · CC BY-SA 2.5; North America — William Warby · CC BY 2.0; South America — Martin St-Amant · CC BY-SA 3.0; Oceania — Diliff · CC BY-SA 3.0; Antarctica — owamux · CC BY 2.0 (all via Wikimedia Commons).';
+const CREDITS = 'Photos: Asia · Velatrix · CC0; Africa · Sergey Pesterev · CC BY-SA 4.0; Europe · Diliff · CC BY-SA 2.5; North America · William Warby · CC BY 2.0; South America · Martin St-Amant · CC BY-SA 3.0; Oceania · Diliff · CC BY-SA 3.0; Antarctica · owamux · CC BY 2.0 (all via Wikimedia Commons).';
 
 export default function ExploreByContinent() {
   return (
     <div className="mb-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {CONTINENTS.map((c) => (
-          <Link key={c.slug} href={`/countries?continent=${c.slug}`} className="no-underline group">
+          <Link key={c.slug} href={c.slug === 'asia' ? '/continents/asia' : `/countries?continent=${c.slug}`} className="no-underline group">
             <div className="rounded-2xl overflow-hidden border transition-all group-hover:scale-[1.02] h-full"
               style={{ background: `linear-gradient(135deg, ${c.color}20, var(--bg))`, borderColor: `${c.color}30` }}>
               <div className="relative h-36 overflow-hidden">

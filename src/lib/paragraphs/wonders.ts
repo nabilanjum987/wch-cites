@@ -10,17 +10,17 @@
 // ─── 1. VISITOR GUIDE TODAY ──────────────────────────────────────────────────
 
 export function generateVisitorGuideParagraph(name: string): string {
-  return `Planning a visit to ${name} involves more than simply showing up — what to wear, what it costs, what's restricted, and how to actually get there each shape whether the visit goes smoothly. The guide above covers all four of these practical dimensions together, translating general visitor advice into the specific details that apply to ${name} rather than generic travel guidance that could apply to any destination.`;
+  return `Planning a visit to ${name} involves more than simply showing up, what to wear, what it costs, what's restricted, and how to actually get there each shape whether the visit goes smoothly. The guide above covers all four of these practical dimensions together, translating general visitor advice into the specific details that apply to ${name} rather than generic travel guidance that could apply to any destination.`;
 }
 
 export function generateVisitorGuideAfter(name: string): string {
-  return `Following the practical guidance above — particularly the rules section — matters not just for a smooth visit but for helping preserve ${name} for future visitors, since heritage sites like this one are often more fragile than their monumental scale might suggest. Combining this visitor guide with the photography tips and best visiting time information found elsewhere on this page gives a genuinely complete picture for planning a visit to ${name} that makes the most of the time spent there.`;
+  return `Following the practical guidance above, particularly the rules section, matters not just for a smooth visit but for helping preserve ${name} for future visitors, since heritage sites like this one are often more fragile than their monumental scale might suggest. Combining this visitor guide with the photography tips and best visiting time information found elsewhere on this page gives a genuinely complete picture for planning a visit to ${name} that makes the most of the time spent there.`;
 }
 
 // ─── 2. THE STORY ────────────────────────────────────────────────────────────
 
 export function generateStoryParagraph(name: string, city: string): string {
-  return `The history above traces how ${name} came to be built and the centuries of significance that have accumulated since, context that transforms a visit from simply viewing an impressive structure into genuinely understanding what makes it matter. Few wonders carry significance purely through scale or beauty alone — the story behind ${name} and its connection to ${city} is what elevates it to genuine wonder status.`;
+  return `The history above traces how ${name} came to be built and the centuries of significance that have accumulated since, context that transforms a visit from simply viewing an impressive structure into genuinely understanding what makes it matter. Few wonders carry significance purely through scale or beauty alone, the story behind ${name} and its connection to ${city} is what elevates it to genuine wonder status.`;
 }
 
 export function generateStoryAfter(name: string): string {
@@ -50,7 +50,7 @@ export function generateFactsAfter(name: string): string {
 // ─── 5. PHOTOGRAPHY GUIDE TODAY ──────────────────────────────────────────────
 
 export function generatePhotographyParagraph(name: string): string {
-  return `Capturing ${name} well requires more than simply pointing a camera at an impressive structure — timing, vantage point, and a few technical considerations make the difference between a forgettable snapshot and a genuinely striking photograph. The guidance above, combining today's specific best timing with established photo spots and practical tips, gives both casual visitors and serious photographers a real edge for capturing ${name} at its best.`;
+  return `Capturing ${name} well requires more than simply pointing a camera at an impressive structure, timing, vantage point, and a few technical considerations make the difference between a forgettable snapshot and a genuinely striking photograph. The guidance above, combining today's specific best timing with established photo spots and practical tips, gives both casual visitors and serious photographers a real edge for capturing ${name} at its best.`;
 }
 
 export function generatePhotographyAfter(name: string): string {

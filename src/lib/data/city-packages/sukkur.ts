@@ -18,7 +18,7 @@ export const SUKKUR: CityPackage = {
     "religion_percent": null,
     "primary_color": "#01411C",
     "secondary_color": "#FFFFFF",
-    "famous_for": "Sukkur Barrage (1932) and the Indus bridges — the Gate of Sindh",
+    "famous_for": "Sukkur Barrage (1932) and the Indus bridges, the Gate of Sindh",
     "famous_products": "Dates (khajoor), Indus palla fish, cotton",
     "emergency_police": "15",
     "emergency_ambulance": "1122",
@@ -50,7 +50,7 @@ export const SUKKUR: CityPackage = {
     },
     {
       "label": "Known as",
-      "value": "The Gate of Sindh — barrage and bridges over the Indus"
+      "value": "The Gate of Sindh, barrage and bridges over the Indus"
     }
   ],
   "foods": [
@@ -60,7 +60,7 @@ export const SUKKUR: CityPackage = {
     },
     {
       "name": "Palla fish",
-      "note": "The Indus hilsa caught at the barrage reach — Sindh’s most prized river fish, in season."
+      "note": "The Indus hilsa caught at the barrage reach, Sindh’s most prized river fish, in season."
     },
     {
       "name": "Sindhi biryani",
@@ -74,7 +74,7 @@ export const SUKKUR: CityPackage = {
   "landmarks": [
     {
       "name": "Sukkur Barrage",
-      "note": "The 1932 barrage on the Indus — among the world’s largest irrigation works, feeding seven canals."
+      "note": "The 1932 barrage on the Indus, among the world’s largest irrigation works, feeding seven canals."
     },
     {
       "name": "Lansdowne Bridge",
@@ -119,7 +119,7 @@ export const SUKKUR: CityPackage = {
     {
       "name": "Mir Muhammad Masum",
       "field": "Mughal-era historian and poet (1576–1606)",
-      "note": "Of Bhakkar–Sukkur; author of Tarikh-i-Masumi — the minaret in Sukkur was raised by his son in his memory. Association recorded as such.",
+      "note": "Of Bhakkar–Sukkur; author of Tarikh-i-Masumi, the minaret in Sukkur was raised by his son in his memory. Association recorded as such.",
       "source": "Wikipedia: Mir Muhammad Masum"
     },
     {
@@ -133,12 +133,12 @@ export const SUKKUR: CityPackage = {
     {
       "group": "identity (coords, population, elevation)",
       "source": "Wikidata Q868631 + Wikipedia city article",
-      "detail": "Coordinates from the article infobox (27.7061, 68.8483); Wikidata P625 (27.6995, 68.8673) differs by ~2 km — variant recorded. Population: article census table gives 551,357 in 2017 (New Sukkur + Sukkur City talukas), used here; Wikidata P1082 carries 499,900 — variant recorded. Elevation 67 m (both agree). City area 300 km² (article). Cross-read 2026-10-22."
+      "detail": "Coordinates from the article infobox (27.7061, 68.8483); Wikidata P625 (27.6995, 68.8673) differs by ~2 km, variant recorded. Population: article census table gives 551,357 in 2017 (New Sukkur + Sukkur City talukas), used here; Wikidata P1082 carries 499,900, variant recorded. Elevation 67 m (both agree). City area 300 km² (article). Cross-read 2026-10-22."
     },
     {
       "group": "emergency numbers",
       "source": "Pakistan national emergency numbers",
-      "detail": "Police 15, ambulance/rescue 1122, fire 16 — the same national set the published city pages carry."
+      "detail": "Police 15, ambulance/rescue 1122, fire 16, the same national set the published city pages carry."
     },
     {
       "group": "hospitals",
@@ -153,7 +153,7 @@ export const SUKKUR: CityPackage = {
     {
       "group": "personality seeds",
       "source": "Per-seed source recorded on each seed",
-      "detail": "Seeds only — full verified profiles are the personalities pipeline’s job (R6 pattern); batch-2 seeds get their Wikidata verification in the R6B extension card."
+      "detail": "Seeds only, full verified profiles are the personalities pipeline’s job (R6 pattern); batch-2 seeds get their Wikidata verification in the R6B extension card."
     },
     {
       "group": "religion_percent",

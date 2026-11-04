@@ -33,7 +33,7 @@ export default async function PakistanRatesSeo() {
     <section className="bg-[#0a0e1a] px-4 py-12 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-10">
         <p className="max-w-3xl text-base leading-relaxed text-gray-300">
-          Pakistan rates, answered directly — every figure below is read live at render time and shows its
+          Pakistan rates, answered directly, every figure below is read live at render time and shows its
           source. Where no verified feed exists, the page says so rather than printing an estimate.
         </p>
 
@@ -133,7 +133,7 @@ export default async function PakistanRatesSeo() {
           <h2 className="text-2xl font-bold">Gold Prices in Pakistan&apos;s Cities Today</h2>
           <p className="mt-3 max-w-3xl leading-relaxed text-gray-300">
             Gold is quoted from one national spot-derived rate, so each city page below carries that
-            city&apos;s gold figure from the same gold-api XAU feed — the per-gram and per-tola prices in
+            city&apos;s gold figure from the same gold-api XAU feed, the per-gram and per-tola prices in
             rupees, with the source and as-of time shown on the page.
           </p>
           <ul className="mt-4 space-y-2">
@@ -159,9 +159,9 @@ export default async function PakistanRatesSeo() {
         </div>
 
         <p className="text-xs text-gray-500">
-          Sources: silver — gold-api.com XAG spot; dollar — ExchangeRate-API open endpoint; fuel prices
-          — Oil and Gas Regulatory Authority (OGRA) notifications at ogra.org.pk (no live feed connected,
-          so no pump figure is shown); gold — gold-api.com XAU spot via the F4 helpers, on the city pages
+          Sources: silver · gold-api.com XAG spot; dollar · ExchangeRate-API open endpoint; fuel prices
+          · Oil and Gas Regulatory Authority (OGRA) notifications at ogra.org.pk (no live feed connected,
+          so no pump figure is shown); gold · gold-api.com XAU spot via the F4 helpers, on the city pages
           linked above.
         </p>
       </div>

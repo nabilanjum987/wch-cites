@@ -1,0 +1,61 @@
+{
+  "subject": "Chichen Itza",
+  "type": "wonder",
+  "package": "Wonders build (2026-11-04)",
+  "coverage": "full",
+  "coverage_note": "Imagery harvested and licence-verified via the Commons extmetadata API on 2026-11-04 for the /wonders/chichen-itza page published the same day. El Castillo is shown whole from the Great Plaza (owner rule G5).",
+  "harvested": "2026-11-04",
+  "records": [
+    {
+      "file_title": "Chichen Itza 3.jpg",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Chichen_Itza_3.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
+      "source": "Wikimedia Commons",
+      "creator": "Daniel Schwen",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attribution": "\"Chichen Itza 3.jpg\" by Daniel Schwen, CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "El Castillo, the Temple of Kukulcan at Chichen Itza, the whole step pyramid above the Great Plaza",
+      "width": 9771,
+      "height": 5197,
+      "sha1": "089323019df7169ee09aa9eadaba6888939fd564",
+      "focal_point": null,
+      "status": "VERIFIED"
+    },
+    {
+      "file_title": "Temple of the Warriors - Chichen Itza 2024.jpg",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/Temple_of_the_Warriors_-_Chichen_Itza_2024.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Temple_of_the_Warriors_-_Chichen_Itza_2024.jpg",
+      "source": "Wikimedia Commons",
+      "creator": "edenpictures",
+      "licence": "CC BY 2.0",
+      "licence_url": "https://creativecommons.org/licenses/by/2.0",
+      "attribution": "\"Temple of the Warriors - Chichen Itza 2024.jpg\" by edenpictures, CC BY 2.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "The Temple of the Warriors at Chichen Itza above the columns of the Thousand Warriors group",
+      "width": 4032,
+      "height": 2016,
+      "sha1": "cc811d679b766c7299a4aa0353b402357839e228",
+      "focal_point": null,
+      "status": "VERIFIED"
+    },
+    {
+      "file_title": "Great Ball Court - Chichen Itza 2024.jpg",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Great_Ball_Court_-_Chichen_Itza_2024.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Great_Ball_Court_-_Chichen_Itza_2024.jpg",
+      "source": "Wikimedia Commons",
+      "creator": "edenpictures",
+      "licence": "CC BY 2.0",
+      "licence_url": "https://creativecommons.org/licenses/by/2.0",
+      "attribution": "\"Great Ball Court - Chichen Itza 2024.jpg\" by edenpictures, CC BY 2.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "The Great Ball Court at Chichen Itza, looking along the playing alley between its long walls",
+      "width": 4032,
+      "height": 2268,
+      "sha1": "8089a291697e40ea6f87d49b873f3a5cbca87597",
+      "focal_point": null,
+      "status": "VERIFIED"
+    }
+  ]
+}

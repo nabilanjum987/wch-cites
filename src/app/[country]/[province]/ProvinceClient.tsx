@@ -318,30 +318,30 @@ const LANDMARKS: Record<string, Landmark[]> = {
   'islamabad-capital-territory': [
     { name: 'Faisal Mosque', city: 'Islamabad', era: 'Modern 1986', unesco: false, image: '/images/cities/islamabad-hero.webp', alt: 'Faisal Mosque, Islamabad', credit: 'Photo: Guilhem Vellut · CC BY 2.0' },
     { name: 'Pakistan Monument', city: 'Islamabad', era: 'Modern 2007', unesco: false, image: '/images/cities/islamabad-events.webp', alt: 'Pakistan Monument, Islamabad, at blue hour', credit: 'Photo: Muhammad Ashar · CC BY-SA 4.0' },
-    { name: 'Margalla Hills National Park', city: 'Islamabad', era: 'Natural', unesco: false, image: null },
+    { name: 'Margalla Hills National Park', city: 'Islamabad', era: 'Natural', unesco: false, image: '/images/places/margalla-hills.webp', alt: 'Margalla Hills above Islamabad', credit: 'Photo: Zain.3nov · CC BY-SA 4.0' },
     { name: 'Daman-e-Koh', city: 'Islamabad', era: 'Viewpoint', unesco: false, image: '/images/cities/islamabad-news.webp', alt: 'Islamabad cityscape from Daman-e-Koh', credit: 'Photo: Zeeshanhkofficial · CC BY-SA 4.0' },
-    { name: 'Rawal Lake', city: 'Islamabad', era: '1960s', unesco: false, image: null },
-    { name: 'Lok Virsa Museum', city: 'Islamabad', era: '1974', unesco: false, image: null },
+    { name: 'Rawal Lake', city: 'Islamabad', era: '1960s', unesco: false, image: '/images/places/rawal-lake.webp', alt: 'Rawal Lake, Islamabad', credit: 'Photo: XnShAnoo · CC BY-SA 4.0' },
+    { name: 'Lok Virsa Museum', city: 'Islamabad', era: '1974', unesco: false, image: '/images/places/lok-virsa-museum.webp', alt: 'Lok Virsa Museum facade, Islamabad', credit: 'Photo: Ymblanter · CC BY-SA 4.0' },
   ],
   punjab: [
     { name: 'Badshahi Mosque', city: 'Lahore', era: 'Mughal 1673', unesco: false, image: '/images/places/cards/badshahi-mosque.webp', alt: 'Courtyard of Badshahi Mosque, Lahore', credit: 'Photo: Zapata1000 · CC BY-SA 4.0' },
     { name: 'Lahore Fort (Shahi Qila)', city: 'Lahore', era: 'Mughal 1566', unesco: true, image: '/images/places/cards/lahore-fort.webp', alt: 'Alamgiri Gate of Lahore Fort', credit: 'Photo: Rohaan Bhatti · CC BY-SA 3.0' },
     { name: 'Shalimar Gardens', city: 'Lahore', era: 'Mughal 1641', unesco: true, image: '/images/places/cards/shalimar-gardens.webp', alt: 'Shalimar Gardens, Lahore', credit: 'Photo: M Umair Astro · CC BY-SA 4.0' },
     { name: 'Rohtas Fort', city: 'Jhelum', era: 'Suri 1541', unesco: true, image: '/images/places/rohtas-fort.webp', alt: 'Rohtas Fort, Jhelum', credit: 'Photo: Guilhem Vellut · CC BY 2.0' },
-    { name: 'Kartarpur Corridor', city: 'Narowal', era: 'Modern 2019', unesco: false, image: null },
+    { name: 'Kartarpur Corridor', city: 'Narowal', era: 'Modern 2019', unesco: false, image: '/images/places/kartarpur-corridor.webp', alt: 'Gurdwara Darbar Sahib, Kartarpur', credit: 'Photo: Shahzaib Damn Cruze · CC BY-SA 4.0' },
     { name: 'Multan Shrines', city: 'Multan', era: '13th Century', unesco: false, image: '/images/cities/multan-hero.webp', alt: 'Shah Rukn-e-Alam Shrine, Multan', credit: 'Photo: Tahsin Shah · CC BY-SA 4.0' },
   ],
   sindh: [
     { name: 'Mohenjo-daro', city: 'Larkana', era: '3000 BCE', unesco: true, image: '/images/places/mohenjo-daro.webp', alt: 'Excavated ruins of Mohenjo-daro, with the Great Bath in the foreground', credit: 'Photo: Saqib Qayyum · CC BY-SA 3.0' },
     { name: 'Thatta Mosques', city: 'Thatta', era: 'Mughal 1647', unesco: true, image: '/images/places/shah-jahan-mosque-thatta.webp', alt: 'Shah Jahan Mosque, Thatta', credit: 'Photo: Naseerullah0862 · CC BY-SA 3.0' },
     { name: 'Makli Necropolis', city: 'Thatta', era: '14th Century', unesco: true, image: '/images/places/makli-necropolis.webp', alt: 'Tombs at Makli Necropolis, Thatta', credit: 'Photo: Nadirkhanbrahui · CC BY-SA 4.0' },
-    { name: 'Karachi Clifton Beach', city: 'Karachi', era: 'Natural', unesco: false, image: null },
+    { name: 'Karachi Clifton Beach', city: 'Karachi', era: 'Natural', unesco: false, image: '/images/places/clifton-beach.webp', alt: 'Clifton Beach, Karachi', credit: 'Photo: Nomi887 · CC BY-SA 4.0' },
   ],
   'khyber-pakhtunkhwa': [
     { name: 'Takht-i-Bahi', city: 'Mardan', era: '1st Century BC', unesco: true, image: '/images/places/takht-i-bahi.webp', alt: 'Ruins of Takht-i-Bahi, Mardan', credit: 'Photo: Hidayat-ur-Rehman · CC BY-SA 4.0' },
     { name: 'Swat Valley', city: 'Swat', era: 'Natural Wonder', unesco: false, image: '/images/places/swat-valley.webp', alt: 'Swat River at Kalam, Swat Valley', credit: 'Photo: Mian Saqib Asif · CC BY-SA 4.0' },
-    { name: 'Peshawar Museum', city: 'Peshawar', era: 'Colonial 1906', unesco: false, image: null },
-    { name: 'Qissa Khwani Bazaar', city: 'Peshawar', era: 'Ancient', unesco: false, image: null },
+    { name: 'Peshawar Museum', city: 'Peshawar', era: 'Colonial 1906', unesco: false, image: '/images/places/peshawar-museum.webp', alt: 'Peshawar Museum building', credit: 'Photo: Khalid Mahmood · CC BY-SA 3.0' },
+    { name: 'Qissa Khwani Bazaar', city: 'Peshawar', era: 'Ancient', unesco: false, image: '/images/places/qissa-khwani-bazaar.webp', alt: 'Heritage building and bookshops in Qissa Khwani Bazaar, Peshawar', credit: 'Photo: franek2 · CC BY-SA 3.0' },
   ],
 };
 
@@ -409,19 +409,19 @@ const PERSONALITIES: Record<string, Personality[]> = {
     { name: 'Nusrat Fateh Ali Khan', profession: 'Musician', category: 'Arts', birthCity: 'Faisalabad', photo: '/images/personalities/nusrat-fateh-ali-khan.webp', credit: 'Photo: Thomas Rome · CC BY 2.0', slug: 'nusrat-fateh-ali-khan', pos: '80% 0%' },
     { name: 'Arfa Karim', profession: 'Tech Prodigy', category: 'Science', birthCity: 'Faisalabad', photo: '/images/personalities/arfa-karim.webp', credit: 'Photo: Muhammad Imran Saeed · CC BY 2.0' },
     { name: 'Imran Khan', profession: 'Cricketer & Politician', category: 'Sports', birthCity: 'Lahore', photo: '/images/personalities/imran-khan.webp', credit: 'Photo: World Economic Forum · CC BY-SA 2.0', slug: 'imran-khan' },
-    { name: 'Abida Parveen', profession: 'Sufi Singer', category: 'Arts', birthCity: 'Larkana (raised Punjab)' },
+    { name: 'Abida Parveen', profession: 'Sufi Singer', category: 'Arts', birthCity: 'Larkana (raised Punjab)', photo: '/images/personalities/abida-parveen.webp', credit: 'Photo: Hammad Khan · CC BY 2.0' },
   ],
   sindh: [
     { name: 'Muhammad Ali Jinnah', profession: 'Father of the Nation', category: 'Leaders', birthCity: 'Karachi', photo: '/images/personalities/muhammad-ali-jinnah.webp', credit: 'Photo: Ministry of Information & Broadcasting, Government of Pakistan · Public domain', slug: 'quaid-e-azam-jinnah' },
     { name: 'Benazir Bhutto', profession: 'Prime Minister', category: 'Leaders', birthCity: 'Karachi', photo: '/images/personalities/benazir-bhutto.webp', credit: 'Photo: Oliver Mark · CC BY-SA 4.0', slug: 'benazir-bhutto' },
     { name: 'Abdul Sattar Edhi', profession: 'Philanthropist', category: 'Leaders', birthCity: 'Karachi (origin Gujarat)', photo: '/images/personalities/abdul-sattar-edhi.webp', credit: 'Photo: Hussain · CC BY-SA 3.0', slug: 'abdul-sattar-edhi' },
-    { name: 'Abida Parveen', profession: 'Sufi Singer', category: 'Arts', birthCity: 'Larkana' },
+    { name: 'Abida Parveen', profession: 'Sufi Singer', category: 'Arts', birthCity: 'Larkana', photo: '/images/personalities/abida-parveen.webp', credit: 'Photo: Hammad Khan · CC BY 2.0' },
   ],
   'khyber-pakhtunkhwa': [
-    { name: 'Khan Abdul Ghaffar Khan', profession: 'Freedom Fighter', category: 'Leaders', birthCity: 'Charsadda' },
+    { name: 'Khan Abdul Ghaffar Khan', profession: 'Freedom Fighter', category: 'Leaders', birthCity: 'Charsadda', photo: '/images/personalities/khan-abdul-ghaffar-khan.webp', credit: 'Photo: British India · Public domain' },
     { name: 'Malala Yousafzai', profession: 'Education Activist', category: 'Leaders', birthCity: 'Swat', photo: '/images/personalities/malala-yousafzai.webp', credit: 'Photo: flowcomm · CC BY 2.0', slug: 'malala-yousafzai' },
-    { name: 'Shahid Afridi', profession: 'Cricketer', category: 'Sports', birthCity: 'Khyber Agency' },
-    { name: 'Ghani Khan', profession: 'Poet & Artist', category: 'Arts', birthCity: 'Charsadda' },
+    { name: 'Shahid Afridi', profession: 'Cricketer', category: 'Sports', birthCity: 'Khyber Agency', photo: '/images/personalities/shahid-afridi.webp', credit: 'Photo: Shehbaz Sharif · CC BY 2.0' },
+    { name: 'Ghani Khan', profession: 'Poet & Artist', category: 'Arts', birthCity: 'Charsadda', photo: '/images/personalities/ghani-khan.webp', credit: 'Photo: Ahmad Ali Khan · Public domain' },
   ],
 };
 

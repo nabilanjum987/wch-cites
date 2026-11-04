@@ -5,9 +5,9 @@ export const CONFLICT_ISRAEL_GAZA: ConflictDetail = {
   "slug": "israel-gaza",
   "name": "Israel–Gaza",
   "unhcr": null,
-  "unhcrNote": "Palestine refugees fall under UNRWA's mandate, not UNHCR's; the UNHCR Population Statistics API returns no aggregate for this origin. Gaza displacement figures are published by UN OCHA / UNRWA — no figure is packaged rather than a wrong one.",
+  "unhcrNote": "Palestine refugees fall under UNRWA's mandate, not UNHCR's; the UNHCR Population Statistics API returns no aggregate for this origin. Gaza displacement figures are published by UN OCHA / UNRWA, no figure is packaged rather than a wrong one.",
   "headlinesSnapshot": {
-    "note": "Dated snapshot from whitelist RSS feeds (BBC News, Al Jazeera, UN News) fetched 2026-10-22. Reuters/AP carry no open RSS; at runtime the hub fills headlines live via GNews filtered to the whitelist. An empty set means the feeds carried no matching item that day — it is recorded, not filled.",
+    "note": "Dated snapshot from whitelist RSS feeds (BBC News, Al Jazeera, UN News) fetched 2026-10-22. Reuters/AP carry no open RSS; at runtime the hub fills headlines live via GNews filtered to the whitelist. An empty set means the feeds carried no matching item that day, it is recorded, not filled.",
     "fetchedAt": "2026-10-22",
     "items": [
       {
@@ -62,22 +62,22 @@ export const CONFLICT_ISRAEL_GAZA: ConflictDetail = {
     "commissionStatement": "WorldCityHub takes 0% commission on these links. Every donation goes directly to the organisation.",
     "organisations": [
       {
-        "name": "UNHCR — UN Refugee Agency",
+        "name": "UNHCR · UN Refugee Agency",
         "url": "https://www.unhcr.org",
         "donateUrl": "https://donate.unhcr.org"
       },
       {
-        "name": "ICRC — Red Cross",
+        "name": "ICRC · Red Cross",
         "url": "https://www.icrc.org",
         "donateUrl": "https://www.icrc.org/en/donate"
       },
       {
-        "name": "WFP — World Food Programme",
+        "name": "WFP · World Food Programme",
         "url": "https://www.wfp.org",
         "donateUrl": "https://www.wfp.org/donate"
       },
       {
-        "name": "MSF — Doctors Without Borders",
+        "name": "MSF · Doctors Without Borders",
         "url": "https://www.msf.org",
         "donateUrl": "https://www.msf.org/donate"
       },
@@ -87,7 +87,7 @@ export const CONFLICT_ISRAEL_GAZA: ConflictDetail = {
         "donateUrl": "https://www.unicef.org/donate"
       }
     ],
-    "note": "Same organisation set as the live hub (src/lib/conflicts.ts HUMANITARIAN_ORGS). No weapons or defence-related links — banned on this site."
+    "note": "Same organisation set as the live hub (src/lib/conflicts.ts HUMANITARIAN_ORGS). No weapons or defence-related links, banned on this site."
   },
   "editorialRules": [
     "Whitelist sources only: Reuters, AP, BBC, Al Jazeera, UN News, UNHCR, ICRC, ReliefWeb.",

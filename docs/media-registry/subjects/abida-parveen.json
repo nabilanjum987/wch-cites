@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (abida-parveen)",
+  "records": [
+    {
+      "local_path": "/images/personalities/abida-parveen.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Abida_Parveen.jpg",
+      "author": "Hammad Khan",
+      "license": "CC BY 2.0",
+      "commons_title": "File:Abida Parveen.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Abida Parveen.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Abida Parveen.jpg."
+    }
+  ],
+  "notes": "Abida Parveen performing, viewed and confirmed. Portrait 1280x1920 as stored (original 3600x5400); her complete head and hair sit at roughly y 39-71% of the frame, inside the 3/4 province grid frame at the default position. Fills her placeholder entries on both the Punjab and Sindh province pages. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

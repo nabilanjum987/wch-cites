@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (copper-gold)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/resource-copper-gold.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Saindak_Gold_Project.jpg",
+      "author": "Faiqah A Jabbar",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Saindak Gold Project.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Saindak Gold Project.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Saindak Gold Project.jpg."
+    }
+  ],
+  "notes": "The terraced open pit of the Saindak copper-gold mine, Chagai, Balochistan, viewed and confirmed. The card text describes Reko Diq in the same district; the photo itself is Saindak and is credited as such in the registry. A photo of the project signboard alone was rejected. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

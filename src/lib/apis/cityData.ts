@@ -336,3 +336,96 @@ export async function fetchAllCityData(params: CityParams) {
     holidays: getValue(holidays),
   };
 }
+
+// ─── PER-DOMAIN BUNDLES (city page streaming, 4 Nov 2026) ────────────────────
+// fetchAllCityData above resolves only when the SLOWEST of its 16 fetches
+// settles, and the city page used to await it before rendering a single
+// byte. These getters give each live panel of the city page its own data
+// domain, so the page shell streams immediately and every panel renders
+// as soon as ITS data lands. Semantics are identical to fetchAllCityData:
+// the same fetchers, settled individually, value-or-null, and the same
+// gold + 24h-change merge. None of these getters ever rejects.
+// (Sports and wikiSummary are deliberately absent: the city main page
+// fetches them today but renders neither — its sports section is a link
+// card and the wiki extract is unused in the page body.)
+
+const settledValue = (result: PromiseSettledResult<unknown>) =>
+  result.status === 'fulfilled' ? result.value : null;
+
+export interface CityWeatherBundle {
+  weather: unknown;
+  hourlyForecast: unknown;
+  airQuality: unknown;
+}
+
+export async function getCityWeatherBundle(params: CityParams): Promise<CityWeatherBundle> {
+  const { lat, lon } = params;
+  const [weather, hourlyForecast, airQuality] = await Promise.allSettled([
+    fetchWeather(lat, lon),
+    fetchHourlyForecast(lat, lon),
+    fetchAirQuality(lat, lon),
+  ]);
+  return {
+    weather: settledValue(weather),
+    hourlyForecast: settledValue(hourlyForecast),
+    airQuality: settledValue(airQuality),
+  };
+}
+
+// The single-fetcher getters below guard with try/catch on purpose:
+// several fetchers in this file `return res.json()` without awaiting it
+// inside their own try block, so a body-parse rejection escapes their
+// local catch. fetchAllCityData always masked that via allSettled;
+// these guards restore exactly that value-or-null behaviour per domain.
+export async function getCitySunMoonData(params: CityParams): Promise<unknown> {
+  try { return await fetchSunMoon(params.lat, params.lon); } catch { return null; }
+}
+
+export async function getCityPrayerData(params: CityParams): Promise<unknown> {
+  try { return await fetchPrayerTimes(params.lat, params.lon); } catch { return null; }
+}
+
+export interface CityRatesBundle {
+  goldRates: unknown;
+  silver: unknown;
+  crypto: unknown;
+  currencyRates: unknown;
+}
+
+export async function getCityRatesBundle(params: CityParams): Promise<CityRatesBundle> {
+  void params;
+  const [goldRates, goldChange, silver, crypto, currencyRates] = await Promise.allSettled([
+    fetchGoldRates('PKR'),
+    fetchGoldChangePercent(),
+    fetchSilverPkr(),
+    fetchCrypto(),
+    fetchCurrencyRates('USD'),
+  ]);
+  const goldBase = settledValue(goldRates) as Record<string, unknown> | null;
+  const goldChangePct = settledValue(goldChange) as number | null;
+  return {
+    goldRates:
+      goldBase && goldChangePct !== null
+        ? { ...goldBase, change_percent_24h: goldChangePct }
+        : goldBase,
+    silver: settledValue(silver),
+    crypto: settledValue(crypto),
+    currencyRates: settledValue(currencyRates),
+  };
+}
+
+export async function getCityNewsData(params: CityParams): Promise<unknown> {
+  try { return await fetchCityNews(params.city, params.country); } catch { return null; }
+}
+
+export async function getCityEconomyData(params: CityParams): Promise<unknown> {
+  try { return await fetchEconomy(params.countryCode); } catch { return null; }
+}
+
+export async function getCityEmergencyData(params: CityParams): Promise<unknown> {
+  try { return await fetchEmergencyContacts(params.countryCode); } catch { return null; }
+}
+
+export async function getCityHolidaysData(params: CityParams): Promise<unknown> {
+  try { return await fetchHolidays(params.countryCode); } catch { return null; }
+}

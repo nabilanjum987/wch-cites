@@ -2,8 +2,8 @@
  "subject": "Machu Picchu",
  "type": "wonder",
  "package": "Round 2 R2 (batch 1)",
- "coverage": "partial",
- "coverage_note": "Imagery harvested and licence-verified. Data package for this subject is built by another stream and is not yet merged or audited; registry coverage refers to imagery only.",
+ "coverage": "full",
+ "coverage_note": "Imagery harvested and licence-verified. Licences re-verified per-file via the Commons extmetadata API on 2026-11-04, and the /wonders/machu-picchu page was published the same day on the golden (Taj Mahal) template.",
  "harvested": "2026-10-22",
  "records": [
   {

@@ -7,7 +7,7 @@ export const COUNTRY_SAUDI_ARABIA: CountryPackage = {
   "name": "Saudi Arabia",
   "iso2": "SA",
   "iso3": "SAU",
-  "isoNote": "Explicit slug→ISO map (Panama law) — never derived from the slug.",
+  "isoNote": "Explicit slug→ISO map (Panama law), never derived from the slug.",
   "capital": {
     "name": "Riyadh",
     "lat": 24.69,
@@ -28,7 +28,7 @@ export const COUNTRY_SAUDI_ARABIA: CountryPackage = {
     "indicator": "SP.POP.TOTL"
   },
   "economySnapshot": {
-    "source": "World Bank API (api.worldbank.org) — packaged snapshot pulled 2026-10-22; at activation the country page reads the SAME indicator set live via fetchWorldBankLatest(iso3) / getCountryEconomy (one-cached-dataset pattern). Missing keys = the World Bank publishes no recent value; consumers hide them.",
+    "source": "World Bank API (api.worldbank.org), packaged snapshot pulled 2026-10-22; at activation the country page reads the SAME indicator set live via fetchWorldBankLatest(iso3) / getCountryEconomy (one-cached-dataset pattern). Missing keys = the World Bank publishes no recent value; consumers hide them.",
     "indicators": {
       "gdpUsd": {
         "value": 1276942933333.33,

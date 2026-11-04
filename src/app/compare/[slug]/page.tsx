@@ -3,8 +3,9 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import CompareTool from '@/components/compare/CompareTool';
 import CompareView from '@/components/compare/CompareView';
 import {
-  getPairCompare, findCompareCity, getProvinceCompare, getCountryPairCompare,
-  findProvince, findCanonicalPair, type CanonicalPair,
+  getPairCompare, findCompareCity, getEntityCompare,
+  findProvince, findCountry, findContinent, findOcean,
+  findCanonicalPair, type CanonicalPair, type EntityCompareData,
 } from '@/lib/compare';
 import EntityCompareView from '@/components/compare/EntityCompareView';
 
@@ -36,8 +37,12 @@ function resolvePair(slug: string): { pair: CanonicalPair; reversed: boolean } |
 }
 
 function entityNames(pair: CanonicalPair): [string, string] {
-  if (pair.kind === 'country') return ['Pakistan', 'India'];
-  return [findProvince(pair.a)!.name, findProvince(pair.b)!.name];
+  switch (pair.kind) {
+    case 'country': return [findCountry(pair.a)!.name, findCountry(pair.b)!.name];
+    case 'continent': return [findContinent(pair.a)!.name, findContinent(pair.b)!.name];
+    case 'ocean': return [findOcean(pair.a)!.name, findOcean(pair.b)!.name];
+    default: return [findProvince(pair.a)!.name, findProvince(pair.b)!.name];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -56,15 +61,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
   const [nA, nB] = entityNames(pair);
-  // Entity titles (S1): the short pattern below keeps the longest pair,
-  // "Punjab vs Khyber Pakhtunkhwa | WorldCityHub", at 43 characters.
-  // Descriptions (S2) are kind-specific: provinces cite PBS Census 2023
-  // only, the country pair cites the World Bank only. No cross-claims.
+  // Entity titles (S1): the short pattern below keeps every pair at or
+  // under 60 characters (the longest, "Saudi Arabia vs United Arab
+  // Emirates | WorldCityHub", is 52). Descriptions (S2) are kind-specific
+  // and cite only the sources that kind actually uses. No cross-claims.
+  const descriptions: Record<Exclude<CanonicalPair['kind'], 'city'>, string> = {
+    province: `${nA} vs ${nB} compared on PBS Census 2023 figures: population, area, density and urban share for both provinces, plus live capital weather.`,
+    country: `${nA} vs ${nB} on World Bank figures: population, GDP, GDP per capita, inflation, unemployment and life expectancy for both.`,
+    continent: `${nA} vs ${nB} compared on World Bank country data grouped by continent: population, land area and density for both sides.`,
+    ocean: `${nA} vs ${nB} compared on sourced facts from each ocean's own page: total area, maximum depth and average depth, sources shown.`,
+  };
   return {
     title: `${nA} vs ${nB} | WorldCityHub`,
-    description: pair.kind === 'province'
-      ? `${nA} vs ${nB} compared on PBS Census 2023 figures: population, area, density and urban share for both provinces, plus live capital weather.`
-      : `${nA} vs ${nB} compared on World Bank figures: population, GDP, inflation, unemployment and life expectancy, the same indicators for both sides.`,
+    description: descriptions[pair.kind as Exclude<CanonicalPair['kind'], 'city'>],
     alternates: { canonical },
   };
 }
@@ -77,17 +86,21 @@ export default async function CompareSlugPage({ params }: PageProps) {
   if (reversed) permanentRedirect(`/compare/${pair.slug}`);
 
   if (pair.kind !== 'city') {
-    const data = pair.kind === 'country' ? await getCountryPairCompare() : await getProvinceCompare(pair.a, pair.b);
+    const data = await getEntityCompare(pair);
     if (!data) notFound();
+    const intros: Record<EntityCompareData['kind'], string> = {
+      province: 'Province against province on the 2023 census figure set: the same counts for both sides, plus live weather in each capital.',
+      country: 'Country against country on one World Bank dataset: a row appears only where both countries report the same indicator.',
+      continent: 'Continent against continent on World Bank country data, grouped with the same continent mapping this site publishes on its homepage: a row appears only where both sides carry the figure.',
+      ocean: 'Ocean against ocean on the sourced facts each ocean page already prints: a row appears only where both records carry the fact, and every figure keeps its own page\u2019s source.',
+    };
     return (
       <main className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
         <h1 className="text-3xl font-bold text-white">
           {data.a.name} vs {data.b.name}
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-400">
-          {data.kind === 'province'
-            ? 'Province against province on the 2023 census figure set: the same counts for both sides, plus live weather in each capital.'
-            : 'Country against country on one World Bank dataset: a row appears only where both countries report the same indicator.'}
+          {intros[data.kind]}
         </p>
         <div className="mt-8">
           <EntityCompareView data={data} />

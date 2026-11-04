@@ -1,7 +1,11 @@
 // app/[country]/[province]/[city]/page.tsx
-// City Main Page — 23 sections, real API data, rendered on-demand per request.
-// force-dynamic prevents pre-rendering at build time, which would fire 14
-// external API calls per city simultaneously and crash Vercel on rate limits.
+// City Main Page — 23 sections, real API data.
+// Rendering model (speed fix, 4 Nov 2026): the shell and the static
+// sections render immediately; every live panel streams in behind its
+// own Suspense boundary as its data domain lands, and the rendered page
+// is reused for 300 s (ISR — see `revalidate` below) instead of being
+// rebuilt on every request. The old force-dynamic model awaited all 16
+// upstream fetches before sending a single byte (TTFB ~4 s in prod).
 // Test URL: /pakistan/punjab/lahore
 
 import type { Metadata } from 'next';
@@ -9,7 +13,20 @@ import FlagSymbolBackground from '@/components/shared/FlagSymbolBackground';
 import Link from 'next/link';
 import ImproveCTA from '@/components/shared/ImproveCTA';
 import CityAssistant, { OpenAssistantButton } from '@/components/shared/CityAssistant';
-import { fetchAllCityData, type CityParams } from '@/lib/apis/cityData';
+import { Suspense } from 'react';
+import {
+  getCityWeatherBundle,
+  getCitySunMoonData,
+  getCityPrayerData,
+  getCityRatesBundle,
+  getCityNewsData,
+  getCityEconomyData,
+  getCityEmergencyData,
+  getCityHolidaysData,
+  type CityParams,
+  type CityWeatherBundle,
+  type CityRatesBundle,
+} from '@/lib/apis/cityData';
 import { TOLA_GRAMS } from '@/lib/gold';
 import { generateCityMeta, generateCitySchema, generateCityFaqs } from '@/lib/seo/cityMeta';
 import { CENSUS_2023_POPULATION, hasCensusPopulation } from '@/lib/census2023';
@@ -55,7 +72,14 @@ import {
   generateNearbyCitiesAfter,
 } from '@/lib/paragraphs/city';
 
-export const dynamic = 'force-dynamic';
+// Speed fix (4 Nov 2026): no longer force-dynamic. With the Suspense
+// streaming below, first byte is the shell; with this ISR window the
+// rendered page is then reused for 300 s instead of rebuilt per
+// request. Every data fetcher keeps its own per-source cache window
+// (gold spot 5 min, weather/news 1 h, prayer/sun/holidays 24 h), so a
+// reused page never shows a figure older than the window its source
+// already allowed, plus at most this 300 s.
+export const revalidate = 300;
 
 // ─── CITY DATABASE (expand to all cities) ────────────────────────────────────
 // For scale: move this to Supabase / Firebase
@@ -395,182 +419,33 @@ export default async function CityPage({
     }];
   });
 
-  const data = await fetchAllCityData(cityParams);
-
-  // ── Destructure API responses safely ──
-  const weather = data.weather as Record<string, unknown> | null;
-  const hourly = data.hourlyForecast as Record<string, unknown> | null;
-  const sunMoon = data.sunMoon as Record<string, unknown> | null;
-  const prayer = data.prayerTimes as Record<string, unknown> | null;
-  const gold = data.goldRates as Record<string, unknown> | null;
-  const crypto = data.crypto as Record<string, unknown> | null;
-  const news = data.news as Record<string, unknown> | null;
-  const wiki = data.wikiSummary as Record<string, unknown> | null;
-  const economy = data.economy as Record<string, unknown> | null;
-  const emergency = data.emergencyContacts as Record<string, unknown> | null;
-  const airQuality = data.airQuality as Record<string, unknown> | null;
-  const currency = data.currencyRates as Record<string, unknown> | null;
-  const holidays = data.holidays as unknown[] | null;
-
-  // ── Parsed values ──
-  const temp = (weather?.main as Record<string, number> | undefined)?.temp ?? null;
-  const feelsLike = (weather?.main as Record<string, number> | undefined)?.feels_like ?? null;
-  const humidity = (weather?.main as Record<string, number> | undefined)?.humidity ?? null;
-  const windSpeed = (weather?.wind as Record<string, number> | undefined)?.speed ?? null;
-  const weatherDesc = ((weather?.weather as Array<Record<string, string>> | undefined)?.[0]?.description) ?? null;
-
-  const timings = (prayer?.data as Record<string, Record<string, string>> | undefined)?.timings ?? null;
-  const hijriDate = (prayer?.data as Record<string, Record<string, Record<string, string>>> | undefined)?.date?.hijri ?? null;
-
-  const goldPerGram = (gold as Record<string, number> | null)?.price_gram_24k ?? null;
-  const goldPerTola = goldPerGram ? Math.round(goldPerGram * TOLA_GRAMS) : null;
-  // Today's movement: the 24h change percent rides on the gold object
-  // (see fetchAllCityData). The PKR amount per tola is derived from that
-  // same percent and today's price, never a separate invented figure.
-  const goldChangePct = (gold as Record<string, number> | null)?.change_percent_24h ?? null;
-  const goldMovePerTola =
-    goldChangePct !== null && goldPerTola
-      ? Math.round(goldPerTola - goldPerTola / (1 + goldChangePct / 100))
-      : null;
-  const silver = data.silver as { per_gram: number; per_tola: number } | null;
-
-  // Moon phase for the Sun & Moon card: the site's own astronomical
-  // helper (same computation the horoscope and Islamic surfaces use).
-  const moon = getMoonPhase();
-
-  const sunrise = (sunMoon?.results as Record<string, string> | undefined)?.sunrise ?? null;
-  const sunset = (sunMoon?.results as Record<string, string> | undefined)?.sunset ?? null;
-
-  const rawNewsArticles = ((news?.articles as Array<Record<string, string>> | undefined) ?? []) as unknown as NewsArticleLike[];
-  const displayArticles = prepareNewsList(rawNewsArticles);
-  const topHeadline = displayArticles[0]?.title ?? null;
-
-  const aqi = ((airQuality?.list as Array<Record<string, Record<string, number>>> | undefined)?.[0]?.main?.aqi) ?? null;
-  const aqiLabel = aqi === 1 ? 'Good' : aqi === 2 ? 'Fair' : aqi === 3 ? 'Moderate' : aqi === 4 ? 'Poor' : aqi === 5 ? 'Very Poor' : 'N/A';
-
-  const btcUsd = (crypto?.bitcoin as Record<string, number> | undefined)?.usd ?? null;
-  const btcPkr = (crypto?.bitcoin as Record<string, number> | undefined)?.pkr ?? null;
-
-  const pkrRate = (currency?.conversion_rates as Record<string, number> | undefined)?.PKR ?? null;
-
-  const gdpPerCapita = (economy as Record<string, number> | null)?.['NY.GDP.PCAP.CD'] ?? null;
-  const inflation = (economy as Record<string, number> | null)?.['FP.CPI.TOTL.ZG'] ?? null;
-  const unemployment = (economy as Record<string, number> | null)?.['SL.UEM.TOTL.ZS'] ?? null;
-
-  const policeNum = (emergency?.data as Record<string, Record<string, string>> | undefined)?.police?.all?.[0] ?? null;
-  const ambulanceNum = (emergency?.data as Record<string, Record<string, string>> | undefined)?.ambulance?.all?.[0] ?? null;
-  const fireNum = (emergency?.data as Record<string, Record<string, string>> | undefined)?.fire?.all?.[0] ?? null;
-
-  const hourlyList = (hourly?.list as Array<Record<string, unknown>> | undefined)?.slice(0, 8) ?? [];
-
-  // Day/night for the hourly strip is decided from each entry's own
-  // timestamp against today's sunrise/sunset (sunrise-sunset.org,
-  // formatted=0, so UTC ISO instants), shifted by whole days so an
-  // entry past midnight is judged against the right day's window.
-  // The forecast block's sys.pod marker is NOT trusted: it disagrees
-  // with the sun times for some blocks (a 3am Lahore entry rendered a
-  // sun in the 3 Nov 2026 live audit, while 9pm and 12am were right).
-  // When the sun fetch failed there is no window, and only then does
-  // the pod marker decide, exactly as before.
-  const sunWindow = (() => {
-    const sr = sunrise ? new Date(sunrise).getTime() : NaN;
-    const ss = sunset ? new Date(sunset).getTime() : NaN;
-    if (!Number.isFinite(sr) || !Number.isFinite(ss) || ss <= sr) return null;
-    return { sr, ss };
-  })();
-  const isNightAt = (ms: number, pod: string | undefined): boolean => {
-    if (!sunWindow || !Number.isFinite(ms)) return pod === 'n';
-    const DAY_MS = 86_400_000;
-    for (const k of [-1, 0, 1]) {
-      if (ms >= sunWindow.sr + k * DAY_MS && ms <= sunWindow.ss + k * DAY_MS) return false;
-    }
-    return true;
-  };
-
-  // ── City Assistant (Phase 1) snapshot ──────────────────────────────────
-  // ONLY values this page already loaded (same feeds as the panels above).
-  // The bot renders exactly these — never a fetched, guessed or cross-city
-  // value. Events: this page lists no individual events, so eventsCount
-  // is 0 and the bot answers honestly with the events-page link.
-  const rainMm =
-    (weather?.rain as Record<string, number> | undefined)?.['1h'] ??
-    (weather?.rain as Record<string, number> | undefined)?.['3h'] ?? null;
-  const assistantSnapshot = {
-    scopeName: city,
-    countryCode: cityParams.countryCode,
-    basePath: `/${countrySlug}/${provinceSlug}/${citySlug}`,
-    prayerTimes: timings
-      ? {
-          Fajr: timings.Fajr, Sunrise: timings.Sunrise, Dhuhr: timings.Dhuhr,
-          Asr: timings.Asr, Maghrib: timings.Maghrib, Isha: timings.Isha,
-        }
-      : null,
-    temp: temp !== null ? Math.round(temp) : null,
-    feelsLike: feelsLike !== null ? Math.round(feelsLike) : temp !== null ? Math.round(temp) : null,
-    weatherDesc,
-    rainMm,
-    goldPerGram: goldPerGram !== null ? Math.round(goldPerGram) : null,
-    goldPerTola,
-    police: policeNum ?? '15',
-    ambulance: ambulanceNum ?? '1122',
-    fire: fireNum ?? '16',
-    eventsCount: 0,
-  };
-
-  const upcomingHolidays = ((holidays ?? []) as Array<Record<string, string>>)
-    .filter((h) => new Date(h.date) >= new Date())
-    .slice(0, 5);
-
-  // ── JSON-LD Schemas ──
-  // ── Batch 4 Item 2: AEO answer layer ──────────────────────────────────
-  // faqProps feeds BOTH the FAQPage schema (generateCitySchema) and the
-  // visible FAQ block (generateCityFaqs) — one source, no drift. The
-  // direct-answer block's first sentence answers the template's primary
-  // mined question ("What is the population of {city}?"); every figure in
-  // it comes from the same data this page already renders (GLANCE dataset
-  // + live weather) — nothing new is hard-coded.
-  const faqProps = {
-    city: city,
-    country: country,
-    province: province,
-    temp, weatherDesc, fajr: timings?.Fajr, maghrib: timings?.Maghrib,
-    goldPerGram,
-    population: glance?.population ?? null,
-    // Fix 4 (billi audit): the language FAQ is built from this city's own
-    // dataset languages list and the emergency FAQ from the emergency
-    // numbers this page itself fetches — not from generator assumptions.
-    languages: glance?.languages ?? null,
-    emergency: { police: policeNum, ambulance: ambulanceNum, fire: fireNum },
-  };
-  const schemas = generateCitySchema(faqProps);
-  const cityFaqs = generateCityFaqs(faqProps);
-  const todayStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-  const directAnswer = glance
-    ? `${city} has a population of ${glance.population} and is one of the principal cities of ${province}, ${country}. The city covers about ${glance.area} km² at roughly ${glance.elevation} metres above sea level, and its main languages are ${glance.languages}.${temp ? ` Right now it is ${Math.round(temp)}°C in ${city}${weatherDesc ? ` with ${weatherDesc}` : ''}.` : ''} The sections below cover its live weather, prayer times, gold rates, news, events and economy in full.`
-    : `${city} is a city of ${province}, ${country}, and this page is its complete guide.${temp ? ` Right now it is ${Math.round(temp)}°C in ${city}${weatherDesc ? ` with ${weatherDesc}` : ''}.` : ''} The sections below cover its live weather, prayer times, gold rates, news, events, famous places and people, and economy in full, each with a dedicated page of its own, plus the city's at-a-glance facts, emergency numbers and comparisons with other cities.`;
-
-
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const currentMonth = MONTHS[new Date().getMonth()];
   const currentYear = new Date().getFullYear();
 
+  // Speed fix (4 Nov 2026): start every live data domain fetching NOW, in
+  // parallel, and hand the promises to the panels in the tree below.
+  // Nothing in this shell awaits data — the static page streams out
+  // immediately and each panel renders behind its own Suspense boundary
+  // when its domain lands. The getters never reject (value-or-null per
+  // fetcher, exactly like the fetchAllCityData they replace here).
+  const weatherP = getCityWeatherBundle(cityParams);
+  const sunMoonP = getCitySunMoonData(cityParams);
+  const prayerP = getCityPrayerData(cityParams);
+  const ratesP = getCityRatesBundle(cityParams);
+  const newsP = getCityNewsData(cityParams);
+  const economyP = getCityEconomyData(cityParams);
+  const emergencyP = getCityEmergencyData(cityParams);
+  const holidaysP = getCityHolidaysData(cityParams);
+
   return (
     <>
       {/* ── JSON-LD ── */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.faqSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.citySchema) }}
-      />
+      <Suspense fallback={null}>
+        <CitySchemas city={city} country={country} province={province} glance={glance} weatherP={weatherP} prayerP={prayerP} ratesP={ratesP} emergencyP={emergencyP} />
+      </Suspense>
 
-      <main className="min-h-screen relative" style={{ backgroundColor: '#0a0f1e', fontFamily: 'Inter, sans-serif' }}>
+            <main className="min-h-screen relative" style={{ backgroundColor: '#0a0f1e', fontFamily: 'Inter, sans-serif' }}>
 
         {/* ── FLAG SYMBOL BACKGROUND ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
@@ -578,30 +453,11 @@ export default async function CityPage({
         </div>
 
         {/* ══ SECTION 1: TICKER BAR ══════════════════════════════════════════ */}
-        <div className="text-white text-xs py-1.5 overflow-hidden" style={{ backgroundColor: 'rgba(12,122,61,0.9)', backdropFilter: 'blur(10px)' }}>
-          <div className="flex gap-8 px-4 flex-wrap items-center">
-            {goldPerGram && (
-              <span>🥇 Gold <strong>PKR {Math.round(goldPerGram).toLocaleString()}/g</strong></span>
-            )}
-            {btcUsd && (
-              <span>₿ BTC <strong>${btcUsd.toLocaleString()}</strong></span>
-            )}
-            {pkrRate && (
-              <span>💱 USD/PKR <strong>{pkrRate.toFixed(2)}</strong></span>
-            )}
-            {temp && (
-              <span>🌡 {city} <strong>{Math.round(temp)}°C</strong></span>
-            )}
-            {timings?.Maghrib && (
-              <span>🕌 Maghrib <strong>{timings.Maghrib}</strong></span>
-            )}
-            <span className="ml-auto opacity-70">
-              {currentMonth} {currentYear} · Live Data
-            </span>
-          </div>
-        </div>
+        <Suspense fallback={<div className="text-white text-xs py-1.5 overflow-hidden" style={{ backgroundColor: 'rgba(12,122,61,0.9)', backdropFilter: 'blur(10px)' }}><div className="flex gap-8 px-4 flex-wrap items-center"><span className="ml-auto opacity-70">{currentMonth} {currentYear} · Live Data</span></div></div>}>
+          <TickerBar city={city} currentMonth={currentMonth} currentYear={currentYear} weatherP={weatherP} prayerP={prayerP} ratesP={ratesP} />
+        </Suspense>
 
-        {/* ══ SECTION 2: HERO + LOCAL TIME ══════════════════════════════════ */}
+                {/* ══ SECTION 2: HERO + LOCAL TIME ══════════════════════════════════ */}
         <section className="relative text-white pt-8 pb-10 px-4 md:px-8" style={{ background: 'linear-gradient(160deg, #0C7A3D22, #0a0f1e 60%)', borderBottom: '1px solid rgba(12,122,61,0.3)' }}>
           {/* Breadcrumb */}
           <nav className="text-xs text-gray-500 mb-4">
@@ -620,10 +476,9 @@ export default async function CityPage({
                 {city}
               </h1>
               <p className="text-gray-400 text-lg mb-1">{province} · {country}</p>
-              <p className="text-gray-500 text-sm">
-                {hijriDate ? `${hijriDate.day} ${((hijriDate.month as unknown as Record<string, string>))?.en} ${hijriDate.year} AH · ` : ''}
-                {currentMonth} {currentYear}
-              </p>
+              <Suspense fallback={<p className="text-gray-500 text-sm">{currentMonth} {currentYear}</p>}>
+                <HeroHijriLine prayerP={prayerP} currentMonth={currentMonth} currentYear={currentYear} />
+              </Suspense>
               <div className="mt-4 flex gap-3 flex-wrap">
                 <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
                   className="bg-[#C8A951] text-[#01411C] text-sm font-semibold px-4 py-2 rounded-full hover:bg-yellow-400 transition">
@@ -644,13 +499,9 @@ export default async function CityPage({
             <div className="text-right hidden md:block">
               <div className="text-6xl font-mono font-light text-white" id="city-clock">--:--</div>
               <div className="text-gray-500 text-sm mt-1">{cityParams.timezone}</div>
-              {sunrise && sunset && (
-                <div className="text-gray-500 text-xs mt-2">
-                  🌅 Sunrise {new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
-                  &nbsp;·&nbsp;
-                  🌇 Sunset {new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
-                </div>
-              )}
+              <Suspense fallback={null}>
+                <HeroSunTimes sunMoonP={sunMoonP} timezone={cityParams.timezone} />
+              </Suspense>
             </div>
           </div>
           {/* Final28 P12: real city photo (licensed/open, local file, credited) — no image for cities without a record. */}
@@ -661,314 +512,36 @@ export default async function CityPage({
 
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-10 relative z-10">
           {/* ── Batch 4 Item 2: direct-answer block, directly under the hero/heading ── */}
-          <DirectAnswer
-            answer={directAnswer}
-            source={glance
-              ? `Population, area & elevation: WorldCityHub city dataset · Weather & prayer times: live, ${todayStr}`
-              : `Weather & prayer times: live, ${todayStr}`}
-          />
+          <Suspense fallback={null}>
+            <DirectAnswerBlock city={city} country={country} province={province} glance={glance} weatherP={weatherP} />
+          </Suspense>
 
           {/* ══ SECTION 3: WEATHER ════════════════════════════════════════════ */}
-          <section id="weather" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              🌤 Weather in {city} Today: {currentMonth} {currentYear}
-            </h2>
-            {temp ? (
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" aria-label={`Full weather forecast for ${city}`}>
-                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round(temp)}°C</div>
-                  <div className="text-xs text-gray-400 mt-1">Temperature</div>
-                </div>
-                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round(feelsLike ?? temp)}°C</div>
-                  <div className="text-xs text-gray-400 mt-1">Feels Like</div>
-                </div>
-                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{humidity}%</div>
-                  <div className="text-xs text-gray-400 mt-1">Humidity</div>
-                </div>
-                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round((windSpeed ?? 0) * 3.6)}</div>
-                  <div className="text-xs text-gray-400 mt-1">Wind km/h</div>
-                </div>
-              </a>
-            ) : (
-              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                Live weather is unavailable right now. The full weather page shows the latest conditions.
-              </div>
-            )}
-
-            {/* AQI */}
-            {aqi && (
-              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium mb-6 ${
-                aqi <= 2 ? 'bg-green-900/40 text-green-400' :
-                aqi === 3 ? 'bg-yellow-900/40 text-yellow-400' :
-                'bg-red-900/40 text-red-400'
-              }`}>
-                💨 Air Quality: <strong>{aqiLabel}</strong> (AQI {aqi}/5)
-              </div>
-            )}
-
-            {/* Hourly forecast: the whole strip opens the weather page.
-                Icons follow the day's actual sunrise/sunset (see
-                isNightAt above), so night hours never show a sun. */}
-            {hourlyList.length > 0 && (
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="block overflow-x-auto" aria-label={`Hourly forecast for ${city}: full weather page`}>
-                <div className="flex gap-3 pb-2" style={{ minWidth: 'max-content' }}>
-                  {hourlyList.map((h, i) => {
-                    const t = h.dt_txt as string;
-                    const hTemp = (h.main as Record<string, number>)?.temp;
-                    const hDesc = (h.weather as Array<Record<string, string>>)?.[0]?.main;
-                    // Entry instant: the forecast's Unix dt (UTC) is
-                    // unambiguous; dt_txt is UTC text, parsed as UTC
-                    // in the fallback (never as local time).
-                    const entryMs = typeof h.dt === 'number' ? h.dt * 1000 : new Date(t.replace(' ', 'T') + 'Z').getTime();
-                    // The label is the CITY's local time for that instant.
-                    // (Owner catch, 3 Nov 2026: without the timezone this
-                    // rendered UTC wall-clock labels on the server, so the
-                    // 08:00 city entry wore a "03:00 AM" label and its sun
-                    // icon looked like a night bug.)
-                    const time = new Date(entryMs).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone });
-                    const isNight = isNightAt(entryMs, (h.sys as Record<string, string> | undefined)?.pod);
-                    const icon =
-                      hDesc === 'Rain' || hDesc === 'Drizzle' ? '🌧'
-                      : hDesc === 'Thunderstorm' ? '⛈'
-                      : hDesc === 'Snow' ? '🌨'
-                      : hDesc === 'Clouds' ? '☁️'
-                      : hDesc === 'Clear' ? (isNight ? '🌙' : '☀️')
-                      : isNight ? '🌙' : '🌤';
-                    return (
-                      <div key={i} className="rounded-xl px-4 py-3 text-center min-w-[72px] border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                        <div className="text-xs text-gray-400">{time}</div>
-                        <div className="text-lg">{icon}</div>
-                        <div className="text-sm font-mono font-medium" style={{ color: '#34d399' }}>{Math.round(hTemp)}°</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </a>
-            )}
-
-            <p className="mt-6 text-gray-400 leading-relaxed text-sm">
-              {generateWeatherParagraph(city, temp, feelsLike, humidity, weatherDesc, windSpeed ? windSpeed * 3.6 : null)}
-              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
-                {generateWeatherAfter(city, country)}
-              </p>
-            </p>
-            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
-              className="inline-block mt-4 text-sm font-semibold px-5 py-2.5 rounded-full transition hover:opacity-90" style={{ backgroundColor: '#0C7A3D', color: '#ffffff' }}>
-              View full weather forecast →
-            </a>
-          </section>
+          <Suspense fallback={<SectionFallback label="Loading live weather…" />}>
+            <WeatherSection city={city} country={country} resolvedParams={resolvedParams} cityParams={cityParams} currentMonth={currentMonth} currentYear={currentYear} weatherP={weatherP} sunMoonP={sunMoonP} />
+          </Suspense>
 
           {/* ══ SECTION 4: SUN/MOON ═══════════════════════════════════════════ */}
-          {(sunrise || sunset) && (
-            <section id="sun-moon" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-                🌅 Sun & Moon in {city}: {currentMonth} {currentYear}
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {sunrise && (
-                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(251,191,36,0.06)', borderColor: 'rgba(251,191,36,0.2)' }}>
-                    <div className="text-2xl">🌅</div>
-                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
-                      {new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">Sunrise</div>
-                  </div>
-                )}
-                {sunset && (
-                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(249,115,22,0.06)', borderColor: 'rgba(249,115,22,0.2)' }}>
-                    <div className="text-2xl">🌇</div>
-                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
-                      {new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">Sunset</div>
-                  </div>
-                )}
-                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(59,130,246,0.06)', borderColor: 'rgba(59,130,246,0.2)' }}>
-                  <div className="text-2xl">{moon.emoji}</div>
-                  <div className="font-semibold" style={{ color: '#34d399' }}>{moon.phase_name}</div>
-                  <div className="text-xs text-gray-400 mt-1">Moon Phase · {moon.illumination}% illuminated</div>
-                </div>
-                {sunrise && sunset && (
-                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(234,179,8,0.06)', borderColor: 'rgba(234,179,8,0.2)' }}>
-                    <div className="text-2xl">⏱</div>
-                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
-                      {Math.round((new Date(sunset).getTime() - new Date(sunrise).getTime()) / 3600000)}h
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">Daylight</div>
-                  </div>
-                )}
-              </div>
-              <p className="mt-6 text-gray-400 leading-relaxed text-sm">
-                {generateSunMoonParagraph(city,
-                  sunrise ? new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone }) : null,
-                  sunset ? new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone }) : null
-                )}
-              </p>
-              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
-                {generateSunMoonAfter(city)}
-              </p>
-              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
-                className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-                Full weather page: the outlook ahead →
-              </a>
-            </section>
-          )}
+          <Suspense fallback={null}>
+            <SunMoonSection city={city} resolvedParams={resolvedParams} cityParams={cityParams} currentMonth={currentMonth} currentYear={currentYear} sunMoonP={sunMoonP} />
+          </Suspense>
 
           {/* ══ SECTION 5: PRAYER TIMES ═══════════════════════════════════════ */}
-          <section id="prayer-times" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-1">
-              🕌 Prayer Times in {city}: {currentMonth} {currentYear}
-            </h2>
-            {hijriDate && (
-              <p className="text-sm text-gray-500 mb-4">
-                {hijriDate.day} {((hijriDate.month as unknown as Record<string, string>))?.en} {hijriDate.year} AH
-              </p>
-            )}
-            {timings ? (
-              <CityPrayerTimeline
-                entries={[
-                  { name: 'Fajr', time: timings.Fajr, emoji: '🌙' },
-                  { name: 'Sunrise', time: timings.Sunrise, emoji: '🌅' },
-                  { name: 'Dhuhr', time: timings.Dhuhr, emoji: '☀️' },
-                  { name: 'Asr', time: timings.Asr, emoji: '🌤' },
-                  { name: 'Maghrib', time: timings.Maghrib, emoji: '🌇' },
-                  { name: 'Isha', time: timings.Isha, emoji: '🌑' },
-                ]}
-                timezone={cityParams.timezone}
-                serverNowIso={new Date().toISOString()}
-              />
-            ) : (
-              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                Prayer times are unavailable right now. The full timetable is on the Prayer Times page.
-              </div>
-            )}
-            <p className="text-gray-400 leading-relaxed text-sm">
-              {generatePrayerParagraph(city, timings)}
-              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
-                {generatePrayerAfter(city)}
-              </p>
-            </p>
-            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`}
-              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Full prayer timetable, Qibla compass & Zakat calculator →
-            </a>
-          </section>
+          <Suspense fallback={<SectionFallback label="Loading prayer times…" />}>
+            <PrayerSection city={city} resolvedParams={resolvedParams} cityParams={cityParams} currentMonth={currentMonth} currentYear={currentYear} prayerP={prayerP} />
+          </Suspense>
 
           {/* ══ SECTION 6: GOLD & METAL RATES ════════════════════════════════ */}
-          <section id="gold-rates" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              🥇 Gold & Metal Rates in {city}: {currentMonth} {currentYear}
-            </h2>
-            {goldPerGram ? (
-              <>
-                {goldMovePerTola !== null && goldChangePct !== null && (
-                  <p className="mb-4 text-sm font-medium" style={{ color: goldChangePct >= 0 ? '#34d399' : '#f87171' }}>
-                    {goldChangePct >= 0 ? '▲' : '▼'} Gold in the last 24 hours: {goldChangePct >= 0 ? 'up' : 'down'} PKR {Math.abs(goldMovePerTola).toLocaleString()} per tola ({goldChangePct >= 0 ? '+' : ''}{goldChangePct.toFixed(2)}%)
-                  </p>
-                )}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-                  {[
-                    { label: '24 Karat / gram', value: `PKR ${Math.round(goldPerGram).toLocaleString()}` },
-                    { label: '24 Karat / tola', value: `PKR ${goldPerTola?.toLocaleString()}` },
-                    { label: '22 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.9167).toLocaleString()}` },
-                    { label: '18 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.75).toLocaleString()}` },
-                  ].map((item) => (
-                    <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(251,191,36,0.08)', borderColor: 'rgba(251,191,36,0.3)' }}>
-                      <div className="text-xs text-amber-400 mb-1">{item.label}</div>
-                      <div className="font-mono font-bold text-amber-300 text-lg">{item.value}</div>
-                    </div>
-                  ))}
-                  {silver && (
-                    <div className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(148,163,184,0.08)', borderColor: 'rgba(148,163,184,0.35)' }}>
-                      <div className="text-xs text-slate-300 mb-1">Silver / tola</div>
-                      <div className="font-mono font-bold text-slate-200 text-lg">PKR {Math.round(silver.per_tola).toLocaleString()}</div>
-                      <div className="text-[11px] text-slate-400 mt-1">PKR {Math.round(silver.per_gram).toLocaleString()} per gram</div>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                Gold rates are unavailable right now. The full rates page shows the latest prices.
-              </div>
-            )}
-
-            {/* Crypto */}
-            {btcUsd && (
-              <div className="border-t pt-4 mt-4">
-                <h3 className="text-sm font-semibold text-gray-300 mb-3">Cryptocurrency Today</h3>
-                <div className="flex gap-4 flex-wrap">
-                  <div className="rounded-lg px-4 py-2 border" style={{ backgroundColor: 'rgba(249,115,22,0.08)', borderColor: 'rgba(249,115,22,0.3)' }}>
-                    <span className="text-xs text-gray-500">Bitcoin (BTC)</span>
-                    <div className="font-mono font-bold text-orange-400">${btcUsd.toLocaleString()}</div>
-                    {btcPkr && <div className="text-xs text-gray-500">PKR {btcPkr.toLocaleString()}</div>}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <p className="mt-6 text-gray-400 leading-relaxed text-sm">
-              {generateGoldParagraph(city, goldPerGram)}
-              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
-                {generateGoldAfter(city)}
-              </p>
-            </p>
-            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`}
-              className="inline-block mt-4 text-sm font-semibold px-5 py-2.5 rounded-full transition hover:opacity-90" style={{ backgroundColor: '#0C7A3D', color: '#ffffff' }}>
-              Full rates page: oil, silver, crypto, currency, stocks →
-            </a>
-          </section>
+          <Suspense fallback={<SectionFallback label="Loading live rates…" />}>
+            <GoldSection city={city} resolvedParams={resolvedParams} currentMonth={currentMonth} currentYear={currentYear} ratesP={ratesP} />
+          </Suspense>
 
           {/* ══ SECTION 7: TODAY'S NEWS ═══════════════════════════════════════ */}
-          <section id="news" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              📰 {city} News Today: {currentMonth} {currentYear}
-            </h2>
-            {displayArticles.length > 0 ? (
-              <div className="space-y-4 mb-6">
-                {displayArticles.slice(0, 5).map((article, i) => (
-                  <article key={i} className="flex gap-4 items-start border-b pb-4 last:border-0">
-                    <span className="text-gray-300 font-mono text-lg mt-0.5 min-w-[24px]">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div>
-                      <a
-                        href={article.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title={article.title}
-                        className="font-medium text-gray-100 hover:text-emerald-300 leading-snug"
-                      >
-                        {article.title ? truncateHeadline(article.title) : ''}
-                      </a>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {newsSourceName(article)} · {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : ''}
-                      </p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                News is unavailable right now. The full news page has the latest headlines.
-              </div>
-            )}
-            <p className="text-gray-400 leading-relaxed text-sm">
-              {generateNewsParagraph(city, topHeadline)}
-              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
-                {generateNewsAfter(city)}
-              </p>
-            </p>
-            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`}
-              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Full news page: 12 categories, archive, Urdu feed →
-            </a>
-          </section>
+          <Suspense fallback={<SectionFallback label="Loading the latest news…" />}>
+            <NewsSection city={city} country={country} resolvedParams={resolvedParams} currentMonth={currentMonth} currentYear={currentYear} newsP={newsP} />
+          </Suspense>
 
-          {/* ══ SECTION 8: EVENTS ═════════════════════════════════════════════ */}
+                    {/* ══ SECTION 8: EVENTS ═════════════════════════════════════════════ */}
           <section id="events" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🎉 Events in {city}: {currentMonth} {currentYear}
@@ -998,46 +571,11 @@ export default async function CityPage({
           </section>
 
           {/* ══ SECTION 9: ECONOMY ════════════════════════════════════════════ */}
-          <section id="economy" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-              📊 Economy of {city}: {currentMonth} {currentYear}
-            </h2>
-            <p className="text-xs text-gray-400 mb-4">
-              Headline indicators: national figures for {country} (World Bank). City-level GDP and inflation series are not published for {city}, so the national numbers are shown and labelled as national.
-            </p>
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                <div className="text-xs text-gray-500 mb-1">GDP per Capita</div>
-                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
-                  ${gdpPerCapita ? Math.round(gdpPerCapita).toLocaleString() : '--'}
-                </div>
-              </div>
-              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                <div className="text-xs text-gray-500 mb-1">Inflation</div>
-                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
-                  {inflation ? `${Math.round(inflation)}%` : '--'}
-                </div>
-              </div>
-              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
-                <div className="text-xs text-gray-500 mb-1">Unemployment</div>
-                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
-                  {unemployment ? `${Math.round(unemployment)}%` : '--'}
-                </div>
-              </div>
-            </div>
-            <p className="text-gray-400 leading-relaxed text-sm">
-              {generateEconomyParagraph(city, country, gdpPerCapita, inflation, unemployment)}
-              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
-                {generateEconomyAfter(city, country)}
-              </p>
-            </p>
-            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`}
-              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
-              Full economy page: GDP charts, misery index, jobs →
-            </a>
-          </section>
+          <Suspense fallback={<SectionFallback label="Loading economy figures…" />}>
+            <EconomySection city={city} country={country} resolvedParams={resolvedParams} currentMonth={currentMonth} currentYear={currentYear} economyP={economyP} />
+          </Suspense>
 
-          {/* ══ SECTION 10: SPORTS ════════════════════════════════════════════ */}
+                    {/* ══ SECTION 10: SPORTS ════════════════════════════════════════════ */}
           <section id="sports" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
               🏏 Sports in {city}: {currentMonth} {currentYear}
@@ -1214,42 +752,11 @@ export default async function CityPage({
           </section>
 
           {/* ══ SECTION 15: EMERGENCY CONTACTS ═══════════════════════════════ */}
-          <section id="emergency" className="rounded-2xl p-6 border-l-4 border-red-500" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
-            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-red-400 mb-4">
-              🚨 Emergency Contacts: {city}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              {[
-                { label: 'Police', number: policeNum ?? '15', emoji: '👮' },
-                { label: 'Rescue / Ambulance', number: ambulanceNum ?? '1122', emoji: '🚑' },
-                { label: 'Fire Brigade', number: fireNum ?? '16', emoji: '🚒' },
-                { label: 'Women Helpline', number: '1043', emoji: '👩' },
-                { label: 'Child Protection', number: '1121', emoji: '🛡' },
-                { label: 'Edhi Foundation', number: '115', emoji: '🏥' },
-                { label: 'PDMA Disaster Line', number: '1129', emoji: '🌧' },
-              ].map((contact) => (
-                <a
-                  key={contact.label}
-                  href={`tel:${contact.number}`}
-                  className="rounded-xl p-5 text-center border hover:border-red-400/60 transition block" style={{ backgroundColor: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.3)' }}
-                  aria-label={`Call ${contact.label} on ${contact.number}`}
-                >
-                  <div className="text-3xl mb-1">{contact.emoji}</div>
-                  <div className="font-mono font-bold text-red-400 text-2xl">{contact.number}</div>
-                  <div className="text-xs text-gray-300 mt-1">{contact.label}</div>
-                  <div className="text-[10px] text-gray-500 mt-1 uppercase tracking-wide">Tap to call</div>
-                </a>
-              ))}
-            </div>
-            <p className="text-gray-400 leading-relaxed text-sm">
-              {generateEmergencyParagraph(city, policeNum, ambulanceNum, fireNum)}
-              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
-                {generateEmergencyAfter(city)}
-              </p>
-            </p>
-          </section>
+          <Suspense fallback={<SectionFallback label="Loading emergency contacts…" />}>
+            <EmergencySection city={city} emergencyP={emergencyP} />
+          </Suspense>
 
-          {/* ══ SECTION 16: CITY IDENTITY ════════════════════════════════════
+                    {/* ══ SECTION 16: CITY IDENTITY ════════════════════════════════════
               The city's own identity, from its named anchors only. This
               replaces the old country-scope "Natural Resources" section:
               country content belongs to the country page, never a city
@@ -1439,25 +946,11 @@ export default async function CityPage({
           </section>
 
           {/* ══ SECTION 19: PUBLIC HOLIDAYS ══════════════════════════════════ */}
-          {upcomingHolidays.length > 0 && (
-            <section id="holidays" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
-              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
-                📅 Upcoming Holidays in {country}
-              </h2>
-              <div className="space-y-3">
-                {upcomingHolidays.map((h, i) => (
-                  <div key={i} className="flex justify-between items-center rounded-xl px-4 py-3 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
-                    <div className="font-medium text-white">{h.name}</div>
-                    <div className="text-sm text-gray-500">
-                      {new Date(h.date).toLocaleDateString('en-PK', { day: 'numeric', month: 'long' })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          <Suspense fallback={null}>
+            <HolidaysSection country={country} holidaysP={holidaysP} />
+          </Suspense>
 
-          {/* ══ SECTION 20: COMPARE THIS CITY ════════════════════════════════ */}
+                    {/* ══ SECTION 20: COMPARE THIS CITY ════════════════════════════════ */}
           <section id="compare" className="rounded-2xl p-6 border" style={{ background: 'linear-gradient(135deg, rgba(12,122,61,0.3), rgba(12,122,61,0.1))', borderColor: 'rgba(12,122,61,0.5)' }}>
             <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold mb-4">
               ⚖️ Compare {city} with Another City
@@ -1521,12 +1014,11 @@ export default async function CityPage({
           </section>
 
           {/* ── Batch 4 Item 2: visible FAQ block — same data as the FAQPage schema in the head ── */}
-          <FaqBlock
-            faqs={cityFaqs}
-            source={`Figures: WorldCityHub city dataset (population) · Weather, prayer times & gold rate: live, ${todayStr}`}
-          />
+          <Suspense fallback={null}>
+            <FaqBlockSection city={city} country={country} province={province} glance={glance} weatherP={weatherP} prayerP={prayerP} ratesP={ratesP} emergencyP={emergencyP} />
+          </Suspense>
 
-          {/* ══ SECTION 23: FOOTER NAV ════════════════════════════════════════ */}
+                    {/* ══ SECTION 23: FOOTER NAV ════════════════════════════════════════ */}
           <section className="text-center py-6 text-sm text-gray-600">
             <div className="flex flex-wrap justify-center gap-4 mb-4 text-gray-500">
               <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="hover:text-green-400 transition-colors">Weather</a>
@@ -1546,7 +1038,9 @@ export default async function CityPage({
         </div>
       </main>
 
-      <CityAssistant snapshot={assistantSnapshot} />
+      <Suspense fallback={null}>
+        <AssistantLoader city={city} countryCode={cityParams.countryCode} basePath={`/${countrySlug}/${provinceSlug}/${citySlug}`} weatherP={weatherP} prayerP={prayerP} ratesP={ratesP} emergencyP={emergencyP} />
+      </Suspense>
 
       <ImproveCTA country={resolvedParams.country} city={resolvedParams.city} label={cityParams.city} />
 
@@ -1574,3 +1068,767 @@ export default async function CityPage({
 
 
 
+
+// ─── STREAMED LIVE PANELS (speed fix, 4 Nov 2026) ────────────────────────────
+// Each component below renders exactly the markup the monolithic page used
+// to render inline, with the same derived-value expressions — only the
+// data arrival changed: a panel renders when its own domain resolves
+// instead of waiting for the slowest of all 16 fetches. The promises are
+// created once in CityPage above and shared by every consumer (ticker,
+// schemas, sections, assistant), so each domain is still fetched once.
+
+type GlanceInfo = { population: string; area: string; elevation: string; languages: string; founded: string };
+type Slugs = { country: string; province: string; city: string };
+type Rec = Record<string, unknown> | null;
+
+function SectionFallback({ label }: { label: string }) {
+  return (
+    <section className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }} aria-busy="true">
+      <p className="text-sm text-gray-500">{label}</p>
+    </section>
+  );
+}
+
+function deriveWeatherCore(weather: Rec) {
+  return {
+    temp: (weather?.main as Record<string, number> | undefined)?.temp ?? null,
+    feelsLike: (weather?.main as Record<string, number> | undefined)?.feels_like ?? null,
+    weatherDesc: ((weather?.weather as Array<Record<string, string>> | undefined)?.[0]?.description) ?? null,
+  };
+}
+
+function deriveTimings(prayer: Rec) {
+  return (prayer?.data as Record<string, Record<string, string>> | undefined)?.timings ?? null;
+}
+
+function deriveEmergencyNums(emergency: Rec) {
+  const data = emergency?.data as Record<string, Record<string, string>> | undefined;
+  return {
+    policeNum: data?.police?.all?.[0] ?? null,
+    ambulanceNum: data?.ambulance?.all?.[0] ?? null,
+    fireNum: data?.fire?.all?.[0] ?? null,
+  };
+}
+
+// faqProps feeds BOTH the FAQPage schema (generateCitySchema) and the
+// visible FAQ block (generateCityFaqs) — one source, no drift (as before).
+async function loadFaqProps(args: {
+  city: string; country: string; province: string; glance: GlanceInfo | undefined;
+  weatherP: Promise<CityWeatherBundle>; prayerP: Promise<unknown>;
+  ratesP: Promise<CityRatesBundle>; emergencyP: Promise<unknown>;
+}) {
+  const [w, p, r, e] = await Promise.all([args.weatherP, args.prayerP, args.ratesP, args.emergencyP]);
+  const weather = w.weather as Rec;
+  const prayer = p as Rec;
+  const gold = r.goldRates as Rec;
+  const emergency = e as Rec;
+  const { temp, weatherDesc } = deriveWeatherCore(weather);
+  const timings = deriveTimings(prayer);
+  const goldPerGram = (gold as Record<string, number> | null)?.price_gram_24k ?? null;
+  const { policeNum, ambulanceNum, fireNum } = deriveEmergencyNums(emergency);
+  return {
+    city: args.city,
+    country: args.country,
+    province: args.province,
+    temp, weatherDesc, fajr: timings?.Fajr, maghrib: timings?.Maghrib,
+    goldPerGram,
+    population: args.glance?.population ?? null,
+    languages: args.glance?.languages ?? null,
+    emergency: { police: policeNum, ambulance: ambulanceNum, fire: fireNum },
+  };
+}
+
+async function CitySchemas(props: {
+  city: string; country: string; province: string; glance: GlanceInfo | undefined;
+  weatherP: Promise<CityWeatherBundle>; prayerP: Promise<unknown>;
+  ratesP: Promise<CityRatesBundle>; emergencyP: Promise<unknown>;
+}) {
+  const faqProps = await loadFaqProps(props);
+  const schemas = generateCitySchema(faqProps);
+  return (
+    <>
+<script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.citySchema) }}
+      />
+    </>
+  );
+}
+
+async function FaqBlockSection(props: {
+  city: string; country: string; province: string; glance: GlanceInfo | undefined;
+  weatherP: Promise<CityWeatherBundle>; prayerP: Promise<unknown>;
+  ratesP: Promise<CityRatesBundle>; emergencyP: Promise<unknown>;
+}) {
+  const faqProps = await loadFaqProps(props);
+  const cityFaqs = generateCityFaqs(faqProps);
+  const todayStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  return (
+<FaqBlock
+            faqs={cityFaqs}
+            source={`Figures: WorldCityHub city dataset (population) · Weather, prayer times & gold rate: live, ${todayStr}`}
+          />
+  );
+}
+
+async function TickerBar(props: {
+  city: string; currentMonth: string; currentYear: number;
+  weatherP: Promise<CityWeatherBundle>; prayerP: Promise<unknown>; ratesP: Promise<CityRatesBundle>;
+}) {
+  const { city, currentMonth, currentYear } = props;
+  const [w, p, r] = await Promise.all([props.weatherP, props.prayerP, props.ratesP]);
+  const weather = w.weather as Rec;
+  const prayer = p as Rec;
+  const gold = r.goldRates as Rec;
+  const crypto = r.crypto as Rec;
+  const currency = r.currencyRates as Rec;
+  const { temp } = deriveWeatherCore(weather);
+  const timings = deriveTimings(prayer);
+  const goldPerGram = (gold as Record<string, number> | null)?.price_gram_24k ?? null;
+  const btcUsd = (crypto?.bitcoin as Record<string, number> | undefined)?.usd ?? null;
+  const pkrRate = (currency?.conversion_rates as Record<string, number> | undefined)?.PKR ?? null;
+  return (
+        <div className="text-white text-xs py-1.5 overflow-hidden" style={{ backgroundColor: 'rgba(12,122,61,0.9)', backdropFilter: 'blur(10px)' }}>
+          <div className="flex gap-8 px-4 flex-wrap items-center">
+            {goldPerGram && (
+              <span>🥇 Gold <strong>PKR {Math.round(goldPerGram).toLocaleString()}/g</strong></span>
+            )}
+            {btcUsd && (
+              <span>₿ BTC <strong>${btcUsd.toLocaleString()}</strong></span>
+            )}
+            {pkrRate && (
+              <span>💱 USD/PKR <strong>{pkrRate.toFixed(2)}</strong></span>
+            )}
+            {temp && (
+              <span>🌡 {city} <strong>{Math.round(temp)}°C</strong></span>
+            )}
+            {timings?.Maghrib && (
+              <span>🕌 Maghrib <strong>{timings.Maghrib}</strong></span>
+            )}
+            <span className="ml-auto opacity-70">
+              {currentMonth} {currentYear} · Live Data
+            </span>
+          </div>
+        </div>
+  );
+}
+
+async function HeroHijriLine(props: { prayerP: Promise<unknown>; currentMonth: string; currentYear: number }) {
+  const { currentMonth, currentYear } = props;
+  const prayer = (await props.prayerP) as Rec;
+  const hijriDate = (prayer?.data as Record<string, Record<string, Record<string, string>>> | undefined)?.date?.hijri ?? null;
+  return (
+    <p className="text-gray-500 text-sm">
+      {hijriDate ? `${hijriDate.day} ${((hijriDate.month as unknown as Record<string, string>))?.en} ${hijriDate.year} AH · ` : ''}
+      {currentMonth} {currentYear}
+    </p>
+  );
+}
+
+async function HeroSunTimes(props: { sunMoonP: Promise<unknown>; timezone: string }) {
+  const sunMoon = (await props.sunMoonP) as Rec;
+  const sunrise = (sunMoon?.results as Record<string, string> | undefined)?.sunrise ?? null;
+  const sunset = (sunMoon?.results as Record<string, string> | undefined)?.sunset ?? null;
+  if (!sunrise || !sunset) return null;
+  return (
+    <div className="text-gray-500 text-xs mt-2">
+      🌅 Sunrise {new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: props.timezone })}
+      &nbsp;·&nbsp;
+      🌇 Sunset {new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: props.timezone })}
+    </div>
+  );
+}
+
+async function DirectAnswerBlock(props: {
+  city: string; country: string; province: string; glance: GlanceInfo | undefined;
+  weatherP: Promise<CityWeatherBundle>;
+}) {
+  const { city, country, province, glance } = props;
+  const weather = (await props.weatherP).weather as Rec;
+  const { temp, weatherDesc } = deriveWeatherCore(weather);
+  const todayStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const directAnswer = glance
+    ? `${city} has a population of ${glance.population} and is one of the principal cities of ${province}, ${country}. The city covers about ${glance.area} km² at roughly ${glance.elevation} metres above sea level, and its main languages are ${glance.languages}.${temp ? ` Right now it is ${Math.round(temp)}°C in ${city}${weatherDesc ? ` with ${weatherDesc}` : ''}.` : ''} The sections below cover its live weather, prayer times, gold rates, news, events and economy in full.`
+    : `${city} is a city of ${province}, ${country}, and this page is its complete guide.${temp ? ` Right now it is ${Math.round(temp)}°C in ${city}${weatherDesc ? ` with ${weatherDesc}` : ''}.` : ''} The sections below cover its live weather, prayer times, gold rates, news, events, famous places and people, and economy in full, each with a dedicated page of its own, plus the city's at-a-glance facts, emergency numbers and comparisons with other cities.`;
+  return (
+<DirectAnswer
+            answer={directAnswer}
+            source={glance
+              ? `Population, area & elevation: WorldCityHub city dataset · Weather & prayer times: live, ${todayStr}`
+              : `Weather & prayer times: live, ${todayStr}`}
+          />
+  );
+}
+
+async function WeatherSection(props: {
+  city: string; country: string; resolvedParams: Slugs; cityParams: CityParams;
+  currentMonth: string; currentYear: number;
+  weatherP: Promise<CityWeatherBundle>; sunMoonP: Promise<unknown>;
+}) {
+  const { city, country, resolvedParams, cityParams, currentMonth, currentYear } = props;
+  const [bundle, sunMoonRaw] = await Promise.all([props.weatherP, props.sunMoonP]);
+  const weather = bundle.weather as Rec;
+  const hourly = bundle.hourlyForecast as Rec;
+  const airQuality = bundle.airQuality as Rec;
+  const sunMoon = sunMoonRaw as Rec;
+  const { temp, feelsLike, weatherDesc } = deriveWeatherCore(weather);
+  const humidity = (weather?.main as Record<string, number> | undefined)?.humidity ?? null;
+  const windSpeed = (weather?.wind as Record<string, number> | undefined)?.speed ?? null;
+  const sunrise = (sunMoon?.results as Record<string, string> | undefined)?.sunrise ?? null;
+  const sunset = (sunMoon?.results as Record<string, string> | undefined)?.sunset ?? null;
+  const aqi = ((airQuality?.list as Array<Record<string, Record<string, number>>> | undefined)?.[0]?.main?.aqi) ?? null;
+  const aqiLabel = aqi === 1 ? 'Good' : aqi === 2 ? 'Fair' : aqi === 3 ? 'Moderate' : aqi === 4 ? 'Poor' : aqi === 5 ? 'Very Poor' : 'N/A';
+  const hourlyList = (hourly?.list as Array<Record<string, unknown>> | undefined)?.slice(0, 8) ?? [];
+  // Day/night for the hourly strip is decided from each entry's own
+  // timestamp against today's sunrise/sunset (sunrise-sunset.org,
+  // formatted=0, so UTC ISO instants), shifted by whole days so an
+  // entry past midnight is judged against the right day's window.
+  // The forecast block's sys.pod marker is NOT trusted: it disagrees
+  // with the sun times for some blocks (a 3am Lahore entry rendered a
+  // sun in the 3 Nov 2026 live audit, while 9pm and 12am were right).
+  // When the sun fetch failed there is no window, and only then does
+  // the pod marker decide, exactly as before.
+  const sunWindow = (() => {
+    const sr = sunrise ? new Date(sunrise).getTime() : NaN;
+    const ss = sunset ? new Date(sunset).getTime() : NaN;
+    if (!Number.isFinite(sr) || !Number.isFinite(ss) || ss <= sr) return null;
+    return { sr, ss };
+  })();
+  const isNightAt = (ms: number, pod: string | undefined): boolean => {
+    if (!sunWindow || !Number.isFinite(ms)) return pod === 'n';
+    const DAY_MS = 86_400_000;
+    for (const k of [-1, 0, 1]) {
+      if (ms >= sunWindow.sr + k * DAY_MS && ms <= sunWindow.ss + k * DAY_MS) return false;
+    }
+    return true;
+  };
+  return (
+<section id="weather" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
+              🌤 Weather in {city} Today: {currentMonth} {currentYear}
+            </h2>
+            {temp ? (
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" aria-label={`Full weather forecast for ${city}`}>
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round(temp)}°C</div>
+                  <div className="text-xs text-gray-400 mt-1">Temperature</div>
+                </div>
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round(feelsLike ?? temp)}°C</div>
+                  <div className="text-xs text-gray-400 mt-1">Feels Like</div>
+                </div>
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{humidity}%</div>
+                  <div className="text-xs text-gray-400 mt-1">Humidity</div>
+                </div>
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                  <div className="text-3xl font-mono" style={{ color: '#34d399' }}>{Math.round((windSpeed ?? 0) * 3.6)}</div>
+                  <div className="text-xs text-gray-400 mt-1">Wind km/h</div>
+                </div>
+              </a>
+            ) : (
+              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
+                Live weather is unavailable right now. The full weather page shows the latest conditions.
+              </div>
+            )}
+
+            {/* AQI */}
+            {aqi && (
+              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium mb-6 ${
+                aqi <= 2 ? 'bg-green-900/40 text-green-400' :
+                aqi === 3 ? 'bg-yellow-900/40 text-yellow-400' :
+                'bg-red-900/40 text-red-400'
+              }`}>
+                💨 Air Quality: <strong>{aqiLabel}</strong> (AQI {aqi}/5)
+              </div>
+            )}
+
+            {/* Hourly forecast: the whole strip opens the weather page.
+                Icons follow the day's actual sunrise/sunset (see
+                isNightAt above), so night hours never show a sun. */}
+            {hourlyList.length > 0 && (
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`} className="block overflow-x-auto" aria-label={`Hourly forecast for ${city}: full weather page`}>
+                <div className="flex gap-3 pb-2" style={{ minWidth: 'max-content' }}>
+                  {hourlyList.map((h, i) => {
+                    const t = h.dt_txt as string;
+                    const hTemp = (h.main as Record<string, number>)?.temp;
+                    const hDesc = (h.weather as Array<Record<string, string>>)?.[0]?.main;
+                    // Entry instant: the forecast's Unix dt (UTC) is
+                    // unambiguous; dt_txt is UTC text, parsed as UTC
+                    // in the fallback (never as local time).
+                    const entryMs = typeof h.dt === 'number' ? h.dt * 1000 : new Date(t.replace(' ', 'T') + 'Z').getTime();
+                    // The label is the CITY's local time for that instant.
+                    // (Owner catch, 3 Nov 2026: without the timezone this
+                    // rendered UTC wall-clock labels on the server, so the
+                    // 08:00 city entry wore a "03:00 AM" label and its sun
+                    // icon looked like a night bug.)
+                    const time = new Date(entryMs).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone });
+                    const isNight = isNightAt(entryMs, (h.sys as Record<string, string> | undefined)?.pod);
+                    const icon =
+                      hDesc === 'Rain' || hDesc === 'Drizzle' ? '🌧'
+                      : hDesc === 'Thunderstorm' ? '⛈'
+                      : hDesc === 'Snow' ? '🌨'
+                      : hDesc === 'Clouds' ? '☁️'
+                      : hDesc === 'Clear' ? (isNight ? '🌙' : '☀️')
+                      : isNight ? '🌙' : '🌤';
+                    return (
+                      <div key={i} className="rounded-xl px-4 py-3 text-center min-w-[72px] border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                        <div className="text-xs text-gray-400">{time}</div>
+                        <div className="text-lg">{icon}</div>
+                        <div className="text-sm font-mono font-medium" style={{ color: '#34d399' }}>{Math.round(hTemp)}°</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </a>
+            )}
+
+            <p className="mt-6 text-gray-400 leading-relaxed text-sm">
+              {generateWeatherParagraph(city, temp, feelsLike, humidity, weatherDesc, windSpeed ? windSpeed * 3.6 : null)}
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
+                {generateWeatherAfter(city, country)}
+              </p>
+            </p>
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
+              className="inline-block mt-4 text-sm font-semibold px-5 py-2.5 rounded-full transition hover:opacity-90" style={{ backgroundColor: '#0C7A3D', color: '#ffffff' }}>
+              View full weather forecast →
+            </a>
+          </section>
+  );
+}
+
+async function SunMoonSection(props: {
+  city: string; resolvedParams: Slugs; cityParams: CityParams;
+  currentMonth: string; currentYear: number; sunMoonP: Promise<unknown>;
+}) {
+  const { city, resolvedParams, cityParams, currentMonth, currentYear } = props;
+  const sunMoon = (await props.sunMoonP) as Rec;
+  const sunrise = (sunMoon?.results as Record<string, string> | undefined)?.sunrise ?? null;
+  const sunset = (sunMoon?.results as Record<string, string> | undefined)?.sunset ?? null;
+  const moon = getMoonPhase();
+  if (!sunrise && !sunset) return null;
+  return (
+<section id="sun-moon" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
+                🌅 Sun & Moon in {city}: {currentMonth} {currentYear}
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {sunrise && (
+                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(251,191,36,0.06)', borderColor: 'rgba(251,191,36,0.2)' }}>
+                    <div className="text-2xl">🌅</div>
+                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
+                      {new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">Sunrise</div>
+                  </div>
+                )}
+                {sunset && (
+                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(249,115,22,0.06)', borderColor: 'rgba(249,115,22,0.2)' }}>
+                    <div className="text-2xl">🌇</div>
+                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
+                      {new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone })}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">Sunset</div>
+                  </div>
+                )}
+                <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(59,130,246,0.06)', borderColor: 'rgba(59,130,246,0.2)' }}>
+                  <div className="text-2xl">{moon.emoji}</div>
+                  <div className="font-semibold" style={{ color: '#34d399' }}>{moon.phase_name}</div>
+                  <div className="text-xs text-gray-400 mt-1">Moon Phase · {moon.illumination}% illuminated</div>
+                </div>
+                {sunrise && sunset && (
+                  <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(234,179,8,0.06)', borderColor: 'rgba(234,179,8,0.2)' }}>
+                    <div className="text-2xl">⏱</div>
+                    <div className="font-mono font-medium" style={{ color: '#34d399' }}>
+                      {Math.round((new Date(sunset).getTime() - new Date(sunrise).getTime()) / 3600000)}h
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">Daylight</div>
+                  </div>
+                )}
+              </div>
+              <p className="mt-6 text-gray-400 leading-relaxed text-sm">
+                {generateSunMoonParagraph(city,
+                  sunrise ? new Date(sunrise).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone }) : null,
+                  sunset ? new Date(sunset).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', timeZone: cityParams.timezone }) : null
+                )}
+              </p>
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
+                {generateSunMoonAfter(city)}
+              </p>
+              <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/weather`}
+                className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+                Full weather page: the outlook ahead →
+              </a>
+            </section>
+  );
+}
+
+async function PrayerSection(props: {
+  city: string; resolvedParams: Slugs; cityParams: CityParams;
+  currentMonth: string; currentYear: number; prayerP: Promise<unknown>;
+}) {
+  const { city, resolvedParams, cityParams, currentMonth, currentYear } = props;
+  const prayer = (await props.prayerP) as Rec;
+  const timings = deriveTimings(prayer);
+  const hijriDate = (prayer?.data as Record<string, Record<string, Record<string, string>>> | undefined)?.date?.hijri ?? null;
+  return (
+<section id="prayer-times" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-1">
+              🕌 Prayer Times in {city}: {currentMonth} {currentYear}
+            </h2>
+            {hijriDate && (
+              <p className="text-sm text-gray-500 mb-4">
+                {hijriDate.day} {((hijriDate.month as unknown as Record<string, string>))?.en} {hijriDate.year} AH
+              </p>
+            )}
+            {timings ? (
+              <CityPrayerTimeline
+                entries={[
+                  { name: 'Fajr', time: timings.Fajr, emoji: '🌙' },
+                  { name: 'Sunrise', time: timings.Sunrise, emoji: '🌅' },
+                  { name: 'Dhuhr', time: timings.Dhuhr, emoji: '☀️' },
+                  { name: 'Asr', time: timings.Asr, emoji: '🌤' },
+                  { name: 'Maghrib', time: timings.Maghrib, emoji: '🌇' },
+                  { name: 'Isha', time: timings.Isha, emoji: '🌑' },
+                ]}
+                timezone={cityParams.timezone}
+                serverNowIso={new Date().toISOString()}
+              />
+            ) : (
+              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
+                Prayer times are unavailable right now. The full timetable is on the Prayer Times page.
+              </div>
+            )}
+            <p className="text-gray-400 leading-relaxed text-sm">
+              {generatePrayerParagraph(city, timings)}
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
+                {generatePrayerAfter(city)}
+              </p>
+            </p>
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/prayer-times`}
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+              Full prayer timetable, Qibla compass & Zakat calculator →
+            </a>
+          </section>
+  );
+}
+
+async function GoldSection(props: {
+  city: string; resolvedParams: Slugs; currentMonth: string; currentYear: number;
+  ratesP: Promise<CityRatesBundle>;
+}) {
+  const { city, resolvedParams, currentMonth, currentYear } = props;
+  const r = await props.ratesP;
+  const gold = r.goldRates as Rec;
+  const crypto = r.crypto as Rec;
+  const goldPerGram = (gold as Record<string, number> | null)?.price_gram_24k ?? null;
+  const goldPerTola = goldPerGram ? Math.round(goldPerGram * TOLA_GRAMS) : null;
+  // Today's movement: the 24h change percent rides on the gold object
+  // (see getCityRatesBundle). The PKR amount per tola is derived from
+  // that same percent and today's price, never a separate figure.
+  const goldChangePct = (gold as Record<string, number> | null)?.change_percent_24h ?? null;
+  const goldMovePerTola =
+    goldChangePct !== null && goldPerTola
+      ? Math.round(goldPerTola - goldPerTola / (1 + goldChangePct / 100))
+      : null;
+  const silver = r.silver as { per_gram: number; per_tola: number } | null;
+  const btcUsd = (crypto?.bitcoin as Record<string, number> | undefined)?.usd ?? null;
+  const btcPkr = (crypto?.bitcoin as Record<string, number> | undefined)?.pkr ?? null;
+  return (
+<section id="gold-rates" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
+              🥇 Gold & Metal Rates in {city}: {currentMonth} {currentYear}
+            </h2>
+            {goldPerGram ? (
+              <>
+                {goldMovePerTola !== null && goldChangePct !== null && (
+                  <p className="mb-4 text-sm font-medium" style={{ color: goldChangePct >= 0 ? '#34d399' : '#f87171' }}>
+                    {goldChangePct >= 0 ? '▲' : '▼'} Gold in the last 24 hours: {goldChangePct >= 0 ? 'up' : 'down'} PKR {Math.abs(goldMovePerTola).toLocaleString()} per tola ({goldChangePct >= 0 ? '+' : ''}{goldChangePct.toFixed(2)}%)
+                  </p>
+                )}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                  {[
+                    { label: '24 Karat / gram', value: `PKR ${Math.round(goldPerGram).toLocaleString()}` },
+                    { label: '24 Karat / tola', value: `PKR ${goldPerTola?.toLocaleString()}` },
+                    { label: '22 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.9167).toLocaleString()}` },
+                    { label: '18 Karat / gram', value: `PKR ${Math.round(goldPerGram * 0.75).toLocaleString()}` },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(251,191,36,0.08)', borderColor: 'rgba(251,191,36,0.3)' }}>
+                      <div className="text-xs text-amber-400 mb-1">{item.label}</div>
+                      <div className="font-mono font-bold text-amber-300 text-lg">{item.value}</div>
+                    </div>
+                  ))}
+                  {silver && (
+                    <div className="rounded-xl p-4 border" style={{ backgroundColor: 'rgba(148,163,184,0.08)', borderColor: 'rgba(148,163,184,0.35)' }}>
+                      <div className="text-xs text-slate-300 mb-1">Silver / tola</div>
+                      <div className="font-mono font-bold text-slate-200 text-lg">PKR {Math.round(silver.per_tola).toLocaleString()}</div>
+                      <div className="text-[11px] text-slate-400 mt-1">PKR {Math.round(silver.per_gram).toLocaleString()} per gram</div>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
+                Gold rates are unavailable right now. The full rates page shows the latest prices.
+              </div>
+            )}
+
+            {/* Crypto */}
+            {btcUsd && (
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-sm font-semibold text-gray-300 mb-3">Cryptocurrency Today</h3>
+                <div className="flex gap-4 flex-wrap">
+                  <div className="rounded-lg px-4 py-2 border" style={{ backgroundColor: 'rgba(249,115,22,0.08)', borderColor: 'rgba(249,115,22,0.3)' }}>
+                    <span className="text-xs text-gray-500">Bitcoin (BTC)</span>
+                    <div className="font-mono font-bold text-orange-400">${btcUsd.toLocaleString()}</div>
+                    {btcPkr && <div className="text-xs text-gray-500">PKR {btcPkr.toLocaleString()}</div>}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <p className="mt-6 text-gray-400 leading-relaxed text-sm">
+              {generateGoldParagraph(city, goldPerGram)}
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
+                {generateGoldAfter(city)}
+              </p>
+            </p>
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/rates`}
+              className="inline-block mt-4 text-sm font-semibold px-5 py-2.5 rounded-full transition hover:opacity-90" style={{ backgroundColor: '#0C7A3D', color: '#ffffff' }}>
+              Full rates page: oil, silver, crypto, currency, stocks →
+            </a>
+          </section>
+  );
+}
+
+async function NewsSection(props: {
+  city: string; country: string; resolvedParams: Slugs;
+  currentMonth: string; currentYear: number; newsP: Promise<unknown>;
+}) {
+  const { city, country, resolvedParams, currentMonth, currentYear } = props;
+  const news = (await props.newsP) as Rec;
+  const rawNewsArticles = ((news?.articles as Array<Record<string, string>> | undefined) ?? []) as unknown as NewsArticleLike[];
+  const displayArticles = prepareNewsList(rawNewsArticles);
+  const topHeadline = displayArticles[0]?.title ?? null;
+  return (
+<section id="news" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
+              📰 {city} News Today: {currentMonth} {currentYear}
+            </h2>
+            {displayArticles.length > 0 ? (
+              <div className="space-y-4 mb-6">
+                {displayArticles.slice(0, 5).map((article, i) => (
+                  <article key={i} className="flex gap-4 items-start border-b pb-4 last:border-0">
+                    <span className="text-gray-300 font-mono text-lg mt-0.5 min-w-[24px]">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <div>
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={article.title}
+                        className="font-medium text-gray-100 hover:text-emerald-300 leading-snug"
+                      >
+                        {article.title ? truncateHeadline(article.title) : ''}
+                      </a>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {newsSourceName(article)} · {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : ''}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-xl p-4 mb-6 text-gray-500 text-sm border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
+                News is unavailable right now. The full news page has the latest headlines.
+              </div>
+            )}
+            <p className="text-gray-400 leading-relaxed text-sm">
+              {generateNewsParagraph(city, topHeadline)}
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
+                {generateNewsAfter(city)}
+              </p>
+            </p>
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/news`}
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+              Full news page: 12 categories, archive, Urdu feed →
+            </a>
+          </section>
+  );
+}
+
+async function EconomySection(props: {
+  city: string; country: string; resolvedParams: Slugs;
+  currentMonth: string; currentYear: number; economyP: Promise<unknown>;
+}) {
+  const { city, country, resolvedParams, currentMonth, currentYear } = props;
+  const economy = (await props.economyP) as Rec;
+  const gdpPerCapita = (economy as Record<string, number> | null)?.['NY.GDP.PCAP.CD'] ?? null;
+  const inflation = (economy as Record<string, number> | null)?.['FP.CPI.TOTL.ZG'] ?? null;
+  const unemployment = (economy as Record<string, number> | null)?.['SL.UEM.TOTL.ZS'] ?? null;
+  return (
+<section id="economy" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
+              📊 Economy of {city}: {currentMonth} {currentYear}
+            </h2>
+            <p className="text-xs text-gray-400 mb-4">
+              Headline indicators: national figures for {country} (World Bank). City-level GDP and inflation series are not published for {city}, so the national numbers are shown and labelled as national.
+            </p>
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                <div className="text-xs text-gray-500 mb-1">GDP per Capita</div>
+                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
+                  ${gdpPerCapita ? Math.round(gdpPerCapita).toLocaleString() : '--'}
+                </div>
+              </div>
+              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                <div className="text-xs text-gray-500 mb-1">Inflation</div>
+                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
+                  {inflation ? `${Math.round(inflation)}%` : '--'}
+                </div>
+              </div>
+              <div className="rounded-xl p-4 text-center border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(12,122,61,0.25)' }}>
+                <div className="text-xs text-gray-500 mb-1">Unemployment</div>
+                <div className="font-mono font-bold" style={{ color: '#34d399' }}>
+                  {unemployment ? `${Math.round(unemployment)}%` : '--'}
+                </div>
+              </div>
+            </div>
+            <p className="text-gray-400 leading-relaxed text-sm">
+              {generateEconomyParagraph(city, country, gdpPerCapita, inflation, unemployment)}
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
+                {generateEconomyAfter(city, country)}
+              </p>
+            </p>
+            <a href={`/${resolvedParams.country}/${resolvedParams.province}/${resolvedParams.city}/economy`}
+              className="inline-block mt-3 text-sm font-medium hover:underline" style={{ color: '#34d399' }}>
+              Full economy page: GDP charts, misery index, jobs →
+            </a>
+          </section>
+  );
+}
+
+async function EmergencySection(props: { city: string; emergencyP: Promise<unknown> }) {
+  const { city } = props;
+  const emergency = (await props.emergencyP) as Rec;
+  const { policeNum, ambulanceNum, fireNum } = deriveEmergencyNums(emergency);
+  return (
+<section id="emergency" className="rounded-2xl p-6 border-l-4 border-red-500" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
+            <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-red-400 mb-4">
+              🚨 Emergency Contacts: {city}
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              {[
+                { label: 'Police', number: policeNum ?? '15', emoji: '👮' },
+                { label: 'Rescue / Ambulance', number: ambulanceNum ?? '1122', emoji: '🚑' },
+                { label: 'Fire Brigade', number: fireNum ?? '16', emoji: '🚒' },
+                { label: 'Women Helpline', number: '1043', emoji: '👩' },
+                { label: 'Child Protection', number: '1121', emoji: '🛡' },
+                { label: 'Edhi Foundation', number: '115', emoji: '🏥' },
+                { label: 'PDMA Disaster Line', number: '1129', emoji: '🌧' },
+              ].map((contact) => (
+                <a
+                  key={contact.label}
+                  href={`tel:${contact.number}`}
+                  className="rounded-xl p-5 text-center border hover:border-red-400/60 transition block" style={{ backgroundColor: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.3)' }}
+                  aria-label={`Call ${contact.label} on ${contact.number}`}
+                >
+                  <div className="text-3xl mb-1">{contact.emoji}</div>
+                  <div className="font-mono font-bold text-red-400 text-2xl">{contact.number}</div>
+                  <div className="text-xs text-gray-300 mt-1">{contact.label}</div>
+                  <div className="text-[10px] text-gray-500 mt-1 uppercase tracking-wide">Tap to call</div>
+                </a>
+              ))}
+            </div>
+            <p className="text-gray-400 leading-relaxed text-sm">
+              {generateEmergencyParagraph(city, policeNum, ambulanceNum, fireNum)}
+              <p className="mt-4 text-gray-500 leading-relaxed text-sm">
+                {generateEmergencyAfter(city)}
+              </p>
+            </p>
+          </section>
+  );
+}
+
+async function HolidaysSection(props: { country: string; holidaysP: Promise<unknown> }) {
+  const { country } = props;
+  const holidays = (await props.holidaysP) as unknown[] | null;
+  const upcomingHolidays = ((holidays ?? []) as Array<Record<string, string>>)
+    .filter((h) => new Date(h.date) >= new Date())
+    .slice(0, 5);
+  if (upcomingHolidays.length === 0) return null;
+  return (
+<section id="holidays" className="rounded-2xl p-6 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.3)' }}>
+              <h2 style={{ fontFamily: 'Playfair Display, serif' }} className="text-2xl font-bold text-white mb-4">
+                📅 Upcoming Holidays in {country}
+              </h2>
+              <div className="space-y-3">
+                {upcomingHolidays.map((h, i) => (
+                  <div key={i} className="flex justify-between items-center rounded-xl px-4 py-3 border" style={{ backgroundColor: 'rgba(255,255,255,0.04)', borderColor: 'rgba(12,122,61,0.2)' }}>
+                    <div className="font-medium text-white">{h.name}</div>
+                    <div className="text-sm text-gray-500">
+                      {new Date(h.date).toLocaleDateString('en-PK', { day: 'numeric', month: 'long' })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+  );
+}
+
+async function AssistantLoader(props: {
+  city: string; countryCode: string; basePath: string;
+  weatherP: Promise<CityWeatherBundle>; prayerP: Promise<unknown>;
+  ratesP: Promise<CityRatesBundle>; emergencyP: Promise<unknown>;
+}) {
+  const { city } = props;
+  const [w, p, r, e] = await Promise.all([props.weatherP, props.prayerP, props.ratesP, props.emergencyP]);
+  const weather = w.weather as Rec;
+  const prayer = p as Rec;
+  const gold = r.goldRates as Rec;
+  const emergency = e as Rec;
+  const { temp, feelsLike, weatherDesc } = deriveWeatherCore(weather);
+  const timings = deriveTimings(prayer);
+  const goldPerGram = (gold as Record<string, number> | null)?.price_gram_24k ?? null;
+  const goldPerTola = goldPerGram ? Math.round(goldPerGram * TOLA_GRAMS) : null;
+  const { policeNum, ambulanceNum, fireNum } = deriveEmergencyNums(emergency);
+  // ── City Assistant (Phase 1) snapshot ──────────────────────────────────
+  // ONLY values this page already loaded (same feeds as the panels above).
+  // The bot renders exactly these — never a fetched, guessed or cross-city
+  // value. Events: this page lists no individual events, so eventsCount
+  // is 0 and the bot answers honestly with the events-page link.
+  const rainMm =
+    (weather?.rain as Record<string, number> | undefined)?.['1h'] ??
+    (weather?.rain as Record<string, number> | undefined)?.['3h'] ?? null;
+  const assistantSnapshot = {
+    scopeName: city,
+    countryCode: props.countryCode,
+    basePath: props.basePath,
+    prayerTimes: timings
+      ? {
+          Fajr: timings.Fajr, Sunrise: timings.Sunrise, Dhuhr: timings.Dhuhr,
+          Asr: timings.Asr, Maghrib: timings.Maghrib, Isha: timings.Isha,
+        }
+      : null,
+    temp: temp !== null ? Math.round(temp) : null,
+    feelsLike: feelsLike !== null ? Math.round(feelsLike) : temp !== null ? Math.round(temp) : null,
+    weatherDesc,
+    rainMm,
+    goldPerGram: goldPerGram !== null ? Math.round(goldPerGram) : null,
+    goldPerTola,
+    police: policeNum ?? '15',
+    ambulance: ambulanceNum ?? '1122',
+    fire: fireNum ?? '16',
+    eventsCount: 0,
+  };
+  return <CityAssistant snapshot={assistantSnapshot} />;
+}

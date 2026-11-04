@@ -40,7 +40,7 @@ interface Country {
   area: number; capital: string; currency: string;
   languages: string[]; government: string;
   primaryColor: string; secondaryColor: string;
-  heroImage: string; tagline: string;
+  heroImage: string; heroCredit?: string; tagline: string;
   timezone: string; independence: string; climate: string;
   majorFaith: string; majorFaithPct: number;
 }
@@ -69,10 +69,11 @@ const COUNTRIES: Record<string, Country> = {
     languages: ['Urdu', 'English', 'Punjabi', 'Pashto', 'Sindhi', 'Balochi'],
     government: 'Federal Parliamentary Republic',
     primaryColor: '#0C7A3D', secondaryColor: '#FFFFFF',
-    heroImage: 'https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    heroImage: '/images/country-pakistan/hero-badshahi-mosque.webp',
+    heroCredit: 'Badshahi Mosque, Lahore · Zapata1000 · CC BY-SA 4.0, via Wikimedia Commons',
     tagline: 'Land of ancient civilisations, towering peaks, and vibrant culture.',
     timezone: 'PKT (UTC+5)', independence: 'August 14, 1947',
-    climate: 'Varies — Desert to Alpine', majorFaith: 'Islam', majorFaithPct: 96,
+    climate: 'Varies, Desert to Alpine', majorFaith: 'Islam', majorFaithPct: 96,
   },
   india: {
     name: 'India', code: 'IN', slug: 'india', flag: '🇮🇳',
@@ -85,7 +86,7 @@ const COUNTRIES: Record<string, Country> = {
     heroImage: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=1600',
     tagline: 'One billion stories. Every faith. Every landscape. Every flavour.',
     timezone: 'IST (UTC+5:30)', independence: 'August 15, 1947',
-    climate: 'Varies — Tropical to Alpine', majorFaith: 'Hinduism', majorFaithPct: 80,
+    climate: 'Varies, Tropical to Alpine', majorFaith: 'Hinduism', majorFaithPct: 80,
   },
   'united-states': {
     name: 'United States', code: 'US', slug: 'united-states', flag: '🇺🇸',
@@ -98,7 +99,7 @@ const COUNTRIES: Record<string, Country> = {
     heroImage: 'https://images.pexels.com/photos/290386/pexels-photo-290386.jpeg?auto=compress&cs=tinysrgb&w=1600',
     tagline: 'A nation built by dreamers from every corner of the world.',
     timezone: 'EST/PST (UTC-5 to UTC-8)', independence: 'July 4, 1776',
-    climate: 'Varies — Arctic to Tropical', majorFaith: 'Christianity', majorFaithPct: 63,
+    climate: 'Varies, Arctic to Tropical', majorFaith: 'Christianity', majorFaithPct: 63,
   },
 };
 
@@ -188,12 +189,12 @@ const PERSONALITIES: Record<string, Personality[]> = {
 
 const LANDMARKS: Record<string, Landmark[]> = {
   PK: [
-    { id: '1', name: 'Badshahi Mosque', type: 'Religious', city: 'Lahore', image: 'https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Mughal 1673' },
-    { id: '2', name: 'Mohenjo-daro', type: 'Archaeological', city: 'Sindh', image: 'https://images.pexels.com/photos/2846217/pexels-photo-2846217.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: '3000 BCE' },
+    { id: '1', name: 'Badshahi Mosque', type: 'Religious', city: 'Lahore', image: '/images/country-pakistan/heritage-badshahi-mosque.webp', unesco: false, era: 'Mughal 1673' },
+    { id: '2', name: 'Mohenjo-daro', type: 'Archaeological', city: 'Sindh', image: '/images/country-pakistan/heritage-mohenjo-daro.webp', unesco: true, era: '3000 BCE' },
     { id: '3', name: 'K2', type: 'Mountain', city: 'Gilgit-Baltistan', image: '', unesco: false, era: 'Natural Wonder' },
-    { id: '4', name: 'Shalimar Gardens', type: 'Gardens', city: 'Lahore', image: 'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1641' },
-    { id: '5', name: 'Lahore Fort', type: 'Fort', city: 'Lahore', image: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1566' },
-    { id: '6', name: 'Faisal Mosque', type: 'Religious', city: 'Islamabad', image: 'https://images.pexels.com/photos/208371/pexels-photo-208371.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Modern 1986' },
+    { id: '4', name: 'Shalimar Gardens', type: 'Gardens', city: 'Lahore', image: '/images/country-pakistan/heritage-shalimar-gardens.webp', unesco: true, era: 'Mughal 1641' },
+    { id: '5', name: 'Lahore Fort', type: 'Fort', city: 'Lahore', image: '/images/country-pakistan/heritage-lahore-fort.webp', unesco: true, era: 'Mughal 1566' },
+    { id: '6', name: 'Faisal Mosque', type: 'Religious', city: 'Islamabad', image: '/images/country-pakistan/heritage-faisal-mosque.webp', unesco: false, era: 'Modern 1986' },
   ],
   IN: [
     { id: '1', name: 'Taj Mahal', type: 'Monument', city: 'Agra', image: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1643' },
@@ -308,45 +309,45 @@ const RATES: Record<string, RateItem[]> = {
 const RESOURCES: Record<string, Resource[]> = {
   PK: [
     { name: 'Natural Gas', icon: '🔥', description: 'Top 20 global reserves. Provides significant domestic energy supply.', rank: 'World top 20' },
-    { name: 'Coal', icon: '⚫', description: 'Thar Coal Field — one of the largest lignite reserves in the world.', rank: '2nd largest in Asia' },
-    { name: 'Copper & Gold', icon: '🟡', description: 'Reko Diq in Balochistan — one of the largest undeveloped copper-gold deposits on earth.', rank: 'World top 5 deposit' },
+    { name: 'Coal', icon: '⚫', description: 'Thar Coal Field, one of the largest lignite reserves in the world.', rank: '2nd largest in Asia' },
+    { name: 'Copper & Gold', icon: '🟡', description: 'Reko Diq in Balochistan, one of the largest undeveloped copper-gold deposits on earth.', rank: 'World top 5 deposit' },
     { name: 'Gemstones', icon: '💎', description: 'Emeralds, rubies, topaz, and tourmaline from the mountains of KPK and Gilgit-Baltistan.', rank: 'Globally renowned' },
-    { name: 'Salt', icon: '🪨', description: 'Khewra Salt Mine — world\'s second largest and oldest salt mine, mined since the 1200s.', rank: 'World 2nd largest mine' },
-    { name: 'Water', icon: '🌊', description: 'Indus River system — one of the great river systems of the world, feeding Pakistan\'s agriculture.', rank: 'Top 10 river systems' },
+    { name: 'Salt', icon: '🪨', description: 'Khewra Salt Mine, world\'s second largest and oldest salt mine, mined since the 1200s.', rank: 'World 2nd largest mine' },
+    { name: 'Water', icon: '🌊', description: 'Indus River system, one of the great river systems of the world, feeding Pakistan\'s agriculture.', rank: 'Top 10 river systems' },
   ],
   IN: [
     { name: 'Coal', icon: '⚫', description: 'Fourth largest coal reserves in the world.', rank: 'World 4th' },
     { name: 'Iron Ore', icon: '🪨', description: 'Major iron ore deposits in Jharkhand and Odisha.', rank: 'World top 5' },
     { name: 'IT & Software', icon: '💻', description: 'Bangalore is the world\'s second largest tech hub after Silicon Valley.', rank: 'World 2nd tech hub' },
-    { name: 'Diamonds', icon: '💎', description: 'Historic diamond mining — Golconda diamonds were world-famous.', rank: 'Historically significant' },
+    { name: 'Diamonds', icon: '💎', description: 'Historic diamond mining, Golconda diamonds were world-famous.', rank: 'Historically significant' },
   ],
   US: [
     { name: 'Oil & Gas', icon: '🛢️', description: "World's largest oil producer since 2018 through the shale revolution.", rank: 'World #1 producer' },
     { name: 'Coal', icon: '⚫', description: 'Second largest coal reserves globally.', rank: 'World 2nd largest' },
-    { name: 'Agriculture', icon: '🌾', description: "World's largest agricultural exporter — wheat, corn, soybeans, cotton.", rank: 'World #1 exporter' },
+    { name: 'Agriculture', icon: '🌾', description: "World's largest agricultural exporter, wheat, corn, soybeans, cotton.", rank: 'World #1 exporter' },
     { name: 'Technology', icon: '💻', description: 'Silicon Valley drives global technology innovation and venture capital.', rank: 'World leader' },
   ],
 };
 
 const FOODS: Record<string, FoodItem[]> = {
   PK: [
-    { name: 'Biryani', emoji: '🍛', description: 'The national obsession — fragrant basmati, tender meat, and spices layered to perfection.', origin: 'Mughal era' },
+    { name: 'Biryani', emoji: '🍛', description: 'The national obsession, fragrant basmati, tender meat, and spices layered to perfection.', origin: 'Mughal era' },
     { name: 'Nihari', emoji: '🥘', description: 'Slow-cooked beef shank simmered overnight. A Lahori Sunday morning ritual.', origin: 'Old Delhi, adopted by Lahore' },
-    { name: 'Chapli Kebab', emoji: '🥩', description: "Peshawar's gift to the world — flat spiced minced meat patty grilled over open flame.", origin: 'Peshawar, KPK' },
-    { name: 'Halwa Puri', emoji: '🫓', description: 'Fried bread with sweet semolina halwa and spiced chana — the classic Pakistani breakfast.', origin: 'Punjab' },
-    { name: 'Karahi', emoji: '🍲', description: "Pakistan's most loved dish — chicken or mutton cooked fast in a wok with tomatoes and ginger.", origin: 'Nationwide' },
+    { name: 'Chapli Kebab', emoji: '🥩', description: "Peshawar's gift to the world, flat spiced minced meat patty grilled over open flame.", origin: 'Peshawar, KPK' },
+    { name: 'Halwa Puri', emoji: '🫓', description: 'Fried bread with sweet semolina halwa and spiced chana, the classic Pakistani breakfast.', origin: 'Punjab' },
+    { name: 'Karahi', emoji: '🍲', description: "Pakistan's most loved dish, chicken or mutton cooked fast in a wok with tomatoes and ginger.", origin: 'Nationwide' },
     { name: 'Lassi', emoji: '🥛', description: 'Punjab in a glass. Thick churned yoghurt, sweet or salted, served chilled.', origin: 'Punjab' },
   ],
   IN: [
     { name: 'Butter Chicken', emoji: '🍛', description: 'Tender chicken in a rich tomato-cream sauce. Born in Delhi, loved everywhere.', origin: 'Delhi' },
     { name: 'Masala Dosa', emoji: '🫓', description: "Crispy fermented rice crepe filled with spiced potato. South India's favourite.", origin: 'Karnataka' },
-    { name: 'Biryani', emoji: '🍚', description: 'Every region has its own version — Hyderabadi, Lucknowi, Kolkata. All magnificent.', origin: 'Mughal era' },
+    { name: 'Biryani', emoji: '🍚', description: 'Every region has its own version, Hyderabadi, Lucknowi, Kolkata. All magnificent.', origin: 'Mughal era' },
     { name: 'Samosa', emoji: '🥟', description: 'Deep fried pastry filled with spiced potatoes and peas. Street food perfection.', origin: 'North India' },
   ],
   US: [
-    { name: 'Hamburger', emoji: '🍔', description: "America's most iconic food export — beef patty in a bun, now eaten on every continent.", origin: 'German-American' },
+    { name: 'Hamburger', emoji: '🍔', description: "America's most iconic food export, beef patty in a bun, now eaten on every continent.", origin: 'German-American' },
     { name: 'BBQ Ribs', emoji: '🍖', description: 'Slow-smoked pork or beef ribs with regional sauces from Texas to Tennessee.', origin: 'Southern USA' },
-    { name: 'Apple Pie', emoji: '🥧', description: 'As American as it gets — a cultural symbol as much as a dessert.', origin: 'Colonial America' },
+    { name: 'Apple Pie', emoji: '🥧', description: 'As American as it gets, a cultural symbol as much as a dessert.', origin: 'Colonial America' },
     { name: 'Clam Chowder', emoji: '🍲', description: 'Creamy soup of clams, potatoes, and onions. A New England institution.', origin: 'New England' },
   ],
 };
@@ -474,10 +475,47 @@ const FOOD_PHOTOS: Record<string, string> = {
   Biryani: '/images/country-pakistan/food-biryani.webp',
   'Chapli Kebab': '/images/country-pakistan/food-chapli-kebab.webp',
   Lassi: '/images/country-pakistan/food-lassi.webp',
+  Nihari: '/images/country-pakistan/food-nihari.webp',
+  'Halwa Puri': '/images/country-pakistan/food-halwa-puri.webp',
+  Karahi: '/images/country-pakistan/food-karahi.webp',
+};
+
+// Credits for the food photos; each licence was verified via the
+// Commons API extmetadata channel for the exact file and the record is
+// kept in docs/media-registry/subjects/. The first three entries are
+// the 3 Nov 2026 photos whose Commons file titles were stored in the
+// CREDITS comment above; their creator + licence were re-verified
+// through the API in the 4 Nov fix batch before this caption was added.
+const FOOD_PHOTO_CREDITS: Record<string, string> = {
+  Biryani: 'Dheerajk88 · CC BY-SA 4.0, via Wikimedia Commons',
+  'Chapli Kebab': 'Murcotipton · CC BY-SA 3.0, via Wikimedia Commons',
+  Lassi: 'Gaurav Dhwaj Khadka · CC BY-SA 4.0, via Wikimedia Commons',
+  Nihari: 'Sidheeq · CC BY-SA 4.0, via Wikimedia Commons',
+  'Halwa Puri': 'Robin Crusoe · CC BY-SA 4.0, via Wikimedia Commons',
+  Karahi: 'Kskhh · CC BY-SA 4.0, via Wikimedia Commons',
 };
 
 const RESOURCE_PHOTOS: Record<string, string> = {
   Salt: '/images/country-pakistan/resource-khewra-salt.webp',
+  'Natural Gas': '/images/country-pakistan/resource-natural-gas.webp',
+  Coal: '/images/country-pakistan/resource-coal.webp',
+  'Copper & Gold': '/images/country-pakistan/resource-copper-gold.webp',
+  Gemstones: '/images/country-pakistan/resource-gemstones.webp',
+  Water: '/images/country-pakistan/resource-water.webp',
+};
+
+// Same verified batch (4 Nov 2026). The Copper & Gold photo shows the
+// Saindak copper-gold mine in Chagai, Balochistan; the Gemstones photo
+// is an emerald crystal from the Mingora mines, Swat; the Water photo
+// is Tarbela Dam on the Indus. Natural Gas and Coal are generic subject
+// photos (a gas flame row, a coal specimen) and claim no location.
+const RESOURCE_PHOTO_CREDITS: Record<string, string> = {
+  Salt: 'Shahzaib Damn Cruze · CC BY-SA 4.0, via Wikimedia Commons',
+  'Natural Gas': 'Matthew Bellemare · CC BY-SA 3.0, via Wikimedia Commons',
+  Coal: 'Amcyrus2012 · CC BY 4.0, via Wikimedia Commons',
+  'Copper & Gold': 'Faiqah A Jabbar · CC BY-SA 4.0, via Wikimedia Commons',
+  Gemstones: 'Parent Géry · CC BY-SA 3.0, via Wikimedia Commons',
+  Water: 'USAID · Public domain, via Wikimedia Commons',
 };
 
 const HERITAGE_PHOTOS: Record<string, string> = {
@@ -486,6 +524,7 @@ const HERITAGE_PHOTOS: Record<string, string> = {
   'Shalimar Gardens': '/images/country-pakistan/heritage-shalimar-gardens.webp',
   'Lahore Fort': '/images/country-pakistan/heritage-lahore-fort.webp',
   'Faisal Mosque': '/images/country-pakistan/heritage-faisal-mosque.webp',
+  K2: '/images/country-pakistan/heritage-k2.webp',
 };
 
 const HERITAGE_PHOTO_CREDITS: Record<string, string> = {
@@ -494,6 +533,7 @@ const HERITAGE_PHOTO_CREDITS: Record<string, string> = {
   'Shalimar Gardens': 'M Umair Astro · CC BY-SA 4.0, via Wikimedia Commons',
   'Lahore Fort': 'Rohaan Bhatti · CC BY-SA 3.0, via Wikimedia Commons',
   'Faisal Mosque': 'Guilhem Vellut · CC BY 2.0, via Wikimedia Commons',
+  K2: 'Svy123 · CC BY 3.0, via Wikimedia Commons',
 };
 
 const NEIGHBOUR_FLAG_FILES: Record<string, string> = {
@@ -715,7 +755,7 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
           <p className="text-cyan-400 text-sm font-semibold uppercase tracking-wide mb-2">Country Guide</p>
           <h1 className="text-white text-3xl md:text-4xl font-bold mb-3">{name}</h1>
           <p className="text-white/60 max-w-md mx-auto mb-6">
-            We&apos;re building out the full country profile for {name} — capital city data,
+            We&apos;re building out the full country profile for {name}, capital city data,
             economy, culture and more. Check back soon.
           </p>
           <Link href="/countries" className="inline-block px-6 py-3 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-colors">
@@ -842,6 +882,12 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
         </div>
       </div>
 
+      {country.heroCredit && (
+        <div className="relative z-10 max-w-6xl mx-auto px-4">
+          <p className="text-xs text-gray-500 pt-2">Photo: {country.heroCredit}</p>
+        </div>
+      )}
+
       <div className="relative z-10 max-w-6xl mx-auto px-4 pb-20 space-y-14 pt-8">
 
         {/* ── 1. COUNTRY FACTS ── */}
@@ -852,7 +898,7 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {[
-              { label: popFigure ? `Population — World Bank ${popFigure.year}` : 'Population', value: formatNumber(popFigure?.value ?? country.population), icon: '👥' },
+              { label: popFigure ? `Population · World Bank ${popFigure.year}` : 'Population', value: formatNumber(popFigure?.value ?? country.population), icon: '👥' },
               { label: 'Area', value: `${formatNumber(country.area)} km²`, icon: '🗺️' },
               { label: 'Capital', value: country.capital, icon: '🏛️' },
               { label: 'Currency', value: country.currency.split('(')[0].trim(), icon: '💵' },
@@ -914,7 +960,7 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
             </div>
           ) : (
             <p className="text-gray-500 text-sm">
-              City data for {country.name} is being added — check back soon.
+              City data for {country.name} is being added, check back soon.
             </p>
           )}
         </motion.section>
@@ -1027,7 +1073,7 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
             <div className="mt-4">
               <PopulationPie
                 title="Population by faith"
-                unit="Pakistan — four provinces + Islamabad Capital Territory"
+                unit="Pakistan: four provinces + Islamabad Capital Territory"
                 slices={NATIONAL_FAITH_SLICES}
                 source="PBS Census-2023, Table 9"
                 note="Table 9 records religion for 240,458,089 people; religion was not recorded for the remaining 1,041,342 (sensitive areas / collective residences), shown as its own slice so the pie sums to the Table 1 total of 241,499,431. Hindu combines Table 9's Hindu Jati + Scheduled Castes columns."
@@ -1142,10 +1188,10 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
               <div className="mt-4">
                 <PopulationPie
                   title="Population by province"
-                  unit="Pakistan — four provinces + Islamabad Capital Territory"
+                  unit="Pakistan: four provinces + Islamabad Capital Territory"
                   slices={PAKISTAN_PROVINCE_POPULATION}
                   source="PBS Census-2023, Table 1"
-                  note={`Total ${PAKISTAN_PROVINCE_TOTAL.toLocaleString('en-US')} — the PBS Table 1 national total for these five units.`}
+                  note={`Total ${PAKISTAN_PROVINCE_TOTAL.toLocaleString('en-US')}, the PBS Table 1 national total for these five units.`}
                 />
               </div>
             )}
@@ -1390,6 +1436,11 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
                         <img loading="lazy" decoding="async" src={photo} alt={res.name} className="w-full h-full object-cover" />
                       </div>
                     )}
+                    {photo && RESOURCE_PHOTO_CREDITS[res.name] && (
+                      <div className="px-5 pt-2 text-[10px] text-gray-500">
+                        Photo: {RESOURCE_PHOTO_CREDITS[res.name]}
+                      </div>
+                    )}
                     <div className="p-5">
                       {!photo && <div className="text-3xl mb-3">{res.icon}</div>}
                       <div className="text-white font-semibold text-sm mb-1">{res.name}</div>
@@ -1454,6 +1505,11 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
                     {photo && (
                       <div className="h-40 overflow-hidden">
                         <img loading="lazy" decoding="async" src={photo} alt={food.name} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    {photo && FOOD_PHOTO_CREDITS[food.name] && (
+                      <div className="px-5 pt-2 text-[10px] text-gray-500">
+                        Photo: {FOOD_PHOTO_CREDITS[food.name]}
                       </div>
                     )}
                     <div className="p-5">
@@ -1575,6 +1631,13 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
               { label: 'Economy', href: `/${country.slug}/economy` },
               { label: 'Heritage Products', href: `/${country.slug}/heritage-products` },
               { label: 'Events', href: `/${country.slug}/events` },
+              // Calendar family sample (4 Nov 2026): the country calendar
+              // exists for Pakistan only until the family replicates, so
+              // the chip renders for Pakistan alone (Link Law: never link
+              // to a page that does not exist).
+              ...(country.slug === 'pakistan'
+                ? [{ label: 'Calendar', href: `/${country.slug}/calendar` }]
+                : []),
               { label: 'Compare', href: `/compare?a=${country.slug}` },
             ].map(link => (
               <Link key={link.label} href={link.href}

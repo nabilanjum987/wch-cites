@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page, Famous Foods grid (photo added 3 Nov 2026; credit caption added in the 4 Nov 2026 fix batch)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/food-biryani.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Chicken_Hyderabadi_Biryani.JPG",
+      "author": "Dheerajk88",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Chicken Hyderabadi Biryani.JPG",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Chicken Hyderabadi Biryani.JPG on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). The Commons file title and creator were stored in the CREDITS comment in src/app/[country]/CountryClient.tsx when the photo was added on 2026-11-03; the API values match that record exactly."
+    }
+  ],
+  "notes": "Chicken Hyderabadi biryani, the photo on the Biryani card of the Pakistan page Famous Foods grid. Local file is a webp conversion of the Commons original. Caption credit renders from FOOD_PHOTO_CREDITS in CountryClient.tsx."
+}

@@ -1,0 +1,61 @@
+{
+  "subject": "Petra",
+  "type": "wonder",
+  "package": "Wonders build (2026-11-04)",
+  "coverage": "full",
+  "coverage_note": "Imagery harvested and licence-verified via the Commons extmetadata API on 2026-11-04 for the /wonders/petra page published the same day. The Treasury facade is shown whole from the plaza at the end of the Siq (owner rule G5).",
+  "harvested": "2026-11-04",
+  "records": [
+    {
+      "file_title": "Al-Khazneh Treasury Rock-cut Facade at Petra Jordan.jpg",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Al-Khazneh_Treasury_Rock-cut_Facade_at_Petra_Jordan.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Al-Khazneh_Treasury_Rock-cut_Facade_at_Petra_Jordan.jpg",
+      "source": "Wikimedia Commons",
+      "creator": "Ywpark2003",
+      "licence": "CC BY 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by/4.0",
+      "attribution": "\"Al-Khazneh Treasury Rock-cut Facade at Petra Jordan.jpg\" by Ywpark2003, CC BY 4.0, via Wikimedia Commons",
+      "role": "hero",
+      "alt": "Al-Khazneh, the Treasury at Petra, the whole carved facade rising above the plaza at the end of the Siq",
+      "width": 2567,
+      "height": 3854,
+      "sha1": "6d1edd0a39a747986cb9317025f824a333bb437e",
+      "focal_point": null,
+      "status": "VERIFIED"
+    },
+    {
+      "file_title": "Al Deir Petra.JPG",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Al_Deir_Petra.JPG",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Al_Deir_Petra.JPG",
+      "source": "Wikimedia Commons",
+      "creator": "Azurfrog",
+      "licence": "CC BY-SA 3.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attribution": "\"Al Deir Petra.JPG\" by Azurfrog, CC BY-SA 3.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "Ad Deir, the Monastery at Petra, the largest of the rock-cut facades, shown whole above its forecourt",
+      "width": 6000,
+      "height": 4000,
+      "sha1": "a16df826335dd182dce4222b2c873e1da579dee3",
+      "focal_point": null,
+      "status": "VERIFIED"
+    },
+    {
+      "file_title": "Royal Tombs in Petra 001.jpg",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Royal_Tombs_in_Petra_001.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Royal_Tombs_in_Petra_001.jpg",
+      "source": "Wikimedia Commons",
+      "creator": "Freedom's Falcon",
+      "licence": "CC BY-SA 4.0",
+      "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attribution": "\"Royal Tombs in Petra 001.jpg\" by Freedom's Falcon, CC BY-SA 4.0, via Wikimedia Commons",
+      "role": "gallery",
+      "alt": "The Royal Tombs of the King's Wall at Petra, carved facades above the city basin",
+      "width": 4928,
+      "height": 3264,
+      "sha1": "886615324fb87f26abf891864b7b35c56a43d9ea",
+      "focal_point": null,
+      "status": "VERIFIED"
+    }
+  ]
+}

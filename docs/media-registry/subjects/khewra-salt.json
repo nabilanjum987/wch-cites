@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page, Natural Resources grid (photo added 3 Nov 2026; credit caption added in the 4 Nov 2026 fix batch)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/resource-khewra-salt.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/Khewra_Salt_Mines_03.jpg",
+      "author": "Shahzaib Damn Cruze",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Khewra Salt Mines 03.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Khewra Salt Mines 03.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). The Commons file title and creator were stored in the CREDITS comment in src/app/[country]/CountryClient.tsx when the photo was added on 2026-11-03; the API values match that record exactly."
+    }
+  ],
+  "notes": "Inside the Khewra Salt Mine, the photo on the Salt card of the Pakistan page Natural Resources grid. Local file is a webp conversion of the Commons original. Caption credit renders from RESOURCE_PHOTO_CREDITS in CountryClient.tsx."
+}

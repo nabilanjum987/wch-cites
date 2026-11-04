@@ -51,7 +51,7 @@ export const CITY_CAIRO: IntlCityPackage = {
   "foods": [
     {
       "name": "Koshari",
-      "description": "Rice, lentils, pasta and chickpeas with spiced tomato sauce — Egypt's national dish."
+      "description": "Rice, lentils, pasta and chickpeas with spiced tomato sauce, Egypt's national dish."
     },
     {
       "name": "Ful medames",

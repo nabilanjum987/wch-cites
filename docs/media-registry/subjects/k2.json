@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (k2)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/heritage-k2.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/K2_2006b.jpg",
+      "author": "Svy123",
+      "license": "CC BY 3.0",
+      "commons_title": "File:K2 2006b.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:K2 2006b.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:K2 2006b.jpg."
+    }
+  ],
+  "notes": "The K2 pyramid, viewed and confirmed unmistakable. Fills the K2 card in the Pakistan page Must See grid, which had been text-only since a fake stock URL was removed. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

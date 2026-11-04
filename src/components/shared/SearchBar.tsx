@@ -97,7 +97,7 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
             if (e.key === 'Enter' && matches.length > 0) choose(matches[0]);
             if (e.key === 'Escape') setOpen(false);
           }}
-          placeholder="Search a city or country — try Lahore or Pakistan"
+          placeholder="Search a city or country, try Lahore or Pakistan"
           aria-label="Search cities and countries"
           className="w-full pl-14 pr-12 py-4 text-lg rounded-full backdrop-blur-xl border t-border-30 t-text focus:border-cyan-400/50 focus:outline-none transition-all shadow-lg"
         />
@@ -183,7 +183,7 @@ export default function SearchBar({ onCitySelect }: SearchBarProps) {
                 )}
               </div>
             ) : (
-              <p className="t-g400 text-sm mb-4">Live figures are unavailable right now — the full page has everything.</p>
+              <p className="t-g400 text-sm mb-4">Live figures are unavailable right now, the full page has everything.</p>
             )}
             <button onClick={go}
               className="inline-flex items-center gap-2 rounded-full bg-cyan-500/90 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold t-onbrand transition-colors">

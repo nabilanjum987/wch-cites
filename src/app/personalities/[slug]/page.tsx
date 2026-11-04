@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // description, but metadata generation must never be able to throw
   // on a profile field again — a bad record degrades to name + title,
   // it does not fail the build.
-  const desc = (typeof p.description === 'string' ? p.description.trim() : '') || `${p.name} — ${p.title}`;
+  const desc = (typeof p.description === 'string' ? p.description.trim() : '') || `${p.name}: ${p.title}`;
   return {
     title: fitMetaTitle(p.name, p.title),
     description: fitMetaDescription(desc, p.name, p.title),
@@ -232,7 +232,7 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
   const directParts = [
     descSentences[0] ?? p.description ?? '',
     ...(born
-      ? [`Born on ${born}${past ? `, died ${p.deathDate}` : ''} — a life anchored in ${p.city}, ${p.country}.`]
+      ? [`Born on ${born}${past ? `, died ${p.deathDate}` : ''}, a life anchored in ${p.city}, ${p.country}.`]
       : []),
     achLine(0),
   ].filter(Boolean);
@@ -256,7 +256,7 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
         a: bornEntry
           ? acc(`${p.name} was born on ${born}. ${bornEntry.description}`, afterBorn)
           : acc(
-              `${p.name} was born on ${born}. A ${p.nationality} figure — ${p.title} — connected with ${p.city}, ${p.country}.`,
+              `${p.name} was born on ${born}. A ${p.nationality} figure, ${p.title}, connected with ${p.city}, ${p.country}.`,
               afterBorn,
             ),
       }
@@ -281,7 +281,7 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
       a: acc(
         works
           .slice(0, 3)
-          .map((w) => `${formatWorkTitle(w)} — ${w.description}`)
+          .map((w) => `${formatWorkTitle(w)}: ${w.description}`)
           .join(' '),
         [`The works section of this profile lists ${works.length} works in full, each with its year and a note on why it matters.`, descSentences[1] ?? ''],
       ),
@@ -307,7 +307,7 @@ function buildPersonalityAeo(p: NonNullable<Profile>): { directAnswer: string; f
     const quoteContext = quotes[0].context?.replace(/[\s.]+$/, '');
     faqs.push({
       q: `What is a famous quote by ${p.name}?`,
-      a: acc(`"${quotes[0].text}"${quoteContext ? ` — ${quoteContext}.` : ''}`, [
+      a: acc(`"${quotes[0].text}"${quoteContext ? `: ${quoteContext}.` : ''}`, [
         `More of ${p.name}'s words are collected in the Famous Quotes section of this profile, alongside the timeline, achievements and works that made the name.`,
         quotes[1] ? `Also widely quoted: "${quotes[1].text}"` : '',
         achLine(0),

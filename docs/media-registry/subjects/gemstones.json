@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (gemstones)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/resource-gemstones.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/e5/B%C3%A9ryl_var._%C3%A9meraude_sur_calcite_%28Mingora_Mine_Swat_-_Pakistan%29.jpg",
+      "author": "Parent Géry",
+      "license": "CC BY-SA 3.0",
+      "commons_title": "File:Béryl var. émeraude sur calcite (Mingora Mine Swat - Pakistan).jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Béryl var. émeraude sur calcite (Mingora Mine Swat - Pakistan).jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Béryl var. émeraude sur calcite (Mingora Mine Swat - Pakistan).jpg."
+    }
+  ],
+  "notes": "Emerald crystals in calcite from the Mingora Mine, Swat, viewed and confirmed. Fills the Gemstones card on the Pakistan page Natural Resources grid. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

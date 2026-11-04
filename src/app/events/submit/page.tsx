@@ -4,7 +4,7 @@ import { ArrowLeft, CalendarPlus } from 'lucide-react';
 import EventSubmissionForm from '@/components/events/EventSubmissionForm';
 
 export const metadata: Metadata = {
-  title: 'List Your Event — Submit an Event | WorldCityHub',
+  title: 'List Your Event: Submit an Event | WorldCityHub',
   description:
     'Organising an event in Pakistan? Submit it to WorldCityHub for free. Every submission is verified by a person before it is listed on the city events page.',
   alternates: { canonical: 'https://worldcityhub.vercel.app/events/submit' },
@@ -22,7 +22,7 @@ export default function ListYourEventPage() {
           <h1 className="text-3xl font-bold text-white">List Your Event</h1>
         </div>
         <p className="text-gray-400 text-sm leading-relaxed mb-8">
-          No international platform covers Pakistan&apos;s events properly — so we are building the
+          No international platform covers Pakistan&apos;s events properly, so we are building the
           calendar ourselves. If you are organising a concert, match, festival, expo, conference or
           community gathering, tell us about it here. Listing is free; a person verifies every
           submission before it appears on the city&apos;s events page.

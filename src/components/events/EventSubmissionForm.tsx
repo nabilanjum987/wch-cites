@@ -41,7 +41,7 @@ export default function EventSubmissionForm() {
   if (state === 'done') {
     return (
       <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-6 text-emerald-200">
-        <h2 className="text-lg font-semibold mb-2">Thank you — your event was received.</h2>
+        <h2 className="text-lg font-semibold mb-2">Thank you, your event was received.</h2>
         <p className="text-sm text-emerald-100/80">
           Every submission is checked by a person before it appears on WorldCityHub.
           If your event is verified, it will be listed on the city&apos;s events page.
@@ -112,7 +112,7 @@ export default function EventSubmissionForm() {
       </div>
       {state === 'not_active' && (
         <p className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
-          Event submissions are being activated. Please check back soon — nothing was stored.
+          Event submissions are being activated. Please check back soon, nothing was stored.
         </p>
       )}
       {state === 'error' && (

@@ -1,0 +1,15 @@
+{
+  "subject_context": "province template pass, verified media batch 4 Nov 2026 (kartarpur-corridor)",
+  "records": [
+    {
+      "local_path": "/images/places/kartarpur-corridor.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Gurdwara_Darbar_Sahib_Kartarpur_03.jpg",
+      "author": "Shahzaib Damn Cruze",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Gurdwara Darbar Sahib Kartarpur 03.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Gurdwara Darbar Sahib Kartarpur 03.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Gurdwara Darbar Sahib Kartarpur 03.jpg."
+    }
+  ],
+  "notes": "Gurdwara Darbar Sahib and its marble courtyard at Kartarpur, viewed and confirmed. Replaces the text-only Kartarpur Corridor card on the Punjab province page. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

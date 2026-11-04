@@ -51,7 +51,7 @@ export default async function CountryInventory({ countrySlug }: { countrySlug: s
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
         <h2 className="text-lg font-bold text-white">What {countryName} has on WorldCityHub</h2>
         <p className="mt-1 text-sm text-gray-400">
-          Our verified coverage for {countryName} right now — this list only shows what is actually live.
+          Our verified coverage for {countryName} right now, this list only shows what is actually live.
           Coverage grows in quality-checked batches; a city appears here only when its pages pass the gate.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
@@ -80,7 +80,7 @@ export default async function CountryInventory({ countrySlug }: { countrySlug: s
           </div>
         </div>
         <p className="mt-5 text-sm leading-relaxed text-gray-400">
-          Every city guide bundles {pageTypes.join(', ').toLowerCase()} — live data from OpenWeatherMap,
+          Every city guide bundles {pageTypes.join(', ').toLowerCase()}, live data from OpenWeatherMap,
           Aladhan, CoinGecko, the World Bank and GNews, never placeholder numbers.
         </p>
       </div>

@@ -4,8 +4,9 @@ import type { ZodiacSignData } from '@/types/horoscope';
  * A1 horoscope SEO section (final30-a1-horoscope).
  *
  * Rendered at the foot of every /horoscope/[sign] page, below the tools and
- * above Affiliates. One H2 per page plus two H3 AEO questions, each answered
- * directly underneath in 50–70 words. Copy uses only the sign's own dates,
+ * above Affiliates. One H2 per page plus three H3 AEO questions (the third
+ * is the yearly question, appended by signSeoBlock for every sign), each
+ * answered directly underneath in 50–70 words. Copy uses only the sign's own dates,
  * element and ruling planet (from src/types/horoscope.ts) plus what the
  * page's own Daily / Weekly tabs actually show, no invented figures, no
  * dated forecast claims, and readings are framed as entertainment throughout.
@@ -89,7 +90,15 @@ function piscesLoveBlock(m: ZodiacSignData): SeoBlock {
   };
 }
 
-export function signSeoBlock(m: ZodiacSignData): SeoBlock {
+function yearlyFaq(m: ZodiacSignData): Faq {
+  const year = new Date().getUTCFullYear();
+  return {
+    q: `What is ${m.name}'s horoscope for ${year}?`,
+    a: `Open the Yearly tab above for ${m.name}'s ${year} reading. It is gathered from computed planetary positions for every day of the year: the Sun's season in ${m.name}, the year's four turning points, its ruler's sign changes, the signs of Jupiter and Saturn, and the daily meters averaged by month. Readings are for entertainment only.`,
+  };
+}
+
+function pickBlock(m: ZodiacSignData): SeoBlock {
   if (EASY_SIGNS.has(m.key)) return easyBlock(m);
   switch (m.key) {
     case 'gemini':
@@ -104,6 +113,11 @@ export function signSeoBlock(m: ZodiacSignData): SeoBlock {
     default:
       return easyBlock(m);
   }
+}
+
+export function signSeoBlock(m: ZodiacSignData): SeoBlock {
+  const block = pickBlock(m);
+  return { h2: block.h2, faqs: [...block.faqs, yearlyFaq(m)] };
 }
 
 export default function SignSeoSection({ signMeta }: { signMeta: ZodiacSignData }) {

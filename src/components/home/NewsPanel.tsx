@@ -54,7 +54,7 @@ export default async function NewsPanel() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/images/home28/news-banner.webp" alt="The front page of the New York Times, 11 November 1918" width={900} height={400} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
         <figcaption className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[11px] px-2.5 py-1 rounded-tl-lg">
-          A newspaper front page, 11 Nov 1918 — public domain
+          A newspaper front page, 11 Nov 1918 · public domain
         </figcaption>
       </figure>
       <NewsTabs categories={categories} />

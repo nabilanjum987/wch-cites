@@ -54,7 +54,7 @@ export default function NewsSubscribeForm({
       <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-5 text-emerald-200">
         <p className="font-semibold mb-1">You are on the list.</p>
         <p className="text-sm text-emerald-100/80">
-          Your categories are saved. News digests are being set up — we will only ever
+          Your categories are saved. News digests are being set up, we will only ever
           send the categories you chose, and every message will carry an unsubscribe link.
         </p>
       </div>
@@ -65,7 +65,7 @@ export default function NewsSubscribeForm({
     <form onSubmit={onSubmit} className="rounded-2xl border border-white/10 bg-white/5 p-5">
       <h3 className="text-white font-semibold mb-1">{heading}</h3>
       <p className="text-xs text-gray-400 mb-4">
-        Choose your categories. A morning digest and an evening roundup — no hourly spam, ever.
+        Choose your categories. A morning digest and an evening roundup, no hourly spam, ever.
       </p>
       <div className="flex flex-wrap gap-2 mb-4">
         {NEWS_CATEGORIES.map((c) => (
@@ -108,7 +108,7 @@ export default function NewsSubscribeForm({
       </div>
       {state === 'not_active' && (
         <p className="mt-3 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
-          Subscriptions are being activated. Please check back soon — nothing was stored.
+          Subscriptions are being activated. Please check back soon, nothing was stored.
         </p>
       )}
       {state === 'error' && (

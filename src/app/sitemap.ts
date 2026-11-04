@@ -118,6 +118,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // [country] fallback), so both enter the sitemap.
     { url: `${baseUrl}/places`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/events`, changeFrequency: 'daily', priority: 0.6 },
+    { url: `${baseUrl}/special-days`, changeFrequency: 'daily', priority: 0.6 },
     { url: `${baseUrl}/compare`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/improve`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/about`, changeFrequency: 'monthly', priority: 0.4 },
@@ -126,11 +127,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/sources`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/conflicts`, changeFrequency: 'daily', priority: 0.6 },
     { url: `${baseUrl}/my-location`, changeFrequency: 'weekly', priority: 0.5 },
+    // Pin / Take This Clock (feat/pin-clock, 2026-11-04): the Free
+    // Clock Widgets page is a full server-rendered page (builder,
+    // designs, AEO questions + schema) — it passes the sitemap gate.
+    // The /embed/clock widget route is deliberately NOT listed: it is
+    // a noindex widget document, not a page.
+    { url: `${baseUrl}/clock-widgets`, changeFrequency: 'weekly', priority: 0.6 },
     // Golden templates (marathon Q9/Q10): a route enters the sitemap
     // only when its page is fully server-rendered with real data.
     { url: `${baseUrl}/wonders`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/wonders/taj-mahal`, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/wonders/great-wall-of-china`, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/wonders/petra`, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/wonders/christ-the-redeemer`, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/wonders/machu-picchu`, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/wonders/chichen-itza`, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/wonders/colosseum`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/oceans`, changeFrequency: 'weekly', priority: 0.7 },
+    // Golden continent template (4 Nov 2026): the /continents hub and the
+    // Asia guide are real server-rendered pages (the hub lists all seven
+    // continents, linking only the published ones), so both enter the
+    // sitemap. Other continent guides join PUBLISHED_CONTINENTS in
+    // src/lib/continents.ts as their records complete, and their URLs
+    // are added here at the same time.
+    { url: `${baseUrl}/continents`, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${baseUrl}/continents/asia`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/oceans/arabian-sea`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/pakistan`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/pakistan/punjab`, changeFrequency: 'daily', priority: 0.7 },
@@ -149,8 +170,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Compare pairs (B6): generated from the ONE canonical pair registry in
   // src/lib/compare.ts, and from nowhere else. Exactly the registry pairs
-  // appear (10 today: 6 city, 3 province, 1 country); the Rawalpindi stub
-  // pair is gone because Rawalpindi is not in the registry.
+  // appear (city, province, country, continent and ocean pairs); the
+  // Rawalpindi stub pair is gone because Rawalpindi is not in the registry.
   const comparePages: MetadataRoute.Sitemap = CANONICAL_PAIRS.map((p) => ({
     url: `${baseUrl}/compare/${p.slug}`,
     changeFrequency: 'daily' as const,

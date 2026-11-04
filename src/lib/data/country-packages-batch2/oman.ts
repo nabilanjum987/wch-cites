@@ -8,7 +8,7 @@ export const COUNTRY_OMAN = {
   "name": "Oman",
   "iso2": "OM",
   "iso3": "OMN",
-  "isoNote": "Explicit slug→ISO map (Panama law) — never derived from the slug.",
+  "isoNote": "Explicit slug→ISO map (Panama law), never derived from the slug.",
   "qid": "Q842",
   "capital": {
     "name": "Muscat",
@@ -30,7 +30,7 @@ export const COUNTRY_OMAN = {
     "indicator": "SP.POP.TOTL"
   },
   "economySnapshot": {
-    "source": "World Bank API — packaged snapshot pulled 2026-10-22; same 16-indicator set as fetchWorldBankLatest (src/lib/apis/worldbank.ts); live at activation via the one-cached-dataset pattern.",
+    "source": "World Bank API, packaged snapshot pulled 2026-10-22; same 16-indicator set as fetchWorldBankLatest (src/lib/apis/worldbank.ts); live at activation via the one-cached-dataset pattern.",
     "indicators": {
       "gdpUsd": {
         "value": 109604780696.23,
@@ -200,7 +200,7 @@ export const COUNTRY_OMAN = {
   "eventsNotes": {
     "nationalHolidays": null,
     "note": "Data-only seed note for the events system: fixed public holidays from the cited source. Movable religious holidays follow official announcements and are NOT packaged as fixed dates.",
-    "holidaysStatus": "NOT COVERED by date.nager.at (HTTP 204 at build, 2026-10-22) — the same non-coverage as Pakistan. National holidays are omitted from this package and must be curated from the official gazette / government portal at activation; nothing is estimated."
+    "holidaysStatus": "NOT COVERED by date.nager.at (HTTP 204 at build, 2026-10-22), the same non-coverage as Pakistan. National holidays are omitted from this package and must be curated from the official gazette / government portal at activation; nothing is estimated."
   },
   "sources": [
     "Wikidata (identity facts, entity verified by description)",

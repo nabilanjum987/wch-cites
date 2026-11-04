@@ -190,7 +190,7 @@ function fallbackDescription(p: {
 }): string {
   const place = [p.city, p.country].filter(Boolean).join(', ');
   return (
-    `${p.name} — ${p.title}.` +
+    `${p.name}: ${p.title}.` +
     (p.nationality ? ` ${p.nationality} figure` : '') +
     (place ? ` associated with ${place}.` : '')
   );

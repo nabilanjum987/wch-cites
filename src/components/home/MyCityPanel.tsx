@@ -18,6 +18,7 @@ import { CloudSun, Moon, Sunrise, Sunset, Coins, Newspaper, ArrowRight, MapPin }
 import type { MyCityData } from '@/lib/home-mycity';
 import { getGoldPkr } from '@/lib/gold';
 import { useVisitorCity, nearestPublished } from './useVisitorCity';
+import PinnedClocksStrip from '@/components/clocks/PinnedClocksStrip';
 
 interface Meta {
   name: string; province: string; provinceSlug: string; lat: number; lng: number; tz: string;
@@ -124,17 +125,17 @@ async function fetchCityClient(slug: string, meta: Meta, moonPhase: string): Pro
 const CLIENT_CITY_IMAGES: Record<string, { url: string; credit: string; alt: string }> = {
   lahore: {
     url: '/images/home28/mycity-lahore.webp',
-    credit: 'Badshahi Mosque, Lahore — photo by Muhammad Umair Mirza · CC BY-SA 4.0 · Wikimedia Commons',
+    credit: 'Badshahi Mosque, Lahore · photo by Muhammad Umair Mirza · CC BY-SA 4.0 · Wikimedia Commons',
     alt: 'The Badshahi Mosque in Lahore at golden hour',
   },
   karachi: {
     url: '/images/home28/mycity-karachi.webp',
-    credit: 'Mazar-e-Quaid, Karachi — photo by Anwar Ahmed · CC BY-SA 3.0 · Wikimedia Commons',
+    credit: 'Mazar-e-Quaid, Karachi · photo by Anwar Ahmed · CC BY-SA 3.0 · Wikimedia Commons',
     alt: 'The Mazar-e-Quaid mausoleum in Karachi',
   },
   islamabad: {
     url: '/images/home28/mycity-islamabad.webp',
-    credit: 'The Faisal Mosque in Islamabad — photo by Marsmux · CC BY-SA 4.0 · Wikimedia Commons',
+    credit: 'The Faisal Mosque in Islamabad · photo by Marsmux · CC BY-SA 4.0 · Wikimedia Commons',
     alt: 'The Faisal Mosque in Islamabad',
   },
 };
@@ -240,6 +241,10 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                 the search at the top of the page.
               </p>
             )}
+            {/* Pinned clocks live on the device, not behind the
+                location gate: they show in both panel states and are
+                empty (render nothing) until the visitor pins one. */}
+            <PinnedClocksStrip variant="panel" />
           </div>
         </div>
       </section>
@@ -364,6 +369,10 @@ export default function MyCityPanel({ initial, metas }: { initial: MyCityData; m
                 </ul>
               </Link>
             )}
+
+            {/* Pinned clocks (device-local; renders nothing when the
+                visitor has pinned none) */}
+            <PinnedClocksStrip variant="panel" />
 
             {/* Footer */}
             <div className="flex flex-wrap items-center gap-4">

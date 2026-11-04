@@ -1,32 +1,45 @@
-import { headers } from 'next/headers'
-import TickerBar from '@/components/shared/TickerBar'
-import { getMarketTickerItems, PUBLISHED_CITIES } from '@/lib/tickers'
+'use client'
 
-// P8 rework (billi FAIL fix) — the ticker fetch lives HERE, in a
-// Suspense-wrapped child of the root layout, NOT in the root layout
-// itself. The root layout (src/app/layout.tsx) must stay static: it
-// calls no headers(), performs no fetch, and is not async, so nothing
-// in the layout opts routes into dynamic rendering at the layout
-// level. Only this slot reads the request (via the x-wch-pathname
-// header set by src/proxy.ts) and fetches the ticker items; the
-// layout renders it inside <Suspense>, so the static layout shell
-// streams first and this slot streams in behind the boundary.
-//
-// Page-city rule (unchanged from the original P8 fix): city pages
-// live at /<country>/<province>/<city>/..., so the city slug is the
-// 3rd path segment. Anything else (homepage, country/province pages,
-// hubs) yields no match and getMarketTickerItems falls back to
-// Lahore, exactly as before.
-export default async function TickerBarSlot() {
-  const pathname = (await headers()).get('x-wch-pathname') ?? ''
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import TickerBar from '@/components/shared/TickerBar'
+import type { MarketItem } from '@/lib/tickers'
+
+// Fix batch (4 Nov 2026): this slot used to be an async server
+// component reading the x-wch-pathname request header. A headers()
+// read anywhere in the root layout tree opted EVERY route into
+// dynamic rendering (Cache-Control: private, no-store), which blocked
+// ISR for the whole site — the city route's revalidate = 300 could
+// never engage. The slot now derives the page city from the client
+// pathname (the same 3rd-segment rule as before) and fetches the
+// items from /api/ticker, where the original server logic runs
+// unchanged: same items, same Lahore fallback, same prayer gate.
+// Until the fetch lands the slot renders nothing — the same null the
+// old Suspense fallback rendered while the server fetch streamed in.
+// TickerBar itself is untouched, so the ticker's content, appearance
+// and gating are identical; only the delivery path changed.
+export default function TickerBarSlot() {
+  const pathname = usePathname() ?? ''
   const segs = pathname.split('/').filter(Boolean)
   const pageCity = segs.length >= 3 ? segs[2] : undefined
-  const tickerItems = await getMarketTickerItems(pageCity).catch(() => [])
-  // Stage 2 (owner rule, 2026-11-03): on non-city pages the prayer
-  // entry is the Lahore FALLBACK, and a default city's prayer is
-  // city-specific data — it may only appear after the visitor uses
-  // My Location. On a published city's own page the prayer entry is
-  // that page's content and always shows. TickerBar applies the gate.
-  const onCityPage = !!pageCity && PUBLISHED_CITIES.some((c) => c.slug === pageCity)
-  return <TickerBar items={tickerItems} gatePrayer={!onCityPage} />
+  const [data, setData] = useState<{ items: MarketItem[]; gatePrayer: boolean } | null>(null)
+
+  useEffect(() => {
+    let live = true
+    const url = pageCity ? `/api/ticker?city=${encodeURIComponent(pageCity)}` : '/api/ticker'
+    fetch(url)
+      .then((r) => r.json())
+      .then((d) => {
+        if (live) setData({ items: Array.isArray(d?.items) ? d.items : [], gatePrayer: !!d?.gatePrayer })
+      })
+      .catch(() => {
+        if (live) setData({ items: [], gatePrayer: true })
+      })
+    return () => {
+      live = false
+    }
+  }, [pageCity])
+
+  if (!data) return null
+  return <TickerBar items={data.items} gatePrayer={data.gatePrayer} />
 }

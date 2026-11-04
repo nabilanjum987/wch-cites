@@ -51,7 +51,7 @@ export const CITY_KUALA_LUMPUR: IntlCityPackage = {
   "foods": [
     {
       "name": "Nasi lemak",
-      "description": "Coconut rice with sambal, anchovies, peanuts and egg — Malaysia's national dish."
+      "description": "Coconut rice with sambal, anchovies, peanuts and egg, Malaysia's national dish."
     },
     {
       "name": "Char kway teow",

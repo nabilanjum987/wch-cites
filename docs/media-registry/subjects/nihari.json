@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (nihari)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/food-nihari.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Nahari%2C_Indian_Dish_01.jpg",
+      "author": "Sidheeq",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Nahari, Indian Dish 01.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Nahari, Indian Dish 01.jpg on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Nahari, Indian Dish 01.jpg."
+    }
+  ],
+  "notes": "Bowl of nihari garnished with ginger and green chilli, viewed and confirmed as the named dish before wiring. Fills the Nihari card on the Pakistan page Famous Foods grid. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

@@ -54,7 +54,7 @@ export const CITY_MUSCAT: IntlCityPackage = {
   "foods": [
     {
       "name": "Shuwa",
-      "description": "Slow-roasted marinated lamb cooked in an underground sand oven — Oman's festive dish."
+      "description": "Slow-roasted marinated lamb cooked in an underground sand oven, Oman's festive dish."
     },
     {
       "name": "Mashuai",
@@ -66,7 +66,7 @@ export const CITY_MUSCAT: IntlCityPackage = {
     },
     {
       "name": "Halwa",
-      "description": "Omani halwa — a gelatinous sweet of starch, ghee, saffron and nuts, served with qahwa."
+      "description": "Omani halwa, a gelatinous sweet of starch, ghee, saffron and nuts, served with qahwa."
     },
     {
       "name": "Laban",
@@ -81,7 +81,7 @@ export const CITY_MUSCAT: IntlCityPackage = {
     "Oman open data portal (data.gov.om)"
   ],
   "diaspora": {
-    "figures": "OMITTED at build time — no official nationality-breakdown table could be fetched and verified for this city during the build.",
+    "figures": "OMITTED at build time, no official nationality-breakdown table could be fetched and verified for this city during the build.",
     "note": "Exact diaspora shares enter only from an official census/statistics release."
   },
   "sources": [

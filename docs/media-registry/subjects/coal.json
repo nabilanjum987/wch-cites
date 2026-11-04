@@ -1,0 +1,15 @@
+{
+  "subject_context": "Pakistan country page pass, verified media batch 4 Nov 2026 (coal)",
+  "records": [
+    {
+      "local_path": "/images/country-pakistan/resource-coal.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Bituminous_Coal.JPG",
+      "author": "Amcyrus2012",
+      "license": "CC BY 4.0",
+      "commons_title": "File:Bituminous Coal.JPG",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Bituminous Coal.JPG on 2026-11-04 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Bituminous Coal.JPG."
+    }
+  ],
+  "notes": "Generic subject photo (a lump of coal); no location is claimed in the caption. The Thar coalfield category on Commons holds only satellite imagery, so no verifiable Thar photo exists. Local file is a webp conversion (max 1280px wide) of the Commons original."
+}

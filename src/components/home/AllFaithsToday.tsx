@@ -77,7 +77,7 @@ const faithCalendars = [
     color: '#94a3b8',
     border: 'border-slate-400/30',
     bg: 'from-slate-500/10 to-gray-500/10',
-    date: '23 June 2026 — Tuesday',
+    date: '23 June 2026 · Tuesday',
     event: 'International Olympic Day',
     calendar: 'Gregorian / UN Calendar',
   },

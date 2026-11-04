@@ -34,7 +34,7 @@ export default async function ConflictsPanel() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/images/home28/conflicts-displacement.webp" alt="An aerial view of the Za'atari refugee camp" width={900} height={400} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
         <figcaption className="absolute bottom-0 right-0 bg-black/60 text-white/70 text-[11px] px-2.5 py-1 rounded-tl-lg">
-          Za'atari refugee camp from above — U.S. Department of State · public domain
+          Za'atari refugee camp from above · U.S. Department of State · public domain
         </figcaption>
       </figure>
       {stats.length > 0 ? (

@@ -43,7 +43,7 @@ const COUNTRIES = [
     img: '/images/home28/ctry-japan.webp', imgAlt: 'Mount Fuji seen from Owakudani' },
 ];
 
-const CREDITS = 'Photos: Pakistan — FaizanAhmad · CC BY-SA 3.0; India — Syed Sajidul Islam · CC BY-SA 4.0; Saudi Arabia — Moataz Egbaria · CC BY-SA 3.0; UAE — ECWiki1 · CC BY 4.0; United States — Frank Schulenburg · CC BY-SA 4.0; United Kingdom — Diliff · CC BY-SA 2.5; Turkey — Moonik · CC BY-SA 3.0; Japan — Suicasmo · CC BY-SA 4.0 (all via Wikimedia Commons).';
+const CREDITS = 'Photos: Pakistan · FaizanAhmad · CC BY-SA 3.0; India · Syed Sajidul Islam · CC BY-SA 4.0; Saudi Arabia · Moataz Egbaria · CC BY-SA 3.0; UAE · ECWiki1 · CC BY 4.0; United States · Frank Schulenburg · CC BY-SA 4.0; United Kingdom · Diliff · CC BY-SA 2.5; Turkey · Moonik · CC BY-SA 3.0; Japan · Suicasmo · CC BY-SA 4.0 (all via Wikimedia Commons).';
 
 const PAGE_SIZE = 4;
 

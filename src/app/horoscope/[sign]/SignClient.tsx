@@ -20,6 +20,7 @@ import {
   generateBirthChartParagraph, generateBirthChartAfter,
   generateNumerologyParagraph, generateNumerologyAfter,
 } from '@/lib/paragraphs/horoscope-sign';
+import { SIGN_ARTWORK } from '@/lib/horoscope/artwork';
 
 const SIGN_COLORS: Record<string, string> = {
   aries: '#FF4B4B', taurus: '#4CAF50', gemini: '#FFD700', cancer: '#4FC3F7',
@@ -122,6 +123,38 @@ export default function HoroscopeSignPage() {
 
         {/* A1 SEO section: H2 + AEO H3s (see SignSeoSection) */}
         <SignSeoSection signMeta={signMeta} />
+
+        {/* Sources and Method: the data sources behind every reading on
+            this page, named (owner's spec: source data converted by us,
+            sources shown). */}
+        <div className="mt-10">
+          <h2 className="text-lg font-bold text-white mb-4">Sources and Method</h2>
+          <div className="space-y-3 text-gray-300 leading-relaxed text-sm">
+            <p>
+              <span className="font-semibold text-white">Planetary positions:</span> computed on this site from
+              Keplerian orbital elements by the method of Paul Schlyter, &ldquo;How to compute planetary
+              positions&rdquo; (stargazing.net/kepler). The daily, weekly, monthly and yearly readings are all
+              composed by WorldCityHub from those computed positions; no horoscope text is copied from any
+              other service.
+            </p>
+            <p>
+              <span className="font-semibold text-white">Sign framework:</span> the sign dates, elements and
+              ruling planets in the Sign Profile above follow the traditional Western zodiac. Moon phase names
+              and illumination come from the computed elongation of the Moon from the Sun.
+            </p>
+            <p>
+              <span className="font-semibold text-white">Artwork:</span> &ldquo;{SIGN_ARTWORK[sign].plate}&rdquo; by{' '}
+              {SIGN_ARTWORK[sign].credit}.{' '}
+              <a href={SIGN_ARTWORK[sign].sourcePage} target="_blank" rel="noreferrer" className="underline text-gray-200">
+                View the file on Wikimedia Commons
+              </a>
+              .
+            </p>
+            <p className="text-gray-400 text-xs">
+              Horoscope readings are for entertainment only and are not professional advice.
+            </p>
+          </div>
+        </div>
 
         {/* Affiliates */}
         <div className="mt-10">

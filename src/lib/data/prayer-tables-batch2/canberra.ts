@@ -11,7 +11,7 @@ export const PRAYER_CANBERRA: PrayerTable = {
     "id": 3,
     "name": "Muslim World League",
     "registryName": "Muslim World League",
-    "note": "Locally standard method for the country; registry names verified against api.aladhan.com/v1/methods on 2026-10-22. Oman uses the Gulf Region method (no Oman-specific Aladhan method exists). Australia uses MWL — ANIC divergence documented in the S5 README."
+    "note": "Locally standard method for the country; registry names verified against api.aladhan.com/v1/methods on 2026-10-22. Oman uses the Gulf Region method (no Oman-specific Aladhan method exists). Australia uses MWL, ANIC divergence documented in the S5 README."
   },
   "format": "One string per day: DD|Fajr|Sunrise|Dhuhr|Asr|Maghrib|Isha (24h local time at the city coordinates, from Aladhan timings).",
   "source": "Aladhan API calendar endpoint (api.aladhan.com/v1/calendar), fetched 2026-10-22",

@@ -3,20 +3,21 @@
 // Wonders panel (§6). SWITCH-ON 2026-10-22 (link map §6 / Laws L1+L6):
 // the Golden Wonder passed and /wonders/taj-mahal is published, so the
 // Taj Mahal card deep-links to it and the hub link to /wonders is on.
-// The other wonders' pages are not published yet — their cards still
-// render WITHOUT links. The panel's live figure is real: the weather
-// right now at the Taj Mahal's coordinates in Agra (Open-Meteo).
+// WONDERS BUILD 2026-11-04: the other six pages are published too, so
+// every card now deep-links to its /wonders/<slug> page. The panel's
+// live figure is real: the weather right now at the Taj Mahal's
+// coordinates in Agra (Open-Meteo).
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 const WONDERS = [
-  { name: 'Great Wall of China',    country: 'China',  emoji: '🏯', color: '#CC0000', desc: '21,196 km of ancient wall',
+  { name: 'Great Wall of China',    country: 'China',  emoji: '🏯', color: '#CC0000', desc: '21,196 km of ancient wall', href: '/wonders/great-wall-of-china',
     // Card photo (2026-11-03): the wall sweeping over the ridges at
     // Jinshanling (Commons: "The Great Wall of China at
     // Jinshanling-edit.jpg", Severin.stalder, CC BY-SA 3.0).
     img: '/images/home/great-wall.webp', imgAlt: 'The Great Wall of China winding over green mountain ridges at Jinshanling', credit: 'Photo: Severin.stalder · CC BY-SA 3.0' },
-  { name: 'Petra',                  country: 'Jordan', emoji: '🏛️', color: '#C4A265', desc: 'Rose-red city in rock',
+  { name: 'Petra',                  country: 'Jordan', emoji: '🏛️', color: '#C4A265', desc: 'Rose-red city in rock', href: '/wonders/petra',
     // Card photo (2026-11-03): the Monastery (Ad Deir), Petra's great
     // rock-cut facade shown whole (Commons: "Al Deir Petra.JPG",
     // Azurfrog, CC BY-SA 3.0). imgPos (D7, wonders-family fix): the
@@ -24,22 +25,22 @@ const WONDERS = [
     // this card alone anchors the crop to the top of the frame, where
     // the pediment sits; the other cards' subjects are whole centred.
     img: '/images/home/petra.webp', imgAlt: 'The Monastery (Ad Deir) at Petra, its whole rock-cut facade carved into rose-red sandstone', credit: 'Photo: Azurfrog · CC BY-SA 3.0', imgPos: 'object-top' },
-  { name: 'Christ the Redeemer',    country: 'Brazil', emoji: '✝️', color: '#009C3B', desc: '38 m statue above Rio',
+  { name: 'Christ the Redeemer',    country: 'Brazil', emoji: '✝️', color: '#009C3B', desc: '38 m statue above Rio', href: '/wonders/christ-the-redeemer',
     // Card photo (2026-11-03): the full statue on its pedestal above
     // Rio (Commons: "1 cristor redentor 2014.jpg", Chensiyuan,
     // CC BY-SA 4.0).
     img: '/images/home/christ-redeemer.webp', imgAlt: 'Christ the Redeemer, the full statue with outstretched arms on Corcovado above Rio de Janeiro', credit: 'Photo: Chensiyuan · CC BY-SA 4.0' },
-  { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', color: '#D9A028', desc: 'Inca citadel in the Andes',
+  { name: 'Machu Picchu',           country: 'Peru',   emoji: '🗻', color: '#D9A028', desc: 'Inca citadel in the Andes', href: '/wonders/machu-picchu',
     // Card photo (2026-11-03): the whole citadel below Huayna Picchu
     // (Commons: "Machu Picchu, 2023 (012).jpg", Draceane, CC BY-SA 4.0).
     img: '/images/home/machu-picchu.webp', imgAlt: 'Machu Picchu, the Inca citadel in full below the peak of Huayna Picchu in the Andes', credit: 'Photo: Draceane · CC BY-SA 4.0' },
-  { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Mayan pyramid city',
+  { name: 'Chichen Itza',           country: 'Mexico', emoji: '🔺', color: '#006847', desc: 'Mayan pyramid city', href: '/wonders/chichen-itza',
     // Card photo (2026-11-03): El Castillo pyramid seen whole
     // (Commons: "Chichen Itza 3.jpg", Daniel Schwen, CC BY-SA 4.0).
     // imgW/imgH (D9, wonders-family fix): this file's real dimensions
     // are 640x340, not the 640x421 the other card photos share.
     img: '/images/home/chichen-itza.webp', imgAlt: 'El Castillo, the step pyramid of Chichen Itza, seen whole under a blue sky', credit: 'Photo: Daniel Schwen · CC BY-SA 4.0', imgW: 640, imgH: 340 },
-  { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Amphitheatre from 80 AD',
+  { name: 'Roman Colosseum',        country: 'Italy',  emoji: '🏟️', color: '#008C45', desc: 'Amphitheatre from 80 AD', href: '/wonders/colosseum',
     // Card photo (2026-11-03): the full oval amphitheatre from the
     // plaza (Commons: "Colosseo 2020.jpg", FeaturedPics, CC BY-SA 4.0).
     img: '/images/home/colosseum.webp', imgAlt: 'The Colosseum in Rome, the full oval amphitheatre seen from the plaza', credit: 'Photo: FeaturedPics · CC BY-SA 4.0' },
@@ -125,7 +126,7 @@ export default function FeaturedWonders() {
         </div>
       </div>
       <p className="sub-desc mt-4">
-        The Taj Mahal&rsquo;s full page is live now, with live visiting conditions, history and photography guides. The other wonders open one by one as each passes review.{' '}
+        All seven New7Wonders of the World now have full pages, with live visiting conditions, history and photography guides.{' '}
         <Link href="/wonders" className="t-text-70 underline underline-offset-4 t-hover-text">Explore all wonders →</Link>
       </p>
     </div>

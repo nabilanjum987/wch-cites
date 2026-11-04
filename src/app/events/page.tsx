@@ -175,6 +175,31 @@ export default async function EventsIndex() {
         </section>
 
         <section className="mt-12 max-w-3xl">
+          <h2 className="text-xl font-semibold text-white">Pakistan calendar</h2>
+          <p className="mt-3 leading-relaxed text-gray-300">
+            The whole year on one page: the{' '}
+            <Link href="/pakistan/calendar" className="text-cyan-300 underline">
+              Pakistan calendar
+            </Link>{' '}
+            brings these national dates and approved events together month by month, with Hijri
+            dates, free ICS and PDF downloads, and a version other websites can embed.
+          </p>
+        </section>
+
+        <section className="mt-12 max-w-3xl">
+          <h2 className="text-xl font-semibold text-white">Special days and wish cards</h2>
+          <p className="mt-3 leading-relaxed text-gray-300">
+            National days and festivals belong to everyone, so they live on their own page:{' '}
+            <Link href="/special-days" className="text-cyan-300 underline">
+              Special Days and Wish Cards
+            </Link>{' '}
+            shows today&apos;s special day with a written message and a branded card you can share, copy
+            or download, plus the next special days and today&apos;s famous birthdays.
+
+          </p>
+        </section>
+
+        <section className="mt-12 max-w-3xl">
           <h2 className="text-xl font-semibold text-white">List your event</h2>
           <p className="mt-3 leading-relaxed text-gray-300">
             Organising a concert, match, festival, expo, conference or community gathering in

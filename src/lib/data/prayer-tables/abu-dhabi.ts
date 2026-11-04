@@ -9,7 +9,7 @@ export const PRAYER_ABU_DHABI: PrayerTable = {
   "lng": 54.39694444444444,
   "method": {
     "id": 16,
-    "name": "Dubai — UAE official (Aladhan method 16)",
+    "name": "Dubai · UAE official (Aladhan method 16)",
     "registryName": null,
     "note": "Method is the locally standard calculation for the country (see README). PK uses method 1 (Karachi) per the site standard."
   },

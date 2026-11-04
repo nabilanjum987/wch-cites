@@ -52,7 +52,7 @@ export default function WorldWeatherExtremes() {
               <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
                 style={{ backgroundColor: `${p.color}20`, color: p.color }}>{p.type}</span>
             </div>
-            <div className="t-text font-bold text-lg">{t != null ? `${Math.round(t)}°C now` : '—'}</div>
+            <div className="t-text font-bold text-lg">{t != null ? `${Math.round(t)}°C now` : 'N/A'}</div>
             <div className="t-text-40 text-xs mt-0.5">{p.city}</div>
             <div className="t-text-30 text-[11px]">{p.caption}</div>
           </div>

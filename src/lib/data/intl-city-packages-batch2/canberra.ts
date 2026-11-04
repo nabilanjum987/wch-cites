@@ -67,7 +67,7 @@ export const CITY_CANBERRA: IntlCityPackage = {
     },
     {
       "name": "Flat white",
-      "description": "Espresso with steamed milk — the café standard."
+      "description": "Espresso with steamed milk, the café standard."
     }
   ],
   "emergency": {

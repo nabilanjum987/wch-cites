@@ -22,6 +22,7 @@ const footerLinks = {
   'Tools & Data': [
     { label: 'Gold & Rates', href: '/rates' },
     { label: 'My Location', href: '/my-location' },
+    { label: 'Free Clock Widgets', href: '/clock-widgets' },
     { label: 'Improve WCH', href: '/improve' },
   ],
   'Top Cities': [

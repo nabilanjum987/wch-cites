@@ -825,7 +825,7 @@ export const EXTENSION_PERSONALITIES: ExtensionPersonality[] = [
   {
     "slug": "younis-khan",
     "name": "Younis Khan",
-    "title": "Pakistan’s Highest Test Run-Scorer",
+    "title": "Pakistan’s Top Test Run-Scorer",
     "occupation": "Cricketer",
     "birthDate": "29 November 1977",
     "deathDate": null,

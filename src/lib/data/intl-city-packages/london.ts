@@ -83,7 +83,7 @@ export const CITY_LONDON: IntlCityPackage = {
   ],
   "diaspora": null,
   "sources": [
-    "Wikidata (identity, coordinates, population, area, elevation) — entity verified by description",
+    "Wikidata (identity, coordinates, population, area, elevation), entity verified by description",
     "Wikipedia (landmark articles, existence-verified at build)",
     "Local data API map 2026-10-22 (localSources)",
     "Official emergency numbers of the country"

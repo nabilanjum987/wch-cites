@@ -130,7 +130,7 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
   const scope = snap.scopeName;
   const noData = (topic: string, link: { label: string; href: string }): BotMessage => ({
     role: 'bot',
-    text: `I don't have ${topic} for ${scope} yet — the live feed did not return it on this page.`,
+    text: `I don't have ${topic} for ${scope} yet, the live feed did not return it on this page.`,
     link,
   });
 
@@ -139,8 +139,8 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
     return {
       role: 'bot',
       text: snap.topics
-        ? `Hi! I'm the ${scope} Assistant. Ask me about ${snap.topics} in ${scope} — or tap a quick button below.`
-        : `Hi! I'm the ${scope} Assistant. Ask me about prayer times, weather, gold rates, emergency numbers or events in ${scope} — or tap a quick button below.`,
+        ? `Hi! I'm the ${scope} Assistant. Ask me about ${snap.topics} in ${scope}, or tap a quick button below.`
+        : `Hi! I'm the ${scope} Assistant. Ask me about prayer times, weather, gold rates, emergency numbers or events in ${scope}, or tap a quick button below.`,
     };
   }
 
@@ -210,7 +210,7 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
     if (!snap.police || !snap.ambulance || !snap.fire) {
       return {
         role: 'bot',
-        text: `I don't have emergency numbers for ${scope} yet — this page carries no emergency panel.`,
+        text: `I don't have emergency numbers for ${scope} yet, this page carries no emergency panel.`,
         link: emergencyLink,
       };
     }
@@ -230,13 +230,13 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
     if (snap.eventsCount > 0) {
       return {
         role: 'bot',
-        text: `I can see events listed for ${scope} on this page — open the full calendar for dates and details.`,
+        text: `I can see events listed for ${scope} on this page, open the full calendar for dates and details.`,
         link: eventsLink,
       };
     }
     return {
       role: 'bot',
-      text: `I don't have a list of events for ${scope} on this page yet — no events are listed here.`,
+      text: `I don't have a list of events for ${scope} on this page yet, no events are listed here.`,
       link: eventsLink,
     };
   }
@@ -271,8 +271,8 @@ export function matchAnswer(rawQuestion: string, snap: AssistantSnapshot): BotMe
   return {
     role: 'bot',
     text: snap.topics
-      ? `I don't have that for ${scope} yet — I can only answer from this page's data (${snap.topics}). Try one of the quick buttons below.`
-      : `I don't have that for ${scope} yet — I can only answer from this page's live data (prayer times, weather, gold, emergency numbers, events). Try one of the quick buttons below.`,
+      ? `I don't have that for ${scope} yet, I can only answer from this page's data (${snap.topics}). Try one of the quick buttons below.`
+      : `I don't have that for ${scope} yet, I can only answer from this page's live data (prayer times, weather, gold, emergency numbers, events). Try one of the quick buttons below.`,
     link: sectionLink,
   };
 }
@@ -300,8 +300,8 @@ export default function CityAssistant({ snapshot }: { snapshot: AssistantSnapsho
     {
       role: 'bot',
       text: snapshot.topics
-        ? `Hi! I'm the ${snapshot.scopeName} Assistant. I answer only from this page's data — tap a quick button or ask about ${snapshot.topics}.`
-        : `Hi! I'm the ${snapshot.scopeName} Assistant. I answer only from this page's live data — tap a quick button or ask about prayer times, weather, gold, emergency numbers or events.`,
+        ? `Hi! I'm the ${snapshot.scopeName} Assistant. I answer only from this page's data, tap a quick button or ask about ${snapshot.topics}.`
+        : `Hi! I'm the ${snapshot.scopeName} Assistant. I answer only from this page's live data, tap a quick button or ask about prayer times, weather, gold, emergency numbers or events.`,
     },
   ]);
   const listRef = useRef<HTMLDivElement>(null);
@@ -329,7 +329,7 @@ export default function CityAssistant({ snapshot }: { snapshot: AssistantSnapsho
       {/* Floating icon: small circle, bottom-right, city flag emoji. */}
       <button
         type="button"
-        aria-label={`${snapshot.scopeName} Assistant — open chat`}
+        aria-label={`${snapshot.scopeName} Assistant: open chat`}
         title={`${snapshot.scopeName} Assistant`}
         onClick={() => setOpen((v) => !v)}
         className="fixed z-50 bottom-5 right-5 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition hover:scale-105"
