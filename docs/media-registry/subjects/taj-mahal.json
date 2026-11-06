@@ -149,6 +149,24 @@
    "sha1": null,
    "status": "VERIFIED",
    "note": "Transferred from the golden data file (Commons imageinfo records pulled 2026-10-22 by the Round 1 golden build); sha1 not captured in the source record."
+  },
+  {
+   "file_title": "Agra-Taj Mahal-View from the Mughal garden reflecting pond-20131019.jpg",
+   "direct_url": "https://upload.wikimedia.org/wikipedia/commons/3/30/Agra-Taj_Mahal-View_from_the_Mughal_garden_reflecting_pond-20131019.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "source_page": "https://commons.wikimedia.org/wiki/File:Agra-Taj_Mahal-View_from_the_Mughal_garden_reflecting_pond-20131019.jpg",
+   "source": "Wikimedia Commons",
+   "creator": "Daniel Villafruela",
+   "licence": "CC BY-SA 3.0",
+   "attribution": "\"Agra-Taj Mahal-View from the Mughal garden reflecting pond-20131019\" by Daniel Villafruela — CC BY-SA 3.0, via Wikimedia Commons",
+   "role": "gallery",
+   "alt": "Taj Mahal from the Mughal garden reflecting pond",
+   "focal_point": null,
+   "width": 5472,
+   "height": 3648,
+   "sha1": null,
+   "status": "VERIFIED",
+   "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed.",
+   "local_wiring": "Converted to /images/country-india/landmark-taj-mahal.webp (1024px) for the Taj Mahal landmark card on the India country page, 6 Nov 2026. The edit3 record above is wired separately as /images/country-india/hero-taj-mahal.webp (1600px), the India country hero."
   }
  ],
  "rejected": []

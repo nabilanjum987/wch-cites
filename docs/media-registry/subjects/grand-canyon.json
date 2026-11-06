@@ -1,0 +1,15 @@
+{
+  "subject_context": "country template pass, before-8 Tier-1 batch 6 Nov 2026 (grand-canyon)",
+  "records": [
+    {
+      "local_path": "/images/country-united-states/landmark-grand-canyon.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Grand_Canyon_Hopi_Point_with_rainbow_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "Tuxyso",
+      "license": "CC BY-SA 3.0",
+      "commons_title": "File:Grand Canyon Hopi Point with rainbow 2013.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed."
+    }
+  ],
+  "notes": "Grand Canyon from Hopi Point, South Rim, with a rainbow after rain. Wired as the Grand Canyon landmark card on the United States country page, replacing a Pexels hotlink. Local file is a webp conversion (1024px wide) of the Commons original (4928x3264)."
+}

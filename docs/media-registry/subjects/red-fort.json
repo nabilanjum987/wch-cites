@@ -1,0 +1,15 @@
+{
+  "subject_context": "country template pass, before-8 Tier-1 batch 6 Nov 2026 (red-fort)",
+  "records": [
+    {
+      "local_path": "/images/country-india/landmark-red-fort.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Lahori_Gate%2C_Red_Fort%2C_Delhi%2C_India_-_September_2014.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "Rickard Törnblad",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Lahori Gate, Red Fort, Delhi, India - September 2014.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed."
+    }
+  ],
+  "notes": "The Red Fort's Lahori Gate and ramparts, Delhi, viewed from the front plaza. Wired as the Red Fort landmark card on the India country page, replacing a Pexels hotlink. Local file is a webp conversion (1024px wide) of the Commons original (4128x2322)."
+}

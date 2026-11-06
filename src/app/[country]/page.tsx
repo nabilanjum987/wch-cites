@@ -42,6 +42,24 @@ interface PageProps {
 const titleCase = (s: string) =>
   s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
+// Meta titles are capped at 60 characters sitewide (rulebook G4). The
+// full pattern "Name: Cities, Weather & Prayer | WorldCityHub" is 41
+// characters of suffix, so a long country name (United Arab Emirates
+// rendered 61, Bosnia and Herzegovina 63, Saint Vincent and the
+// Grenadines 73) breaks the cap. Compose in tiers so the keyword
+// pattern survives at every name length: keep the full branded form
+// when it fits, then drop the brand suffix (the keywords stay whole),
+// then shorten the keyword list before ever touching the name.
+function countryTitle(country: string): string {
+  const candidates = [
+    `${country}: Cities, Weather & Prayer | WorldCityHub`,
+    `${country}: Cities, Weather & Prayer`,
+    `${country}: Cities & Weather | WorldCityHub`,
+    `${country}: Cities & Weather`,
+  ];
+  return candidates.find((t) => t.length <= 60) ?? country;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const p = await params;
   // D2 gate (metadata half): a non-registry slug gets no country title,
@@ -54,7 +72,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
   const country = titleCase(p.country);
-  const title = `${country}: Cities, Weather & Prayer | WorldCityHub`;
+  const title = countryTitle(country);
   const description = `${country}: provinces and cities with live weather, prayer times, gold & currency rates, news, economy and culture: the ${country} guide.`;
   const canonical = `https://worldcityhub.vercel.app/${p.country}`;
   return {

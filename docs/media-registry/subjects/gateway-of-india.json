@@ -1,0 +1,15 @@
+{
+  "subject_context": "country template pass, before-8 Tier-1 batch 6 Nov 2026 (gateway-of-india)",
+  "records": [
+    {
+      "local_path": "/images/country-india/landmark-gateway-of-india.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Gateway_of_India_in_the_evening%2C_Mumbai%2C_India.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "SriSriChinmaya",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Gateway of India in the evening, Mumbai, India.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed."
+    }
+  ],
+  "notes": "The Gateway of India, Mumbai, floodlit in the evening, the full arch inside the frame. Wired as the Gateway of India landmark card on the India country page. This replaces the Pexels photo 208371, which the page previously ALSO used for Mount Rushmore; each landmark now carries its own true photo. Local file is a webp conversion (1024px wide) of the Commons original (4608x3072)."
+}

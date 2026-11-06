@@ -1,0 +1,15 @@
+{
+  "subject_context": "licence re-verification pass, before-8 Tier-1 batch 6 Nov 2026 (abdul-sattar-edhi)",
+  "records": [
+    {
+      "local_path": "/images/personalities/abdul-sattar-edhi.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Abdul_Sattar_Edhi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "Hussain",
+      "license": "CC BY-SA 3.0",
+      "commons_title": "File:Abdul Sattar Edhi.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence RE-VERIFIED via the Wikimedia Commons API extmetadata channel for File:Abdul Sattar Edhi.jpg on 2026-11-06: LicenseShortName 'CC BY-SA 3.0', Artist 'Hussain' (1856x2784). This closes the register's open 'licence-corroborated, re-verify later' flag for this portrait; the verified licence matches the credit the site already renders."
+    }
+  ],
+  "notes": "Portrait of Abdul Sattar Edhi. No registry record existed for this portrait before this pass; the record is created by the re-verification."
+}

@@ -14,7 +14,6 @@ import HeroClocks from '@/components/home/HeroClocks';
 import DayNightBand from '@/components/home/DayNightBand';
 import TrendCharts from '@/components/home/TrendCharts';
 import WorldCapitals from '@/components/home/WorldCapitals';
-// B12: AllFaithsToday import removed — see the §11 note below.
 import CityAssistant from '@/components/shared/CityAssistant';
 import HeritageSpotlight from '@/components/home/HeritageSpotlight';
 import AboutAndFooter from '@/components/home/AboutAndFooter';
@@ -166,19 +165,24 @@ export default function Home({ newsSlot, ticker2Slot, myCitySlot, todaysWorldSlo
           live on in §5), and DidYouKnow. */}
 
       {/* ── §11 FAITHS / PRAYER HUB (anchor for the nav, link map §2) ──
-          B12: AllFaithsToday is HIDDEN, not deleted (component file
-          kept, unrendered). Its cards hard-code June 2026 dates and
-          date-specific events (Feast of St. John the Baptist,
-          International Olympic Day, ...), while the rest of the site
-          shows current dates — and no live source in the codebase
-          feeds all seven calendars: Aladhan covers Hijri only, the
-          prayer page's Panchang is a day-of-year approximation (not
-          a true tithi), and Nanakshahi has no codebase method at
-          all. Updating only some cards, or keeping June events under
-          October dates, would still be false. The section reappears
-          only when a live multi-faith calendar feed exists. The
-          section description below is corrected to match: it no
-          longer claims today's seven-calendar dates. */}
+          B12: the old AllFaithsToday strip was removed, and its
+          component file was DELETED on 6 Nov 2026 (before-8 cleanup).
+          Its cards hard-coded June 2026 dates and date-specific
+          events (Feast of St. John the Baptist, International
+          Olympic Day, ...), and no live source in the codebase feeds
+          all seven calendars: Aladhan covers Hijri only, the prayer
+          page's Panchang is a day-of-year approximation (not a true
+          tithi), and Nanakshahi has no codebase method at all.
+          Updating only some cards, or keeping June events under
+          current dates, would still be false, and a hidden file
+          carrying a stale hard-coded Hijri date ("24 Dhul Hijjah
+          1446 AH") was a trap for any future re-enable. A
+          multi-faith today strip returns only as a fresh component
+          computed from a live feed; the live per-faith dates the
+          site does compute today live in CountryClient (Intl
+          calendars, rendered only when the runtime resolves them).
+          The section description below does not claim today's
+          seven-calendar dates. */}
       <div id="faiths">
       <Section bg="darker" title="The World by Faith"
         desc="Religion shapes how 8 billion people measure time, name their days, build their cities, and mark the passages of life. WorldCityHub covers all seven major traditions: prayer schedules for Muslims, mass times for Christians, puja timings for Hindus, Shabbat for Jews, meditation sessions for Buddhists, Nitnem for Sikhs. Below: the seven traditions, and today's prayer times for every published city.">

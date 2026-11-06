@@ -1,0 +1,15 @@
+{
+  "subject_context": "city template pass, before-8 Tier-1 batch 6 Nov 2026 (mahabat-khan-mosque)",
+  "records": [
+    {
+      "local_path": "/images/cities/peshawar-prayer.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Masjid_Muhabat_Khan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "Hafeezburki",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Masjid Muhabat Khan.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed."
+    }
+  ],
+  "notes": "The Mahabat Khan Mosque, Peshawar: white marble facade, three domes and both minarets complete. Wired as the prayer-variant image for Peshawar in src/lib/data/cityImages.ts (Peshawar previously had no prayer image). Local file is a webp conversion (1600px wide) of the Commons original (3456x2304)."
+}

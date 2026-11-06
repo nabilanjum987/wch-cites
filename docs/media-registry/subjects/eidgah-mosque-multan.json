@@ -1,0 +1,15 @@
+{
+  "subject_context": "city template pass, before-8 Tier-1 batch 6 Nov 2026 (eidgah-mosque-multan)",
+  "records": [
+    {
+      "local_path": "/images/cities/multan-prayer.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Eid_gah_mosque_multanrr.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "Shehzad",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Eid gah mosque multanrr.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed."
+    }
+  ],
+  "notes": "The Eidgah Mosque, Multan: blue-tiled facade, dome and both minarets complete. Wired as the prayer-variant image for Multan in src/lib/data/cityImages.ts (Multan previously had no prayer image). Local file is a webp conversion at the Commons original's full size (1000x667); no larger version exists on Commons."
+}

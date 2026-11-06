@@ -1,0 +1,15 @@
+{
+  "subject_context": "country template pass, before-8 Tier-1 batch 6 Nov 2026 (mount-rushmore)",
+  "records": [
+    {
+      "local_path": "/images/country-united-states/landmark-mount-rushmore.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Dean_Franklin_-_06.04.03_Mount_Rushmore_Monument_%28by-sa%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "Dean Franklin",
+      "license": "Public domain",
+      "commons_title": "File:Dean Franklin - 06.04.03 Mount Rushmore Monument (by-sa).jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed."
+    }
+  ],
+  "notes": "Mount Rushmore: all four carved faces complete in frame. Wired as the Mount Rushmore landmark card on the United States country page. This replaces the Pexels photo 208371, which is in fact a Gateway of India photo and was previously shown here by mistake; each landmark now carries its own true photo. The Commons API extmetadata for this exact file states Public domain (the filename's '(by-sa)' refers to a sibling version). Local file is a webp conversion (1024px wide) of the Commons original (3072x2048)."
+}

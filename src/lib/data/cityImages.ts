@@ -71,6 +71,20 @@ export const CITY_IMAGES: Record<string, Partial<Record<CityImageVariant, CityIm
     events: img('islamabad-events.webp', 'Pakistan Monument, Islamabad, at blue hour', 'Photo: Muhammad Ashar · CC BY-SA 4.0', 1600, 1066),
     rates: img('islamabad-rates.webp', 'Jinnah Super Market, Islamabad', 'Photo: Executioner · CC BY-SA 3.0', 1600, 1200),
   },
+  // Prayer heroes for Multan + Peshawar (before-8 batch, 6 Nov 2026):
+  // both cities previously had NO prayer entry and their prayer pages
+  // rendered without a city prayer photo. Each photo is a licensed
+  // Commons file, licence verified via the Commons API extmetadata
+  // channel, subject viewed before wiring; registry records in
+  // docs/media-registry/subjects/eidgah-mosque-multan.json and
+  // mahabat-khan-mosque.json. Multan's Eidgah file exists on Commons
+  // only at 1000px wide, so its true size is recorded, not upscaled.
+  multan: {
+    prayer: img('multan-prayer.webp', 'Eidgah Mosque, Multan', 'Photo: Shehzad · CC BY-SA 4.0', 1000, 667),
+  },
+  peshawar: {
+    prayer: img('peshawar-prayer.webp', 'Mahabat Khan Mosque, Peshawar', 'Photo: Hafeezburki · CC BY-SA 4.0', 1600, 1067),
+  },
 };
 
 export function getCityImage(citySlug: string, variant: CityImageVariant): CityImage | null {

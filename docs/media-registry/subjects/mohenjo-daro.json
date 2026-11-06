@@ -8,7 +8,8 @@
       "license": "CC BY-SA 3.0",
       "commons_title": "File:Mohenjo-daro.jpg",
       "status": "VERIFIED",
-      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Mohenjo-daro.jpg on 2026-11-03 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Mohenjo-daro.jpg."
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for File:Mohenjo-daro.jpg on 2026-11-03 (file pages return 403 to this crawler; the API is the accepted verification channel). Commons title: File:Mohenjo-daro.jpg.",
+      "reverified": "Licence RE-VERIFIED via the Wikimedia Commons API extmetadata channel for File:Mohenjo-daro.jpg on 2026-11-06: LicenseShortName 'CC BY-SA 3.0', Artist 'Saqib Qayyum' (3648x2736). Same Commons file also serves /images/country-pakistan/heritage-mohenjo-daro.webp on the Pakistan country page. This closes the register's open re-verify flag for Mohenjo-daro."
     }
   ],
   "notes": "Added by the province-template fix (3 Nov 2026) to replace wrong/reused Pexels photos on province pages. Local file is a webp conversion (~800px) of the Commons original."

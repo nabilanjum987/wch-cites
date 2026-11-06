@@ -1,0 +1,15 @@
+{
+  "subject_context": "country template pass, before-8 Tier-1 batch 6 Nov 2026 (hawa-mahal)",
+  "records": [
+    {
+      "local_path": "/images/country-india/landmark-hawa-mahal.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/4/41/East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "Chainwit.",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:East facade Hawa Mahal Jaipur from ground level (July 2022) - img 01.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed."
+    }
+  ],
+  "notes": "The full east facade of Hawa Mahal, Jaipur, from ground level. Wired as the Hawa Mahal landmark card on the India country page, replacing a Pexels hotlink. Local file is a webp conversion (1024px wide) of the Commons original (3345x2509)."
+}

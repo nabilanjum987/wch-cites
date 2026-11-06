@@ -1,0 +1,15 @@
+{
+  "subject_context": "country template pass, before-8 Tier-1 batch 6 Nov 2026 (golden-gate-bridge)",
+  "records": [
+    {
+      "local_path": "/images/country-united-states/landmark-golden-gate.webp",
+      "direct_url": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach%2C_March_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "author": "Frank Schulenburg",
+      "license": "CC BY-SA 4.0",
+      "commons_title": "File:Golden Gate Bridge as seen from Marshall’s Beach, March 2018.jpg",
+      "status": "VERIFIED",
+      "license_note": "Licence verified via the Wikimedia Commons API extmetadata channel for the exact file on 2026-11-06 (Commons file pages return 403 to this crawler; the API is the accepted verification channel). Photo viewed before wiring: the image depicts the named subject, complete and respectfully framed."
+    }
+  ],
+  "notes": "The Golden Gate Bridge complete, seen from Marshall's Beach, San Francisco. Wired as the Golden Gate Bridge landmark card on the United States country page, replacing a Pexels hotlink. Local file is a webp conversion (1024px wide) of the Commons original (4861x2734)."
+}

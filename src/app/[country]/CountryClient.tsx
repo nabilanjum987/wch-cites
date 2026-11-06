@@ -83,7 +83,8 @@ const COUNTRIES: Record<string, Country> = {
     languages: ['Hindi', 'English', 'Bengali', 'Telugu', 'Marathi', 'Tamil'],
     government: 'Federal Parliamentary Republic',
     primaryColor: '#FF9933', secondaryColor: '#138808',
-    heroImage: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    heroImage: '/images/country-india/hero-taj-mahal.webp',
+    heroCredit: 'Taj Mahal, Agra · Yann Forget, edited by King of Hearts · CC BY-SA 3.0, via Wikimedia Commons',
     tagline: 'One billion stories. Every faith. Every landscape. Every flavour.',
     timezone: 'IST (UTC+5:30)', independence: 'August 15, 1947',
     climate: 'Varies, Tropical to Alpine', majorFaith: 'Hinduism', majorFaithPct: 80,
@@ -96,7 +97,8 @@ const COUNTRIES: Record<string, Country> = {
     languages: ['English', 'Spanish'],
     government: 'Federal Presidential Republic',
     primaryColor: '#B22234', secondaryColor: '#3C3B6E',
-    heroImage: 'https://images.pexels.com/photos/290386/pexels-photo-290386.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    heroImage: '/images/country-united-states/hero-statue-of-liberty.webp',
+    heroCredit: 'Statue of Liberty, New York · William Warby · CC BY 2.0, via Wikimedia Commons',
     tagline: 'A nation built by dreamers from every corner of the world.',
     timezone: 'EST/PST (UTC-5 to UTC-8)', independence: 'July 4, 1776',
     climate: 'Varies, Arctic to Tropical', majorFaith: 'Christianity', majorFaithPct: 63,
@@ -197,16 +199,16 @@ const LANDMARKS: Record<string, Landmark[]> = {
     { id: '6', name: 'Faisal Mosque', type: 'Religious', city: 'Islamabad', image: '/images/country-pakistan/heritage-faisal-mosque.webp', unesco: false, era: 'Modern 1986' },
   ],
   IN: [
-    { id: '1', name: 'Taj Mahal', type: 'Monument', city: 'Agra', image: 'https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1643' },
-    { id: '2', name: 'Red Fort', type: 'Fort', city: 'Delhi', image: 'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Mughal 1648' },
-    { id: '3', name: 'Gateway of India', type: 'Arch', city: 'Mumbai', image: 'https://images.pexels.com/photos/208371/pexels-photo-208371.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Colonial 1924' },
-    { id: '4', name: 'Hawa Mahal', type: 'Palace', city: 'Jaipur', image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Rajput 1799' },
+    { id: '1', name: 'Taj Mahal', type: 'Monument', city: 'Agra', image: '/images/country-india/landmark-taj-mahal.webp', unesco: true, era: 'Mughal 1643' },
+    { id: '2', name: 'Red Fort', type: 'Fort', city: 'Delhi', image: '/images/country-india/landmark-red-fort.webp', unesco: true, era: 'Mughal 1648' },
+    { id: '3', name: 'Gateway of India', type: 'Arch', city: 'Mumbai', image: '/images/country-india/landmark-gateway-of-india.webp', unesco: false, era: 'Colonial 1924' },
+    { id: '4', name: 'Hawa Mahal', type: 'Palace', city: 'Jaipur', image: '/images/country-india/landmark-hawa-mahal.webp', unesco: false, era: 'Rajput 1799' },
   ],
   US: [
-    { id: '1', name: 'Statue of Liberty', type: 'Monument', city: 'New York', image: 'https://images.pexels.com/photos/290386/pexels-photo-290386.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Modern 1886' },
-    { id: '2', name: 'Grand Canyon', type: 'Natural', city: 'Arizona', image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: true, era: 'Natural Wonder' },
-    { id: '3', name: 'Golden Gate Bridge', type: 'Bridge', city: 'San Francisco', image: 'https://images.pexels.com/photos/1537086/pexels-photo-1537086.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Modern 1937' },
-    { id: '4', name: 'Mount Rushmore', type: 'Monument', city: 'South Dakota', image: 'https://images.pexels.com/photos/208371/pexels-photo-208371.jpeg?auto=compress&cs=tinysrgb&w=600', unesco: false, era: 'Modern 1941' },
+    { id: '1', name: 'Statue of Liberty', type: 'Monument', city: 'New York', image: '/images/country-united-states/landmark-statue-of-liberty.webp', unesco: true, era: 'Modern 1886' },
+    { id: '2', name: 'Grand Canyon', type: 'Natural', city: 'Arizona', image: '/images/country-united-states/landmark-grand-canyon.webp', unesco: true, era: 'Natural Wonder' },
+    { id: '3', name: 'Golden Gate Bridge', type: 'Bridge', city: 'San Francisco', image: '/images/country-united-states/landmark-golden-gate.webp', unesco: false, era: 'Modern 1937' },
+    { id: '4', name: 'Mount Rushmore', type: 'Monument', city: 'South Dakota', image: '/images/country-united-states/landmark-mount-rushmore.webp', unesco: false, era: 'Modern 1941' },
   ],
 };
 
@@ -433,6 +435,34 @@ const EMERGENCY: Record<string, EmergencyItem[]> = {
 //     CC BY-SA 4.0
 //   flags/{af,ir}.png — national flags, public domain (vendored from
 //     Wikimedia Commons); flags/{in,cn,pk,ca}.png already vendored in repo.
+//   Before-8 batch (6 Nov 2026): the IN/US hero + landmark photos that
+//   used to be Pexels hotlinks are local Commons files now, every
+//   licence verified via the Commons API extmetadata channel and every
+//   photo viewed before wiring (registry: docs/media-registry/subjects/
+//   taj-mahal, red-fort, gateway-of-india, hawa-mahal,
+//   statue-of-liberty, grand-canyon, golden-gate-bridge,
+//   mount-rushmore):
+//   country-india/hero-taj-mahal.webp: File:Taj Mahal, Agra, India
+//     edit3.jpg, Yann Forget, edited by King of Hearts, CC BY-SA 3.0
+//   country-india/landmark-taj-mahal.webp: File:Agra-Taj Mahal-View
+//     from the Mughal garden reflecting pond-20131019.jpg, Daniel
+//     Villafruela, CC BY-SA 3.0
+//   country-india/landmark-red-fort.webp: Lahori Gate, Red Fort:
+//     Rickard Törnblad, CC BY-SA 4.0
+//   country-india/landmark-gateway-of-india.webp: Gateway of India in
+//     the evening: SriSriChinmaya, CC BY-SA 4.0
+//   country-india/landmark-hawa-mahal.webp: Hawa Mahal east facade:
+//     Chainwit., CC BY-SA 4.0
+//   country-united-states/hero-statue-of-liberty.webp:
+//     File:Statue of Liberty, NY.jpg, William Warby, CC BY 2.0
+//   country-united-states/landmark-statue-of-liberty.webp: Liberty
+//     Island aerial: Don Ramey Logan, CC BY 4.0
+//   country-united-states/landmark-grand-canyon.webp: Grand Canyon
+//     Hopi Point with rainbow 2013: Tuxyso, CC BY-SA 3.0
+//   country-united-states/landmark-golden-gate.webp: Golden Gate
+//     Bridge from Marshall's Beach: Frank Schulenburg, CC BY-SA 4.0
+//   country-united-states/landmark-mount-rushmore.webp: Mount
+//     Rushmore Monument: Dean Franklin, public domain
 // Subjects with no verifiable open-licence photo keep the text card and
 // are reported, never filled with a wrong-subject image.
 const CITY_CARD_IMAGES: Record<string, string> = {
@@ -518,6 +548,13 @@ const RESOURCE_PHOTO_CREDITS: Record<string, string> = {
   Water: 'USAID · Public domain, via Wikimedia Commons',
 };
 
+// Landmark card photos + credits for every built country (the map was
+// Pakistan-only until the before-8 batch, 6 Nov 2026, which replaced
+// the India and United States Pexels hotlinks with local Commons files
+// on the same pattern; each photo was viewed before wiring so every
+// landmark shows its own true subject: the old set showed one Pexels
+// photo, 208371, a Gateway of India shot, as both Gateway of India and
+// Mount Rushmore).
 const HERITAGE_PHOTOS: Record<string, string> = {
   'Badshahi Mosque': '/images/country-pakistan/heritage-badshahi-mosque.webp',
   'Mohenjo-daro': '/images/country-pakistan/heritage-mohenjo-daro.webp',
@@ -525,6 +562,14 @@ const HERITAGE_PHOTOS: Record<string, string> = {
   'Lahore Fort': '/images/country-pakistan/heritage-lahore-fort.webp',
   'Faisal Mosque': '/images/country-pakistan/heritage-faisal-mosque.webp',
   K2: '/images/country-pakistan/heritage-k2.webp',
+  'Taj Mahal': '/images/country-india/landmark-taj-mahal.webp',
+  'Red Fort': '/images/country-india/landmark-red-fort.webp',
+  'Gateway of India': '/images/country-india/landmark-gateway-of-india.webp',
+  'Hawa Mahal': '/images/country-india/landmark-hawa-mahal.webp',
+  'Statue of Liberty': '/images/country-united-states/landmark-statue-of-liberty.webp',
+  'Grand Canyon': '/images/country-united-states/landmark-grand-canyon.webp',
+  'Golden Gate Bridge': '/images/country-united-states/landmark-golden-gate.webp',
+  'Mount Rushmore': '/images/country-united-states/landmark-mount-rushmore.webp',
 };
 
 const HERITAGE_PHOTO_CREDITS: Record<string, string> = {
@@ -534,6 +579,14 @@ const HERITAGE_PHOTO_CREDITS: Record<string, string> = {
   'Lahore Fort': 'Rohaan Bhatti · CC BY-SA 3.0, via Wikimedia Commons',
   'Faisal Mosque': 'Guilhem Vellut · CC BY 2.0, via Wikimedia Commons',
   K2: 'Svy123 · CC BY 3.0, via Wikimedia Commons',
+  'Taj Mahal': 'Daniel Villafruela · CC BY-SA 3.0, via Wikimedia Commons',
+  'Red Fort': 'Rickard Törnblad · CC BY-SA 4.0, via Wikimedia Commons',
+  'Gateway of India': 'SriSriChinmaya · CC BY-SA 4.0, via Wikimedia Commons',
+  'Hawa Mahal': 'Chainwit. · CC BY-SA 4.0, via Wikimedia Commons',
+  'Statue of Liberty': 'Don Ramey Logan · CC BY 4.0, via Wikimedia Commons',
+  'Grand Canyon': 'Tuxyso · CC BY-SA 3.0, via Wikimedia Commons',
+  'Golden Gate Bridge': 'Frank Schulenburg · CC BY-SA 4.0, via Wikimedia Commons',
+  'Mount Rushmore': 'Dean Franklin · Public domain, via Wikimedia Commons',
 };
 
 const NEIGHBOUR_FLAG_FILES: Record<string, string> = {
@@ -1339,7 +1392,7 @@ export default function CountryPage({ wbPopulation, wbEconomy, news }: {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {landmarks.map(lm => {
-                const heritagePhoto = country.code === 'PK' ? HERITAGE_PHOTOS[lm.name] : undefined;
+                const heritagePhoto = HERITAGE_PHOTOS[lm.name];
                 const imageSrc = heritagePhoto ?? lm.image;
                 return (
                 <div key={lm.id} className="group rounded-2xl overflow-hidden border hover:border-opacity-60 transition-all"
